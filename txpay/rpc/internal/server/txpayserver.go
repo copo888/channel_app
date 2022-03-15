@@ -5,6 +5,7 @@ package server
 
 import (
 	"context"
+	"google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/copo888/channel_app/txpay/rpc/internal/logic"
 	"github.com/copo888/channel_app/txpay/rpc/internal/svc"
@@ -20,6 +21,16 @@ func NewTxPayServer(svcCtx *svc.ServiceContext) *TxPayServer {
 	return &TxPayServer{
 		svcCtx: svcCtx,
 	}
+}
+
+func (s *TxPayServer) Check(ctx context.Context, req *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
+	return &grpc_health_v1.HealthCheckResponse{
+		Status: grpc_health_v1.HealthCheckResponse_SERVING,
+	}, nil
+}
+
+func (s *TxPayServer) Watch(req *grpc_health_v1.HealthCheckRequest, w grpc_health_v1.Health_WatchServer) error {
+	return nil
 }
 
 func (s *TxPayServer) TxPayOrder(ctx context.Context, in *txpay.TxPayOrderRequest) (*txpay.TxPayOrderResponse, error) {
