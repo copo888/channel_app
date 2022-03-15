@@ -1,0 +1,128 @@
+syntax = "proto3";
+
+package txpay;
+
+//import "google/protobuf/empty.proto";
+message channel {
+  int64         id      =1;
+  string        code    =2;
+  string        name    =3;
+  string        isProxy =4;
+  string        isNzPre =5;
+  string        apiUrl  =6;
+  string        currencyCode=7;
+  float         channelWithdrawCharge=8;
+  float         balance=9;
+  string        status=10;
+  string        device=11;
+  string        merId =12;
+  string        merKey=13;
+  string        payUrl=14;
+  string        payQueryUrl=15;
+  string        payQueryBalanceUrl=16;
+  string        proxyPayUrl=17;
+  string        proxyPayQueryUrl=18;
+  string        proxyPayQueryBalanceUrl=19;
+  string        whiteList=20;
+//    []PayTypeMap  payTypeMapList=20;
+  string        payTypeMap=21;
+  string        channelPort=22;
+  float       withdrawBalance=23;
+  float       proxypayBalance=24;
+//    []BankCodeMap bankCodeMapList=25;
+//    []Bank        banks=26;
+}
+
+
+
+message TxPayOrderRequest {
+  string orderNo = 1;
+  string payType = 2;
+  string transactionAmount = 3;
+  string bankCode = 4;
+  string pageUrl = 5;
+  string orderName = 6;
+  string merchantId = 7;
+  string currency = 8;
+  string sourceIp = 9;
+  string userId = 10;
+  string jumpType = 11;
+}
+
+message TxPayOrderResponse {
+  string code = 1;
+  string msg = 2;
+}
+
+message TxPayQueryOrderRequest {
+  string orderNo = 1;
+  string channelOrderNo = 2;
+}
+
+message TxPayQueryOrderResponse {
+  string code = 1;
+  string msg = 2;
+}
+
+message TxPayQueryBalanceRequest {
+
+}
+
+message TxPayQueryInternalBalanceResponse {
+  string channelNametring = 1;
+  string channelCodingtring = 2;
+  string withdrawBalance = 3;
+  string proxyPayBalance = 4;
+  string updateTimetring = 5;
+  string errorCodetring = 6;
+  string errorMsgtring = 7;
+}
+
+message TxProxyPayOrderRequest {
+  string orderNo = 1;
+  string transactionType = 2;
+  string transactionAmount = 3;
+  string receiptAccountNumber = 4;
+  string receiptAccountName = 5;
+  string receiptCardProvince = 6;
+  string receiptCardCity = 7;
+  string receiptCardArea = 8;
+  string receiptCardBranch = 9;
+  string receiptCardBankCode = 10;
+  string receiptCardBankName = 11;
+}
+message TxProxyPayOrderResponse {
+  string code = 1;
+  string msg = 2;
+}
+
+message TxProxyPayQueryRequest {
+  string orderNo = 1;
+  string channelOrderNo = 2;
+}
+message TxProxyPayQueryResponse {
+  string code = 1;
+  string msg = 2;
+}
+
+message TxProxyPayQueryInternalBalanceRequest {
+
+}
+message TxProxyPayQueryInternalBalanceResponse {
+  string channelNametring = 1;
+  string channelCodingtring = 2;
+  string withdrawBalance = 3;
+  string proxyPayBalance = 4;
+  string updateTimetring = 5;
+  string errorCodetring = 6;
+  string errorMsgtring = 7;
+}
+
+service TxPay {
+  rpc TxPayOrder(TxPayOrderRequest) returns(TxPayOrderResponse);
+  rpc TxPayOrderQuery(TxPayQueryOrderRequest) returns(TxPayQueryOrderResponse);
+  rpc TxPayQueryBalance(TxPayQueryBalanceRequest) returns(TxPayQueryInternalBalanceResponse);
+  rpc TxProxyPayOrder(TxProxyPayOrderRequest) returns(TxProxyPayOrderResponse);
+  rpc TxProxyPayOrderQuery(TxProxyPayQueryRequest) returns(TxProxyPayQueryResponse);
+  rpc TxProxyPayQueryBalance(TxProxyPayQueryInternalBalanceRequest) returns(TxProxyPayQueryInternalBalanceResponse);
+}
