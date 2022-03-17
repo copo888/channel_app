@@ -1,2 +1,10 @@
-run:
-	go run txpay/rpc/txpay.go -f txpay/rpc/etc/txpay.yaml -env txapy/rpc/etc/.env
+p := txpay/api
+t := txpay
+lang:
+	easyi18n generate --pkg=locales ./locales ./locales/locales.go
+
+api:
+	goctl api go -api $(p)/$(t).api -dir $(p) -remote https://github.com/neccohuang/go-zero-template
+
+tx:
+	go run $(p)/$(t).go -f $(p)/etc/$(t).yaml -env $(p)/etc/.env
