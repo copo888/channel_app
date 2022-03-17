@@ -124,8 +124,6 @@ github.com/fsnotify/fsnotify v1.4.9 h1:hsms1Qyu0jgnwNXIxa+/V/PDsU6CfLf6CNO8H7IWo
 github.com/fsnotify/fsnotify v1.4.9/go.mod h1:znqG4EE+3YCdAaPaxE2ZRY/06pZUdp0tY4IgpuI1SZQ=
 github.com/ghodss/yaml v0.0.0-20150909031657-73d445a93680/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
 github.com/ghodss/yaml v1.0.0/go.mod h1:4dBDuWmgqj2HViK6kFavaiC9ZROes6MMH2rRYeMEF04=
-github.com/gioco-play/go-driver v0.0.0-20211222092117-0d81e75ae35d h1:9wGHLUPtLobp/cbCCTU8ikFae7UJbFwCmaurXAoiLq4=
-github.com/gioco-play/go-driver v0.0.0-20211222092117-0d81e75ae35d/go.mod h1:lXEW6OLSa+TXdR6LlO5fuopgcuw6/buEEBb/Lf37K4s=
 github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8/go.mod h1:xkRDCp4j0OGD1HRkm4kmhM+pmpv3AKq5SU7GMg4oO/Q=
 github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1/go.mod h1:vR7hzQXu2zJy9AVAgeJqvqgH9Q5CA+iKCZ2gyEVpxRU=
 github.com/go-gl/glfw/v3.3/glfw v0.0.0-20191125211704-12ad95a8df72/go.mod h1:tQ2UAYgL5IevRw8kRxooKSPJfGvJ9fJQFa0TUsXzTg8=
@@ -429,6 +427,8 @@ github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRW
 github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f/go.mod h1:ZdcZmHo+o7JKHSa8/e818NopupXU1YMK5fe1lsApnBw=
 github.com/nbio/st v0.0.0-20140626010706-e9e8d9816f32/go.mod h1:9wM+0iRr9ahx58uYLpLIr5fm8diHn0JbqRycJi6w0Ms=
+github.com/neccoys/go-driver v0.0.0-20220211062338-505f7fd8fc0c h1:BwnjED/WjhSgLkciqwV8tSx+WexuUO8cvzHJdA+wO+8=
+github.com/neccoys/go-driver v0.0.0-20220211062338-505f7fd8fc0c/go.mod h1:I89P8r7Pt9NFsOL2Sh2NYaQrAp8t1m4KcFdLp6qb5m8=
 github.com/neccoys/go-zero-extension v0.0.0-20220307092819-4b7b1b9ae020 h1:G68i96yg7rEOAS6I5fj3meJ15Wf5eUFb14d0iAr28qU=
 github.com/neccoys/go-zero-extension v0.0.0-20220307092819-4b7b1b9ae020/go.mod h1:+S6PXoTk0PcWMhkGTEHJCLjDqV+d3r958eSiveYKMUQ=
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=

@@ -3,7 +3,6 @@ module github.com/copo888/channel_app
 go 1.17
 
 require (
-	github.com/gioco-play/go-driver v0.0.0-20211222092117-0d81e75ae35d
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/golang/protobuf v1.5.2
 	github.com/joho/godotenv v1.4.0
@@ -48,6 +47,7 @@ require (
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.1 // indirect
+	github.com/neccoys/go-driver v0.0.0-20220211062338-505f7fd8fc0c // indirect
 	github.com/openzipkin/zipkin-go v0.4.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/prometheus/client_golang v1.11.0 // indirect
