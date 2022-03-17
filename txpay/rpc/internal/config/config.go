@@ -8,4 +8,17 @@ import (
 type Config struct {
 	zrpc.RpcServerConf
 	Consul consul.Conf
+	Mysql  struct {
+		Host       string
+		Port       int
+		DBName     string
+		UserName   string
+		Password   string
+		DebugLevel string
+	}
+	RedisCache struct {
+		RedisSentinelNode string
+		RedisMasterName   string
+		RedisDB           int
+	}
 }

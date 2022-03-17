@@ -13,6 +13,7 @@ import (
 )
 
 type (
+	Bank                                   = txpay.Bank
 	Channel                                = txpay.Channel
 	TxPayOrderRequest                      = txpay.TxPayOrderRequest
 	TxPayOrderResponse                     = txpay.TxPayOrderResponse

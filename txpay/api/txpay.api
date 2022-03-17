@@ -1,9 +1,23 @@
 syntax = "v1"
 
 info(
-    title: "type title here"
-    desc: "type desc here"
-    author: "type author here"
-    email: "type email here"
-    version: "type version here"
+	title: "txpay 渠道"
+	desc: "type desc here"
+	author: "type author here"
+	email: "type email here"
+	version: "type version here"
 )
+
+type ProxyPayCallBackRequest {
+}
+
+@server(
+	group: txpay
+	prefix: api/
+)
+
+service txpay-api {
+	@handler ProxyPayCallBackHandler
+	post /proxy-pay-call-back (ProxyPayCallBackRequest)
+	
+}

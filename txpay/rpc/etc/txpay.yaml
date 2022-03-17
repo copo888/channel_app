@@ -20,3 +20,16 @@ Consul:
     Protocol: grpc
   Tag:
     - ${CONSUL_KEY}
+
+Mysql:
+  Host: ${DB_HOST}
+  Port: ${DB_PORT}
+  DBName: ${DB_DATABASE}
+  UserName: ${DB_USERNAME}
+  Password: ${DB_PASSWORD}
+  DebugLevel: ${DB_DEBUG_LEVEL}
+
+RedisCache:
+  RedisSentinelNode: ${REDIS_SENTINEL_NODE}
+  RedisMasterName: ${REDIS_MASTER_NAME}
+  RedisDB: ${REDIS_DB}
