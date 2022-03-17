@@ -16,8 +16,7 @@ type ProxyPayCallBackRequest {
 	prefix: api/
 )
 
-service txpay-api {
+service txpay {
 	@handler ProxyPayCallBackHandler
 	post /proxy-pay-call-back (ProxyPayCallBackRequest)
-	
 }
