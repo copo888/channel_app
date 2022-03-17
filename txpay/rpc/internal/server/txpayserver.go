@@ -17,12 +17,14 @@ type TxPayServer struct {
 	txpay.UnimplementedTxPayServer
 }
 
-func (s *TxPayServer) Check(ctx context.Context, request *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
-	panic("implement me")
+func (s *TxPayServer) Check(ctx context.Context, req *grpc_health_v1.HealthCheckRequest) (*grpc_health_v1.HealthCheckResponse, error) {
+	return &grpc_health_v1.HealthCheckResponse{
+		Status: grpc_health_v1.HealthCheckResponse_SERVING,
+	}, nil
 }
 
-func (s *TxPayServer) Watch(request *grpc_health_v1.HealthCheckRequest, server grpc_health_v1.Health_WatchServer) error {
-	panic("implement me")
+func (s *TxPayServer) Watch(req *grpc_health_v1.HealthCheckRequest, w grpc_health_v1.Health_WatchServer) error {
+	return nil
 }
 
 func NewTxPayServer(svcCtx *svc.ServiceContext) *TxPayServer {
