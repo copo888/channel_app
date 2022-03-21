@@ -3,13 +3,14 @@ package logic
 import (
 	"context"
 	_ "crypto/md5"
+	"github.com/copo888/channel_app/common/types"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/txpay/rpc/internal/svc"
 	"github.com/copo888/channel_app/txpay/rpc/txpay"
 	"github.com/zeromicro/go-zero/core/logx"
-	"io/ioutil"
 	_ "net/http"
 	"net/url"
+	"strconv"
 )
 
 type TxProxyPayOrderLogic struct {
@@ -28,14 +29,22 @@ func NewTxProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) *T
 
 func (l *TxProxyPayOrderLogic) TxProxyPayOrder(in *txpay.TxProxyPayOrderRequest) (*txpay.TxProxyPayOrderResponse, error) {
 	logx.Info("代付订单ChannelPayOrder:", in)
-	var channel = txpay.Channel{}
-	TxProxyPayOrderResp := &txpay.TxProxyPayOrderResponse{}
-	code := "CHN000124" //需要預設redis app 啟動就把渠道資料暫存
-	err := l.svcCtx.MyDB.Table("ch_channels").Where("code = ?", code).Find(channel).Error
+	// TODO 1 下发转代付
+	// 2.prepare input map
+	resp, err := l.proxyPayOrderInputAndPost(in)
+	return resp, err
+}
+
+func (l *TxProxyPayOrderLogic) proxyPayOrderInputAndPost(in *txpay.TxProxyPayOrderRequest) (*txpay.TxProxyPayOrderResponse, error) {
+	var channel = &types.ChannelData{}
+	TxProxyPayOrderResp := txpay.TxProxyPayOrderResponse{}
+	code := "CHN000124" //TODO 需要預設redis app 啟動就把渠道資料暫存
+	err := l.svcCtx.MyDB.Table("ch_channels").Where("code = ?", code).Find(&channel).Error
 	if err != nil {
+		TxProxyPayOrderResp.Status = "-1"
 		TxProxyPayOrderResp.Code = "EX001"
 		TxProxyPayOrderResp.Msg = err.Error()
-		return TxProxyPayOrderResp, err
+		return &TxProxyPayOrderResp, nil
 	}
 
 	merchantId := channel.MerId
@@ -76,23 +85,15 @@ func (l *TxProxyPayOrderLogic) TxProxyPayOrder(in *txpay.TxProxyPayOrderRequest)
 
 	logx.Info("加签原串:{} 加签后字串:{}", source, sign)
 	logx.Info("代付下单请求地址:{} 代付請求參數:{}", channel.ProxyPayUrl, data)
-
-	resp, err := utils.SubmitForm(channel.ProxyPayUrl, data)
-
+	resp, err := utils.SubmitForm(channel.ProxyPayUrl, data, l.ctx)
 	if err != nil {
-		logx.Error(err)
-		return nil, err
+		TxProxyPayOrderResp.Status = "1"
+		TxProxyPayOrderResp.Code = strconv.Itoa(resp.Status())
+		TxProxyPayOrderResp.Msg = err.Error()
+	} else {
+		TxProxyPayOrderResp.Status = "0"
+		TxProxyPayOrderResp.Code = strconv.Itoa(resp.Status())
+		TxProxyPayOrderResp.Msg = string(resp.Body())
 	}
-	logx.Info(resp.Status)
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		logx.Error(err)
-		return nil, err
-	}
-
-	TxProxyPayOrderResp.Code = resp.Status
-	TxProxyPayOrderResp.Msg = string(body)
-
-	return TxProxyPayOrderResp, nil
+	return &TxProxyPayOrderResp, nil
 }

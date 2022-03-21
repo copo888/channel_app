@@ -2,8 +2,8 @@ package logic
 
 import (
 	"context"
+	"github.com/copo888/channel_app/common/types"
 	"github.com/copo888/channel_app/common/utils"
-	"io/ioutil"
 	"net/url"
 
 	"github.com/copo888/channel_app/txpay/rpc/internal/svc"
@@ -27,17 +27,17 @@ func NewTxProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *TxProxyPayOrderQueryLogic) TxProxyPayOrderQuery(in *txpay.TxProxyPayQueryRequest) (*txpay.TxProxyPayQueryResponse, error) {
-	logx.Info("代付查询订单ProxyPayQuery",in)
+	logx.Info("代付查询订单ProxyPayQuery", in)
 
-	channel  :=  txpay.Channel{}
+	channel := &types.ChannelData{}
 	l.svcCtx.MyDB.Table("ch_channels").Where("code = CHN000124").Take(&channel)
 
-	merchantId  := channel.MerId
+	merchantId := channel.MerId
 	merchantKey := channel.MerKey
-	orderNo 	:= in.OrderNo
-	remark      := ""
+	orderNo := in.OrderNo
+	remark := ""
 
-	source := "merchant_id=" + merchantId + "&merchant_order_id=" + orderNo + "&key="+merchantKey
+	source := "merchant_id=" + merchantId + "&merchant_order_id=" + orderNo + "&key=" + merchantKey
 	sign := utils.GetSign(source)
 
 	data := url.Values{}
@@ -46,25 +46,23 @@ func (l *TxProxyPayOrderQueryLogic) TxProxyPayOrderQuery(in *txpay.TxProxyPayQue
 	data.Set("remark", remark)
 	data.Set("sign", sign)
 
-	logx.Info("加签原串:{} 加签后字串:{}",source,sign)
-	logx.Info("代付下单请求地址:{} 代付請求參數:{}", channel.ProxyPayQueryUrl , data)
+	logx.Info("加签原串:{} 加签后字串:{}", source, sign)
+	logx.Info("代付下单请求地址:{} 代付請求參數:{}", channel.ProxyPayQueryUrl, data)
 
-	resp ,err:= utils.SubmitForm(channel.ProxyPayQueryUrl,data)
+	resp, err := utils.SubmitForm(channel.ProxyPayQueryUrl, data, l.ctx)
 
 	if err != nil {
 		logx.Error(err)
-		return nil,err
+		return nil, err
 	}
-	logx.Info(resp.Status)
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+
 	if err != nil {
 		logx.Error(err)
-		return nil,err
+		return nil, err
 	}
-	TxProxyPayQueryResp := 	&txpay.TxProxyPayQueryResponse{
-		Code: resp.Status,
-		Msg : string(body),
+	TxProxyPayQueryResp := &txpay.TxProxyPayQueryResponse{
+		Code: string(resp.Status()),
+		Msg:  string(resp.Body()),
 	}
 
 	return TxProxyPayQueryResp, nil
