@@ -1,4 +1,4 @@
-package utils
+package txpayutils
 
 import (
 	"crypto/md5"
@@ -7,12 +7,11 @@ import (
 	"strings"
 )
 
-func GetSign(source string) string{
+func GetSign(source string) string {
 	data := []byte(source)
-	result := fmt.Sprintf("%x",md5.Sum(data))
+	result := fmt.Sprintf("%x", md5.Sum(data))
 	return result
 }
-
 
 /*
 JoinStringsInASCII 按照规则，参数名ASCII码从小到大排序后拼接
@@ -22,7 +21,7 @@ onlyValues 是否只包含参数值，true则不包含参数名，否则参数�
 includeEmpty 是否包含空值，true则包含空值，否则不包含，注意此参数不影响参数名的存在
 exceptKeys 被排除的参数名，不参与排序及拼接
 */
-func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeEmpty bool,key string, exceptKeys ...string) string {
+func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeEmpty bool, key string, exceptKeys ...string) string {
 	var list []string
 	var keyList []string
 	m := make(map[string]int)
@@ -47,9 +46,9 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	}
 	if onlyValues {
 		sort.Strings(keyList)
-		keyList = append(keyList, key)//加key
-		for _,v := range keyList {
-			list = append(list,data[v])
+		keyList = append(keyList, key) //加key
+		for _, v := range keyList {
+			list = append(list, data[v])
 		}
 	} else {
 		sort.Strings(list)
@@ -57,4 +56,3 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	}
 	return strings.Join(list, sep)
 }
-

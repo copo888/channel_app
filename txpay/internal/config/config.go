@@ -1,14 +1,14 @@
 package config
 
 import (
-	"github.com/neccoys/go-zero-extension/consul"
-	"github.com/zeromicro/go-zero/zrpc"
+	"github.com/zeromicro/go-zero/core/service"
+	"github.com/zeromicro/go-zero/rest"
 )
 
 type Config struct {
-	zrpc.RpcServerConf
-	Consul consul.Conf
-	Mysql  struct {
+	rest.RestConf
+	service.ServiceConf
+	Mysql struct {
 		Host       string
 		Port       int
 		DBName     string
@@ -21,4 +21,5 @@ type Config struct {
 		RedisMasterName   string
 		RedisDB           int
 	}
+	ChannelCode string
 }

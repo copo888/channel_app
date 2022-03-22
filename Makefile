@@ -1,4 +1,4 @@
-p := txpay/api
+p := txpay
 t := txpay
 lang:
 	easyi18n generate --pkg=locales ./locales ./locales/locales.go

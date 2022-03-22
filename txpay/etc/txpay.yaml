@@ -1,25 +1,20 @@
 Name: ${APP_NAME}
-ListenOn: ${APP_HOST}
-
-Telemetry:
-  Name: ${APP_NAME}
-  Endpoint: ${TRACE_ENDPOINT}
-  Sampler: 1.0
-  Batcher: jaeger
+Host: ${APP_HOST}
+Port: ${APP_PORT}
+ChannelCode: ${APP_CODE}
+Mode: ${APP_MODE}
+Verbose: ${HTTP_VERBOSE}
 
 Log:
   Mode: ${LOG_MODE}
   Level: ${LOG_LEVEL}
   KeepDays: ${LOG_KEEP_DAYS}
 
-Consul:
-  Host: ${CONSUL_HOST}
-  Key: ${CONSUL_KEY}
-  Check: ${CONSUL_CHECK}
-  Meta:
-    Protocol: grpc
-  Tag:
-    - ${CONSUL_KEY}
+Telemetry:
+  Name: ${APP_NAME}
+  Endpoint: ${TRACE_ENDPOINT}
+  Sampler: 1.0
+  Batcher: jaeger
 
 Mysql:
   Host: ${DB_HOST}
@@ -33,3 +28,8 @@ RedisCache:
   RedisSentinelNode: ${REDIS_SENTINEL_NODE}
   RedisMasterName: ${REDIS_MASTER_NAME}
   RedisDB: ${REDIS_DB}
+
+Prometheus:
+  Host: ${PROMETHEUS_HOST}
+  Port: ${PROMETHEUS_PORT}
+  Path: ${PROMETHEUS_PATH}

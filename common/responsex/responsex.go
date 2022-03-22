@@ -12,6 +12,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"golang.org/x/text/language"
 	"net/http"
+	"reflect"
 )
 
 type Body struct {
@@ -36,7 +37,7 @@ func Json(w http.ResponseWriter, r *http.Request, code string, resp interface{},
 		} else {
 			span.RecordError(errors.New(fmt.Sprintf("(%s)%s %s", code, body.Message, err.Error())))
 		}
-	} else {
+	} else if !reflect.ValueOf(resp).IsNil() {
 		body.Data = resp
 	}
 	body.Trace = span.SpanContext().TraceID().String()

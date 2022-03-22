@@ -2,11 +2,10 @@ package svc
 
 import (
 	"fmt"
-	"github.com/copo888/channel_app/txpay/rpc/internal/config"
+	"github.com/copo888/channel_app/txpay/internal/config"
 	"github.com/go-redis/redis/v8"
 	"github.com/neccoys/go-driver/mysqlx"
 	"gorm.io/gorm"
-	"log"
 	"strings"
 )
 
@@ -17,7 +16,6 @@ type ServiceContext struct {
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
-
 	// Redis
 	redisCache := redis.NewFailoverClient(&redis.FailoverOptions{
 		MasterName:    c.RedisCache.RedisMasterName,
@@ -25,7 +23,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		DB:            c.RedisCache.RedisDB,
 	})
 
-	log.Println(c.Mysql)
 	// DB
 	db, err := mysqlx.New(c.Mysql.Host, fmt.Sprintf("%d", c.Mysql.Port), c.Mysql.UserName, c.Mysql.Password, c.Mysql.DBName).
 		SetCharset("utf8mb4").

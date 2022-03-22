@@ -1,0 +1,106 @@
+syntax = "v1"
+
+info(
+	title: "txpay 渠道"
+	desc: "type desc here"
+	author: "type author here"
+	email: "type email here"
+	version: "type version here"
+)
+
+type TxPayOrderRequest {
+	OrderNo           string `json:"orderNo"`
+	PayType           string `json:"payType"`
+	TransactionAmount string `json:"transactionAmount"`
+	BankCode          string `json:"bankCode"`
+	PageUrl           string `json:"pageUrl"`
+	OrderName         string `json:"orderName"`
+	MerchantId        string `json:"merchantId"`
+	Currency          string `json:"currency"`
+	SourceIp          string `json:"sourceIp"`
+	UserId            string `json:"userId"`
+	JumpType          string `json:"jumpType"`
+}
+
+type TxPayOrderQueryRequest {
+	OrderNo        string `json:"orderNo"`
+	ChannelOrderNo string `json:"channelOrderNo"`
+}
+
+type Empty {
+}
+
+type OrderResponse {
+	Code    string      `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data,omitempty"`
+}
+
+type TxPayQueryInternalBalanceResponse {
+	ChannelNametring   string `json:"channelNametring"`
+	ChannelCodingtring string `json:"channelCodingtring"`
+	WithdrawBalance    string `json:"withdrawBalance"`
+	ProxyPayBalance    string `json:"proxyPayBalance"`
+	UpdateTimetring    string `json:"updateTimetring"`
+	ErrorCodetring     string `json:"errorCodetring, omitempty"`
+	ErrorMsgtring      string `json:"errorMsgtring, omitempty"`
+}
+
+type TxProxyPayOrderRequest {
+	OrderNo              string `json:"orderNo"`
+	TransactionType      string `json:"transactionType"`
+	TransactionAmount    string `json:"transactionAmount"`
+	ReceiptAccountNumber string `json:"receiptAccountNumber"`
+	ReceiptAccountName   string `json:"receiptAccountName"`
+	ReceiptCardProvince  string `json:"receiptCardProvince"`
+	ReceiptCardCity      string `json:"receiptCardCity"`
+	ReceiptCardArea      string `json:"receiptCardArea"`
+	ReceiptCardBranch    string `json:"receiptCardBranch"`
+	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
+	ReceiptCardBankName  string `json:"receiptCardBankName"`
+}
+
+type TxProxyPayOrderQueryRequest {
+	OrderNo        string `json:"orderNo"`
+	ChannelOrderNo string `json:"channelOrderNo"`
+}
+
+type TxProxyPayQueryInternalBalanceResponse {
+	ChannelNametring   string `json:"channelNametring"`
+	ChannelCodingtring string `json:"channelCodingtring"`
+	WithdrawBalance    string `json:"withdrawBalance"`
+	ProxyPayBalance    string `json:"proxyPayBalance"`
+	UpdateTimetring    string `json:"updateTimetring"`
+	ErrorCodetring     string `json:"errorCodetring"`
+	ErrorMsgtring      string `json:"errorMsgtring"`
+}
+
+type ProxyPayCallBackRequest {
+}
+
+@server(
+	prefix: api/
+)
+
+service txpay {
+	@handler ProxyPayCallBackHandler
+	post /proxy-pay-call-back (ProxyPayCallBackRequest)
+	
+	@handler TxPayOrderHandler
+	post /pay (TxPayOrderRequest) returns (OrderResponse)
+	
+	@handler TxPayOrderQueryHandler
+	post /pay-query (TxPayOrderQueryRequest) returns (OrderResponse)
+	
+	@handler TxPayQueryBalanceHandler
+	post /pay-query-balance-internal returns (TxPayQueryInternalBalanceResponse)
+	
+	@handler TxProxyPayOrderHandler
+	post /proxy-pay (TxProxyPayOrderRequest) returns (OrderResponse)
+	
+	@handler TxProxyPayOrderQueryHandler
+	post /proxy-pay-query (TxProxyPayOrderQueryRequest) returns (OrderResponse)
+	
+	@handler TxProxyPayQueryBalanceHandler
+	post /proxy-pay-query-balance-internal returns (TxProxyPayQueryInternalBalanceResponse)
+}
