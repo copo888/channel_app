@@ -30,13 +30,13 @@ type OrderResponse struct {
 }
 
 type TxPayQueryInternalBalanceResponse struct {
-	ChannelNametring   string `json:"channelNametring"`
-	ChannelCodingtring string `json:"channelCodingtring"`
-	WithdrawBalance    string `json:"withdrawBalance"`
-	ProxyPayBalance    string `json:"proxyPayBalance"`
-	UpdateTimetring    string `json:"updateTimetring"`
-	ErrorCodetring     string `json:"errorCodetring, omitempty"`
-	ErrorMsgtring      string `json:"errorMsgtring, omitempty"`
+	ChannelName     string `json:"channelName"`
+	ChannelCoding   string `json:"channelCoding"`
+	WithdrawBalance string `json:"withdrawBalance"`
+	ProxyPayBalance string `json:"proxyPayBalance"`
+	UpdateTime      string `json:"updateTime"`
+	ErrorCode       string `json:"errorCode, omitempty"`
+	ErrorMsg        string `json:"errorMsg, omitempty"`
 }
 
 type TxProxyPayOrderRequest struct {
@@ -59,13 +59,13 @@ type TxProxyPayOrderQueryRequest struct {
 }
 
 type TxProxyPayQueryInternalBalanceResponse struct {
-	ChannelNametring   string `json:"channelNametring"`
-	ChannelCodingtring string `json:"channelCodingtring"`
-	WithdrawBalance    string `json:"withdrawBalance"`
-	ProxyPayBalance    string `json:"proxyPayBalance"`
-	UpdateTimetring    string `json:"updateTimetring"`
-	ErrorCodetring     string `json:"errorCodetring"`
-	ErrorMsgtring      string `json:"errorMsgtring"`
+	ChannelName     string `json:"channelName"`
+	ChannelCoding   string `json:"channelCoding"`
+	WithdrawBalance string `json:"withdrawBalance"`
+	ProxyPayBalance string `json:"proxyPayBalance"`
+	UpdateTime      string `json:"updateTime"`
+	ErrorCode       string `json:"errorCode"`
+	ErrorMsg        string `json:"errorMsg"`
 }
 
 type ProxyPayCallBackRequest struct {
