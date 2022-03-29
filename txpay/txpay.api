@@ -78,14 +78,15 @@ type TxProxyPayQueryInternalBalanceResponse {
 type ProxyPayCallBackRequest {
 }
 
+type PayCallBackRequest {
+}
+
 @server(
 	prefix: api/
 )
 
 service txpay {
-	@handler ProxyPayCallBackHandler
-	post /proxy-pay-call-back (ProxyPayCallBackRequest)
-	
+	//	支付
 	@handler TxPayOrderHandler
 	post /pay (TxPayOrderRequest) returns (OrderResponse)
 	
@@ -95,6 +96,10 @@ service txpay {
 	@handler TxPayQueryBalanceHandler
 	post /pay-query-balance-internal returns (TxPayQueryInternalBalanceResponse)
 	
+	@handler TxPayPayCallBackHandler
+	post /pay-call-back (PayCallBackRequest)
+	
+	//	代付
 	@handler TxProxyPayOrderHandler
 	post /proxy-pay (TxProxyPayOrderRequest) returns (OrderResponse)
 	
@@ -103,4 +108,7 @@ service txpay {
 	
 	@handler TxProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (TxProxyPayQueryInternalBalanceResponse)
+	
+	@handler ProxyPayCallBackHandler
+	post /proxy-pay-call-back (ProxyPayCallBackRequest)
 }

@@ -14,11 +14,6 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 		[]rest.Route{
 			{
 				Method:  http.MethodPost,
-				Path:    "/proxy-pay-call-back",
-				Handler: ProxyPayCallBackHandler(serverCtx),
-			},
-			{
-				Method:  http.MethodPost,
 				Path:    "/pay",
 				Handler: TxPayOrderHandler(serverCtx),
 			},
@@ -34,6 +29,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/pay-call-back",
+				Handler: TxPayPayCallBackHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/proxy-pay",
 				Handler: TxProxyPayOrderHandler(serverCtx),
 			},
@@ -46,6 +46,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Method:  http.MethodPost,
 				Path:    "/proxy-pay-query-balance-internal",
 				Handler: TxProxyPayQueryBalanceHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
+				Path:    "/proxy-pay-call-back",
+				Handler: ProxyPayCallBackHandler(serverCtx),
 			},
 		},
 		rest.WithPrefix("/api"),
