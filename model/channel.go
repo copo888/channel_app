@@ -25,6 +25,13 @@ func (c *Channel) GetChannel(channelCode string) (ch ChannelData, err error) {
 	return
 }
 
+func (c *Channel) GetChannelByProjectName(projectName string) (ch ChannelData, err error) {
+	err = c.MyDB.Table(c.Table).
+		Where("project_name = ?", projectName).
+		Take(&ch).Error
+	return
+}
+
 type ChannelData struct {
 	ID                      int64         `json:"id, optional"`
 	Code                    string        `json:"code, optional"`

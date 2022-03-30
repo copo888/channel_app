@@ -1,0 +1,134 @@
+syntax = "v1"
+
+info(
+	title: "taotaopay 渠道"
+	desc: "type desc here"
+	author: "type author here"
+	email: "type email here"
+	version: "type version here"
+)
+
+type PayOrderRequest {
+	OrderNo           string `json:"orderNo"`
+	PayType           string `json:"payType"`
+	TransactionAmount string `json:"transactionAmount"`
+	BankCode          string `json:"bankCode"`
+	PageUrl           string `json:"pageUrl"`
+	OrderName         string `json:"orderName"`
+	MerchantId        string `json:"merchantId"`
+	Currency          string `json:"currency"`
+	SourceIp          string `json:"sourceIp"`
+	UserId            string `json:"userId"`
+	JumpType          string `json:"jumpType"`
+}
+
+type PayOrderResponse {
+	PayPageInfo    string `json:"payPageInfo, optional"`
+	PayPageType    string `json:"payPageType, optional"`
+	ChannelOrderNo string `json:"channelOrderNo, optional"`
+	OrderAmount    string `json:"orderAmount, optional"`
+	RealAmount     string `json:"realAmount, optional"`
+	Status         string `json:"status, optional"`
+	IsCheckOutMer  bool   `json:"isCheckOutMer, optional"`
+}
+
+type PayOrderQueryRequest {
+	OrderNo        string `json:"orderNo"`
+	ChannelOrderNo string `json:"channelOrderNo"`
+}
+
+type PayOrderQueryResponse {
+	OrderStatus      string  `json:"orderStatus"`
+	OrderAmount      float64 `json:"orderAmount"`
+	ChannelOrderTime string  `json:"channelOrderTime"`
+	ChannelCharge    float64 `json:"channelCharge"`
+	CallBackStatus   string  `json:"callBackStatus"`
+	OrderUpdateTime  string  `json:"orderUpdateTime"`
+	ChannelOrderNo   string  `json:"channelOrderNo"`
+}
+
+type Empty {
+}
+
+type OrderResponse {
+	Code    string      `json:"code"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data,omitempty"`
+}
+
+type PayQueryInternalBalanceResponse {
+	ChannelNametring   string `json:"channelNametring"`
+	ChannelCodingtring string `json:"channelCodingtring"`
+	WithdrawBalance    string `json:"withdrawBalance"`
+	ProxyPayBalance    string `json:"proxyPayBalance"`
+	UpdateTimetring    string `json:"updateTimetring"`
+	ErrorCodetring     string `json:"errorCodetring, omitempty"`
+	ErrorMsgtring      string `json:"errorMsgtring, omitempty"`
+}
+
+type ProxyPayOrderRequest {
+	OrderNo              string `json:"orderNo"`
+	TransactionType      string `json:"transactionType"`
+	TransactionAmount    string `json:"transactionAmount"`
+	ReceiptAccountNumber string `json:"receiptAccountNumber"`
+	ReceiptAccountName   string `json:"receiptAccountName"`
+	ReceiptCardProvince  string `json:"receiptCardProvince"`
+	ReceiptCardCity      string `json:"receiptCardCity"`
+	ReceiptCardArea      string `json:"receiptCardArea"`
+	ReceiptCardBranch    string `json:"receiptCardBranch"`
+	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
+	ReceiptCardBankName  string `json:"receiptCardBankName"`
+}
+
+type ProxyPayOrderQueryRequest {
+	OrderNo        string `json:"orderNo"`
+	ChannelOrderNo string `json:"channelOrderNo"`
+}
+
+type ProxyPayQueryInternalBalanceResponse {
+	ChannelNametring   string `json:"channelNametring"`
+	ChannelCodingtring string `json:"channelCodingtring"`
+	WithdrawBalance    string `json:"withdrawBalance"`
+	ProxyPayBalance    string `json:"proxyPayBalance"`
+	UpdateTimetring    string `json:"updateTimetring"`
+	ErrorCodetring     string `json:"errorCodetring"`
+	ErrorMsgtring      string `json:"errorMsgtring"`
+}
+
+type ProxyPayCallBackRequest {
+}
+
+type PayCallBackRequest {
+}
+
+@server(
+	prefix: api/
+)
+
+service zhongshoupay {
+	
+	@handler PayOrderHandler
+	post /pay (PayOrderRequest) returns (PayOrderResponse)
+	
+	@handler PayOrderQueryHandler
+	post /pay-query (PayOrderQueryRequest) returns (PayOrderQueryResponse)
+	
+	@handler PayCallBackHandler
+	post /pay-call-back (PayCallBackRequest)
+	
+	@handler PayQueryBalanceHandler
+	post /pay-query-balance-internal returns (PayQueryInternalBalanceResponse)
+	
+	@handler ProxyPayOrderHandler
+	post /proxy-pay (ProxyPayOrderRequest) returns (OrderResponse)
+	
+	@handler ProxyPayOrderQueryHandler
+	post /proxy-pay-query (ProxyPayOrderQueryRequest) returns (OrderResponse)
+	
+	@handler ProxyPayCallBackHandler
+	post /proxy-pay-call-back (ProxyPayCallBackRequest)
+	
+	@handler ProxyPayQueryBalanceHandler
+	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
+	
+}

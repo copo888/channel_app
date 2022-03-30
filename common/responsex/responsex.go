@@ -33,6 +33,7 @@ func Json(w http.ResponseWriter, r *http.Request, code string, resp interface{},
 	body.Message = i18n.Sprintf(code)
 	if err != nil {
 		if v, ok := err.(*errorx.Err); ok && v.GetMessage() != "" {
+			body.Message += ": " + v.GetMessage()
 			span.RecordError(errors.New(fmt.Sprintf("(%s)%s", code, v.GetMessage())))
 		} else {
 			span.RecordError(errors.New(fmt.Sprintf("(%s)%s %s", code, body.Message, err.Error())))
