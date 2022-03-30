@@ -70,3 +70,6 @@ type TxProxyPayQueryInternalBalanceResponse struct {
 
 type ProxyPayCallBackRequest struct {
 }
+
+type PayCallBackRequest struct {
+}

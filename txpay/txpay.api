@@ -78,29 +78,59 @@ type TxProxyPayQueryInternalBalanceResponse {
 type ProxyPayCallBackRequest {
 }
 
+type PayCallBackRequest {
+}
+
 @server(
-	prefix: api/
+	prefix: api
 )
 
 service txpay {
-	@handler ProxyPayCallBackHandler
-	post /proxy-pay-call-back (ProxyPayCallBackRequest)
-	
+	@doc(
+		summary :"支付下單"
+	)
 	@handler TxPayOrderHandler
 	post /pay (TxPayOrderRequest) returns (OrderResponse)
 	
+	@doc(
+		summary :"支付订单查询"
+	)
 	@handler TxPayOrderQueryHandler
 	post /pay-query (TxPayOrderQueryRequest) returns (OrderResponse)
 	
+	@doc(
+		summary :"支付余额查询"
+	)
 	@handler TxPayQueryBalanceHandler
 	post /pay-query-balance-internal returns (TxPayQueryInternalBalanceResponse)
 	
+	@doc(
+		summary :"支付渠道回调"
+	)
+	@handler TxPayPayCallBackHandler
+	post /pay-call-back (PayCallBackRequest)
+	
+	@doc(
+		summary :"代付下單"
+	)
 	@handler TxProxyPayOrderHandler
 	post /proxy-pay (TxProxyPayOrderRequest) returns (OrderResponse)
 	
+	@doc(
+		summary :"代付订单查询"
+	)
 	@handler TxProxyPayOrderQueryHandler
 	post /proxy-pay-query (TxProxyPayOrderQueryRequest) returns (OrderResponse)
 	
+	@doc(
+		summary :"代付余额查询"
+	)
 	@handler TxProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (TxProxyPayQueryInternalBalanceResponse)
+	
+	@doc(
+		summary :"代付渠道回调"
+	)
+	@handler ProxyPayCallBackHandler
+	post /proxy-pay-call-back (ProxyPayCallBackRequest)
 }
