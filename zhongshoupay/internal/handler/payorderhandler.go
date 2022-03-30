@@ -44,7 +44,7 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		// 驗證密鑰
 		authenticationPaykey := r.Header.Get("authenticationPaykey")
-		if utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.PayKey, ctx.Config.ApiKey.PublicKey) {
+		if isOK, err := utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.PayKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
 			err := errorx.New(responsex.INTERNAL_SIGN_ERROR)
 			responsex.Json(w, r, err.Error(), nil, err)
 			return

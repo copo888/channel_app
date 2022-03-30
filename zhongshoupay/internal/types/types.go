@@ -5,14 +5,14 @@ type PayOrderRequest struct {
 	OrderNo           string `json:"orderNo"`
 	PayType           string `json:"payType"`
 	TransactionAmount string `json:"transactionAmount"`
-	BankCode          string `json:"bankCode"`
-	PageUrl           string `json:"pageUrl"`
-	OrderName         string `json:"orderName"`
-	MerchantId        string `json:"merchantId"`
-	Currency          string `json:"currency"`
-	SourceIp          string `json:"sourceIp"`
-	UserId            string `json:"userId"`
-	JumpType          string `json:"jumpType"`
+	BankCode          string `json:"bankCode, optional"`
+	PageUrl           string `json:"pageUrl, optional"`
+	OrderName         string `json:"orderName, optional"`
+	MerchantId        string `json:"merchantId, optional"`
+	Currency          string `json:"currency, optional"`
+	SourceIp          string `json:"sourceIp, optional"`
+	UserId            string `json:"userId, optional"`
+	JumpType          string `json:"jumpType, optional"`
 }
 
 type PayOrderResponse struct {
@@ -27,7 +27,7 @@ type PayOrderResponse struct {
 
 type PayOrderQueryRequest struct {
 	OrderNo        string `json:"orderNo"`
-	ChannelOrderNo string `json:"channelOrderNo"`
+	ChannelOrderNo string `json:"channelOrderNo, optional"`
 }
 
 type PayOrderQueryResponse struct {

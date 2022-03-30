@@ -4,58 +4,80 @@ import (
 	"bytes"
 	"crypto/cipher"
 	"crypto/des"
+	"encoding/base64"
 	"strings"
 	"time"
 )
 
 func MicroServiceEncrypt(key, publicKey string) (sing string, err error) {
-	var block cipher.Block
 	str := key + time.Now().Format("200601021504")
 	src := []byte(str)
-	if block, err = des.NewCipher([]byte(publicKey)); err != nil {
-		return "", err
+	if src, err = DesCBCEncrypt(src, []byte(publicKey)); err != nil {
+		return
 	}
-	src = padding(src, block.BlockSize())
-	blockmode := cipher.NewCBCEncrypter(block, []byte(publicKey))
-	blockmode.CryptBlocks(src, src)
-	sing = string(src)
-	return
+	return base64.StdEncoding.EncodeToString(src), err
 }
 
-func MicroServiceVerification(sing, key, publicKey string) bool {
-	decryptSing := string(decryptDES([]byte(sing), publicKey))
-	isOk := false
+func MicroServiceVerification(sing, key, publicKey string) (isOk bool, err error) {
+	var singByte []byte
+	if singByte, err = base64.StdEncoding.DecodeString(sing); err != nil {
+		return
+	}
+	if singByte, err = DesCBCDecrypt(singByte, []byte(publicKey)); err != nil {
+		return
+	}
 
-	if strings.Index(decryptSing, key) > -1 {
-		trimStr := strings.Replace(decryptSing, key, "", 1)
+	decryptStr := string(singByte)
+
+	if strings.Index(decryptStr, key) > -1 {
+		trimStr := strings.Replace(decryptStr, key, "", 1)
 		if timeX, err := time.Parse("200601021504", trimStr); err == nil {
 			if time.Now().Sub(timeX).Minutes() <= 5 {
 				isOk = true
 			}
 		}
 	}
-	return isOk
+	return
 }
 
-func decryptDES(sing []byte, publicKey string) []byte {
-	block, _ := des.NewCipher([]byte(publicKey))
-	blockMode := cipher.NewCBCDecrypter(block, []byte(publicKey))
-	blockMode.CryptBlocks(sing, sing)
-	sing = unpadding(sing)
-	return sing
+func DesCBCEncrypt(origData, key []byte) ([]byte, error) {
+	block, err := des.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	origData = PKCS5Padding(origData, block.BlockSize())
+	// origData = ZeroPadding(origData, block.BlockSize())
+	blockMode := cipher.NewCBCEncrypter(block, key)
+	crypted := make([]byte, len(origData))
+	// 根據CryptBlocks方法的說明，如下方式初始化crypted也可以
+	// crypted := origData
+	blockMode.CryptBlocks(crypted, origData)
+	return crypted, nil
 }
 
-func padding(src []byte, blocksize int) []byte {
-	n := len(src)
-	padnum := blocksize - n%blocksize
-	pad := bytes.Repeat([]byte{byte(padnum)}, padnum)
-	dst := append(src, pad...)
-	return dst
+func PKCS5Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(ciphertext, padtext...)
 }
 
-func unpadding(src []byte) []byte {
-	n := len(src)
-	unpadnum := int(src[n-1])
-	dst := src[:n-unpadnum]
-	return dst
+func DesCBCDecrypt(crypted, key []byte) ([]byte, error) {
+	block, err := des.NewCipher(key)
+	if err != nil {
+		return nil, err
+	}
+	blockMode := cipher.NewCBCDecrypter(block, key)
+	//origData := make([]byte, len(crypted))
+	origData := crypted
+	blockMode.CryptBlocks(origData, crypted)
+	//origData = PKCS5UnPadding(origData)
+
+	origData = PKCS5UnPadding(origData)
+	return origData, nil
+}
+
+func PKCS5UnPadding(origData []byte) []byte {
+	length := len(origData)
+	unpadding := int(origData[length-1])
+	return origData[:(length - unpadding)]
 }
