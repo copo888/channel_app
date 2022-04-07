@@ -1,7 +1,7 @@
 Name: ${APP_NAME}
 Host: ${APP_HOST}
 Port: ${APP_PORT}
-ChannelCode: ${APP_CODE}
+ProjectName: ${APP_NAME}
 Mode: ${APP_MODE}
 Verbose: ${HTTP_VERBOSE}
 

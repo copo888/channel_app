@@ -35,7 +35,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 取得取道資訊
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
-	channel, err := channelModel.GetChannel(l.svcCtx.Config.ChannelCode)
+	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
@@ -52,7 +52,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Set("outTradeNo", orderNo)
 
 	// 加簽
-	sign := payutils.SortAndSign2(data, merchantKey)
+	sign := payutils.SortAndSignFromUrlValues(data, merchantKey)
 	data.Set("sign", sign)
 
 	// 請求渠道

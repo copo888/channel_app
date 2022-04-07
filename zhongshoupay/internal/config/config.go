@@ -26,5 +26,5 @@ type Config struct {
 		PayKey    string
 		ProxyKey  string
 	}
-	ChannelCode string
+	ProjectName string
 }

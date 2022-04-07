@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
+	"net/url"
 	"reflect"
 	"sort"
 	"strings"
@@ -54,12 +55,11 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 		}
 	} else {
 		sort.Strings(list)
-		list = append(list, fmt.Sprintf("%s=%s", "Key", key))
 	}
-	return strings.Join(list, sep)
+	return strings.Join(list, sep) + "&" + key
 }
 
-// 验签
+// VerifySign 验签
 func VerifySign(reqSign string, data interface{}, screctKey string) bool {
 	m := CovertToMap(data)
 	source := JoinStringsInASCII(m, "&", false, false, screctKey)
@@ -76,8 +76,14 @@ func VerifySign(reqSign string, data interface{}, screctKey string) bool {
 	return false
 }
 
-// SortAndSign2 物件 排序后加签
-func SortAndSign2(data interface{}, screctKey string) string {
+// SortAndSignFromUrlValues map 排序后加签
+func SortAndSignFromUrlValues(values url.Values, screctKey string) string {
+	m := CovertUrlValuesToMap(values)
+	return SortAndSignFromMap(m, screctKey)
+}
+
+// SortAndSignFromObj 物件 排序后加签
+func SortAndSignFromObj(data interface{}, screctKey string) string {
 	m := CovertToMap(data)
 	newSource := JoinStringsInASCII(m, "&", false, false, screctKey)
 	newSign := GetSign(newSource)
@@ -86,13 +92,21 @@ func SortAndSign2(data interface{}, screctKey string) string {
 	return newSign
 }
 
-// SortAndSign map 排序后加签
-func SortAndSign(newData map[string]string, screctKey string) string {
+// SortAndSignFromMap MAP 排序后加签
+func SortAndSignFromMap(newData map[string]string, screctKey string) string {
 	newSource := JoinStringsInASCII(newData, "&", false, false, screctKey)
 	newSign := GetSign(newSource)
 	logx.Info("加签参数: ", newSource)
 	logx.Info("签名字串: ", newSign)
 	return newSign
+}
+
+func CovertUrlValuesToMap(values url.Values) map[string]string {
+	m := make(map[string]string)
+	for k := range values {
+		m[k] = values.Get(k)
+	}
+	return m
 }
 
 // CovertToMap 物件轉map 檢查請求參數是否有空值

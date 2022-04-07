@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/model"
@@ -34,7 +35,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取得取道資訊
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
-	channel, err := channelModel.GetChannel(l.svcCtx.Config.ChannelCode)
+	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
@@ -50,7 +51,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	merchantKey := channel.MerKey
 	orderNo := req.OrderNo
 	amount := req.TransactionAmount
-	notifyUrl := ""
+	notifyUrl := channel.ApiUrl + "/api/pay-call-back"
 	payType := payTypeMap[req.PayType]
 	userId := req.UserId
 	//ip := utils.GetRandomIp()
@@ -72,21 +73,22 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 加簽
-	sign := payutils.SortAndSign2(data, merchantKey)
+	sign := payutils.SortAndSignFromUrlValues(data, merchantKey)
 	data.Set("sign", sign)
 
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
 	res, err := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
+	logx.Info(fmt.Sprintf("channel payOrder reply: url: %s, resp: %s ", channel.PayUrl, res))
 	if err != nil {
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
+		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, err.Error())
 	}
 
 	// 渠道回覆處理
 	channelResp := struct {
 		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		url     string `json:"url"`
+		Msg     string `json:"msg, optional"`
+		Url     string `json:"url, optional"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
@@ -97,7 +99,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	resp = &types.PayOrderResponse{
 		PayPageType: "url",
-		PayPageInfo: channelResp.url,
+		PayPageInfo: channelResp.Url,
 		Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
 	}
 
