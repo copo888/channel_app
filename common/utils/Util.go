@@ -2,10 +2,12 @@ package utils
 
 import (
 	"math/rand"
+	"net"
 	"strconv"
 	"strings"
 	"time"
 )
+
 type RandomType int8
 type UppLowType int8
 
@@ -33,7 +35,6 @@ func RangeInt(min int, max int, n int) []int {
 	}
 	return arr
 }
-
 
 //生成随机字符串
 func GetRandomString(length int, randomType RandomType, uppLowType UppLowType) string {
@@ -65,11 +66,35 @@ func GetRandomString(length int, randomType RandomType, uppLowType UppLowType) s
 	return string(result)
 }
 
-func GetRandomIp() string{
+func GetRandomIp() string {
 	IpArr := RangeInt(0, 255, 4)
 	var ips []string
-	for _,ip:= range IpArr{
-		ips = append(ips,strconv.Itoa(ip))
+	for _, ip := range IpArr {
+		ips = append(ips, strconv.Itoa(ip))
 	}
-	return strings.Join(ips,".")
+	return strings.Join(ips, ".")
+}
+
+// IPChecker IP白名單確認
+func IPChecker(myip string, whitelist string) bool {
+
+	if myip == "localhost" || myip == "127.0.0.1" || myip == "0:0:0:0:0:0:0:1" {
+		return true
+	}
+
+	if whitelist == "" {
+		return false
+	}
+	for _, ip := range strings.Split(whitelist, ",") {
+		if !strings.Contains(ip, "/") {
+			ip = ip + "/32"
+		}
+		_, ipnetA, _ := net.ParseCIDR(ip)
+		ipB := net.ParseIP(myip)
+
+		if ipnetA.Contains(ipB) {
+			return true
+		}
+	}
+	return false
 }

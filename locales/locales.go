@@ -54,10 +54,10 @@ func initEn(tag language.Tag) {
 	message.SetString(tag, "208", "银行代码错误")
 	message.SetString(tag, "209", "支付类型代码错误")
 	message.SetString(tag, "210", "渠道返回错误")
+	message.SetString(tag, "211", "Http状态码错误")
 	message.SetString(tag, "301", "系统验签错误")
 	message.SetString(tag, "400", "系统错误")
 	message.SetString(tag, "401", "网路异常")
 	message.SetString(tag, "501", "商户订单号不存在")
 	message.SetString(tag, "EX001", "Fail")
-
 }

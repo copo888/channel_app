@@ -49,6 +49,7 @@ var (
 	BANK_CODE_INVALID      = "208" // "银行代码错误"
 	PAY_TYPE_INVALID       = "209" // "支付类型代码错误"
 	CHANNEL_REPLY_ERROR    = "210" // "渠道返回错误"
+	INVALID_STATUS_CODE    = "211" // "Http状态码错误"
 	INTERNAL_SIGN_ERROR    = "301" // "系统验签错误"
 	SYSTEM_ERROR           = "400" // "系统错误"
 	NETWORK_ERROR          = "401" // "网路异常"

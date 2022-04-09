@@ -92,4 +92,13 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
+	MyIp       string `form:"myIp, optional"`
+	RealAmount string `form:"realAmount, omitempty"`
+	Charset    string `form:"charset, omitempty"`
+	Amount     string `form:"amount, omitempty"`
+	StatusStr  string `form:"statusStr, omitempty"`
+	OutTradeNo string `form:"outTradeNo, omitempty"`
+	Sign       string `form:"sign, omitempty"`
+	SignType   string `form:"signType, omitempty"`
+	Status     string `form:"status, omitempty"`
 }

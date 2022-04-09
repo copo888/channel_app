@@ -7,6 +7,7 @@ import (
 	"github.com/copo888/channel_app/zhongshoupay/internal/logic"
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/thinkeridea/go-extend/exnet"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -21,7 +22,7 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.PayCallBackRequest
 
-		if err := httpx.ParseJsonBody(r, &req); err != nil {
+		if err := httpx.ParseForm(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
@@ -38,12 +39,15 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			})
 		}
 
+		myIP := exnet.ClientIP(r)
+		req.MyIp = myIP
+
 		l := logic.NewPayCallBackLogic(r.Context(), ctx)
-		err := l.PayCallBack(&req)
+		resp, err := l.PayCallBack(req)
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {
-			responsex.Json(w, r, responsex.SUCCESS, nil, err)
+			w.Write([]byte(resp))
 		}
 	}
 }
