@@ -9,6 +9,7 @@ import (
 	"github.com/copo888/channel_app/zhongshoupay/internal/logic"
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -22,6 +23,7 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		defer span.End()
 
 		var req types.PayOrderRequest
+		logx.Infof("%#v",req)
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)

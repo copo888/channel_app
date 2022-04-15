@@ -40,17 +40,17 @@ type TxPayQueryInternalBalanceResponse struct {
 }
 
 type TxProxyPayOrderRequest struct {
-	OrderNo              string `json:"orderNo"`
-	TransactionType      string `json:"transactionType"`
-	TransactionAmount    string `json:"transactionAmount"`
-	ReceiptAccountNumber string `json:"receiptAccountNumber"`
-	ReceiptAccountName   string `json:"receiptAccountName"`
-	ReceiptCardProvince  string `json:"receiptCardProvince"`
-	ReceiptCardCity      string `json:"receiptCardCity"`
-	ReceiptCardArea      string `json:"receiptCardArea"`
-	ReceiptCardBranch    string `json:"receiptCardBranch"`
-	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
-	ReceiptCardBankName  string `json:"receiptCardBankName"`
+	OrderNo              string `json:"orderNo" valiate: "required"`
+	TransactionType      string `json:"transactionType" valiate: "required"`
+	TransactionAmount    string `json:"transactionAmount" valiate: "required"`
+	ReceiptAccountNumber string `json:"receiptAccountNumber, optional"`
+	ReceiptAccountName   string `json:"receiptAccountName, optional"`
+	ReceiptCardProvince  string `json:"receiptCardProvince, optional"`
+	ReceiptCardCity      string `json:"receiptCardCity, optional"`
+	ReceiptCardArea      string `json:"receiptCardArea, optional"`
+	ReceiptCardBranch    string `json:"receiptCardBranch, optional"`
+	ReceiptCardBankCode  string `json:"receiptCardBankCode, optional"`
+	ReceiptCardBankName  string `json:"receiptCardBankName, optional"`
 }
 
 type TxProxyPayOrderQueryRequest struct {

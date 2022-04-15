@@ -21,5 +21,10 @@ type Config struct {
 		RedisMasterName   string
 		RedisDB           int
 	}
+	ApiKey struct {
+		PublicKey string
+		PayKey    string
+		ProxyKey  string
+	}
 	ChannelCode string
 }
