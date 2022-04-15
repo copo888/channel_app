@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/joho/godotenv"
+	"github.com/zeromicro/go-zero/core/logx"
 	"log"
 
 	"github.com/copo888/channel_app/txpay/internal/config"
@@ -15,14 +16,15 @@ import (
 )
 
 var (
-	configFile = flag.String("f", "etc/txpay.yaml", "the config file")
-	envFile    = flag.String("env", "etc/.env", "the env file")
+	configFile = flag.String("f", "txpay/etc/txpay.yaml", "the config file")
+	envFile    = flag.String("env", "txpay/etc/.env", "the env file")
 )
 
 func main() {
 	flag.Parse()
 
 	if err := godotenv.Load(*envFile); err != nil {
+		logx.Error(err.Error())
 		log.Fatal("Error loading .env file")
 	}
 
