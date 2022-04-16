@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
@@ -40,19 +39,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
 
-	// 支付類型對應map
-	var payTypeMap map[string]string
-	if err = json.Unmarshal([]byte(channel.PayTypeMap), &payTypeMap); err != nil {
-		return nil, errorx.New(responsex.PAY_TYPE_INVALID, err.Error())
-	}
-
 	// 取值
 	merchantId := channel.MerId
 	merchantKey := channel.MerKey
 	orderNo := req.OrderNo
 	amount := req.TransactionAmount
 	notifyUrl := channel.ApiUrl + "/api/pay-call-back"
-	payType := payTypeMap[req.PayType]
+	payType := req.PayType
 	userId := req.UserId
 	//ip := utils.GetRandomIp()
 
