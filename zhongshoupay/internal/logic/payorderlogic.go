@@ -77,6 +77,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, err.Error())
 	}
 
+	// TODO: 測試code 要移除
+	return &types.PayOrderResponse{
+		PayPageType: "url",
+		PayPageInfo: "TEST",
+		Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
+	}, nil
 	// 渠道回覆處理
 	channelResp := struct {
 		Success bool   `json:"success"`

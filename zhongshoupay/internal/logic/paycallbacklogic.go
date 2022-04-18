@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
+	"github.com/copo888/channel_app/common/apimodel/vo"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
@@ -79,6 +80,14 @@ func (l *PayCallBackLogic) PayCallBack(req types.PayCallBackRequest) (string, er
 		return "err", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	} else if res.Status() != 200 {
 		return "err", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
+	}
+
+	// 處理res
+	payCallBackVO := vo.BoadminRespVO{}
+	if err = res.DecodeJSON(&payCallBackVO); err != nil {
+		return "err", err
+	} else if payCallBackVO.Code != "0" {
+		return "err", err
 	}
 
 	return "success", nil
