@@ -46,7 +46,7 @@ type Empty struct {
 type OrderResponse struct {
 	Code    string      `json:"code"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
+	Data    interface{} `json:"data,optional"`
 }
 
 type PayQueryInternalBalanceResponse struct {
@@ -55,8 +55,8 @@ type PayQueryInternalBalanceResponse struct {
 	WithdrawBalance    string `json:"withdrawBalance"`
 	ProxyPayBalance    string `json:"proxyPayBalance"`
 	UpdateTimetring    string `json:"updateTimetring"`
-	ErrorCodetring     string `json:"errorCodetring, omitempty"`
-	ErrorMsgtring      string `json:"errorMsgtring, omitempty"`
+	ErrorCodetring     string `json:"errorCodetring, optional"`
+	ErrorMsgtring      string `json:"errorMsgtring, optional"`
 }
 
 type ProxyPayOrderRequest struct {
@@ -73,9 +73,23 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 }
 
-type ProxyPayOrderQueryRequest struct {
-	OrderNo        string `json:"orderNo"`
+type ProxyPayOrderResponse struct {
 	ChannelOrderNo string `json:"channelOrderNo"`
+	OrderStatus    string `json:"orderStatus"`
+}
+
+type ProxyPayOrderQueryRequest struct {
+	OrderNo        string `json:"orderNo"` //渠道
+	ChannelOrderNo string `json:"channelOrderNo"`
+}
+
+type ProxyPayOrderQueryResponse struct {
+	Status           int     `json:"status"` //成功狀態 0
+	ChannelOrderNo   string  `json:"channelOrderNo"`
+	OrderStatus      string  `json:"orderStatus"`
+	CallBackStatus   string  `json:"callBackStatus"`
+	ChannelReplyDate string  `json:"channelReplyDate"`
+	ChannelCharge    float64 `json:"channelCharge"`
 }
 
 type ProxyPayQueryInternalBalanceResponse struct {
@@ -89,16 +103,24 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
+	ProxyPayOrderNo     string  `json:"proxyPayOrderNo"`
+	ChannelOrderNo      string  `json:"channelOrderNo"`
+	ChannelResultAt     string  `json:"channelResultAt"`
+	ChannelResultStatus string  `json:"channelResultStatus"`
+	ChannelResultNote   string  `json:"channelResultNote"`
+	Amount              float64 `json:"amount"`
+	ChannelCharge       float64 `json:"channelCharge"`
+	UpdatedBy           string  `json:"updatedBy"`
 }
 
 type PayCallBackRequest struct {
 	MyIp       string `form:"myIp, optional"`
-	RealAmount string `form:"realAmount, omitempty"`
-	Charset    string `form:"charset, omitempty"`
-	Amount     string `form:"amount, omitempty"`
-	StatusStr  string `form:"statusStr, omitempty"`
-	OutTradeNo string `form:"outTradeNo, omitempty"`
-	Sign       string `form:"sign, omitempty"`
-	SignType   string `form:"signType, omitempty"`
-	Status     string `form:"status, omitempty"`
+	RealAmount string `form:"realAmount, optional"`
+	Charset    string `form:"charset, optional"`
+	Amount     string `form:"amount, optional"`
+	StatusStr  string `form:"statusStr, optional"`
+	OutTradeNo string `form:"outTradeNo, optional"`
+	Sign       string `form:"sign, optional"`
+	SignType   string `form:"signType, optional"`
+	Status     string `form:"status, optional"`
 }

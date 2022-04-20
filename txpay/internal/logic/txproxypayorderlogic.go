@@ -3,9 +3,9 @@ package logic
 import (
 	"context"
 	"github.com/copo888/channel_app/common/errorx"
+	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/model"
 	"github.com/copo888/channel_app/txpay/internal/txpayutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
@@ -33,7 +33,7 @@ func NewTxProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Tx
 
 func (l *TxProxyPayOrderLogic) TxProxyPayOrder(req *types.TxProxyPayOrderRequest) (resp *types.OrderResponse, err error) {
 
-	channelModel := model.NewChannel(l.svcCtx.MyDB)
+	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannel(l.svcCtx.Config.ChannelCode)
 	if err != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err.Error())
