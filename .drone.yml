@@ -20,14 +20,13 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git checkout zhongshoupay
-        - git pull
+        - git pull origin zhongshoupay
         - go mod tidy
-        - cd /root/channel_app/zhongshoupay
-        - docker-compose down
+        - docker-compose -f zhongshoupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=zhongshoupay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - docker build -t zhongshoupay -f Dockerfile .
-        - docker-compose up -d
+        - docker build -t zhongshoupay -f zhongshoupay/Dockerfile .
+        - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
       branch:
         - zhongshoupay
