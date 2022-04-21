@@ -7,6 +7,7 @@ import (
 	"github.com/copo888/channel_app/zhongshoupay/internal/logic"
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/thinkeridea/go-extend/exnet"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -37,6 +38,9 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 				Value: attribute.StringValue(string(requestBytes)),
 			})
 		}
+
+		myIP := exnet.ClientIP(r)
+		req.Ip = myIP
 
 		l := logic.NewProxyPayCallBackLogic(r.Context(), ctx)
 		err := l.ProxyPayCallBack(&req)

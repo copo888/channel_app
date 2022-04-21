@@ -84,7 +84,7 @@ type ProxyPayOrderQueryRequest struct {
 }
 
 type ProxyPayOrderQueryResponse struct {
-	Status           int     `json:"status"` //成功狀態 0
+	Status           int     `json:"status"`
 	ChannelOrderNo   string  `json:"channelOrderNo"`
 	OrderStatus      string  `json:"orderStatus"`
 	CallBackStatus   string  `json:"callBackStatus"`
@@ -103,14 +103,14 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	ProxyPayOrderNo     string  `json:"proxyPayOrderNo"`
-	ChannelOrderNo      string  `json:"channelOrderNo"`
-	ChannelResultAt     string  `json:"channelResultAt"`
-	ChannelResultStatus string  `json:"channelResultStatus"`
-	ChannelResultNote   string  `json:"channelResultNote"`
-	Amount              float64 `json:"amount"`
-	ChannelCharge       float64 `json:"channelCharge"`
-	UpdatedBy           string  `json:"updatedBy"`
+	Ip         string `form:"ip ,optional"`
+	Charset    string `form:"charset, optional"`
+	Amount     string `form:"amount, optional"`
+	StatusStr  string `form:"statusStr, optional"`
+	OutTradeNo string `form:"outTradeNo, optional"`
+	Sign       string `form:"sign, optional"`
+	SignType   string `form:"signType, optional"`
+	Status     string `form:"status, optional"`
 }
 
 type PayCallBackRequest struct {
