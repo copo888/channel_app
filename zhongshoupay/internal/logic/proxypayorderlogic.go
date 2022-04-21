@@ -32,19 +32,19 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 	}
 }
 
-func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (resp *types.ProxyPayOrderResponse, err error) {
+func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	logx.Infof("代付订单channelName: %s, ChannelPayOrder: %v", channel.Name, req)
 
 	if err1 != nil {
-		return nil, errorx.New(responsex.INVALID_PARAMETER, err.Error())
+		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 	channelBankMap, err2 := model2.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.ReceiptCardBankCode)
 	if err2 != nil || channelBankMap.MapCode == "" {
 		logx.Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
-		return nil, errorx.New(responsex.BANK_CODE_INVALID, err.Error(), "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName)
+		return nil, errorx.New(responsex.BANK_CODE_INVALID, err2.Error(), "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName)
 	}
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
@@ -85,15 +85,17 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (res
 		TradeId string `json:"tradeId"` //渠道訂單號
 	}{}
 
-	if err = ChannelResp.DecodeJSON(&channelResp); err != nil {
+	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
 	} else if channelResp.Success != true {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
 	//組返回給backOffice 的代付返回物件
-	resp.ChannelOrderNo = channelResp.TradeId
-	resp.OrderStatus = ""
+	resp := &types.ProxyPayOrderResponse{
+		ChannelOrderNo: channelResp.TradeId,
+		OrderStatus:    "",
+	}
 
-	return
+	return resp, nil
 }
