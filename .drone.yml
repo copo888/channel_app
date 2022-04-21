@@ -1,0 +1,39 @@
+nd: pipeline
+name: channel_app
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-zhongshoupay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout zhongshoupay
+        - git pull
+        - go mod tidy
+        - cd /root/channel_app/zhongshoupay
+        - docker-compose down
+        - docker rmi -f $(docker images --filter="reference=zhongshoupay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - docker build -t zhongshoupay -f Dockerfile .
+        - docker-compose up -d
+    when:
+      branch:
+        - zhongshoupay
+      event:
+        - push
+trigger:
+  branch:
+    - zhongshoupay
+
