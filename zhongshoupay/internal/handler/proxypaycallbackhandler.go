@@ -22,7 +22,7 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.ProxyPayCallBackRequest
 
-		if err := httpx.ParseJsonBody(r, &req); err != nil {
+		if err := httpx.ParseForm(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
@@ -43,11 +43,12 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		req.Ip = myIP
 
 		l := logic.NewProxyPayCallBackLogic(r.Context(), ctx)
-		err := l.ProxyPayCallBack(&req)
+		resp, err := l.ProxyPayCallBack(&req)
 		if err != nil {
-			responsex.Json(w, r, err.Error(), nil, err)
+			responsex.Json(w, r, err.Error(), resp, err)
 		} else {
-			responsex.Json(w, r, responsex.SUCCESS, nil, err)
+			w.Write([]byte(resp))
+			//responsex.Json(w, r, responsex.SUCCESS, resp, err)
 		}
 	}
 }

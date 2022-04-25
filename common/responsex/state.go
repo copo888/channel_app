@@ -15,6 +15,7 @@ var (
 	PARAMETER_TYPE_ERROE        = "009" // "JSON格式或参数类型错误
 	WAIT_LOCK_EXCEPTION         = "010" // "在短暂间连续呼叫API，请检查程式
 	ContentType_ERROR           = "011" // "内容类型错误，请使用 application/json
+	DECODE_JSON_ERROR           = "012" // "解析BO返回JSON錯誤"
 
 	// 參數錯誤訊息
 	INVALID_TIMESTAMP                  = "101" //  "无效时间戳"
