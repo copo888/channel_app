@@ -32,6 +32,13 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
+	// TODO: 測試code 要移除
+	return &types.PayOrderResponse{
+		PayPageType: "url",
+		PayPageInfo: "TEST",
+		Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
+	}, nil
+
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -77,12 +84,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, err.Error())
 	}
 
-	// TODO: 測試code 要移除
-	return &types.PayOrderResponse{
-		PayPageType: "url",
-		PayPageInfo: "TEST",
-		Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
-	}, nil
 	// 渠道回覆處理
 	channelResp := struct {
 		Success bool   `json:"success"`

@@ -8,7 +8,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
 	"github.com/gioco-play/gozzle"
@@ -34,32 +33,32 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 	}
 }
 
-func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) error {
+func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (string, error) {
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
-		return errorx.New(responsex.INVALID_PARAMETER, err.Error())
+		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
 	//檢查白名單
 	if isWhite := utils.IPChecker(req.Ip, channel.WhiteList); !isWhite {
 		logx.Errorf("IP: " + req.Ip)
-		return errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
+		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
-		return errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
+	//	return errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return errorx.New(responsex.INVALID_SIGN)
+		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "1"
+	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == "1" {
-		status = "20"
+		status = "1"
 	} else if strings.Index("2,3,5", req.Status) > -1 {
-		status = "30"
+		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
@@ -77,16 +76,24 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	span := trace.SpanFromContext(l.ctx)
 	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.PayKey, l.svcCtx.Config.ApiKey.PublicKey)
 	if errk != nil {
-		return errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
-	url := "http://127.0.0.1:8080/dior/merchant-api/proxy-pay-call-back" // TODO: URL要抽出来
+	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
+	url := "http://127.0.0.1:8081/dior/merchant-api/proxy-call-back" // TODO: URL要抽出来
 	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
+	logx.Info("回调后资讯: ", res)
 	if errx != nil {
-		return errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		logx.Error(errx.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	} else if res.Status() != 200 {
-		return errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
+		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}
+	//else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
+	//   return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
+	//} else if BoProxyRespVO.Code != "000"{
+	//	return "fail",errorx.New(BoProxyRespVO.Message)
+	//}
 
-	return nil
+	return "success", nil
 }
