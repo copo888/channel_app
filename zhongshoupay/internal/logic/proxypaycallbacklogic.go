@@ -80,7 +80,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
-	url := fmt.Sprintf("%s:%s/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port) //"http://172.16.204.115:8083/dior/merchant-api/proxy-call-back"
+	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port) //"http://172.16.204.115:8083/dior/merchant-api/proxy-call-back"
 
 	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)

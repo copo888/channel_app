@@ -29,6 +29,6 @@ type Config struct {
 	ProjectName string
 	Merchant    struct {
 		Host string
-		Port string
+		Port int
 	}
 }
