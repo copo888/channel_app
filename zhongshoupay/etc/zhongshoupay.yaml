@@ -38,3 +38,7 @@ ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd
   ProxyKey: zrdfSeWd
+
+Merchant:
+  Host: ${MERCHANT_SERVICE_HOST}
+  Port: ${MERCHANT_SERVICE_PORT}
