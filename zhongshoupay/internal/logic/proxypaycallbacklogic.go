@@ -80,7 +80,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
-	url := "http://127.0.0.1:8081/dior/merchant-api/proxy-call-back" // TODO: URL要抽出来
+	url := "http://154.222.0.115:8081/dior/merchant-api/proxy-call-back"
 	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
