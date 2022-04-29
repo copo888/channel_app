@@ -64,8 +64,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	} else {
 		// 正常測試
 		return &types.PayOrderResponse{
-			PayPageType: "is_test_url",
-			PayPageInfo: "TEST",
+			PayPageType: "url",
+			PayPageInfo: "https://xuri.me/excelize/images/excelize.svg",
 			Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
 		}, nil
 	}
