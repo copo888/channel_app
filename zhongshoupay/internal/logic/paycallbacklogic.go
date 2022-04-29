@@ -9,7 +9,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
@@ -50,9 +49,9 @@ func (l *PayCallBackLogic) PayCallBack(req types.PayCallBackRequest) (string, er
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
-		return "err", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
+	//	return "err", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.RealAmount, 64); err != nil {
