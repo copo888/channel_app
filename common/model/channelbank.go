@@ -1,7 +1,7 @@
 package model
 
 import (
-	"github.com/copo888/channel_app/common/types"
+	"github.com/copo888/channel_app/common/typesX"
 	"gorm.io/gorm"
 )
 
@@ -21,7 +21,7 @@ func NewChannelBank(mydb *gorm.DB, t ...string) *ChannelBanks {
 	}
 }
 
-func (cb *ChannelBanks) GetChannelBankCode(db *gorm.DB, channelCode string, bankNo string) (bankCodeMap *types.BankCodeMap, err error) {
+func (cb *ChannelBanks) GetChannelBankCode(db *gorm.DB, channelCode string, bankNo string) (bankCodeMap *typesX.BankCodeMap, err error) {
 	err = db.Table(cb.Table).Where("channel_code = ? AND bank_no = ? ", channelCode, bankNo).Find(&bankCodeMap).Error
 	return
 }

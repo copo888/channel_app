@@ -5,14 +5,14 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
+	"github.com/copo888/channel_app/samplepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"time"
 
-	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
-	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -48,8 +48,9 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
-	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
+
 	// 請求渠道
+	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
 	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
@@ -58,7 +59,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
 
-	// 渠道回覆處理
+	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
 		Success bool   `json:"success"`
 		Msg     string `json:"msg"`
@@ -71,12 +72,12 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
 	}
 
-	balanceResp := &types.ProxyPayQueryInternalBalanceResponse{
+	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
 		ProxyPayBalance:    balanceQueryResp.Balance,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
-	return balanceResp, nil
+	return
 }

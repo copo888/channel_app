@@ -1,4 +1,4 @@
-package types
+package typesX
 
 type ChannelData struct {
 	ID                      int64         `json:"id, optional"`

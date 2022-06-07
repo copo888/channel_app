@@ -4,6 +4,7 @@ package types
 type PayOrderRequest struct {
 	OrderNo           string `json:"orderNo"`
 	PayType           string `json:"payType"`
+	ChannelPayType    string `json:"channelPayType, optional"`
 	TransactionAmount string `json:"transactionAmount"`
 	BankCode          string `json:"bankCode, optional"`
 	PageUrl           string `json:"pageUrl, optional"`
@@ -113,6 +114,7 @@ type ProxyPayCallBackRequest struct {
 	Status     string `form:"status, optional"`
 }
 
+// form 格式
 type PayCallBackRequest struct {
 	MyIp       string `form:"myIp, optional"`
 	RealAmount string `form:"realAmount, optional"`

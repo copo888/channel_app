@@ -8,13 +8,15 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
-	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/copo888/channel_app/samplepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -33,7 +35,7 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 	}
 }
 
-func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (string, error) {
+func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
 	logx.Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
 
@@ -49,9 +51,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	//if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
-	//	return errorx.New(responsex.INVALID_SIGN)
-	//}
+	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
+		return "fail", errorx.New(responsex.INVALID_SIGN)
+	}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {

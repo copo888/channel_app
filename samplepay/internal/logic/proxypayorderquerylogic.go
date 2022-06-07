@@ -5,15 +5,16 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
+	"github.com/copo888/channel_app/samplepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
-	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
+
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -31,7 +32,7 @@ func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 	}
 }
 
-func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQueryRequest) (*types.ProxyPayOrderQueryResponse, error) {
+func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQueryRequest) (resp *types.ProxyPayOrderQueryResponse, err error) {
 
 	logx.Infof("Enter ProxyPayOrderQuery. channelName: %s, ProxyPayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 	// 取得取道資訊
@@ -62,7 +63,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
 
-	// 渠道回覆處理
+	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
 		Success    bool   `json:"success"`
 		Msg        string `json:"msg"`
@@ -84,7 +85,6 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	} else if strings.Index("2,3,5", channelQueryResp.Status) > -1 {
 		orderStatus = "30"
 	}
-	resp := &types.ProxyPayOrderQueryResponse{}
 
 	//組返回給BO 的代付返回物件
 	resp.Status = 1

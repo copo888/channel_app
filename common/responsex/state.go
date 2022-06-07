@@ -46,13 +46,59 @@ var (
 	INVALID_USER_IP                    = "126" // "userIp不可为空"
 	PARAMS_JSON_IS_INVALID             = "127" // "不支援收银台模式"
 	PARAMS_URL_IS_INVALID              = "128" // "不支援支付网址模式"
-	// 渠道
-	BANK_CODE_INVALID      = "208" // "银行代码错误"
-	PAY_TYPE_INVALID       = "209" // "支付类型代码错误"
-	CHANNEL_REPLY_ERROR    = "210" // "渠道返回错误"
-	INVALID_STATUS_CODE    = "211" // "Http状态码错误"
-	INTERNAL_SIGN_ERROR    = "301" // "系统验签错误"
-	SYSTEM_ERROR           = "400" // "系统错误"
-	NETWORK_ERROR          = "401" // "网路异常"
-	ORDER_NUMBER_NOT_EXIST = "501" // "商户订单号不存在"
+	INVALID_USER_NAME                  = "129" // "开户人姓名无效或未输入"
+	INVALID_USDT_TYPE                  = "130" // "无效协议"
+	INVALID_USDT_WALLET_ADDRESS        = "131" // "无效钱包地址"
+	INVALID_PAY_TYPE_SUB_NO            = "132" // "多指定模式，PayTypeSubNo為必填"
+
+	// for channel test only
+	INVALID_MERCHANT_OR_CHANNEL_PAYTYPE = "160" // "資料庫無此商户号或商户未配置渠道、支付方式等設定错误或关闭或维护"
+	INVALID_CHANNEL_PAYTYPE_CURRENCY    = "161" // "商户配置之渠道支付方式與幣別有誤"
+
+	// 交易错误讯息码
+	TRANSACTION_FAILURE             = "201" // "交易失败"
+	INSUFFICIENT_IN_AMOUNT          = "202" // "余额不足"
+	CURRENCY_INCONSISTENT           = "203" // "商户货币別不一致"
+	IS_LESS_MINIMUN_AMOUNT          = "204" // "单笔小于最低交易金额"
+	IS_GREATER_MXNIMUN_AMOUNT       = "205" // "单笔大于最高交易金额"
+	MERCHANT_IS_NOT_SETTING_CHANNEL = "206" // "尚未配置渠道"
+	BANK_CODE_EMPTY                 = "207" // "银行代码不得为空值"
+	BANK_CODE_INVALID               = "208" // "银行代码错误"
+	PAY_TYPE_INVALID                = "209" // "支付类型代码错误"
+	CHANNEL_REPLY_ERROR             = "210" // "渠道返回错误"
+	INVALID_STATUS_CODE             = "211" // "Http状态码错误"
+	INVALID_CHANNEL_ORDER_NO        = "212" // "渠道未回传渠道订单号"
+	TRANSACTION_PROCESSING          = "213" // "訂單處理中，請稍後"
+
+	// 内部错误
+	INTERNAL_SIGN_ERROR = "301" // "系统验签错误"
+
+	// 系统层级错误
+
+	SYSTEM_ERROR  = "400" // "系统错误"
+	NETWORK_ERROR = "401" // "网路异常"
+
+	// 應用层级错误： 支付 500~599
+
+	ORDER_NUMBER_EXIST                            = "500" // "商户订单号重复"
+	ORDER_NUMBER_NOT_EXIST                        = "501" // "商户订单号不存在"
+	MERCHANT_PAY_TYPE_INVALID_OR_CHANNEL_NOT_SET  = "502" // "商户代码[%s]或支付类型代码[%s]或幣別[%s]错误或指定渠道设定错误或关闭或维护"
+	ORDER_AMOUNT_INVALID                          = "503" // "商户下单金额错误"
+	ORDER_AMOUNT_LIMIT_MIN                        = "504" // "商户下单金额太小"
+	ORDER_AMOUNT_LIMIT_MAX                        = "505" // "商户下单金额太大"
+	WALLET_NOT_SET                                = "506" // "商户渠道錢包未设定"
+	API_MERCHANT_CHANNEL_NOT_SET                  = "507" // "商户渠道未建立"
+	MERCHANT_PAY_TYPE_INVALID_OR_CHANNEL_NOT_SET2 = "508" // "商户代码[%s]或支付类型代码[%s][%s]错误或指定渠道设定错误或关闭或维护"
+	WALLET_UPDATE_ERROR                           = "509" // "商户錢包資料错误"
+	ORDER_AMOUNT_ERROR                            = "510" // "商户下单金额和回調金額不符"
+	ORDER_BANK_NO_LEN_ERROR                       = "511" // "银联行账(卡)号，长度必须13~22位"
+
+	/*代付相关错误*/
+	PROXY_PAY_IS_CLOSE              = "600" // "此提单目前已为结单状态"
+	PROXY_PAY_CALLBACK_FAIL         = "601" // "回调失败"
+	PROXY_PAY_IS_NOT_REPAYMENT_FAIL = "602" // "非还款失败或待还款提单"
+	PROXY_PAY_AMOUNT_MININUM_FAIL   = "603" // "单笔小于最低代付金额"
+	PROXY_PAY_AMOUNT_MAXINUM_FAIL   = "604" // "单笔大于最高代付金额"
+	PROXY_PAY_PERSON_PROCESS_FAIL   = "605" // "人工处里失败"
+	PROXY_PAY_IS_PERSON_PROCESS     = "606" // "提单目前为人工处里阶段，不可回调变更"
 )

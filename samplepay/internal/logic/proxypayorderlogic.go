@@ -3,17 +3,16 @@ package logic
 import (
 	"context"
 	"github.com/copo888/channel_app/common/errorx"
-	_ "github.com/copo888/channel_app/common/model"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
+	"github.com/copo888/channel_app/samplepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
 
-	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
-	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -36,17 +35,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	logx.Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
-	//TODO 測試渠道返回
-	testResp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: "ChannelOrderNoTEST",
-		OrderStatus:    "",
-	}
-	return testResp, nil
-
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
-	logx.Infof("代付订单channelName: %s, ChannelPayOrder: %v", channel.Name, req)
 
 	if err1 != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
@@ -78,8 +69,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
 
-	logx.Infof("代付下单请求地址:%s,代付請求參數:%#v", channel.ProxyPayUrl, data)
 	// 請求渠道
+	logx.Infof("代付下单请求地址:%s,代付請求參數:%#v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).Form(data)
 	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
@@ -88,7 +79,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
 
-	// 渠道回覆處理
+	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		Success bool   `json:"success"`
 		Msg     string `json:"msg"`

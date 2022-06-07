@@ -36,7 +36,7 @@ func RangeInt(min int, max int, n int) []int {
 	return arr
 }
 
-//生成随机字符串
+//GetRandomString 生成随机字符串
 func GetRandomString(length int, randomType RandomType, uppLowType UppLowType) string {
 	var str string
 

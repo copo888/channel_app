@@ -2,13 +2,12 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/zhongshoupay/internal/logic"
-	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
-	"github.com/copo888/channel_app/zhongshoupay/internal/types"
+	"github.com/copo888/channel_app/samplepay/internal/logic"
+	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/thinkeridea/go-extend/exnet"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
@@ -16,19 +15,24 @@ import (
 	"net/http"
 )
 
-func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		span := trace.SpanFromContext(r.Context())
 		defer span.End()
 
-		var req types.PayOrderRequest
-
+		var req types.PayCallBackRequest
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
-			responsex.Json(w, r, responsex.FAIL, nil, err)
+			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 			return
 		}
+
+		// Form 格式
+		//if err := httpx.ParseForm(r, &req); err != nil {
+		//	responsex.Json(w, r, responsex.FAIL, nil, err)
+		//	return
+		//}
 
 		logx.Infof("%#v",req)
 
@@ -44,19 +48,15 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			})
 		}
 
-		l := logic.NewPayOrderLogic(r.Context(), ctx)
-		// 驗證密鑰
-		authenticationPaykey := r.Header.Get("authenticationPaykey")
-		if isOK, err := utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.PayKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
-			err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
-			responsex.Json(w, r, err.Error(), nil, err)
-			return
-		}
-		resp, err := l.PayOrder(&req)
+		myIP := exnet.ClientIP(r)
+		req.MyIp = myIP
+
+		l := logic.NewPayCallBackLogic(r.Context(), ctx)
+		resp, err := l.PayCallBack(&req)
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {
-			responsex.Json(w, r, responsex.SUCCESS, resp, err)
+			w.Write([]byte(resp))
 		}
 	}
 }

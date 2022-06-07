@@ -5,18 +5,17 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
-	model2 "github.com/copo888/channel_app/common/model"
+	model "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
 	"github.com/gioco-play/gozzle"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
 	"strings"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PayOrderLogic struct {
@@ -35,6 +34,8 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
+	logx.Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
+
 	/** TODO: 測試code 要移除 **/
 	amounts, err := strconv.ParseFloat(req.TransactionAmount, 64)
 	receiverInfoJson, err := json.Marshal(types.ReceiverInfoVO{
@@ -51,7 +52,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return &types.PayOrderResponse{
 			PayPageType: "json",
 			PayPageInfo: string(receiverInfoJson),
-			Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
 			IsCheckOutMer: true,
 		}, nil
 	} else if strings.EqualFold(req.JumpType, "json") {
@@ -59,27 +59,18 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return &types.PayOrderResponse{
 			PayPageType: "json",
 			PayPageInfo: string(receiverInfoJson),
-			Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
 		}, nil
 	} else {
 		// 正常測試
 		return &types.PayOrderResponse{
 			PayPageType: "url",
 			PayPageInfo: "https://xuri.me/excelize/images/excelize.svg",
-			Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
 		}, nil
 	}
 	/** TODO: 測試code 要移除 **/
 
-
-
-
-
-
-
-
 	// 取得取道資訊
-	channelModel := model2.NewChannel(l.svcCtx.MyDB)
+	channelModel := model.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err.Error())
@@ -91,14 +82,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	orderNo := req.OrderNo
 	amount := req.TransactionAmount
 	notifyUrl := channel.ApiUrl + "/api/pay-call-back"
-	payType := req.PayType
+	channelPayType := req.ChannelPayType
 	userId := req.UserId
 	//ip := utils.GetRandomIp()
 
 	// 組請求參數
 	data := url.Values{}
 	data.Set("partner", merchantId)
-	data.Set("service", payType)
+	data.Set("service", channelPayType)
 	data.Set("tradeNo", orderNo)
 	data.Set("amount", amount)
 	data.Set("notifyUrl", notifyUrl)
@@ -139,7 +130,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	resp = &types.PayOrderResponse{
 		PayPageType: "url",
 		PayPageInfo: channelResp.Url,
-		Status:      "1", // 订单状态：状态 0处理中，1成功，2失败
 	}
 
 	return
