@@ -27,4 +27,8 @@ type Config struct {
 		ProxyKey  string
 	}
 	ProjectName string
+	Merchant    struct {
+		Host string
+		Port int
+	}
 }

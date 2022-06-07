@@ -2,6 +2,14 @@ package logic
 
 import (
 	"context"
+	"github.com/copo888/channel_app/common/errorx"
+	model2 "github.com/copo888/channel_app/common/model"
+	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
+	"github.com/gioco-play/gozzle"
+	"go.opentelemetry.io/otel/trace"
+	"net/url"
+	"time"
 
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
@@ -24,7 +32,48 @@ func NewProxyPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContex
 }
 
 func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPayQueryInternalBalanceResponse, err error) {
-	// todo: add your logic here and delete this line
+	channelModel := model2.NewChannel(l.svcCtx.MyDB)
+	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
+	if err1 != nil {
+		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
+	}
 
-	return
+	data := url.Values{}
+	data.Set("partner", channel.MerId)
+	data.Set("service", "10201")
+
+	// 加簽
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	data.Set("sign", sign)
+	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
+	// 請求渠道
+	span := trace.SpanFromContext(l.ctx)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
+	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
+	if ChnErr != nil {
+		logx.Error("渠道返回錯誤: ", ChnErr.Error())
+		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+	}
+
+	// 渠道回覆處理
+	balanceQueryResp := struct {
+		Success bool   `json:"success"`
+		Msg     string `json:"msg"`
+		Balance string `json:"balance"`
+	}{}
+
+	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+	} else if balanceQueryResp.Success != true {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
+	}
+
+	balanceResp := &types.ProxyPayQueryInternalBalanceResponse{
+		ChannelNametring:   channel.Name,
+		ChannelCodingtring: channel.Code,
+		ProxyPayBalance:    balanceQueryResp.Balance,
+		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
+	}
+
+	return balanceResp, nil
 }

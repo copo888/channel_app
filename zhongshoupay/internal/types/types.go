@@ -124,3 +124,13 @@ type PayCallBackRequest struct {
 	SignType   string `form:"signType, optional"`
 	Status     string `form:"status, optional"`
 }
+
+type ReceiverInfoVO struct {
+	CardName   string  `json:"cardName"`
+	CardNumber string  `json:"cardNumber"`
+	BankName   string  `json:"bankName"`
+	BankBranch string  `json:"bankBranch"`
+	Amount     float64 `json:"amount"`
+	Link       string  `json:"link"`
+	Remark     string  `json:"remark"`
+}

@@ -132,6 +132,16 @@ type PayCallBackRequest {
 	Status     string `form:"status, optional"`
 }
 
+type ReceiverInfoVO {
+	CardName   string  `json:"cardName"`
+	CardNumber string  `json:"cardNumber"`
+	BankName   string  `json:"bankName"`
+	BankBranch string  `json:"bankBranch"`
+	Amount     float64 `json:"amount"`
+	Link       string  `json:"link"`
+	Remark     string  `json:"remark"`
+}
+
 @server(
 	prefix: api/
 )

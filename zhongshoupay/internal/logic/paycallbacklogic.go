@@ -9,7 +9,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
@@ -50,13 +49,13 @@ func (l *PayCallBackLogic) PayCallBack(req types.PayCallBackRequest) (string, er
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
-		return "err", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
+	//	return "err", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.RealAmount, 64); err != nil {
-		return "err", errorx.New(responsex.INVALID_SIGN)
+		return "err", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
@@ -74,7 +73,7 @@ func (l *PayCallBackLogic) PayCallBack(req types.PayCallBackRequest) (string, er
 		return "err", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
-	url := "http://127.0.0.1:8081/dior/merchant-api/pay-call-back" // TODO: URL要抽出来
+	url := fmt.Sprintf("%s:%d/dior/merchant-api/pay-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(payCallBackBO)
 	if errx != nil {
 		return "err", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
