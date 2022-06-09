@@ -40,7 +40,7 @@ trigger:
 
 ---
 kind: pipeline
-name: channel_app
+name: lepay
 
 clone:
   disable: true
