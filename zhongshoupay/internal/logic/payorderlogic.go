@@ -81,7 +81,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	merchantKey := channel.MerKey
 	orderNo := req.OrderNo
 	amount := req.TransactionAmount
-	notifyUrl := channel.ApiUrl + "/api/pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	channelPayType := req.ChannelPayType
 	userId := req.UserId
 	//ip := utils.GetRandomIp()

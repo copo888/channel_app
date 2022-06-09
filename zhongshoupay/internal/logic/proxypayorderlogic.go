@@ -65,7 +65,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("service", "10201")
 	data.Set("tradeNo", req.OrderNo)
 	data.Set("amount", transactionAmount)
-	data.Set("notifyUrl", channel.ApiUrl+"/api/proxy-pay-call-back")
+	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
 	data.Set("bankCode", channelBankMap.MapCode)
 	data.Set("subsidiaryBank", req.ReceiptCardBankName)
 	data.Set("subbranch", req.ReceiptCardBranch)

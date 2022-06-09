@@ -5,6 +5,8 @@ ProjectName: ${APP_NAME}
 Mode: ${APP_MODE}
 Verbose: ${HTTP_VERBOSE}
 
+Server: ${SERVER}
+
 Log:
   Mode: ${LOG_MODE}
   Level: ${LOG_LEVEL}
