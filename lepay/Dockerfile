@@ -13,7 +13,7 @@ ADD go.sum .
 RUN go mod download
 COPY . .
 COPY lepay/etc /app/etc
-RUN go build -ldflags="-s -w" -o /app/lepay lepay/lepay.go
+RUN go build -ldflags="-s -w" -o /app/lepay lepay/pay.go
 
 
 FROM alpine
@@ -25,4 +25,4 @@ WORKDIR /app
 COPY --from=builder /app/lepay /app/lepay
 COPY --from=builder /app/etc /app/etc
 
-CMD ["./lepay", "-f", "etc/lepay.yaml"]
+CMD ["./lepay", "-f", "etc/pay.yaml"]
