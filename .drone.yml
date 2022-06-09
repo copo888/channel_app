@@ -70,9 +70,9 @@ steps:
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
       branch:
-        - zhongshoupay
+        - lepay
       event:
         - push
 trigger:
   branch:
-    - zhongshoupay
+    - lepay
