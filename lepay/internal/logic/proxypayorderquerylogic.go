@@ -49,7 +49,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	type Data struct {
 		MerchantNumber string `json:"merchant_number"`
 		Sign           string `json:"sign"`
-		OrderNumber    string `json:"order_number"`
+		OrderNumber    string `json:"merchant_order_number"`
 	}
 
 	// 組請求參數 FOR JSON
@@ -68,11 +68,11 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(10).Trace(span).JSON(data)
-	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	if ChnErr != nil {
 		logx.Error("渠道返回錯誤: ", ChnErr.Error())
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
+	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
@@ -94,9 +94,11 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 
 	//組返回給BO 的代付返回物件
+	resp = &types.ProxyPayOrderQueryResponse{}
 	resp.Status = 1
 	//resp.CallBackStatus =
 	resp.OrderStatus = orderStatus
+	resp.ChannelOrderNo = channelQueryResp.OutTradeNo
 	resp.ChannelReplyDate = time.Now().Format("2006-01-02 15:04:05")
 	//resp.ChannelCharge =
 

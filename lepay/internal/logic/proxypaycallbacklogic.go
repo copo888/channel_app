@@ -8,11 +8,9 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/lepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/lepay/internal/svc"
@@ -51,27 +49,26 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey, "josn"); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey, "josn"); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+	if orderAmount, err = strconv.ParseFloat(req.OrderAmount, 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
-		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
-		status = "2"
+	if req.Status == 2 || req.Status == 6 {
+		status = "20"
+	} else if req.Status == 4 || req.Status == 5 {
+		status = "30"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
+		ProxyPayOrderNo:     req.OrderNumber,
 		ChannelOrderNo:      "",
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
