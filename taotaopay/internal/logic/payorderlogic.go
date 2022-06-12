@@ -46,15 +46,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//if channelPayTypeModel ,err = channelPayType.GetChannelPayType(l.svcCtx.MyDB,channel.Code+req.PayType);err!=nil{
 	//	return
 	//}
-	// 檢查 userId
-	//if req.PayType == "YK" && len(req.UserId) == 0 {
-	//	logx.Errorf("userId不可为空 userId:%s", req.UserId)
-	//	return nil, errorx.New(responsex.INVALID_USER_ID)
-	//}
 
 	// 取值
-	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl := "http://f828-211-75-36-190.ngrok.io/taotaopay/api/pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
+	//notifyUrl := "http://f828-211-75-36-190.ngrok.io/taotaopay/api/pay-call-back"
 	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 	amount := utils.FloatMul(req.TransactionAmount, "100")
 
@@ -81,8 +76,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.sign = sign
 
 	// 請求渠道
 	logx.Infof("支付下单请求地址:%s,支付請求參數:%v", channel.PayUrl, data)
