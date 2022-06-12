@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
@@ -83,10 +84,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 組請求參數 FOR JSON
 	data := Data{
 		MerchantNumber: channel.MerId,
-		OrderNumber: req.OrderNo,
-		Channel: req.ChannelPayType,
-		NotifyUrl: notifyUrl,
-		Amount: req.TransactionAmount,
+		OrderNumber:    req.OrderNo,
+		Channel:        req.ChannelPayType,
+		NotifyUrl:      notifyUrl,
+		Amount:         req.TransactionAmount,
 	}
 
 	// 加簽
