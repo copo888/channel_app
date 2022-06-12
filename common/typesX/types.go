@@ -57,3 +57,22 @@ type Bank struct {
 	Status       string        `json:"status"`
 	ChannelDatas []ChannelData `json:"channelDatas, optional" gorm:"many2many:ch_channel_banks:foreignKey:bankNo;joinForeignKey:bank_no;references:code;joinReferences:channel_code"`
 }
+
+type ChannelPayType struct {
+	ID                int64   `json:"id, optional"`
+	Code              string  `json:"code, optional"`
+	ChannelCode       string  `json:"channelCode, optional"`
+	PayTypeCode       string  `json:"payTypeCode, optional"`
+	Fee               float64 `json:"fee, optional"`
+	HandlingFee       float64 `json:"handlingFee, optional"`
+	MaxInternalCharge float64 `json:"maxInternalCharge, optional"`
+	DailyTxLimit      float64 `json:"dailyTxLimit, optional"`
+	SingleMinCharge   float64 `json:"singleMinCharge, optional"`
+	SingleMaxCharge   float64 `json:"singleMaxCharge, optional"`
+	FixedAmount       string  `json:"fixedAmount, optional"`
+	BillDate          int64   `json:"billDate, optional"`
+	Status            string  `json:"status, optional"`
+	IsProxy           string  `json:"isProxy, optional"`
+	Device            string  `json:"device, optional"`
+	MapCode           string  `json:"mapCode, optional"`
+}
