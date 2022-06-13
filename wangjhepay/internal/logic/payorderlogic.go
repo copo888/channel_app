@@ -65,11 +65,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.Infof("1")
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
-
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
+	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		Code int64  `json:"code"`
