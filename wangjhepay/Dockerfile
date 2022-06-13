@@ -12,6 +12,7 @@ ADD go.mod .
 ADD go.sum .
 RUN go mod download
 COPY . .
+COPY bin/wangjhepay /app/wangjhepay
 COPY wangjhepay/etc /app/etc
 RUN go build -ldflags="-s -w" -o /app/wangjhepay wangjhepay/pay.go
 
