@@ -5,6 +5,7 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/wanlisinpay/internal/payutils"
 	"github.com/copo888/channel_app/wanlisinpay/internal/svc"
 	"github.com/copo888/channel_app/wanlisinpay/internal/types"
@@ -12,6 +13,8 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -43,10 +46,12 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+	currentTimeStamp := strconv.FormatInt(utils.GetCurrentMilliSec(), 10)
 
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchant_number", channel.MerId)
+	data.Set("bid", channel.MerId)
+	data.Set("time", currentTimeStamp[0:10])
 
 	// 組請求參數 FOR JSON
 	//data := struct {
@@ -63,9 +68,13 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	//data.Sign = sign
 
 	// 請求渠道
-	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayUrl, data)
+	url := make([]string, 0)
+	url = append(url, channel.PayQueryBalanceUrl, "?bid=", channel.MerId, "&time=", currentTimeStamp[0:10], "&sign=", sign)
+	reqUrl := strings.Join(url, "")
+
+	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", reqUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Get(reqUrl).Timeout(10).Trace(span).JSON(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
 	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if ChnErr != nil {
