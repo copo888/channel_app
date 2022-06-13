@@ -2,12 +2,14 @@ package logic
 
 import (
 	"context"
+	"crypto/tls"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/wangjhepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"net/http"
 	"net/url"
 	"time"
 
@@ -52,7 +54,11 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	// 請求渠道
 	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
+	// 忽略證書
+	tr := &http.Transport{
+		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+	}
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Transport(tr).Timeout(10).Trace(span).Form(data)
 	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	if ChnErr != nil {
 		logx.Error("渠道返回錯誤: ", ChnErr.Error())
