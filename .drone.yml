@@ -185,6 +185,7 @@ steps:
         - docker-compose -f wangjhepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=wangjhepay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wangjhepay wangjhepay/pay.go
         - docker build -t wangjhepay -f wangjhepay/Dockerfile .
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
