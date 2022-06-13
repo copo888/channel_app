@@ -134,3 +134,9 @@ func FloatDiv(s string, p string, precisions ...int32) float64 {
 
 	return res
 }
+
+func GetCurrentMilliSec() int64 {
+	unixNano := time.Now().UnixNano()
+	return unixNano / 1000000
+	//Number of millisecond elapsed since Unix epoch
+}

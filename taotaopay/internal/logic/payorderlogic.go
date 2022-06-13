@@ -65,14 +65,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 組請求參數 FOR JSON
 
-	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.JumpType, "YK") {
-	//	if req.UserId == "" {
-	//		return nil, errorx.New(responsex.INVALID_USER_ID, err.Error())
-	//	}
-	//	data.Set("playerName", req.UserId)
-	//}
-
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)

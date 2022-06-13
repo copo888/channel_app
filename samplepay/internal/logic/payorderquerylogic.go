@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
@@ -83,10 +84,13 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).Form(data)
 	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
 
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
+	}  else if res.Status() != 200 {
+		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
+	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {
