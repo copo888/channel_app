@@ -49,9 +49,10 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	data.Set("sign", sign)
 
 	// 請求渠道
-	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
+	url := channel.ProxyPayQueryBalanceUrl + "?merchant_number=" + channel.MerId + "&sign=" + sign
+	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", url, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Get(channel.ProxyPayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Get(url).Timeout(10).Trace(span).Do()
 	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	if ChnErr != nil {
 		logx.Error("渠道返回錯誤: ", ChnErr.Error())
@@ -62,9 +63,12 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		AvailableBalance string `json:"available_balance"`
-		Balance string `json:"balance"`
-		FrozenBalance string `json:"frozen_balance"`
+		Data struct{
+			AvailableBalance string `json:"available_balance"`
+			Balance string `json:"balance"`
+			FrozenBalance string `json:"frozen_balance"`
+		} `json:"data"`
+
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
@@ -74,7 +78,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.AvailableBalance,
+		ProxyPayBalance:    balanceQueryResp.Data.AvailableBalance,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
