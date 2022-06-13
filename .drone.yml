@@ -159,7 +159,7 @@ trigger:
 
 ---
 kind: pipeline
-name: taotaopay
+name: wangjhepay
 
 clone:
   disable: true
