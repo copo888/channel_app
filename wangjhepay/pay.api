@@ -122,15 +122,15 @@ type ProxyPayCallBackRequest {
 }
 
 type PayCallBackRequest struct {
-	PayTime int64 `json:"payTime"`
-	Money float64 `json:"money"`
-	PayMoney float64 `json:"payMoney"`
-	OrderSn string `json:"orderSn"`
-	PayState int64 `json:"payState"`
-	SysOrderSn string `json:"sysOrderSn"`
-	Remark string `json:"remark"`
-	Sign string `json:"sign"`
-	MyIp string `json:"myIp"`
+	PayTime    string `form:"pay_time, optional"`
+	Money      string `form:"money, optional"`
+	PayMoney   string `form:"pay_money, optional"`
+	OrderSn    string `form:"order_sn, optional"`
+	PayState   string `form:"pay_state, optional"`
+	SysOrderSn string `form:"sys_order_sn, optional"`
+	Remark     string `form:"remark, optional"`
+	Sign       string `form:"sign, optional"`
+	MyIp       string `form:"myIp, optional"`
 }
 
 // form 格式

@@ -12,6 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -40,14 +41,15 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	}
 
 	// 取值
-	timestamp := time.Now().Format("20060102150405")
+	now := time.Now()      // current local time
+	sec := now.Unix()
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	// 組請求參數
 	data := url.Values{}
 	data.Set("bid", channel.MerId)
-	data.Set("time", timestamp)
+	data.Set("time", strconv.FormatInt(sec, 10))
 	// 組請求參數 FOR JSON
 	//data := struct {
 	//	MerchantNumber string `json:"merchantNumber"`
@@ -65,12 +67,12 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 請求渠道
 	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
+	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		Code int64  `json:"code"`

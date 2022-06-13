@@ -12,6 +12,7 @@ import (
 	"github.com/copo888/channel_app/wangjhepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/wangjhepay/internal/svc"
@@ -51,20 +52,25 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
+	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
 	orderStatus := "1"
-	if req.PayState == 1 { //订单状态：0 未支付 1 已支付 2 取消
+	if req.PayState == "1" { //订单状态：0 未支付 1 已支付 2 取消
 		orderStatus = "20"
+	}
+
+	orderAmount, errParse := strconv.ParseFloat(req.PayMoney, 64)
+	if errParse != nil {
+		return "fail", errorx.New(responsex.CHANNEL_REPLY_ERROR, errParse.Error())
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.OrderSn,
 		ChannelOrderNo: req.SysOrderSn, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(20:成功 30:失敗)
-		OrderAmount:    req.Money,
+		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

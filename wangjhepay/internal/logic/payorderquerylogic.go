@@ -13,6 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 )
 
 type PayOrderQueryLogic struct {
@@ -69,8 +70,8 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		Data struct {
 			OrderSn string `json:"order_sn"`
 			SysOrderSn string `json:"sys_order_sn"`
-			Money float64 `json:"money"`
-			PayMoney int64 `json:"pay_money"`
+			Money string `json:"money"`
+			PayMoney string `json:"pay_money"`
 			AddTime int64 `json:"add_time"`
 			PayTime int64 `json:"pay_time"`
 			PayState int64 `json:"pay_state"` //支付状态： 0未支付,1已支付,2已取消
@@ -89,8 +90,13 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		orderStatus = "1"
 	}
 
+	orderAmount, errParse := strconv.ParseFloat(channelResp.Data.PayMoney, 64)
+	if errParse != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, errParse.Error())
+	}
+
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount: channelResp.Data.Money,
+		OrderAmount: orderAmount,
 		ChannelOrderNo: channelResp.Data.SysOrderSn,
 		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}

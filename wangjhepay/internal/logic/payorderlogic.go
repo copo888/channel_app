@@ -50,7 +50,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("order_sn", req.OrderNo)
 	data.Set("money", req.TransactionAmount)
 	//data.Set("userId", randomID)
-	data.Set("remark", "")
 	data.Set("notify_url", notifyUrl)
 	data.Set("pay_type", req.ChannelPayType)
 
