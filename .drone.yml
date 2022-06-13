@@ -180,6 +180,7 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git checkout wangjhepay
+        - git checkout -- .
         - git pull origin wangjhepay
         - go mod tidy
         - docker-compose -f wangjhepay/docker-compose.yml down
@@ -193,7 +194,4 @@ steps:
         - wangjhepay
       event:
         - push
-trigger:
-  branch:
-    - wangjhepay
 
