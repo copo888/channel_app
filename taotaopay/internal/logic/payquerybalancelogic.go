@@ -5,6 +5,7 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/taotaopay/internal/payutils"
 	"github.com/copo888/channel_app/taotaopay/internal/svc"
 	"github.com/copo888/channel_app/taotaopay/internal/types"
@@ -42,11 +43,12 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 取值
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
-	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchant_number", channel.MerId)
+	data.Set("appid", channel.MerId)
+	data.Set("nonce_str", randomID)
 
 	// 組請求參數 FOR JSON
 	//data := struct {
