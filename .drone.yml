@@ -116,3 +116,43 @@ steps:
 trigger:
   branch:
     - taotaopay
+
+
+---
+kind: pipeline
+name: wanlisinpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-wanlisinpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout wanlisinpay
+        - git pull origin wanlisinpay
+        - go mod tidy
+        - docker-compose -f wanlisinpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wanlisinpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - docker build -t wanlisinpay -f wanlisinpay/Dockerfile .
+        - docker-compose -f wanlisinpay/docker-compose.yml up -d
+    when:
+      branch:
+        - wanlisinpay
+      event:
+        - push
+trigger:
+  branch:
+    - wanlisinpay
