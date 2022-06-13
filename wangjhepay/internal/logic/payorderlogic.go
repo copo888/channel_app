@@ -65,6 +65,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
 	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
@@ -74,8 +75,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Msg  string `json:"msg, optional"`
 		Time int64  `json:"time"`
 		Data struct {
-			Url string `json:"url"`
-		} `json:"data"`
+			Url string `json:"url, optional"`
+		} `json:"data, optional"`
 	}{}
 
 	// 返回body 轉 struct
