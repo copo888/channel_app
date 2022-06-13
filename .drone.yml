@@ -20,11 +20,13 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git checkout zhongshoupay
+        - git checkout -- .
         - git pull origin zhongshoupay
         - go mod tidy
         - docker-compose -f zhongshoupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=zhongshoupay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/zhongshoupay zhongshoupay/zhongshoupay.go
         - docker build -t zhongshoupay -f zhongshoupay/Dockerfile .
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
@@ -32,10 +34,6 @@ steps:
         - zhongshoupay
       event:
         - push
-trigger:
-  branch:
-    - zhongshoupay
-
 
 
 ---
@@ -61,11 +59,13 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git checkout lepay
+        - git checkout -- .
         - git pull origin lepay
         - go mod tidy
         - docker-compose -f lepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=lepay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/taotaopay taotaopay/pay.go
         - docker build -t lepay -f lepay/Dockerfile .
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
@@ -73,9 +73,6 @@ steps:
         - lepay
       event:
         - push
-trigger:
-  branch:
-    - lepay
 
 
 ---
@@ -101,11 +98,13 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git checkout taotaopay
+        - git checkout -- .
         - git pull origin taotaopay
         - go mod tidy
         - docker-compose -f taotaopay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=taotaopay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/taotaopay taotaopay/pay.go
         - docker build -t taotaopay -f taotaopay/Dockerfile .
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
@@ -113,10 +112,6 @@ steps:
         - taotaopay
       event:
         - push
-trigger:
-  branch:
-    - taotaopay
-
 
 ---
 kind: pipeline
@@ -141,11 +136,13 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git checkout wanlisinpay
+        - git checkout -- .
         - git pull origin wanlisinpay
         - go mod tidy
         - docker-compose -f wanlisinpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=wanlisinpay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wanlisinpay wanlisinpay/pay.go
         - docker build -t wanlisinpay -f wanlisinpay/Dockerfile .
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
@@ -153,9 +150,6 @@ steps:
         - wanlisinpay
       event:
         - push
-trigger:
-  branch:
-    - wanlisinpay
 
 ---
 kind: pipeline
