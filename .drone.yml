@@ -65,7 +65,7 @@ steps:
         - docker-compose -f lepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=lepay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/taotaopay taotaopay/pay.go
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/lepay lepay/pay.go
         - docker build -t lepay -f lepay/Dockerfile .
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
