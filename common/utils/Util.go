@@ -111,7 +111,7 @@ func IPChecker(myip string, whitelist string) bool {
 	return false
 }
 
-//FloatMul 浮點數乘法 (precision=4)
+//FloatMul 浮點數乘法 (precision=3)
 func FloatMul(s string, p string, precisions ...int32) float64 {
 
 	f1, _ := decimal.NewFromString(s)
@@ -129,11 +129,46 @@ func FloatMul(s string, p string, precisions ...int32) float64 {
 	return res
 }
 
-//FloatDiv 浮點數除法 (precision=4)
+//FloatDiv 浮點數除法 (precision=3)
 func FloatDiv(s string, p string, precisions ...int32) float64 {
 
 	f1, _ := decimal.NewFromString(s)
 	f2, _ := decimal.NewFromString(p)
+
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Div(f2).Truncate(precision).Float64()
+
+	return res
+}
+
+//FloatMulF 浮點數乘法 (precision=4)
+func FloatMulF(s float64, p float64, precisions ...int32) float64 {
+
+	f1 := decimal.NewFromFloat(s)
+	f2 := decimal.NewFromFloat(p)
+
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+
+	res, _ := f1.Mul(f2).Truncate(precision).Float64()
+
+	return res
+}
+
+//FloatDivF 浮點數除法 (precision=4)
+func FloatDivF(s float64, p float64, precisions ...int32) float64 {
+
+	f1 := decimal.NewFromFloat(s)
+	f2 := decimal.NewFromFloat(p)
 
 	var precision int32
 	if len(precisions) > 0 {
