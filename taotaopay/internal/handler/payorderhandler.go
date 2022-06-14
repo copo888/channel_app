@@ -2,7 +2,9 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
 	"github.com/copo888/channel_app/taotaopay/internal/logic"
 	"github.com/copo888/channel_app/taotaopay/internal/svc"
@@ -43,12 +45,12 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		l := logic.NewPayOrderLogic(r.Context(), ctx)
 		// 驗證密鑰
-		//authenticationPaykey := r.Header.Get("authenticationPaykey")
-		//if isOK, err := utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.PayKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
-		//	err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
-		//	responsex.Json(w, r, err.Error(), nil, err)
-		//	return
-		//}
+		authenticationPaykey := r.Header.Get("authenticationPaykey")
+		if isOK, err := utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.PayKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
+			err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
+			responsex.Json(w, r, err.Error(), nil, err)
+			return
+		}
 		resp, err := l.PayOrder(&req)
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)

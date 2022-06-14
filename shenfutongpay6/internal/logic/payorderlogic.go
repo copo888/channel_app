@@ -12,11 +12,9 @@ import (
 	"github.com/copo888/channel_app/shenfutongpay6/internal/svc"
 	"github.com/copo888/channel_app/shenfutongpay6/internal/types"
 	"github.com/gioco-play/gozzle"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"time"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PayOrderLogic struct {
@@ -53,9 +51,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
-	timestamp := time.Now().Format("20060102150405")
-	//ip := utils.GetRandomIp()
-	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+	timestamp := utils.GetDateTimeSring(utils.YYYYMMddHHmmss)
+	randomID := utils.GetRandomString(5, utils.ALL, utils.MIX)
 
 	// 組請求參數
 	data := url.Values{}
@@ -64,40 +61,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("p3_orderno", req.OrderNo)
 	data.Set("p4_paytype", req.ChannelPayType)
 	data.Set("p5_reqtime", timestamp)
-	data.Set("userId", randomID)
-	data.Set("notifyUrl", notifyUrl)
-	data.Set("reType", "LINK")
-	data.Set("signType", "MD5")
-
-	// 組請求參數 FOR JSON
-	//data := struct {
-	//	MerchId   string `json:"merchId"`
-	//	Money     string `json:"money"`
-	//	OrderId   string `json:"orderId"`
-	//	Time      string `json:"time"`
-	//	NotifyUrl string `json:"notifyUrl"`
-	//	PayType   string `json:"payType"`
-	//	sign      string
-	//}{
-	//	MerchId:   channel.MerId,
-	//	Money:     req.TransactionAmount,
-	//	OrderId:   req.OrderNo,
-	//	Time:      timestamp,
-	//	NotifyUrl: notifyUrl,
-	//	PayType:   req.ChannelPayType,
-	//}
-
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	data.Set("reType", "INFO")
-	//}
-
-	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.JumpType, "YK") {
-	//	if req.UserId == "" {
-	//		return nil, errorx.New(responsex.INVALID_USER_ID, err.Error())
-	//	}
-	//	data.Set("playerName", req.UserId)
-	//}
+	data.Set("p6_goodsname", randomID+"&"+req.UserId)
+	data.Set("p8_returnurl", notifyUrl)
+	data.Set("p9_callbackurl", notifyUrl)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
@@ -108,13 +74,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 請求渠道
 	logx.Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	// 若有證書問題 請使用
-	//tr := &http.Transport{
-	//	TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-	//}
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(10).Trace(span).Form(data)
-
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
 
 	if ChnErr != nil {
@@ -126,19 +85,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    string `json:"code"`
-		Msg     string `json:"msg, optional"`
-		Sign    string `json:"sign"`
-		Money   string `json:"money"`
-		OrderId string `json:"orderId"`
-		PayUrl  string `json:"payUrl"`
-		PayInfo struct {
-			Name       string `json:"name"`
-			Card       string `json:"card"`
-			Bank       string `json:"bank"`
-			Subbranch  string `json:"subbranch"`
-			ExpiringAt string `json:"expiring_at"`
-		} `json:"payInfo"`
+		Code   string `json:"rspcode"`
+		Msg    string `json:"rspmsg, optional"`
+		Sign   string `json:"sign"`
+		PayUrl string `json:"data"`
 	}{}
 
 	// 返回body 轉 struct
@@ -147,36 +97,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 渠道狀態碼判斷
-	if channelResp.Code != "0000" {
+	if channelResp.Code != "A0" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
-
-	// 若需回傳JSON 請自行更改
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
-	//	if err2 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	//	}
-	//	// 返回json
-	//	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-	//		CardName:   channelResp.PayInfo.Name,
-	//		CardNumber: channelResp.PayInfo.Card,
-	//		BankName:   channelResp.PayInfo.Bank,
-	//		BankBranch: channelResp.PayInfo.Subbranch,
-	//		Amount:     amount,
-	//		Link:       "",
-	//		Remark:     "",
-	//	})
-	//	if err3 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	//	}
-	//	return &types.PayOrderResponse{
-	//		PayPageType:    "json",
-	//		PayPageInfo:    string(receiverInfoJson),
-	//		ChannelOrderNo: "",
-	//		IsCheckOutMer:  false, // 自組收銀台回傳 true
-	//	}, nil
-	//}
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",

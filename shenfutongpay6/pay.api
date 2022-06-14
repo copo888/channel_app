@@ -121,32 +121,34 @@ type ProxyPayCallBackRequest {
 	Status     string `form:"status, optional"`
 }
 
-type PayCallBackRequest struct {
-	MyIp     string `json:"myIp"`
-	Code     string `json:"code"`
-	Msg      string `json:"msg"`
-	Sign     string `json:"sign"`
-	MerchId  string `json:"merchId"`
-	Money    string `json:"money"`
-	TradeNo  string `json:"tradeNo"`
-	OrderId  string `json:"orderId"`
-	Time     string `json:"time"`
-	SignType string `json:"signType"`
-	PayType  string `json:"payType"`
-}
+//type PayCallBackRequest struct {
+//	MyIp     string `json:"myIp"`
+//	Code     string `json:"code"`
+//	Msg      string `json:"msg"`
+//	Sign     string `json:"sign"`
+//	MerchId  string `json:"merchId"`
+//	Money    string `json:"money"`
+//	TradeNo  string `json:"tradeNo"`
+//	OrderId  string `json:"orderId"`
+//	Time     string `json:"time"`
+//	SignType string `json:"signType"`
+//	PayType  string `json:"payType"`
+//}
 
 // form 格式
-//type PayCallBackRequest struct {
-//	MyIp       string `form:"myIp, optional"`
-//	RealAmount string `form:"realAmount, optional"`
-//	Charset    string `form:"charset, optional"`
-//	Amount     string `form:"amount, optional"`
-//	StatusStr  string `form:"statusStr, optional"`
-//	OutTradeNo string `form:"outTradeNo, optional"`
-//	Sign       string `form:"sign, optional"`
-//	SignType   string `form:"signType, optional"`
-//	Status     string `form:"status, optional"`
-//}
+type PayCallBackRequest {
+	MyIp        string  `form:"myIp, optional"`
+	MerchId     string  `form:"p1_merchantno"`
+	Amount      float64 `form:"p2_amount, optional"` // 支付金额
+	OrderNo     string  `form:"p3_orderno,optional"`
+	Status      int     `form:"p4_status, optional"`
+	PayType     string  `form:"p5_producttype, optional"`
+	RequestTime string  `form:"p6_requesttime, optional"`
+	GoodTime    string  `form:"p7_goodsname, optional"`
+	TradeTime   string  `form:"p8_tradetime, optional"`
+	OutTradeNo  string  `form:"p9_porderno, optional"`
+	Sign        string  `form:"sign, optional"`
+}
 
 type ReceiverInfoVO {
 	CardName   string  `json:"cardName"`

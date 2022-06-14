@@ -42,10 +42,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	//channelPayType := model.NewChannelPayType(l.svcCtx.MyDB)
-	//if channelPayTypeModel ,err = channelPayType.GetChannelPayType(l.svcCtx.MyDB,channel.Code+req.PayType);err!=nil{
-	//	return
-	//}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
@@ -59,7 +55,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("trade_no", req.OrderNo)
 	data.Set("notify_url", notifyUrl)
 	data.Set("order_type", "0")
-	data.Set("pay_code", req.PayType)
+	data.Set("pay_code", req.ChannelPayType)
 	data.Set("appid", channel.MerId)
 	data.Set("nonce_str", randomID)
 
@@ -74,10 +70,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	span := trace.SpanFromContext(l.ctx)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
+	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		Code int    `json:"code"`

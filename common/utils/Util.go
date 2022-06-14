@@ -29,10 +29,10 @@ const (
 	yyyyMMdd          string = "yyyyMMdd"
 	HHmmss            string = "HHmmss"
 	yyyyMMddHHmm      string = "yyyyMMddHHmm"
-	yyyyMMddHHmmss    string = "yyyyMMddHHmmss"
-	yyyyMMddHHmmssSSS string = "yyyyMMddHHmmssSSS"
-	yyyy_MM_dd        string = "yyyy-MM-dd"
-	yyyyMMddHHmmss2   string = "yyyy-MM-dd HH:mm:ss"
+	YYYYMMddHHmmss    string = "yyyyMMddHHmmss"
+	YYYYMMddHHmmssSSS string = "yyyyMMddHHmmssSSS"
+	YYYY_MM_dd        string = "yyyy-MM-dd"
+	YYYYMMddHHmmss2   string = "yyyy-MM-dd HH:mm:ss"
 )
 
 func init() {
@@ -146,6 +146,18 @@ func FloatDiv(s string, p string, precisions ...int32) float64 {
 	return res
 }
 
+func GetDecimal(amount string, precisions ...int32) float64 {
+	f1, _ := decimal.NewFromString(amount)
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Truncate(precision).Float64()
+	return res
+}
+
 //取得時間戳
 func GetCurrentMilliSec() int64 {
 	unixNano := time.Now().UnixNano()
@@ -154,7 +166,12 @@ func GetCurrentMilliSec() int64 {
 }
 
 func GetDateTimeSring(timePattern string) string {
-	return time.Now().Format("200601021504")
+	if strings.EqualFold(YYYYMMddHHmmss, timePattern) {
+		return time.Now().Format("200601021504")
+	} else if strings.EqualFold(YYYYMMddHHmmss2, timePattern) {
+		return time.Now().Format("2006-01-02 15:04:05")
+	}
+	return ""
 }
 
 // ParseIntTime int時間隔式處理

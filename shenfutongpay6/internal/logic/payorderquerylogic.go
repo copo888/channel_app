@@ -7,7 +7,6 @@ import (
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
-	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/shenfutongpay6/internal/payutils"
 	"github.com/copo888/channel_app/shenfutongpay6/internal/svc"
 	"github.com/copo888/channel_app/shenfutongpay6/internal/types"
@@ -43,31 +42,12 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 	// 組請求參數
 	data := url.Values{}
 	if req.OrderNo != "" {
-		data.Set("trade_no", req.OrderNo)
+		data.Set("p2_orderno", req.OrderNo)
 	}
-	if req.ChannelOrderNo != "" {
-		data.Set("order_no", req.ChannelOrderNo)
-	}
-	data.Set("appid", channel.MerId)
-	data.Set("nonce_str", randomID)
-
-	// 組請求參數 FOR JSON
-	//data := struct {
-	//	merchId  string
-	//	orderId  string
-	//	time     string
-	//	signType string
-	//	sign     string
-	//}{
-	//	merchId:  channel.MerId,
-	//	orderId:  req.OrderNo,
-	//	time:     timestamp,
-	//	signType: "MD5",
-	//}
+	data.Set("p1_merchantno", channel.MerId)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
@@ -94,15 +74,16 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code  string `json:"code"`
-		Msg   string `json:"msg"`
-		State string `json:"state"` //状态 1-成功 2-等待付款 7-关闭
-		Money string `json:"money"`
+		Code  string `json:"rspcode"`
+		Msg   string `json:"rspmsg"`
+		State string `json:"status"` //状态 1-成功 2-等待付款 7-关闭
+		Money string `json:"amount"`
+		Sign  string `json:"sign"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if channelResp.Code != "0000" {
+	} else if channelResp.Code != "A0" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
