@@ -24,6 +24,17 @@ const (
 	LOWER UppLowType = 2
 )
 
+const (
+	yyyy              string = "yyyy"
+	yyyyMMdd          string = "yyyyMMdd"
+	HHmmss            string = "HHmmss"
+	yyyyMMddHHmm      string = "yyyyMMddHHmm"
+	yyyyMMddHHmmss    string = "yyyyMMddHHmmss"
+	yyyyMMddHHmmssSSS string = "yyyyMMddHHmmssSSS"
+	yyyy_MM_dd        string = "yyyy-MM-dd"
+	yyyyMMddHHmmss2   string = "yyyy-MM-dd HH:mm:ss"
+)
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
@@ -135,8 +146,28 @@ func FloatDiv(s string, p string, precisions ...int32) float64 {
 	return res
 }
 
+//取得時間戳
 func GetCurrentMilliSec() int64 {
 	unixNano := time.Now().UnixNano()
 	return unixNano / 1000000
 	//Number of millisecond elapsed since Unix epoch
+}
+
+func GetDateTimeSring(timePattern string) string {
+	return time.Now().Format("200601021504")
+}
+
+// ParseIntTime int時間隔式處理
+func ParseIntTime(t int64) string {
+	return time.Unix(t, 0).UTC().Format("2006-01-02 15:04:05")
+}
+
+// ParseTime 時間隔式處理
+func ParseTime(t string) string {
+	timeString, err := time.Parse(time.RFC3339, t)
+	if err != nil {
+	}
+	str := strings.Split(timeString.String(), " +")
+	res := str[0]
+	return res
 }
