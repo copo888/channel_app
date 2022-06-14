@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"crypto/tls"
-	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
@@ -44,7 +43,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 取值
-	notifyUrl := fmt.Sprintf("%s:%d/api/pay-call-back", l.svcCtx.Config.Server, l.svcCtx.Config.Port)
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 
 	// 組請求參數
