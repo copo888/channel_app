@@ -50,6 +50,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	data.Set("appid", channel.MerId)
 	data.Set("nonce_str", randomID)
 
+
 	// 組請求參數 FOR JSON
 	//data := struct {
 	//	MerchantNumber string `json:"merchantNumber"`
@@ -61,13 +62,11 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.Sign = sign
 
 	// 請求渠道
-	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayUrl, data)
+	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(10).Trace(span).JSON(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
 	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if ChnErr != nil {
