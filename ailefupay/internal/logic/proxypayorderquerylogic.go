@@ -10,7 +10,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/ailefupay/internal/svc"
@@ -73,7 +72,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	channelQueryResp := struct {
 		Success     int64  `json:"Success"`
 		Message     string `json:"Message, optional"`
-		Status      string `json:"status"`
+		Status      int64 `json:"status"`
 		OrderAmount string `json:"orderAmount"`
 	}{}
 
@@ -84,9 +83,9 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Status == "1" {
+	if channelQueryResp.Status == 1 {
 		orderStatus = "20"
-	} else if strings.Index("-2,-1", channelQueryResp.Status) > -1 {
+	} else if channelQueryResp.Status == -1 || channelQueryResp.Status == -2 {
 		orderStatus = "30"
 	}
 

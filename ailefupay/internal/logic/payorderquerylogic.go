@@ -11,11 +11,9 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/gioco-play/gozzle"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"strconv"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PayOrderQueryLogic struct {
@@ -72,8 +70,8 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	channelResp := struct {
 		Success     int64  `json:"Success"`
 		Message     string `json:"Message, optional"`
-		Status      string `json:"status"`
-		OrderAmount string `json:"orderAmount"`
+		Status      int64 `json:"status"`
+		OrderAmount float64 `json:"orderAmount"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
@@ -82,18 +80,14 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.OrderAmount, 64)
-	if errParse != nil {
-		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
-	}
 
 	orderStatus := "0"
-	if channelResp.Status == "1" {
+	if channelResp.Status == 1 {
 		orderStatus = "1"
 	}
 
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount: orderAmount,
+		OrderAmount: channelResp.OrderAmount,
 		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}
 

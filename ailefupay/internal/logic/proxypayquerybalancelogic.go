@@ -75,7 +75,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, err3.Error())
 	} else if balanceQueryResp.Success != 1 {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Message)
 	}
