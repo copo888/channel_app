@@ -53,18 +53,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 
 	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-	data.Set("tradeNo", req.OrderNo)
-	data.Set("amount", transactionAmount)
-	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
-	data.Set("bankCode", channelBankMap.MapCode)
-	data.Set("subsidiaryBank", req.ReceiptCardBankName)
-	data.Set("subbranch", req.ReceiptCardBranch)
-	data.Set("province", req.ReceiptCardProvince)
-	data.Set("city", req.ReceiptCardCity)
-	data.Set("bankCardNo", req.ReceiptAccountNumber)
-	data.Set("bankCardholder", req.ReceiptAccountName)
+	data.Set("p1_merchantno", channel.MerId)
+	data.Set("p2_amount", transactionAmount)
+	data.Set("p3_orderno", req.OrderNo)
+	data.Set("p4_truename", req.ReceiptAccountName)
+	data.Set("p5_cardnumber", req.ReceiptAccountNumber)
+	data.Set("p6_branchbankname", req.ReceiptCardBranch)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
@@ -85,21 +79,29 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		TradeId string `json:"tradeId"` //渠道訂單號
+		Code    string `json:"rspcode"`
+		Msg     string `json:"rspmsg"`
+		TransNo string `json:"orderno"` //渠道訂單號
+		Status  string `json:"status"`  ////1: 已申请		2: 成功		3: 失败		4: 处理中
+		Amount  string `json:"amount"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if channelResp.Success != true {
+	} else if channelResp.Code != "AO" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
+	orderStatus := "1" //訂單狀態(0:待處理 1:處理中 2:交易中  20:成功 30:失敗 31:凍結)
+	if channelResp.Status == "2" {
+		orderStatus = "20"
+	} else if channelResp.Status == "3" {
+		orderStatus = "30"
+	}
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: channelResp.TradeId,
-		OrderStatus:    "",
+		ChannelOrderNo: channelResp.TransNo,
+		OrderStatus:    orderStatus,
 	}
 
 	return resp, nil
