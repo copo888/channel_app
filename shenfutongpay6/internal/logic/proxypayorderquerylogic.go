@@ -46,9 +46,8 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 
 	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10301")
-	data.Set("outTradeNo", req.OrderNo)
+	data.Set("p1_merchantno", channel.MerId)
+	data.Set("p2_orderno", req.OrderNo)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
@@ -69,33 +68,35 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Success    bool   `json:"success"`
-		Msg        string `json:"msg"`
-		OutTradeNo string `json:"outTradeNo"`
-		Amount     string `json:"amount"`
-		Status     string `json:"status"`
-		StatusStr  string `json:"statusStr"`
+		Code      string `json:"rspcode"`
+		Msg       string `json:"rspmsg"`
+		Status    string `json:"status"`         //1: 已申请 2:打款成功 3:打款失败 4: 处理中 (代付订单以提交至银行等金融机构)	5: 审核通过 (尚未进入处理中状态)	6: 审核失败
+		TradeTime string `json:"finishdate"`     //yyyyMMddHHmmss
+		TradeId   string `json:"typay_order_id"` //代付中心生成的订单号
+		Amount    string `json:"amount"`         // 以元为单位，精确到小数点后 2 位。
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.Success != true {
+	} else if channelQueryResp.Code != "A0" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Msg)
 	}
-	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
-	var orderStatus = "1"
-	if channelQueryResp.Status == "1" {
+	//訂單狀態(0:待處理 1:處理中 2:交易中  20:成功 30:失敗 31:凍結)
+	var orderStatus = "2" //从渠道返回到COPO状态要从处理中改为交易中
+	if channelQueryResp.Status == "2" {
 		orderStatus = "20"
-	} else if strings.Index("2,3,5", channelQueryResp.Status) > -1 {
+	} else if strings.Index("3,6", channelQueryResp.Status) > -1 {
 		orderStatus = "30"
 	}
 
 	//組返回給BO 的代付返回物件
-	resp.Status = 1
-	//resp.CallBackStatus =
-	resp.OrderStatus = orderStatus
-	resp.ChannelReplyDate = time.Now().Format("2006-01-02 15:04:05")
-	//resp.ChannelCharge =
 
-	return resp, nil
+	return &types.ProxyPayOrderQueryResponse{
+		Status:           1,
+		OrderStatus:      orderStatus,
+		ChannelReplyDate: time.Now().Format("2006-01-02 15:04:05"),
+		//ChannelOrderNo : ,
+		//resp.CallBackStatus =
+		//resp.ChannelCharge =
+	}, nil
 }

@@ -62,7 +62,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	if ChnErr != nil {
 		logx.Error("渠道返回錯誤: ", ChnErr.Error())
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	}  else if ChannelResp.Status() != 200 {
+	} else if ChannelResp.Status() != 200 {
 		logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
@@ -91,11 +91,11 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 
 	//組返回給BO 的代付返回物件
-	resp.Status = 1
-	//resp.CallBackStatus =
-	resp.OrderStatus = orderStatus
-	resp.ChannelReplyDate = time.Now().Format("2006-01-02 15:04:05")
-	//resp.ChannelCharge =
-
-	return resp, nil
+	return &types.ProxyPayOrderQueryResponse{
+		Status: 1,
+		//CallBackStatus: ""
+		OrderStatus:      orderStatus,
+		ChannelReplyDate: time.Now().Format("2006-01-02 15:04:05"),
+		//ChannelCharge =
+	}, nil
 }
