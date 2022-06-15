@@ -3,14 +3,13 @@ package logic
 import (
 	"context"
 	"fmt"
+	"github.com/copo888/channel_app/ailefupay/internal/payutils"
+	"github.com/copo888/channel_app/ailefupay/internal/svc"
+	"github.com/copo888/channel_app/ailefupay/internal/types"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
-	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
@@ -43,39 +42,16 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 	// 組請求參數
 	data := url.Values{}
-	if req.OrderNo != "" {
-		data.Set("trade_no", req.OrderNo)
-	}
-	if req.ChannelOrderNo != "" {
-		data.Set("order_no", req.ChannelOrderNo)
-	}
-	data.Set("appid", channel.MerId)
-	data.Set("nonce_str", randomID)
-
-	// 組請求參數 FOR JSON
-	//data := struct {
-	//	merchId  string
-	//	orderId  string
-	//	time     string
-	//	signType string
-	//	sign     string
-	//}{
-	//	merchId:  channel.MerId,
-	//	orderId:  req.OrderNo,
-	//	time:     timestamp,
-	//	signType: "MD5",
-	//}
-
+	data.Set("tradeNo", req.OrderNo)
+	data.Set("merNo", channel.MerId)
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	source := channel.MerId + req.OrderNo + channel.MerKey
+	sign := payutils.GetSign(source)
+	logx.Info("加签参数: ", source)
+	logx.Info("签名字串: ", sign)
 	data.Set("sign", sign)
-
-	// 加簽 JSON
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.sign = sign
 
 	// 請求渠道
 	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
@@ -86,7 +62,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
-	}  else if res.Status() != 200 {
+	} else if res.Status() != 200 {
 		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
@@ -94,25 +70,25 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code  string `json:"code"`
-		Msg   string `json:"msg"`
-		State string `json:"state"` //状态 1-成功 2-等待付款 7-关闭
-		Money string `json:"money"`
+		Success     int64  `json:"Success"`
+		Message     string `json:"Message, optional"`
+		Status      string `json:"status"`
+		OrderAmount string `json:"orderAmount"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
-		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Code != "0000" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
+	} else if channelResp.Success != 1 {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Money, 64)
+	orderAmount, errParse := strconv.ParseFloat(channelResp.OrderAmount, 64)
 	if errParse != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"
-	if channelResp.State == "1" {
+	if channelResp.Status == "1" {
 		orderStatus = "1"
 	}
 
