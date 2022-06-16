@@ -50,7 +50,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	data.Set("sign", sign)
 
 	// 請求渠道
-	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
+	logx.Infof("代付余额请求地址:%s,代付余额請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
 
