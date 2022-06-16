@@ -4,16 +4,14 @@ import (
 	"context"
 	"fmt"
 	"github.com/copo888/channel_app/ailefupay/internal/payutils"
+	"github.com/copo888/channel_app/ailefupay/internal/svc"
+	"github.com/copo888/channel_app/ailefupay/internal/types"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"time"
-
-	"github.com/copo888/channel_app/ailefupay/internal/svc"
-	"github.com/copo888/channel_app/ailefupay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -73,7 +71,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		Success     int64  `json:"Success"`
 		Message     string `json:"Message, optional"`
 		Status      int64 `json:"status"`
-		OrderAmount string `json:"orderAmount"`
+		OrderAmount float64 `json:"orderAmount"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
@@ -90,11 +88,14 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 
 	//組返回給BO 的代付返回物件
-	resp.Status = 1
-	//resp.CallBackStatus =
-	resp.OrderStatus = orderStatus
-	resp.ChannelReplyDate = time.Now().Format("2006-01-02 15:04:05")
-	//resp.ChannelCharge =
+	resp = &types.ProxyPayOrderQueryResponse{
+		Status: 1,
+		ChannelOrderNo: "",
+		OrderStatus: orderStatus,
+		ChannelReplyDate: "",
+		ChannelCharge: 0,
+	}
+
 
 	return resp, nil
 }
