@@ -34,8 +34,9 @@ steps:
         - zhongshoupay
       event:
         - push
-
-
+trigger:
+  branch:
+    - zhongshoupay
 ---
 kind: pipeline
 name: lepay
@@ -73,8 +74,9 @@ steps:
         - lepay
       event:
         - push
-
-
+trigger:
+  branch:
+    - lepay
 ---
 kind: pipeline
 name: taotaopay
@@ -112,7 +114,9 @@ steps:
         - taotaopay
       event:
         - push
-
+trigger:
+  branch:
+    - taotaopay
 ---
 kind: pipeline
 name: wanlisinpay
@@ -150,7 +154,9 @@ steps:
         - wanlisinpay
       event:
         - push
-
+trigger:
+  branch:
+    - wanlisinpay
 ---
 kind: pipeline
 name: wangjhepay
@@ -188,7 +194,9 @@ steps:
         - wangjhepay
       event:
         - push
-
+trigger:
+  branch:
+    - wangjhepay
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -226,7 +234,9 @@ steps:
         - shenfutongpay6
       event:
         - push
-
+trigger:
+  branch:
+    - shenfutongpay6
 ---
 kind: pipeline
 name: stpay
@@ -264,7 +274,9 @@ steps:
         - stpay
       event:
         - push
-
+trigger:
+  branch:
+    - stpay
 ---
 kind: pipeline
 name: ailefupay
