@@ -302,3 +302,6 @@ steps:
         - ailefupay
       event:
         - push
+trigger:
+  branch:
+    - ailefupay
