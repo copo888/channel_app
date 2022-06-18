@@ -397,3 +397,43 @@ steps:
 trigger:
   branch:
     - lyubupay
+---
+kind: pipeline
+name: liepay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-liepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout liepay
+        - git checkout -- .
+        - git pull origin liepay
+        - go mod tidy
+        - docker-compose -f liepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=liepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/liepay liepay/pay.go
+        - docker build -t liepay -f liepay/Dockerfile .
+        - docker-compose -f liepay/docker-compose.yml up -d
+    when:
+      branch:
+        - liepay
+      event:
+        - push
+trigger:
+  branch:
+    - liepay
