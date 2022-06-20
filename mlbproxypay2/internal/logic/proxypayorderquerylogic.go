@@ -6,15 +6,16 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"strings"
+	"strconv"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/svc"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -36,6 +37,8 @@ func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQueryRequest) (resp *types.ProxyPayOrderQueryResponse, err error) {
 
 	logx.Infof("Enter ProxyPayOrderQuery. channelName: %s, ProxyPayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
+
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -46,14 +49,15 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 
 	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10301")
-	data.Set("outTradeNo", req.OrderNo)
+	data.Set("merchantNo", channel.MerId)
+	data.Set("orderNo", req.OrderNo)
+	data.Set("tradeNo", req.ChannelOrderNo)
+	data.Set("time", strconv.FormatInt(utils.GetCurrentMilliSec(), 10))
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	sign := payutils.SortAndSignFromUrlValues_SHA256(data, channel.MerKey)
 	data.Set("sign", sign)
-
+	data.Set("appSecret", APP_SECRET)
 	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
@@ -66,28 +70,26 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Success    bool   `json:"success"`
-		Msg        string `json:"msg"`
-		OutTradeNo string `json:"outTradeNo"`
-		Amount     string `json:"amount"`
-		Status     string `json:"status"`
-		StatusStr  string `json:"statusStr"`
+		Code    int    `json:"code"`
+		Msg     string `json:"text"`
+		Status  string `json:"status"` //PENDING (待处理); PAID (已处理); REVERSED (已冲正, 预留); CANCELLED (已撤销);
+		TradeNo string `json:"tradeNo"`
+		Amount  string `json:"amount"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.Success != true {
-		logx.Errorf("代付查询渠道返回错误: %s: %s", channelQueryResp.Success, channelQueryResp.Msg)
+	} else if channelQueryResp.Code != 0 {
+		logx.Errorf("代付查询渠道返回错误: %d: %s", channelQueryResp.Code, channelQueryResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Msg)
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Status == "1" {
+	if channelQueryResp.Status == "PAID" {
 		orderStatus = "20"
-	} else if strings.Index("2,3,5", channelQueryResp.Status) > -1 {
+	} else if channelQueryResp.Status == "CANCELLED" {
 		orderStatus = "30"
 	}
 
@@ -97,6 +99,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		//CallBackStatus: ""
 		OrderStatus:      orderStatus,
 		ChannelReplyDate: time.Now().Format("2006-01-02 15:04:05"),
+		ChannelOrderNo:   channelQueryResp.TradeNo,
 		//ChannelCharge =
 	}, nil
 }

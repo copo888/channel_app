@@ -17,6 +17,14 @@ func GetSign(source string) string {
 	return result
 }
 
+func GetSign_SHA256(source string) string {
+	data := []byte(source)
+	source2 := fmt.Sprintf("%x", sha256.Sum256(data))
+	logx.Infof("sha256 %s", source2)
+	result := fmt.Sprintf("%x", md5.Sum([]byte(source2)))
+	return strings.ToUpper(result)
+}
+
 /*
 JoinStringsInASCII 按照规则，参数名ASCII码从小到大排序后拼接
 data 待拼接的数据
@@ -57,7 +65,7 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	} else {
 		sort.Strings(list)
 	}
-	return strings.Join(list, sep) + "&" + key
+	return strings.Join(list, sep) + key
 }
 
 // VerifySign 验签
@@ -113,14 +121,6 @@ func SortAndSignSHA256FromMap(newData map[string]string, screctKey string) strin
 	logx.Info("加签参数: ", newSource)
 	logx.Info("签名字串: ", newSign)
 	return newSign
-}
-
-func GetSign_SHA256(source string) string {
-	data := []byte(source)
-	source2 := fmt.Sprintf("%x", sha256.Sum256(data))
-	logx.Infof("sha256 %s", source2)
-	result := fmt.Sprintf("%x", md5.Sum([]byte(source2)))
-	return strings.ToUpper(result)
 }
 
 func CovertUrlValuesToMap(values url.Values) map[string]string {
