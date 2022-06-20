@@ -480,7 +480,7 @@ trigger:
   branch:
     - vcpay2
 
-
+---
 kind: pipeline
 name: channel_app
 
@@ -520,3 +520,4 @@ steps:
 trigger:
   branch:
     - mlbproxypay2
+
