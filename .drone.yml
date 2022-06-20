@@ -397,3 +397,45 @@ steps:
 trigger:
   branch:
     - lyubupay
+
+
+---
+kind: pipeline
+name: lyubupay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-mlbproxypay2
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout mlbproxypay2
+        - git checkout -- .
+        - git pull origin mlbproxypay2
+        - go mod tidy
+        - docker-compose -f mlbproxypay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mlbproxypay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mlbproxypay2 mlbproxypay2/pay.go
+        - docker build -t mlbproxypay2 -f mlbproxypay2/Dockerfile .
+        - docker-compose -f mlbproxypay2/docker-compose.yml up -d
+    when:
+      branch:
+        - mlbproxypay2
+      event:
+        - push
+trigger:
+  branch:
+    - mlbproxypay2
