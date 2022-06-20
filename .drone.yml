@@ -398,7 +398,6 @@ trigger:
   branch:
     - lyubupay
 
-
 ---
 kind: pipeline
 name: lyubupay
