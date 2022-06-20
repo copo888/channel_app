@@ -482,7 +482,7 @@ trigger:
 
 ---
 kind: pipeline
-name: channel_app
+name: mlbproxypay2
 
 clone:
   disable: true
