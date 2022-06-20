@@ -8,15 +8,14 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/vcpay2/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/vcpay2/internal/svc"
+	"github.com/copo888/channel_app/vcpay2/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -51,7 +50,13 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	source:= req.Type + "&" + req.Amount + "&" + req.AppKey + "&" + req.PayType + "&" + req.OrderID + "&" + req.Status + "&" + channel.MerKey
+	sign := payutils.GetSign(source)
+	fmt.Sprintf("-------" + source)
+	logx.Info("verifySource: ", source)
+	logx.Info("verifySign: ", sign)
+	logx.Info("reqSign: ", req.Sign)
+	if sign != req.Sign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
@@ -59,19 +64,20 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+
+	var status = "0"  // // 0: 配对中 1: 新订单 2: 已付款 5: 争议中
+	if req.Status == "4" {  // 4: 已完成
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if req.Status == "3" { // 3: 已取消
 		status = "2"
 	}
-
+	//渠道回調狀態(0:處理中1:成功2:失敗)
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
+		ProxyPayOrderNo:     req.OrderID,
 		ChannelOrderNo:      "",
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
+		ChannelResultNote:   "",
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",

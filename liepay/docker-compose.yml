@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: liepay
+    image: liepay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/liepay:/app/logs

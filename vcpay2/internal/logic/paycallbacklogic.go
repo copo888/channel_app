@@ -9,14 +9,14 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/vcpay2/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/vcpay2/internal/svc"
+	"github.com/copo888/channel_app/vcpay2/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

@@ -8,15 +8,14 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/liepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/liepay/internal/svc"
+	"github.com/copo888/channel_app/liepay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -37,7 +36,7 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -60,18 +59,18 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+	if req.Status == "2" {
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if req.Status == "3" {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.DfMchOrderNo,
+		ChannelOrderNo:      req.TransOrderNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
+		ChannelResultNote:   "",
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
