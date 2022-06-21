@@ -157,6 +157,19 @@ func GetDecimal(amount string, precisions ...int32) float64 {
 	res, _ := f1.Truncate(precision).Float64()
 	return res
 }
+
+func GetDecimal_Float(amount float64, precisions ...int32) float64 {
+	f1 := decimal.NewFromFloat(amount)
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Truncate(precision).Float64()
+	return res
+}
+
 //FloatMulF 浮點數乘法 (precision=4)
 func FloatMulF(s float64, p float64, precisions ...int32) float64 {
 

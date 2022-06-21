@@ -8,7 +8,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/mlbproxypay2/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
@@ -51,35 +50,36 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, req, channel.MerKey); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
+
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+	if req.Status == "PAID" {
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if strings.EqualFold(req.Status, "CANCELLED") {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.OrderNo,
+		ChannelOrderNo:      req.TradeNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
-		Amount:              orderAmount,
+		ChannelResultNote:   "",
+		Amount:              utils.GetDecimal_Float(orderAmount),
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}
 
 	// call boadmin callback api
 	span := trace.SpanFromContext(l.ctx)
-	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.PayKey, l.svcCtx.Config.ApiKey.PublicKey)
+	proxyKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
 	if errk != nil {
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
@@ -87,7 +87,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
-	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
+	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationProxykey", proxyKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.Error(errx.Error())
