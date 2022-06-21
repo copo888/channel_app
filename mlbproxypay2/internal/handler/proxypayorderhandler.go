@@ -2,11 +2,14 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
 	"github.com/copo888/channel_app/mlbproxypay2/internal/logic"
 	"github.com/copo888/channel_app/mlbproxypay2/internal/svc"
 	"github.com/copo888/channel_app/mlbproxypay2/internal/types"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
@@ -39,12 +42,13 @@ func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		// 驗證密鑰
-		//authenticationProxykey := r.Header.Get("authenticationProxykey")
-		//if isOK, err := utils.MicroServiceVerification(authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
-		//	err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
-		//	responsex.Json(w, r, err.Error(), nil, err)
-		//	return
-		//}
+		authenticationProxykey := r.Header.Get("authenticationProxykey")
+		logx.Infof("authenticationProxykey: %s，ProxyKey:%s，PublicKey:%s", authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey)
+		if isOK, err := utils.MicroServiceVerification(authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
+			err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
+			responsex.Json(w, r, err.Error(), nil, err)
+			return
+		}
 
 		l := logic.NewProxyPayOrderLogic(r.Context(), ctx)
 		resp, err := l.ProxyPayOrder(&req)
