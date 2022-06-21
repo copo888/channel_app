@@ -6,22 +6,22 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/samplepay/internal/logic"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/logic"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/svc"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"net/http"
 )
 
-func ProxyPayOrderQueryHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		span := trace.SpanFromContext(r.Context())
 		defer span.End()
 
-		var req types.ProxyPayOrderQueryRequest
+		var req types.ProxyPayOrderRequest
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
@@ -48,8 +48,8 @@ func ProxyPayOrderQueryHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		l := logic.NewProxyPayOrderQueryLogic(r.Context(), ctx)
-		resp, err := l.ProxyPayOrderQuery(&req)
+		l := logic.NewProxyPayOrderLogic(r.Context(), ctx)
+		resp, err := l.ProxyPayOrder(&req)
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {

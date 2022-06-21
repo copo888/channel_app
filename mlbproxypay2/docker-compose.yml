@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: mlbproxypay2
+    image: mlbproxypay2
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/mlbproxypay2:/app/logs
