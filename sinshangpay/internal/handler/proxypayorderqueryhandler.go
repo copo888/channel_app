@@ -6,22 +6,22 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/vcpay2/internal/logic"
-	"github.com/copo888/channel_app/vcpay2/internal/svc"
-	"github.com/copo888/channel_app/vcpay2/internal/types"
+	"github.com/copo888/channel_app/sinshangpay/internal/logic"
+	"github.com/copo888/channel_app/sinshangpay/internal/svc"
+	"github.com/copo888/channel_app/sinshangpay/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"net/http"
 )
 
-func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func ProxyPayOrderQueryHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		span := trace.SpanFromContext(r.Context())
 		defer span.End()
 
-		var req types.ProxyPayOrderRequest
+		var req types.ProxyPayOrderQueryRequest
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
@@ -41,15 +41,15 @@ func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		// 驗證密鑰
-		authenticationPaykey := r.Header.Get("authenticationPaykey")
-		if isOK, err := utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
+		authenticationProxykey := r.Header.Get("authenticationProxykey")
+		if isOK, err := utils.MicroServiceVerification(authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
 			err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
 			responsex.Json(w, r, err.Error(), nil, err)
 			return
 		}
 
-		l := logic.NewProxyPayOrderLogic(r.Context(), ctx)
-		resp, err := l.ProxyPayOrder(&req)
+		l := logic.NewProxyPayOrderQueryLogic(r.Context(), ctx)
+		resp, err := l.ProxyPayOrderQuery(&req)
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {
