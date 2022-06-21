@@ -104,14 +104,12 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
-	Charset    string `form:"charset, optional"`
-	Amount     string `form:"amount, optional"`
-	StatusStr  string `form:"statusStr, optional"`
-	OutTradeNo string `form:"outTradeNo, optional"`
-	Sign       string `form:"sign, optional"`
-	SignType   string `form:"signType, optional"`
-	Status     string `form:"status, optional"`
+	Ip      string `form:"ip, optional"`
+	Amount  string `form:"amount, optional"`
+	OrderNo string `form:"orderNo, optional"`
+	TradeNo string `form:"tradeNo, optional"`
+	Status  string `form:"status, optional"`
+	Sign    string `form:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
@@ -127,19 +125,6 @@ type PayCallBackRequest struct {
 	SignType string `json:"signType, optional"`
 	PayType  string `json:"payType, optional"`
 }
-
-// form 格式
-//type PayCallBackRequest struct {
-//	MyIp       string `form:"myIp, optional"`
-//	RealAmount string `form:"realAmount, optional"`
-//	Charset    string `form:"charset, optional"`
-//	Amount     string `form:"amount, optional"`
-//	StatusStr  string `form:"statusStr, optional"`
-//	OutTradeNo string `form:"outTradeNo, optional"`
-//	Sign       string `form:"sign, optional"`
-//	SignType   string `form:"signType, optional"`
-//	Status     string `form:"status, optional"`
-//}
 
 type ReceiverInfoVO struct {
 	CardName   string  `json:"cardName"`
