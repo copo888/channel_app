@@ -2,19 +2,19 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
-	"time"
-
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -43,15 +43,17 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-
-	timestamp := time.Now().Format("20060102150405")
-
+	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchId", channel.MerId)
-	data.Set("orderId", req.OrderNo)
-	data.Set("time", timestamp)
-	data.Set("signType", "MD5")
+	if req.OrderNo != "" {
+		data.Set("trade_no", req.OrderNo)
+	}
+	if req.ChannelOrderNo != "" {
+		data.Set("order_no", req.ChannelOrderNo)
+	}
+	data.Set("appid", channel.MerId)
+	data.Set("nonce_str", randomID)
 
 	// 組請求參數 FOR JSON
 	//data := struct {
@@ -76,16 +78,19 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	//data.sign = sign
 
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%#v", channel.PayQueryUrl, data)
+	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).Form(data)
 	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
 
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
+	}  else if res.Status() != 200 {
+		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
+	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {

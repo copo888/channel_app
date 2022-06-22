@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"github.com/shopspring/decimal"
 	"math/rand"
 	"net"
 	"strconv"
@@ -97,4 +98,45 @@ func IPChecker(myip string, whitelist string) bool {
 		}
 	}
 	return false
+}
+
+//FloatMul 浮點數乘法 (precision=4)
+func FloatMul(s string, p string, precisions ...int32) float64 {
+
+	f1, _ := decimal.NewFromString(s)
+	f2, _ := decimal.NewFromString(p)
+
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+
+	res, _ := f1.Mul(f2).Truncate(precision).Float64()
+
+	return res
+}
+
+//FloatDiv 浮點數除法 (precision=4)
+func FloatDiv(s string, p string, precisions ...int32) float64 {
+
+	f1, _ := decimal.NewFromString(s)
+	f2, _ := decimal.NewFromString(p)
+
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Div(f2).Truncate(precision).Float64()
+
+	return res
+}
+
+func GetCurrentMilliSec() int64 {
+	unixNano := time.Now().UnixNano()
+	return unixNano / 1000000
+	//Number of millisecond elapsed since Unix epoch
 }
