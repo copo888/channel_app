@@ -53,6 +53,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if isSameSign := payutils.VerifySign(req.PaySign, *req, channel.MerKey); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
+	
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.PayAmount, 64); err != nil {
