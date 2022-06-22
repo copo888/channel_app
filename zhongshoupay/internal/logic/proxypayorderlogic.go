@@ -36,7 +36,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	logx.Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
-	//TODO 測試渠道返回
+	//TODO 測試渠道返
 	testResp := &types.ProxyPayOrderResponse{
 		ChannelOrderNo: "ChannelOrderNoTEST",
 		OrderStatus:    "",
