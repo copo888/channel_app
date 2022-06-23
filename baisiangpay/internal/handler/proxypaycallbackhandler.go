@@ -2,11 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/common/vaildx"
 	"github.com/copo888/channel_app/baisiangpay/internal/logic"
 	"github.com/copo888/channel_app/baisiangpay/internal/svc"
 	"github.com/copo888/channel_app/baisiangpay/internal/types"
+	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/vaildx"
 	"github.com/thinkeridea/go-extend/exnet"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
@@ -22,7 +22,7 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.ProxyPayCallBackRequest
 
-		if err := httpx.ParseForm(r, &req); err != nil {
+		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}

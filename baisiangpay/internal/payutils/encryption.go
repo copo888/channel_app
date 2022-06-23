@@ -140,7 +140,7 @@ func CovertToMap(req interface{}) map[string]string {
 		jsonTag := val.Type().Field(i).Tag.Get("json") // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
-		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
+		if name != "sign" && name != "myIp" && name != "ip" && name != "pay_sign" { // 過濾不需加簽參數
 			m[name] = val.Field(i).String()
 		}
 	}

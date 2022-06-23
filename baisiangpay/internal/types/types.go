@@ -74,6 +74,14 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 }
 
+
+
+
+
+
+
+
+
 type ProxyPayOrderResponse struct {
 	ChannelOrderNo string `json:"channelOrderNo"`
 	OrderStatus    string `json:"orderStatus"`
@@ -104,14 +112,15 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip               string `form:"ip, optional"`
-	PaySign          string `form:"pay_sign, optional"`
-	PayAmount        string `form:"pay_amount, optional"`
-	PayRemark        string `form:"pay_remark, optional"`
-	PayStatus        string `form:"pay_status, optional"`
-	PayMessage       string `form:"pay_message, optional"`
-	PayOrderId       string `form:"pay_order_id, optional"`
-	PayTransactionId string `form:"pay_transaction_id, optional"`
+	Ip               string `json:"ip, optional"`
+	PayFee           string `json:"pay_fee, optional"`
+	PaySign          string `json:"pay_sign, optional"`
+	PayAmount        string `json:"pay_amount, optional"`
+	PayRemark        string `json:"pay_remark, optional"`
+	PayStatus        string `json:"pay_status, optional"`
+	PayMessage       string `json:"pay_message, optional"`
+	PayOrderId       string `json:"pay_order_id, optional"`
+	PayTransactionId string `json:"pay_transaction_id, optional"`
 }
 
 type PayCallBackRequest struct {
