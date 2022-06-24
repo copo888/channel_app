@@ -77,7 +77,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	// call boadmin callback api
 	span := trace.SpanFromContext(l.ctx)
-	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.PayKey, l.svcCtx.Config.ApiKey.PublicKey)
+	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
 	if errk != nil {
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
@@ -85,7 +85,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
-	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
+	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.Error(errx.Error())
