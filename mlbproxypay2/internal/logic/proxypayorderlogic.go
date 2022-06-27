@@ -8,14 +8,12 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/mlbproxypay2/internal/payutils"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/svc"
+	"github.com/copo888/channel_app/mlbproxypay2/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
-	"strings"
-
-	"github.com/copo888/channel_app/mlbproxypay2/internal/svc"
-	"github.com/copo888/channel_app/mlbproxypay2/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -54,27 +52,21 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-	//channelBankMap, err2 := model2.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.ReceiptCardBankCode)
-	//if err2 != nil || channelBankMap.MapCode == "" {
-	//	logx.Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
-	//	return nil, errorx.New(responsex.BANK_CODE_INVALID, err2.Error(), "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName)
-	//}
+	channelBankMap, err2 := model2.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.ReceiptCardBankCode)
+	if err2 != nil || channelBankMap.BankName == "" || channelBankMap.MapCode == "" { //BankName空: COPO沒有對應銀行(要加bk_banks)，MapCode為空: 渠道沒有對應銀行代碼(要加ch_channel_banks)
+		logx.Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
+		return nil, errorx.New(responsex.BANK_CODE_INVALID, err2.Error(), "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
+	}
 
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 0, 64)
 
-	bankName := req.ReceiptCardBankName
-	if strings.EqualFold("308", req.ReceiptCardBankCode) {
-		bankName = "招商银行"
-	} else if strings.EqualFold("105", req.ReceiptCardBankCode) {
-		bankName = "招商银行"
-	}
 	data := url.Values{}
 	data.Set("merchantNo", channel.MerId)
 	data.Set("orderNo", req.OrderNo)
 	data.Set("amount", transactionAmount)
-	data.Set("name", bankName)
+	data.Set("name", channelBankMap.BankName)
 	data.Set("bankName", req.ReceiptCardBankName)
 	data.Set("bankAccount", req.ReceiptAccountNumber)
 	data.Set("datetime", utils.GetDateTimeSring(utils.YYYYMMddHHmmss2))

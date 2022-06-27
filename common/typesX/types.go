@@ -43,6 +43,11 @@ type BankCodeMap struct {
 	MapCode     string `json:"mapCode"`
 }
 
+type BankCodeMapX struct {
+	BankCodeMap
+	BankName string `json:"bankName"`
+}
+
 type Bank struct {
 	ID           int64         `json:"id"`
 	BankNo       string        `json:"bankNo"`
