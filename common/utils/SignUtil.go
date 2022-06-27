@@ -32,7 +32,7 @@ func MicroServiceVerification(sing, key, publicKey string) (isOk bool, err error
 	if strings.Index(decryptStr, key) > -1 {
 		trimStr := strings.Replace(decryptStr, key, "", 1)
 		if timeX, err := time.ParseInLocation("200601021504", trimStr, time.Local); err == nil {
-			if time.Now().Sub(timeX).Minutes() <= 5 {
+			if time.Now().Sub(timeX).Minutes() <= 10 {
 				isOk = true
 			}
 		}
