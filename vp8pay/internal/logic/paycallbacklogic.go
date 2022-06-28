@@ -12,7 +12,6 @@ import (
 	"github.com/copo888/channel_app/vp8pay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/vp8pay/internal/svc"
@@ -56,11 +55,6 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
-
 	orderStatus := "1"
 	if req.State == "completed" {
 		orderStatus = "20"
@@ -70,7 +64,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		PayOrderNo:     req.OutTradeNo,
 		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		OrderAmount:    req.Amount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
