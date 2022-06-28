@@ -106,7 +106,7 @@ type ProxyPayQueryInternalBalanceResponse struct {
 type ProxyPayCallBackRequest struct {
 	Ip          string `json:"ip, optional"`
 	TradeNo     string `json:"trade_no, optional"`
-	Amount      string `json:"amount, optional"`
+	Amount      float64 `json:"amount, optional"`
 	OutTradeNo  string `json:"out_trade_no, optional"`
 	CallbackUrl string `json:"callback_url, optional"`
 	State       string `json:"state, optional"`
@@ -116,8 +116,8 @@ type ProxyPayCallBackRequest struct {
 type PayCallBackRequest struct {
 	MyIp          string `json:"myIp, optional"`
 	TradeNo       string `json:"trade_no, optional"`
-	Amount        string `json:"amount, optional"`
-	RequestAmount string `json:"request_amount, optional"`
+	Amount        float64 `json:"amount, optional"`
+	RequestAmount float64 `json:"request_amount, optional"`
 	OutTradeNo    string `json:"out_trade_no, optional"`
 	CallbackUrl   string `json:"callback_url, optional"`
 	State         string `json:"state, optional"`
