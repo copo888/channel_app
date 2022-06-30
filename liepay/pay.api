@@ -125,7 +125,7 @@ type ProxyPayCallBackRequest struct {
 
 type PayCallBackRequest struct {
     MyIp         string `json:"myIp, optional"`
-    MchId        int64  `json:"mch_id, optional"`
+    MchId        string  `json:"mch_id, optional"`
     MchOrderNo   string `json:"mch_order_no, optional"`
     TransOrderNo string `json:"trans_order_no, optional"`
     Amount       string `json:"amount, optional"`
