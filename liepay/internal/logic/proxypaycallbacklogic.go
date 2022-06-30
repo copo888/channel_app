@@ -8,7 +8,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/liepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"time"
@@ -49,9 +48,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == 2 {
