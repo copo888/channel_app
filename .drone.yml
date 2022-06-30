@@ -681,3 +681,44 @@ steps:
 trigger:
   branch:
     - jstpay
+
+---
+kind: pipeline
+name: mlbpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-mlbpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout mlbpay
+        - git checkout -- .
+        - git pull origin mlbpay
+        - go mod tidy
+        - docker-compose -f mlbpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mlbpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mlbpay mlbpay/pay.go
+        - docker build -t mlbpay -f mlbpay/Dockerfile .
+        - docker-compose -f mlbpay/docker-compose.yml up -d
+    when:
+      branch:
+        - mlbpay
+      event:
+        - push
+trigger:
+  branch:
+    - mlbpay
