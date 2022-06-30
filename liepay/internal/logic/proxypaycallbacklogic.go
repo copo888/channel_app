@@ -10,6 +10,7 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/liepay/internal/svc"
@@ -59,13 +60,18 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		status = "2"
 	}
 
+	var orderAmount float64
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_SIGN)
+	}
+
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.DfMchOrderNo,
 		ChannelOrderNo:      req.TransOrderNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   "",
-		Amount:              req.Amount,
+		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}
