@@ -105,27 +105,27 @@ type ProxyPayQueryInternalBalanceResponse struct {
 
 type ProxyPayCallBackRequest struct {
 	Ip             string `json:"ip, optional"`
-	MchId          int64 `json:"mch_id, optional"`
+	MchId          int64  `json:"mch_id, optional"`
 	DfMchOrderNo   string `json:"df_mch_order_no, optional"`
 	TransOrderNo   string `json:"trans_order_no, optional"`
 	Amount         string `json:"amount, optional"`
 	RealAmount     string `json:"real_amount, optional"`
 	ServiceCharge  string `json:"service_charge, optional"`
 	ProcessingTime string `json:"processing_time, optional"`
-	Status         int64 `json:"status, optional"`
+	Status         string `json:"status, optional"`
 	Sign           string `json:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
 	MyIp         string `json:"myIp, optional"`
-	MchId        int64 `json:"mch_id, optional"`
+	MchId        int64  `json:"mch_id, optional"`
 	MchOrderNo   string `json:"mch_order_no, optional"`
 	TransOrderNo string `json:"trans_order_no, optional"`
 	Amount       string `json:"amount, optional"`
 	RealAmount   string `json:"real_amount, optional"`
 	RandomString string `json:"random_string, optional"`
 	SuccessTime  string `json:"success_time, optional"`
-	Status       int64 `json:"status, optional"`
+	Status       int64  `json:"status, optional"`
 	Attach       string `json:"attach, optional"`
 	Sign         string `json:"sign, optional"`
 }

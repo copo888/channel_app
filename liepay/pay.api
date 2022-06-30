@@ -111,30 +111,30 @@ type ProxyPayQueryInternalBalanceResponse {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip             string `json:"ip, optional"`
-	MchId          int64 `json:"mch_id, optional"`
-	DfMchOrderNo   string `json:"df_mch_order_no, optional"`
-	TransOrderNo   string `json:"trans_order_no, optional"`
-	Amount         string `json:"amount, optional"`
-	RealAmount     string `json:"real_amount, optional"`
-	ServiceCharge  string `json:"service_charge, optional"`
-	ProcessingTime string `json:"processing_time, optional"`
-	Status         int64 `json:"status, optional"`
-	Sign           string `json:"sign, optional"`
+    Ip             string `json:"ip, optional"`
+    MchId          int64  `json:"mch_id, optional"`
+    DfMchOrderNo   string `json:"df_mch_order_no, optional"`
+    TransOrderNo   string `json:"trans_order_no, optional"`
+    Amount         string `json:"amount, optional"`
+    RealAmount     string `json:"real_amount, optional"`
+    ServiceCharge  string `json:"service_charge, optional"`
+    ProcessingTime string `json:"processing_time, optional"`
+    Status         string `json:"status, optional"`
+    Sign           string `json:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp         string `json:"myIp, optional"`
-	MchId        int64 `json:"mch_id, optional"`
-	MchOrderNo   string `json:"mch_order_no, optional"`
-	TransOrderNo string `json:"trans_order_no, optional"`
-	Amount       string `json:"amount, optional"`
-	RealAmount   string `json:"real_amount, optional"`
-	RandomString string `json:"random_string, optional"`
-	SuccessTime  string `json:"success_time, optional"`
-	Status       int64 `json:"status, optional"`
-	Attach       string `json:"attach, optional"`
-	Sign         string `json:"sign, optional"`
+    MyIp         string `json:"myIp, optional"`
+    MchId        int64  `json:"mch_id, optional"`
+    MchOrderNo   string `json:"mch_order_no, optional"`
+    TransOrderNo string `json:"trans_order_no, optional"`
+    Amount       string `json:"amount, optional"`
+    RealAmount   string `json:"real_amount, optional"`
+    RandomString string `json:"random_string, optional"`
+    SuccessTime  string `json:"success_time, optional"`
+    Status       int64  `json:"status, optional"`
+    Attach       string `json:"attach, optional"`
+    Sign         string `json:"sign, optional"`
 }
 // form 格式
 //type PayCallBackRequest struct {
@@ -166,25 +166,25 @@ type ReceiverInfoVO {
 service pay {
 	@handler PayOrderHandler
 	post /pay (PayOrderRequest) returns (PayOrderResponse)
-	
+
 	@handler PayOrderQueryHandler
 	post /pay-query (PayOrderQueryRequest) returns (PayOrderQueryResponse)
-	
+
 	@handler PayCallBackHandler
 	post /pay-call-back (PayCallBackRequest) returns (string)
-	
+
 	@handler PayQueryBalanceHandler
 	post /pay-query-balance-internal returns (PayQueryInternalBalanceResponse)
-	
+
 	@handler ProxyPayOrderHandler
 	post /proxy-pay (ProxyPayOrderRequest) returns (ProxyPayOrderResponse)
-	
+
 	@handler ProxyPayOrderQueryHandler
 	post /proxy-pay-query (ProxyPayOrderQueryRequest) returns (ProxyPayOrderQueryResponse)
-	
+
 	@handler ProxyPayCallBackHandler
 	post /proxy-pay-call-back (ProxyPayCallBackRequest) returns (string)
-	
+
 	@handler ProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
 }
