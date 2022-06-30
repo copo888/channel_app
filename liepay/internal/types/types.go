@@ -112,7 +112,7 @@ type ProxyPayCallBackRequest struct {
 	RealAmount     string `json:"real_amount, optional"`
 	ServiceCharge  string `json:"service_charge, optional"`
 	ProcessingTime string `json:"processing_time, optional"`
-	Status         string `json:"status, optional"`
+	Status         int64 `json:"status, optional"`
 	Sign           string `json:"sign, optional"`
 }
 
@@ -125,7 +125,7 @@ type PayCallBackRequest struct {
 	RealAmount   string `json:"real_amount, optional"`
 	RandomString string `json:"random_string, optional"`
 	SuccessTime  string `json:"success_time, optional"`
-	Status       string `json:"status, optional"`
+	Status       int64 `json:"status, optional"`
 	Attach       string `json:"attach, optional"`
 	Sign         string `json:"sign, optional"`
 }

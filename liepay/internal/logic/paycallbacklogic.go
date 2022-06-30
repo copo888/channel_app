@@ -62,7 +62,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	orderStatus := "1"
-	if req.Status == "2" {
+	if req.Status == 2 {
 		orderStatus = "20"
 	}
 
