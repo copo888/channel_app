@@ -59,9 +59,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "2" {
+	if req.Status == 2 {
 		status = "1"
-	} else if req.Status == "3" {
+	} else if req.Status == 3 {
 		status = "2"
 	}
 
@@ -78,7 +78,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	// call boadmin callback api
 	span := trace.SpanFromContext(l.ctx)
-	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.PayKey, l.svcCtx.Config.ApiKey.PublicKey)
+	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
 	if errk != nil {
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
@@ -86,7 +86,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
-	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
+	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.Error(errx.Error())
