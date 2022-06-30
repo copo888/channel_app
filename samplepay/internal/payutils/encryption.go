@@ -2,11 +2,13 @@ package payutils
 
 import (
 	"crypto/md5"
+	"crypto/sha256"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/url"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -82,6 +84,11 @@ func SortAndSignFromUrlValues(values url.Values, screctKey string) string {
 	return SortAndSignFromMap(m, screctKey)
 }
 
+func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string {
+	m := CovertUrlValuesToMap(values)
+	return SortAndSignSHA256FromMap(m, screctKey)
+}
+
 // SortAndSignFromObj 物件 排序后加签
 func SortAndSignFromObj(data interface{}, screctKey string) string {
 	m := CovertToMap(data)
@@ -101,6 +108,22 @@ func SortAndSignFromMap(newData map[string]string, screctKey string) string {
 	return newSign
 }
 
+func SortAndSignSHA256FromMap(newData map[string]string, screctKey string) string {
+	newSource := JoinStringsInASCII(newData, "&", false, true, screctKey)
+	newSign := GetSign_SHA256(newSource)
+	logx.Info("加签参数: ", newSource)
+	logx.Info("签名字串: ", newSign)
+	return newSign
+}
+
+func GetSign_SHA256(source string) string {
+	data := []byte(source)
+	source2 := fmt.Sprintf("%x", sha256.Sum256(data))
+	logx.Infof("sha256 %s", source2)
+	result := fmt.Sprintf("%x", md5.Sum([]byte(source2)))
+	return strings.ToUpper(result)
+}
+
 func CovertUrlValuesToMap(values url.Values) map[string]string {
 	m := make(map[string]string)
 	for k := range values {
@@ -110,18 +133,37 @@ func CovertUrlValuesToMap(values url.Values) map[string]string {
 }
 
 // CovertToMap 物件轉map 檢查請求參數是否有空值
+// CovertToMap 物件轉map 檢查請求參數是否有空值
 func CovertToMap(req interface{}) map[string]string {
 	m := make(map[string]string)
 
 	val := reflect.ValueOf(req)
 	for i := 0; i < val.Type().NumField(); i++ {
-		jsonTag := val.Type().Field(i).Tag.Get("form") // [依据不同请求类型更改] from / json
+		jsonTag := val.Type().Field(i).Tag.Get("json") // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
 		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
-			m[name] = val.Field(i).String()
+			if val.Field(i).Type().Name() == "float64" {
+				precise := GetDecimalPlaces(val.Field(i).Float())
+				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)
+				m[name] = valTrans
+			} else if val.Field(i).Type().Name() == "string" {
+				m[name] = val.Field(i).String()
+			} else if val.Field(i).Type().Name() == "int64" {
+
+				m[name] = strconv.FormatInt(val.Field(i).Int(), 10)
+			}
 		}
 	}
 
 	return m
+}
+
+func GetDecimalPlaces(f float64) int {
+	numstr := fmt.Sprint(f)
+	tmp := strings.Split(numstr, ".")
+	if len(tmp) <= 1 {
+		return 0
+	}
+	return len(tmp[1])
 }

@@ -31,12 +31,12 @@ steps:
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
       branch:
-        - zhongshoupay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - zhongshoupay
+    - stage
 ---
 kind: pipeline
 name: lepay
@@ -71,12 +71,12 @@ steps:
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
       branch:
-        - lepay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - lepay
+    - stage
 ---
 kind: pipeline
 name: taotaopay
@@ -111,12 +111,12 @@ steps:
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
       branch:
-        - taotaopay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - taotaopay
+    - stage
 ---
 kind: pipeline
 name: wanlisinpay
@@ -151,12 +151,12 @@ steps:
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
       branch:
-        - wanlisinpay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - wanlisinpay
+    - stage
 ---
 kind: pipeline
 name: wangjhepay
@@ -191,12 +191,12 @@ steps:
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
       branch:
-        - wangjhepay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - wangjhepay
+    - stage
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -231,12 +231,12 @@ steps:
         - docker-compose -f shenfutongpay6/docker-compose.yml up -d
     when:
       branch:
-        - shenfutongpay6
+        - stage
       event:
         - push
 trigger:
   branch:
-    - shenfutongpay6
+    - stage
 ---
 kind: pipeline
 name: stpay
@@ -271,12 +271,12 @@ steps:
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
       branch:
-        - stpay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - stpay
+    - stage
 ---
 kind: pipeline
 name: ailefupay
@@ -311,12 +311,12 @@ steps:
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
       branch:
-        - ailefupay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - ailefupay
+    - stage
 ---
 kind: pipeline
 name: huanyupay
@@ -351,9 +351,374 @@ steps:
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
       branch:
-        - huanyupay
+        - stage
       event:
         - push
 trigger:
   branch:
-    - huanyupay
+    - stage
+---
+kind: pipeline
+name: lyubupay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-lyubupay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout lyubupay
+        - git checkout -- .
+        - git pull origin lyubupay
+        - go mod tidy
+        - docker-compose -f lyubupay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=lyubupay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/lyubupay lyubupay/pay.go
+        - docker build -t lyubupay -f lyubupay/Dockerfile .
+        - docker-compose -f lyubupay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+
+---
+kind: pipeline
+name: liepay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-liepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout liepay
+        - git checkout -- .
+        - git pull origin liepay
+        - go mod tidy
+        - docker-compose -f liepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=liepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/liepay liepay/pay.go
+        - docker build -t liepay -f liepay/Dockerfile .
+        - docker-compose -f liepay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+
+---
+kind: pipeline
+name: vcpay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-vcpay2
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout vcpay2
+        - git checkout -- .
+        - git pull origin vcpay2
+        - go mod tidy
+        - docker-compose -f vcpay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=vcpay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/vcpay2 vcpay2/pay.go
+        - docker build -t vcpay2 -f vcpay2/Dockerfile .
+        - docker-compose -f vcpay2/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+
+---
+kind: pipeline
+name: mlbproxypay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-mlbproxypay2
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout mlbproxypay2
+        - git checkout -- .
+        - git pull origin mlbproxypay2
+        - go mod tidy
+        - docker-compose -f mlbproxypay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mlbproxypay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mlbproxypay2 mlbproxypay2/pay.go
+        - docker build -t mlbproxypay2 -f mlbproxypay2/Dockerfile .
+        - docker-compose -f mlbproxypay2/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+
+---
+kind: pipeline
+name: sinshangpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sinshangpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout sinshangpay
+        - git checkout -- .
+        - git pull origin sinshangpay
+        - go mod tidy
+        - docker-compose -f sinshangpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sinshangpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sinshangpay sinshangpay/pay.go
+        - docker build -t sinshangpay -f sinshangpay/Dockerfile .
+        - docker-compose -f sinshangpay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+---
+kind: pipeline
+name: baisiangpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-baisiangpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout baisiangpay
+        - git checkout -- .
+        - git pull origin baisiangpay
+        - go mod tidy
+        - docker-compose -f baisiangpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=baisiangpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/baisiangpay baisiangpay/pay.go
+        - docker build -t baisiangpay -f baisiangpay/Dockerfile .
+        - docker-compose -f baisiangpay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+---
+kind: pipeline
+name: vp8pay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-vp8pay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout vp8pay
+        - git checkout -- .
+        - git pull origin vp8pay
+        - go mod tidy
+        - docker-compose -f vp8pay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=vp8pay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/vp8pay vp8pay/pay.go
+        - docker build -t vp8pay -f vp8pay/Dockerfile .
+        - docker-compose -f vp8pay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+---
+kind: pipeline
+name: jstpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jstpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout jstpay
+        - git checkout -- .
+        - git pull origin jstpay
+        - go mod tidy
+        - docker-compose -f jstpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jstpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jstpay jstpay/pay.go
+        - docker build -t jstpay -f jstpay/Dockerfile .
+        - docker-compose -f jstpay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage
+
+---
+kind: pipeline
+name: mlbpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-mlbpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git checkout mlbpay
+        - git checkout -- .
+        - git pull origin mlbpay
+        - go mod tidy
+        - docker-compose -f mlbpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mlbpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mlbpay mlbpay/pay.go
+        - docker build -t mlbpay -f mlbpay/Dockerfile .
+        - docker-compose -f mlbpay/docker-compose.yml up -d
+    when:
+      branch:
+        - stage
+      event:
+        - push
+trigger:
+  branch:
+    - stage

@@ -44,11 +44,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return
 	}
 
-	// 檢查 userId
-	if req.PayType == "YK" && len(req.UserId) == 0 {
-		logx.Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_USER_ID)
-	}
+	/** UserId 必填時使用 **/
+	//if req.PayType == "YK" && len(req.UserId) == 0 {
+	//	logx.Errorf("userId不可为空 userId:%s", req.UserId)
+	//	return nil, errorx.New(responsex.INVALID_USER_ID)
+	//}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
@@ -89,14 +89,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	data.Set("reType", "INFO")
-	//}
-
-	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.JumpType, "YK") {
-	//	if req.UserId == "" {
-	//		return nil, errorx.New(responsex.INVALID_USER_ID, err.Error())
-	//	}
-	//	data.Set("playerName", req.UserId)
 	//}
 
 	// 加簽
