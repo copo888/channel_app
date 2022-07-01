@@ -30,13 +30,13 @@ steps:
         - docker build -t zhongshoupay -f zhongshoupay/Dockerfile .
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/zhongshoupay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: lepay
@@ -70,13 +70,13 @@ steps:
         - docker build -t lepay -f lepay/Dockerfile .
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/lepay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: taotaopay
@@ -110,13 +110,13 @@ steps:
         - docker build -t taotaopay -f taotaopay/Dockerfile .
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/taotaopay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: wanlisinpay
@@ -150,13 +150,13 @@ steps:
         - docker build -t wanlisinpay -f wanlisinpay/Dockerfile .
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/wanlisinpay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: wangjhepay
@@ -190,13 +190,13 @@ steps:
         - docker build -t wangjhepay -f wangjhepay/Dockerfile .
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/wangjhepay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -230,13 +230,13 @@ steps:
         - docker build -t shenfutongpay6 -f shenfutongpay6/Dockerfile .
         - docker-compose -f shenfutongpay6/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/shenfutongpay6*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: stpay
@@ -270,13 +270,13 @@ steps:
         - docker build -t stpay -f stpay/Dockerfile .
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/stpay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: ailefupay
@@ -310,13 +310,13 @@ steps:
         - docker build -t ailefupay -f ailefupay/Dockerfile .
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/ailefupay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: huanyupay
@@ -350,13 +350,13 @@ steps:
         - docker build -t huanyupay -f huanyupay/Dockerfile .
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/huanyupay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: lyubupay
@@ -390,13 +390,13 @@ steps:
         - docker build -t lyubupay -f lyubupay/Dockerfile .
         - docker-compose -f lyubupay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/lyubupay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 
 ---
 kind: pipeline
@@ -431,13 +431,13 @@ steps:
         - docker build -t liepay -f liepay/Dockerfile .
         - docker-compose -f liepay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/liepay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 
 ---
 kind: pipeline
@@ -472,6 +472,8 @@ steps:
         - docker build -t vcpay2 -f vcpay2/Dockerfile .
         - docker-compose -f vcpay2/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/vcpay2*
       branch:
         - stage
       event:
@@ -519,9 +521,7 @@ steps:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 
 ---
 kind: pipeline
@@ -556,13 +556,13 @@ steps:
         - docker build -t sinshangpay -f sinshangpay/Dockerfile .
         - docker-compose -f sinshangpay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/sinshangpay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: baisiangpay
@@ -596,6 +596,8 @@ steps:
         - docker build -t baisiangpay -f baisiangpay/Dockerfile .
         - docker-compose -f baisiangpay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/baisiangpay*
       branch:
         - stage
       event:
@@ -636,13 +638,13 @@ steps:
         - docker build -t vp8pay -f vp8pay/Dockerfile .
         - docker-compose -f vp8pay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/vp8pay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: jstpay
@@ -676,13 +678,12 @@ steps:
         - docker build -t jstpay -f jstpay/Dockerfile .
         - docker-compose -f jstpay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/jstpay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
 
 ---
 kind: pipeline
@@ -717,10 +718,9 @@ steps:
         - docker build -t mlbpay -f mlbpay/Dockerfile .
         - docker-compose -f mlbpay/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/mlbpay*
       branch:
         - stage
       event:
         - push
-trigger:
-  branch:
-    - stage
