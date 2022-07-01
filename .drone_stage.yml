@@ -546,7 +546,7 @@ steps:
         - tag
 trigger:
   ref:
-    - refs/tags/vcpay2*
+    - refs/tags/mlbproxypay2*
   branch:
     - stage
   event:
