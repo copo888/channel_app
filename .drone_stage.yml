@@ -544,6 +544,15 @@ steps:
       event:
         - push
         - tag
+trigger:
+  ref:
+    - refs/tags/vcpay2*
+  branch:
+    - stage
+  event:
+    - push
+    - tag
+    
 
 
 ---
