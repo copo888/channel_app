@@ -36,6 +36,13 @@ steps:
         - stage
       event:
         - push
+        - tag
+trigger:
+  ref:
+    - refs/tags/zhongshoupay*
+  branch:
+    - stage
+
 
 ---
 kind: pipeline
@@ -76,6 +83,9 @@ steps:
         - stage
       event:
         - push
+        - tag
+
+
 
 ---
 kind: pipeline
@@ -116,6 +126,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -156,6 +167,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -196,6 +208,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -236,6 +249,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -276,6 +290,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -316,6 +331,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -356,6 +372,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -396,6 +413,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 
 ---
@@ -437,6 +455,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 
 ---
@@ -478,7 +497,10 @@ steps:
         - stage
       event:
         - push
+        - tag
 trigger:
+  ref:
+    - refs/tags/vcpay2*
   branch:
     - stage
 
@@ -521,6 +543,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 
 ---
@@ -562,6 +585,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -602,6 +626,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 trigger:
   branch:
     - stage
@@ -644,6 +669,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -684,6 +710,7 @@ steps:
         - stage
       event:
         - push
+        - tag
 
 ---
 kind: pipeline
@@ -724,3 +751,4 @@ steps:
         - stage
       event:
         - push
+        - tag
