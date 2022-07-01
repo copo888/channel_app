@@ -513,6 +513,8 @@ steps:
         - docker build -t mlbproxypay2 -f mlbproxypay2/Dockerfile .
         - docker-compose -f mlbproxypay2/docker-compose.yml up -d
     when:
+      ref:
+        - refs/tags/mlbproxypay2*
       branch:
         - stage
       event:
