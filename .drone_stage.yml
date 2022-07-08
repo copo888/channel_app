@@ -541,6 +541,7 @@ steps:
         - refs/tags/mlbproxypay2*
  
       event:
+        - published
         - push
         - tag
 trigger:
@@ -548,6 +549,7 @@ trigger:
     - refs/tags/mlbproxypay2*
   
   event:
+    - published 
     - push
     - tag
     
