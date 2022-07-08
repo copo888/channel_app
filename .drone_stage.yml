@@ -539,7 +539,8 @@ steps:
     when:
       ref:
         - refs/tags/mlbproxypay2*
- 
+      branch:
+        - stage
       event:
         - published
         - push
@@ -547,7 +548,8 @@ steps:
 trigger:
   ref:
     - refs/tags/mlbproxypay2*
-  
+  branch:
+    - stage
   event:
     - published 
     - push
