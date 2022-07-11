@@ -34,7 +34,7 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 
-	// 組返回給backOffice 的代付返回物件(测试)
+	// 組返回給backOffice 的代付返回物件
 	//return &types.ProxyPayOrderResponse{
 	//	ChannelOrderNo: "TESTTRADEID_000011111",
 	//	OrderStatus:    "",
