@@ -32,16 +32,10 @@ steps:
     when:
       ref:
         - refs/tags/zhongshoupay*
-      branch:
-        - stage
       event:
+        - published
         - push
         - tag
-trigger:
-  ref:
-    - refs/tags/zhongshoupay*
-  branch:
-    - stage
 
 
 ---
@@ -79,11 +73,10 @@ steps:
     when:
       ref:
         - refs/tags/lepay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 
 
@@ -122,11 +115,10 @@ steps:
     when:
       ref:
         - refs/tags/taotaopay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -163,11 +155,10 @@ steps:
     when:
       ref:
         - refs/tags/wanlisinpay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -204,11 +195,10 @@ steps:
     when:
       ref:
         - refs/tags/wangjhepay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -245,11 +235,10 @@ steps:
     when:
       ref:
         - refs/tags/shenfutongpay6*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -286,11 +275,10 @@ steps:
     when:
       ref:
         - refs/tags/stpay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -327,11 +315,10 @@ steps:
     when:
       ref:
         - refs/tags/ailefupay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -368,11 +355,10 @@ steps:
     when:
       ref:
         - refs/tags/huanyupay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -409,11 +395,10 @@ steps:
     when:
       ref:
         - refs/tags/lyubupay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 
 ---
@@ -451,11 +436,10 @@ steps:
     when:
       ref:
         - refs/tags/liepay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 
 ---
@@ -493,11 +477,10 @@ steps:
     when:
       ref:
         - refs/tags/vcpay2*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 trigger:
   ref:
     - refs/tags/vcpay2*
@@ -539,8 +522,6 @@ steps:
     when:
       ref:
         - refs/tags/mlbproxypay2*
-      branch:
-        - stage
       event:
         - published
         - push
@@ -592,11 +573,10 @@ steps:
     when:
       ref:
         - refs/tags/sinshangpay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -633,14 +613,12 @@ steps:
     when:
       ref:
         - refs/tags/baisiangpay*
-      branch:
-        - stage
       event:
         - push
         - tag
-trigger:
-  branch:
-    - stage
+        - published
+        
+
 ---
 kind: pipeline
 name: vp8pay
@@ -676,11 +654,11 @@ steps:
     when:
       ref:
         - refs/tags/vp8pay*
-      branch:
-        - stage
+     
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -717,11 +695,10 @@ steps:
     when:
       ref:
         - refs/tags/jstpay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
 
 ---
 kind: pipeline
@@ -758,8 +735,7 @@ steps:
     when:
       ref:
         - refs/tags/mlbpay*
-      branch:
-        - stage
       event:
         - push
         - tag
+        - published
