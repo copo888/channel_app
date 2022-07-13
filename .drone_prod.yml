@@ -32,12 +32,12 @@ steps:
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
       branch:
-        - zhongshoupay
+        - master
       event:
         - push
 trigger:
   branch:
-    - zhongshoupay
+    - master
 ---
 kind: pipeline
 name: lepay
@@ -73,12 +73,12 @@ steps:
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
       branch:
-        - lepay
+        - master
       event:
         - push
 trigger:
   branch:
-    - lepay
+    - master
 ---
 kind: pipeline
 name: taotaopay
@@ -114,12 +114,12 @@ steps:
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
       branch:
-        - taotaopay
+        - master
       event:
         - push
 trigger:
   branch:
-    - taotaopay
+    - master
 ---
 kind: pipeline
 name: wanlisinpay
@@ -155,12 +155,12 @@ steps:
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
       branch:
-        - wanlisinpay
+        - master
       event:
         - push
 trigger:
   branch:
-    - wanlisinpay
+    - master
 ---
 kind: pipeline
 name: wangjhepay
@@ -196,12 +196,12 @@ steps:
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
       branch:
-        - wangjhepay
+        - master
       event:
         - push
 trigger:
   branch:
-    - wangjhepay
+    - master
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -239,10 +239,10 @@ steps:
       branch:
         - shenfutongpay6
       event:
-        - push
+        - master
 trigger:
   branch:
-    - shenfutongpay6
+    - master
 ---
 kind: pipeline
 name: stpay
@@ -278,12 +278,12 @@ steps:
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
       branch:
-        - stpay
+        - master
       event:
         - push
 trigger:
   branch:
-    - stpay
+    - master
 ---
 kind: pipeline
 name: ailefupay
@@ -319,12 +319,12 @@ steps:
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
       branch:
-        - ailefupay
+        - master
       event:
         - push
 trigger:
   branch:
-    - ailefupay
+    - master
 ---
 kind: pipeline
 name: huanyupay
@@ -360,12 +360,12 @@ steps:
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
       branch:
-        - huanyupay
+        - master
       event:
         - push
 trigger:
   branch:
-    - huanyupay
+    - master
 ---
 kind: pipeline
 name: lyubupay
@@ -401,12 +401,12 @@ steps:
         - docker-compose -f lyubupay/docker-compose.yml up -d
     when:
       branch:
-        - lyubupay
+        - master
       event:
         - push
 trigger:
   branch:
-    - lyubupay
+    - master
     
 ---
 kind: pipeline
@@ -443,12 +443,12 @@ steps:
         - docker-compose -f liepay/docker-compose.yml up -d
     when:
       branch:
-        - liepay
+        - master
       event:
         - push
 trigger:
   branch:
-    - liepay
+    - master
 
 ---
 kind: pipeline
@@ -485,12 +485,12 @@ steps:
         - docker-compose -f vcpay2/docker-compose.yml up -d
     when:
       branch:
-        - vcpay2
+        - master
       event:
         - push
 trigger:
   branch:
-    - vcpay2
+    - master
 
 ---
 kind: pipeline
@@ -527,12 +527,12 @@ steps:
         - docker-compose -f mlbproxypay2/docker-compose.yml up -d
     when:
       branch:
-        - mlbproxypay2
+        - master
       event:
         - push
 trigger:
   branch:
-    - mlbproxypay2
+    - master
 
 ---
 kind: pipeline
@@ -569,12 +569,12 @@ steps:
         - docker-compose -f sinshangpay/docker-compose.yml up -d
     when:
       branch:
-        - sinshangpay
+        - master
       event:
         - push
 trigger:
   branch:
-    - sinshangpay
+    - master
 ---
 kind: pipeline
 name: baisiangpay
@@ -610,12 +610,12 @@ steps:
         - docker-compose -f baisiangpay/docker-compose.yml up -d
     when:
       branch:
-        - baisiangpay
+        - master
       event:
         - push
 trigger:
   branch:
-    - baisiangpay
+    - master
 ---
 kind: pipeline
 name: vp8pay
@@ -651,12 +651,12 @@ steps:
         - docker-compose -f vp8pay/docker-compose.yml up -d
     when:
       branch:
-        - vp8pay
+        - master
       event:
         - push
 trigger:
   branch:
-    - vp8pay
+    - master
 ---
 kind: pipeline
 name: jstpay
@@ -692,12 +692,12 @@ steps:
         - docker-compose -f jstpay/docker-compose.yml up -d
     when:
       branch:
-        - jstpay
+        - master
       event:
         - push
 trigger:
   branch:
-    - jstpay
+    - master
 
 ---
 kind: pipeline
@@ -734,9 +734,9 @@ steps:
         - docker-compose -f mlbpay/docker-compose.yml up -d
     when:
       branch:
-        - mlbpay
+        - master
       event:
         - push
 trigger:
   branch:
-    - mlbpay
+    - master
