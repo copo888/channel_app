@@ -9,7 +9,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -49,7 +50,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -89,7 +91,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -129,7 +132,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -169,7 +173,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -209,7 +214,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -249,7 +255,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -289,7 +296,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -329,7 +337,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -369,7 +378,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -410,7 +420,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -451,7 +462,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -492,7 +504,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -533,7 +546,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -573,7 +587,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -613,7 +628,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -653,7 +669,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -694,7 +711,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
