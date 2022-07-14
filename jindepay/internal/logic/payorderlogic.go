@@ -81,8 +81,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	res, ChnErr := client.Do(requset)
 
 	payUrl := ""
-	if ChnErr != nil && ChnErr.Error() != "redirects"{
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+	if ChnErr != nil && strings.Index(ChnErr.Error(), "redirects") <= 0 {
+		aaa := ChnErr.Error()
+		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, aaa)
 	}
 	pageUrl, _ := res.Location()
 
