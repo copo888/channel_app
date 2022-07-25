@@ -781,13 +781,13 @@ steps:
         - published
 ---
 kind: pipeline
-name: sandinalingpay
+name: sandianlingpay
 
 clone:
   disable: true
 
 steps:
-  - name: docker-sandinalingpay
+  - name: docker-sandianlingpay
     image: appleboy/drone-ssh
     settings:
       host:
