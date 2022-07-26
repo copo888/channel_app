@@ -20,6 +20,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout zhongshoupay
         - git checkout -- .
         - git pull origin zhongshoupay
@@ -61,6 +62,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout lepay
         - git checkout -- .
         - git pull origin lepay
@@ -101,6 +103,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout taotaopay
         - git checkout -- .
         - git pull origin taotaopay
@@ -142,6 +145,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout wanlisinpay
         - git checkout -- .
         - git pull origin wanlisinpay
@@ -182,6 +186,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout wangjhepay
         - git checkout -- .
         - git pull origin wangjhepay
@@ -222,6 +227,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout shenfutongpay6
         - git checkout -- .
         - git pull origin shenfutongpay6
@@ -262,6 +268,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout stpay
         - git checkout -- .
         - git pull origin stpay
@@ -303,6 +310,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout ailefupay
         - git checkout -- .
         - git pull origin ailefupay
@@ -344,6 +352,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout huanyupay
         - git checkout -- .
         - git pull origin huanyupay
@@ -385,6 +394,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout lyubupay
         - git checkout -- .
         - git pull origin lyubupay
@@ -427,6 +437,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout liepay
         - git checkout -- .
         - git pull origin liepay
@@ -468,6 +479,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout vcpay2
         - git checkout -- .
         - git pull origin vcpay2
@@ -510,6 +522,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout mlbproxypay2
         - git checkout -- .
         - git pull origin mlbproxypay2
@@ -552,6 +565,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout sinshangpay
         - git checkout -- .
         - git pull origin sinshangpay
@@ -593,6 +607,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout baisiangpay
         - git checkout -- .
         - git pull origin baisiangpay
@@ -634,6 +649,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout vp8pay
         - git checkout -- .
         - git pull origin vp8pay
@@ -675,6 +691,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout jstpay
         - git checkout -- .
         - git pull origin jstpay
@@ -716,6 +733,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout mlbpay
         - git checkout -- .
         - git pull origin mlbpay
@@ -757,6 +775,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout jindepay
         - git checkout -- .
         - git pull origin jindepay
@@ -798,6 +817,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout sandianlingpay
         - git checkout -- .
         - git pull origin sandianlingpay
