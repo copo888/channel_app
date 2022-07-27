@@ -33,7 +33,7 @@ steps:
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/zhongshoupay*
+        - refs/tags/zhongshoupay_*
       event:
         - push
         - tag
@@ -75,7 +75,7 @@ steps:
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/lepay*
+        - refs/tags/lepay_*
       event:
         - push
         - tag
@@ -116,7 +116,7 @@ steps:
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/taotaopay*
+        - refs/tags/taotaopay_*
       event:
         - push
         - tag
@@ -158,7 +158,7 @@ steps:
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wanlisinpay*
+        - refs/tags/wanlisinpay_*
       event:
         - push
         - tag
@@ -199,7 +199,7 @@ steps:
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wangjhepay*
+        - refs/tags/wangjhepay_*
       event:
         - push
         - tag
@@ -240,7 +240,7 @@ steps:
         - docker-compose -f shenfutongpay6/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/shenfutongpay6*
+        - refs/tags/shenfutongpay6_*
       event:
         - push
         - tag
@@ -281,7 +281,7 @@ steps:
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/stpay*
+        - refs/tags/stpay_*
       event:
         - push
         - tag
@@ -323,7 +323,7 @@ steps:
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/ailefupay*
+        - refs/tags/ailefupay_*
       event:
         - push
         - tag
@@ -365,7 +365,7 @@ steps:
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/huanyupay*
+        - refs/tags/huanyupay_*
       event:
         - push
         - tag
@@ -407,7 +407,7 @@ steps:
         - docker-compose -f lyubupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/lyubupay*
+        - refs/tags/lyubupay_*
       event:
         - push
         - tag
@@ -450,7 +450,7 @@ steps:
         - docker-compose -f liepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/liepay*
+        - refs/tags/liepay_*
       event:
         - push
         - tag
@@ -492,7 +492,7 @@ steps:
         - docker-compose -f vcpay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vcpay2*
+        - refs/tags/vcpay2_*
       event:
         - push
         - tag
@@ -535,7 +535,7 @@ steps:
         - docker-compose -f mlbproxypay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mlbproxypay2*
+        - refs/tags/mlbproxypay2_*
       event:
         - push
         - tag
@@ -578,7 +578,7 @@ steps:
         - docker-compose -f sinshangpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/sinshangpay*
+        - refs/tags/sinshangpay_*
       event:
         - push
         - tag
@@ -620,7 +620,7 @@ steps:
         - docker-compose -f baisiangpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/baisiangpay*
+        - refs/tags/baisiangpay_*
       event:
         - push
         - tag
@@ -662,7 +662,7 @@ steps:
         - docker-compose -f vp8pay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vp8pay*
+        - refs/tags/vp8pay_*
       event:
         - push
         - tag
@@ -704,7 +704,7 @@ steps:
         - docker-compose -f jstpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/jstpay*
+        - refs/tags/jstpay_*
       event:
         - push
         - tag
@@ -746,7 +746,7 @@ steps:
         - docker-compose -f mlbpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mlbpay*
+        - refs/tags/mlbpay_*
       event:
         - push
         - tag
@@ -788,7 +788,7 @@ steps:
         - docker-compose -f jindepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/jindepay*
+        - refs/tags/jindepay_*
       event:
         - push
         - tag
@@ -830,7 +830,7 @@ steps:
         - docker-compose -f sandianlingpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/sandianlingpay*
+        - refs/tags/sandianlingpay_*
       event:
         - push
         - tag
@@ -871,7 +871,7 @@ steps:
         - docker-compose -f wtpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wtpay*
+        - refs/tags/wtpay_*
       event:
         - push
         - tag
