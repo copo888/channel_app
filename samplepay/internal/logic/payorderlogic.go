@@ -45,7 +45,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	//if req.PayType == "YK" && len(req.UserId) == 0 {
+	//if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
 	//	logx.Errorf("userId不可为空 userId:%s", req.UserId)
 	//	return nil, errorx.New(responsex.INVALID_USER_ID)
 	//}
@@ -77,7 +77,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	Time      string `json:"time"`
 	//	NotifyUrl string `json:"notifyUrl"`
 	//	PayType   string `json:"payType"`
-	//	sign      string
+	//	sign      string `json:"sign"`
 	//}{
 	//	MerchId:   channel.MerId,
 	//	Money:     req.TransactionAmount,

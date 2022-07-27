@@ -9,14 +9,13 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/stpay/internal/payutils"
+	"github.com/copo888/channel_app/wtpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
-	"github.com/copo888/channel_app/stpay/internal/svc"
-	"github.com/copo888/channel_app/stpay/internal/types"
+	"github.com/copo888/channel_app/wtpay/internal/svc"
+	"github.com/copo888/channel_app/wtpay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,7 +34,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 	}
 }
 
-func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
+func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp string, err error) {
 
 	logx.Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
 
@@ -57,20 +56,23 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+	if orderAmount, err = req.RealAmount.Float64(); err != nil { // 單位:分
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
+	orderAmount = utils.FloatDivF(orderAmount, 100) // 單位:元
 
 	orderStatus := "1"
-	if req.Status == "2" { //支付状态,0-订单生成,1 支付中,2-支付成功,3-业务处理完成,4-已退款
+	if req.Status == "2" {
 		orderStatus = "20"
+	} else if req.Status == "3" || req.Status == "4" {
+		orderStatus = "30"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.MchOrderNo,
-		ChannelOrderNo: req.PayOrderId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(20:成功 30:失敗)
-		OrderAmount:    utils.FloatDivF(orderAmount, 100), //将分转为元
+		PayOrderNo:     req.PaymentClId,
+		ChannelOrderNo: req.PaymentId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus,   // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 30:失敗)
+		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
@@ -99,5 +101,5 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "success", nil
+	return "{\"error_code\": \"0000\"}", nil
 }

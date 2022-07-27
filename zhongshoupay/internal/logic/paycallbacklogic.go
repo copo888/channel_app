@@ -88,7 +88,7 @@ func (l *PayCallBackLogic) PayCallBack(req types.PayCallBackRequest) (string, er
 	if err = res.DecodeJSON(&payCallBackVO); err != nil {
 		return "err", err
 	} else if payCallBackVO.Code != "0" {
-		return "err", err
+		return "err", errorx.New(payCallBackVO.Code)
 	}
 
 	return "success", nil
