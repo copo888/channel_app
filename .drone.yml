@@ -866,7 +866,7 @@ trigger:
     - wtpay
 ---
 kind: pipeline
-name: wtpay
+name: shahepay
 
 clone:
   disable: true
