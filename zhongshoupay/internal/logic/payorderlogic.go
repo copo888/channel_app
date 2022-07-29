@@ -34,24 +34,24 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	/** TODO: 測試code 要移除 **/
 	amounts, err := strconv.ParseFloat(req.TransactionAmount, 64)
 	receiverInfoJson, err := json.Marshal(types.ReceiverInfoVO{
-		CardName: "王小明",
+		CardName:   "王小明",
 		CardNumber: "AAAA00001111",
-		BankName: "BBB銀行",
+		BankName:   "BBB銀行",
 		BankBranch: "AAA分行",
-		Amount: amounts,
-		Link: "is_test_url",
-		Remark: "這是測試",
+		Amount:     amounts,
+		Link:       "is_test_url",
+		Remark:     "這是測試",
 	})
 	if strings.EqualFold(req.JumpType, "test") {
 		// 測試反卡
 		return &types.PayOrderResponse{
-			PayPageType: "json",
-			PayPageInfo: string(receiverInfoJson),
+			PayPageType:   "json",
+			PayPageInfo:   string(receiverInfoJson),
 			IsCheckOutMer: true,
 		}, nil
 	} else if strings.EqualFold(req.JumpType, "json") {

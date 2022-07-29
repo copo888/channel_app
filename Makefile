@@ -1,5 +1,5 @@
-p := taotaopay
-t := taotaopay
+p := shenfutongpay6
+t := shenfutongpay6
 lang:
 	easyi18n generate --pkg=locales ./locales ./locales/locales.go
 

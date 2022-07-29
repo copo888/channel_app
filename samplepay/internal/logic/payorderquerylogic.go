@@ -35,7 +35,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -78,7 +78,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	//data.sign = sign
 
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).Form(data)
@@ -86,11 +86,11 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
-	}  else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	} else if res.Status() != 200 {
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {
@@ -101,14 +101,14 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
+		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	} else if channelResp.Code != "0000" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
 	orderAmount, errParse := strconv.ParseFloat(channelResp.Money, 64)
 	if errParse != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, errParse.Error())
+		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"

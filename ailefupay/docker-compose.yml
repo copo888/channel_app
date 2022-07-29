@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: ailefupay
+    image: ailefupay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/ailefupay:/app/logs

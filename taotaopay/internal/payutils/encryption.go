@@ -98,7 +98,7 @@ func SortAndSignFromMap(newData map[string]string, screctKey string) string {
 	newSign := GetSign(newSource)
 	logx.Info("加签参数: ", newSource)
 	logx.Info("签名字串: ", newSign)
-	return newSign
+	return strings.ToUpper(newSign)
 }
 
 func CovertUrlValuesToMap(values url.Values) map[string]string {
