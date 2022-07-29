@@ -864,3 +864,44 @@ steps:
 trigger:
   branch:
     - wtpay
+---
+kind: pipeline
+name: wtpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-shahepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout shahepay
+        - git checkout -- .
+        - git pull origin shahepay
+        - go mod tidy
+        - docker-compose -f shahepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=shahepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/shahepay shahepay/pay.go
+        - docker build -t shahepay -f shahepay/Dockerfile .
+        - docker-compose -f shahepay/docker-compose.yml up -d
+    when:
+      branch:
+        - shahepay
+      event:
+        - push
+trigger:
+  branch:
+    - shahepay
