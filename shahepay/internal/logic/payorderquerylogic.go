@@ -36,7 +36,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -66,7 +66,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Set("signature", signature)
 
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).Form(data)
@@ -74,13 +74,13 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, chnErr.Error())
 	} else if res.Status() == 403 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, fmt.Sprintf("Error HTTP Status: %d, %s", res.Status(), string(res.Body())))
 	} else if res.Status() < 200 && res.Status() >= 300 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {
