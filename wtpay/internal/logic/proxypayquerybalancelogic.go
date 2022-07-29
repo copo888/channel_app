@@ -34,7 +34,7 @@ func NewProxyPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContex
 func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPayQueryInternalBalanceResponse, err error) {
 	auth := "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjAsInBsYXRmb3JtSWQiOjE1OCwiYWdlbnRJZCI6MCwidmVyc2lvbiI6MSwicGF5bWVudElkIjowLCJpYXQiOjE2NTM0NzUwNjd9.N1FBN6L95D4n1UxBtuoC464gbeCZsb5RKQunWhwWPew"
 
-	logx.Infof("Enter ProxyPayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
 
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -43,23 +43,23 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	}
 
 	// 請求渠道
-	logx.Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryBalanceUrl)
+	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryBalanceUrl)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Get(channel.ProxyPayQueryBalanceUrl).Header("Authorization", auth).Timeout(10).Trace(span).Do()
 
 	if ChnErr != nil {
-		logx.Error("渠道返回錯誤: ", ChnErr.Error())
+		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
 		ErrorCode string `json:"error_code"`
 		ErrorMsg  string `json:"error_msg"`
-		Data struct{
+		Data      struct {
 			TotalBalance float64 `json:"total_balance"`
 		} `json:"data"`
 	}{}

@@ -36,7 +36,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -47,7 +47,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	/** UserId 必填時使用 **/
 	if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
-		logx.Errorf("userId不可为空 userId:%s", req.UserId)
+		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
 
@@ -81,29 +81,29 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 請求渠道
 	jsonString, _ := json.Marshal(data)
-	logx.Infof("支付下单请求地址:%s,支付請求參數:%s", channel.PayUrl, string(jsonString))
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%s", channel.PayUrl, string(jsonString))
 	span := trace.SpanFromContext(l.ctx)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		ErrorCode string `json:"error_code"`
 		ErrorMsg  string `json:"error_msg"`
-		Data       struct {
-			Link         string `json:"link"`
+		Data      struct {
+			Link        string `json:"link"`
 			PaymentInfo struct {
-				Amount         float64 `json:"amount"`
+				Amount        float64 `json:"amount"`
 				DisplayAmount float64 `json:"display_amount"`
 				PaymentId     string  `json:"payment_id"`
-				PaymentClId  string  `json:"payment_cl_id"`
-				Receiver       struct {
+				PaymentClId   string  `json:"payment_cl_id"`
+				Receiver      struct {
 					CardName   string `json:"card_name"`
 					CardNumber string `json:"card_number"`
 					BankName   string `json:"bank_name"`

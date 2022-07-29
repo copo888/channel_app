@@ -34,7 +34,7 @@ func NewPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) Pa
 
 func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBalanceResponse, err error) {
 
-	logx.Infof("Enter PayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
+	logx.WithContext(l.ctx).Infof("Enter PayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
 
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -72,11 +72,11 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	url = append(url, channel.PayQueryBalanceUrl, "?bid=", channel.MerId, "&time=", currentTimeStamp[0:10], "&sign=", sign)
 	reqUrl := strings.Join(url, "")
 
-	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", reqUrl, data)
+	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", reqUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	res, ChnErr := gozzle.Get(reqUrl).Timeout(10).Trace(span).JSON(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}

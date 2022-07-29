@@ -25,12 +25,12 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		bodyBytes, err := io.ReadAll(r.Body)
 
-		if  err != nil {
+		if err != nil {
 			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 			return
 		}
 
-		logx.Infof("PayCallBack Enter: %s", string(bodyBytes))
+		logx.WithContext(r.Context()).Infof("PayCallBack Enter: %s", string(bodyBytes))
 
 		if err = json.Unmarshal(bodyBytes, &req); err != nil {
 			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)

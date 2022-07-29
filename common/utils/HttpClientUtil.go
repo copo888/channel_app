@@ -37,18 +37,18 @@ import (
 //}
 
 func SubmitForm(url string, param url.Values, context context.Context) (*gozzle.Response, error) {
-	logx.Info(strings.NewReader(param.Encode()))
+	logx.WithContext(context).Info(strings.NewReader(param.Encode()))
 	span := trace.SpanFromContext(context)
 
 	t := http.DefaultTransport.(*http.Transport)
 	t.MaxConnsPerHost = 100 //最大連線池數
 	resp, err := gozzle.Post(url).Transport(t).Timeout(10).Trace(span).Form(param)
 	if err != nil {
-		logx.Error("渠道返回错误: ", err.Error())
+		logx.WithContext(context).Error("渠道返回错误: ", err.Error())
 	}
-	logx.Info("response Headers:", resp.Header)
-	logx.Info("response Status:", resp.Status())
-	logx.Info("response Body:", string(resp.Body()))
+	logx.WithContext(context).Info("response Headers:", resp.Header)
+	logx.WithContext(context).Info("response Status:", resp.Status())
+	logx.WithContext(context).Info("response Body:", string(resp.Body()))
 
 	return resp, nil
 }

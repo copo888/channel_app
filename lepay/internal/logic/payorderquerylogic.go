@@ -31,7 +31,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -66,20 +66,20 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Sign = sign
 
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%#v", channel.PayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%#v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	//res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).Form(data)
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
 
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	}
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Status              int64 `json:"status"` // 0 ⇒ 订单已建立	1 ⇒ 订单未付款	2 ⇒ 订单支付成功（注意 2、6 的状态皆为成功） 3 ⇒ 订单审核中 4 ⇒ 订单审核失败    5 ⇒ 订单支付失败 6 ⇒ 订单手动确认成功
+		Status              int64  `json:"status"` // 0 ⇒ 订单已建立	1 ⇒ 订单未付款	2 ⇒ 订单支付成功（注意 2、6 的状态皆为成功） 3 ⇒ 订单审核中 4 ⇒ 订单审核失败    5 ⇒ 订单支付失败 6 ⇒ 订单手动确认成功
 		Amount              string `json:"amount"`
 		MerchantOrderNumber string `json:"merchant_order_number"`
 		SystemOrderNumber   string `json:"system_order_number"`
@@ -94,7 +94,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}
 
 	orderStatus := "0"
-	if channelResp.Status == 2 || channelResp.Status == 6{
+	if channelResp.Status == 2 || channelResp.Status == 6 {
 		orderStatus = "1"
 	}
 
