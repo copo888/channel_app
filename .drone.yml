@@ -19,6 +19,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout zhongshoupay
         - git checkout -- .
         - git pull origin zhongshoupay
@@ -59,6 +60,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout lepay
         - git checkout -- .
         - git pull origin lepay
@@ -99,6 +101,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout taotaopay
         - git checkout -- .
         - git pull origin taotaopay
@@ -139,6 +142,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout wanlisinpay
         - git checkout -- .
         - git pull origin wanlisinpay
@@ -179,6 +183,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout wangjhepay
         - git checkout -- .
         - git pull origin wangjhepay
@@ -219,6 +224,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout shenfutongpay6
         - git checkout -- .
         - git pull origin shenfutongpay6
@@ -259,6 +265,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout stpay
         - git checkout -- .
         - git pull origin stpay
@@ -299,6 +306,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout ailefupay
         - git checkout -- .
         - git pull origin ailefupay
@@ -339,6 +347,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout huanyupay
         - git checkout -- .
         - git pull origin huanyupay
@@ -379,6 +388,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout lyubupay
         - git checkout -- .
         - git pull origin lyubupay
@@ -397,7 +407,7 @@ steps:
 trigger:
   branch:
     - lyubupay
-    
+
 ---
 kind: pipeline
 name: liepay
@@ -420,6 +430,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout liepay
         - git checkout -- .
         - git pull origin liepay
@@ -461,6 +472,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout vcpay2
         - git checkout -- .
         - git pull origin vcpay2
@@ -502,6 +514,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout mlbproxypay2
         - git checkout -- .
         - git pull origin mlbproxypay2
@@ -543,6 +556,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout sinshangpay
         - git checkout -- .
         - git pull origin sinshangpay
@@ -583,6 +597,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout baisiangpay
         - git checkout -- .
         - git pull origin baisiangpay
@@ -623,6 +638,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout vp8pay
         - git checkout -- .
         - git pull origin vp8pay
@@ -641,6 +657,47 @@ steps:
 trigger:
   branch:
     - vp8pay
+---
+kind: pipeline
+name: jstpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jstpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout jstpay
+        - git checkout -- .
+        - git pull origin jstpay
+        - go mod tidy
+        - docker-compose -f jstpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jstpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jstpay jstpay/pay.go
+        - docker build -t jstpay -f jstpay/Dockerfile .
+        - docker-compose -f jstpay/docker-compose.yml up -d
+    when:
+      branch:
+        - jstpay
+      event:
+        - push
+trigger:
+  branch:
+    - jstpay
 
 ---
 kind: pipeline
@@ -664,6 +721,7 @@ steps:
       script:
         - cd /root/channel_app
         - git checkout -- .
+        - git fetch
         - git checkout mlbpay
         - git checkout -- .
         - git pull origin mlbpay
@@ -682,3 +740,168 @@ steps:
 trigger:
   branch:
     - mlbpay
+
+---
+kind: pipeline
+name: jindepay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jindepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout jindepay
+        - git checkout -- .
+        - git pull origin jindepay
+        - go mod tidy
+        - docker-compose -f jindepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jindepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jindepay jindepay/pay.go
+        - docker build -t jindepay -f jindepay/Dockerfile .
+        - docker-compose -f jindepay/docker-compose.yml up -d
+    when:
+      branch:
+        - jindepay
+      event:
+        - push
+trigger:
+  branch:
+    - jindepay
+---
+kind: pipeline
+name: sandianlingpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sandianlingpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout sandianlingpay
+        - git checkout -- .
+        - git pull origin sandianlingpay
+        - go mod tidy
+        - docker-compose -f sandianlingpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sandianlingpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sandianlingpay sandianlingpay/pay.go
+        - docker build -t sandianlingpay -f sandianlingpay/Dockerfile .
+        - docker-compose -f sandianlingpay/docker-compose.yml up -d
+    when:
+      branch:
+        - sandianlingpay
+      event:
+        - push
+trigger:
+  branch:
+    - sandianlingpay
+---
+kind: pipeline
+name: wtpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-wtpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout wtpay
+        - git checkout -- .
+        - git pull origin wtpay
+        - go mod tidy
+        - docker-compose -f wtpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wtpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wtpay wtpay/pay.go
+        - docker build -t wtpay -f wtpay/Dockerfile .
+        - docker-compose -f wtpay/docker-compose.yml up -d
+    when:
+      branch:
+        - wtpay
+      event:
+        - push
+trigger:
+  branch:
+    - wtpay
+---
+kind: pipeline
+name: shahepay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-shahepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout shahepay
+        - git checkout -- .
+        - git pull origin shahepay
+        - go mod tidy
+        - docker-compose -f shahepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=shahepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/shahepay shahepay/pay.go
+        - docker build -t shahepay -f shahepay/Dockerfile .
+        - docker-compose -f shahepay/docker-compose.yml up -d
+    when:
+      branch:
+        - shahepay
+      event:
+        - push
+trigger:
+  branch:
+    - shahepay

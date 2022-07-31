@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"reflect"
 	"sort"
+	"strconv"
 	"strings"
 )
 
@@ -141,9 +142,27 @@ func CovertToMap(req interface{}) map[string]string {
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
 		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
-			m[name] = val.Field(i).String()
+			if val.Field(i).Type().Name() == "float64" {
+				precise := GetDecimalPlaces(val.Field(i).Float())
+				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)
+				m[name] = valTrans
+			} else if val.Field(i).Type().Name() == "string" {
+				m[name] = val.Field(i).String()
+			} else if val.Field(i).Type().Name() == "int64" {
+
+				m[name] = strconv.FormatInt(val.Field(i).Int(), 10)
+			}
 		}
 	}
 
 	return m
+}
+
+func GetDecimalPlaces(f float64) int {
+	numstr := fmt.Sprint(f)
+	tmp := strings.Split(numstr, ".")
+	if len(tmp) <= 1 {
+		return 0
+	}
+	return len(tmp[1])
 }

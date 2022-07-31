@@ -9,7 +9,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/liepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
@@ -37,7 +36,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -52,25 +51,25 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
-
-	var realAmount float64
-	if realAmount, err = strconv.ParseFloat(req.RealAmount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	orderStatus := "1"
-	if req.Status == "2" {
+	if req.Status == 2 {
 		orderStatus = "20"
+	}
+
+	var orderAmount float64
+	if orderAmount, err = strconv.ParseFloat(req.RealAmount, 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.MchOrderNo,
 		ChannelOrderNo: req.TransOrderNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    realAmount,
+		OrderStatus:    orderStatus,      // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
@@ -96,7 +95,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	if err = res.DecodeJSON(&payCallBackVO); err != nil {
 		return "err", err
 	} else if payCallBackVO.Code != "0" {
-		return "err", err
+		return "err", errorx.New(payCallBackVO.Code)
 	}
 
 	return "success", nil

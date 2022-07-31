@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model "github.com/copo888/channel_app/common/model"
@@ -14,8 +13,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"strconv"
-	"strings"
 )
 
 type PayOrderLogic struct {
@@ -34,40 +31,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
-
-	/** TODO: 測試code 要移除 **/
-	amounts, err := strconv.ParseFloat(req.TransactionAmount, 64)
-	receiverInfoJson, err := json.Marshal(types.ReceiverInfoVO{
-		CardName: "王小明",
-		CardNumber: "AAAA00001111",
-		BankName: "BBB銀行",
-		BankBranch: "AAA分行",
-		Amount: amounts,
-		Link: "is_test_url",
-		Remark: "這是測試",
-	})
-	if strings.EqualFold(req.JumpType, "test") {
-		// 測試反卡
-		return &types.PayOrderResponse{
-			PayPageType: "json",
-			PayPageInfo: string(receiverInfoJson),
-			IsCheckOutMer: true,
-		}, nil
-	} else if strings.EqualFold(req.JumpType, "json") {
-		// 測試返回json
-		return &types.PayOrderResponse{
-			PayPageType: "json",
-			PayPageInfo: string(receiverInfoJson),
-		}, nil
-	} else {
-		// 正常測試
-		return &types.PayOrderResponse{
-			PayPageType: "url",
-			PayPageInfo: "https://xuri.me/excelize/images/excelize.svg",
-		}, nil
-	}
-	/** TODO: 測試code 要移除 **/
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
