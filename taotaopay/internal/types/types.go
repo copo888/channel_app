@@ -116,11 +116,11 @@ type ProxyPayCallBackRequest struct {
 
 type PayCallBackRequest struct {
 	MyIp     string  `json:"myIp, optional"`
-	OrderNo  string  `json:"orderNo"`
-	TradeNo  string  `json:"tradeNo"`
+	OrderNo  string  `json:"order_no"`
+	TradeNo  string  `json:"trade_no"`
 	Money    float64 `json:"money"`
-	IsPay    int     `json:"isPay"`
-	PayMoney float64 `json:"payMoney"`
+	IsPay    int     `json:"is_pay"`
+	PayMoney float64 `json:"pay_money"`
 	Sign     string  `json:"sign"`
 }
 
