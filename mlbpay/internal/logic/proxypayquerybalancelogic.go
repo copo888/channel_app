@@ -37,7 +37,8 @@ func NewProxyPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContex
 func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPayQueryInternalBalanceResponse, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
-	APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
+	//APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
+	APP_SECRET := "8Y6boCksJE6DD5B0s0p7pw"
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err1 != nil {

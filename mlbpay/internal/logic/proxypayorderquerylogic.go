@@ -37,7 +37,8 @@ func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQueryRequest) (resp *types.ProxyPayOrderQueryResponse, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrderQuery. channelName: %s, ProxyPayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
-	APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
+	//APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
+	APP_SECRET := "8Y6boCksJE6DD5B0s0p7pw"
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
