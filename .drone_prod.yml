@@ -523,9 +523,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout mlbproxypay2
+        - git checkout master
         - git checkout -- .
-        - git pull origin mlbproxypay2
+        - git pull origin master
         - go mod tidy
         - docker-compose -f mlbproxypay2/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=mlbproxypay2" --quiet)
