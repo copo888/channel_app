@@ -104,30 +104,28 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip             string `json:"ip, optional"`
-	MchId          int64  `json:"mch_id, optional"`
-	DfMchOrderNo   string `json:"df_mch_order_no, optional"`
-	TransOrderNo   string `json:"trans_order_no, optional"`
-	Amount         string `json:"amount, optional"`
-	RealAmount     string `json:"real_amount, optional"`
-	ServiceCharge  string `json:"service_charge, optional"`
-	ProcessingTime string `json:"processing_time, optional"`
-	Status         string `json:"status, optional"`
-	Sign           string `json:"sign, optional"`
+	Ip         string `form:"ip, optional"`
+	Charset    string `form:"charset, optional"`
+	Amount     string `form:"amount, optional"`
+	StatusStr  string `form:"statusStr, optional"`
+	OutTradeNo string `form:"outTradeNo, optional"`
+	Sign       string `form:"sign, optional"`
+	SignType   string `form:"signType, optional"`
+	Status     string `form:"status, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp         string `json:"myIp, optional"`
-	MchId        string `json:"mch_id, optional"`
-	MchOrderNo   string `json:"mch_order_no, optional"`
-	TransOrderNo string `json:"trans_order_no, optional"`
-	Amount       string `json:"amount, optional"`
-	RealAmount   string `json:"real_amount, optional"`
-	RandomString string `json:"random_string, optional"`
-	SuccessTime  string `json:"success_time, optional"`
-	Status       int64  `json:"status, optional"`
-	Attach       string `json:"attach, optional"`
-	Sign         string `json:"sign, optional"`
+	MyIp       string  `json:"myIp, optional"`
+	MerchantId int64   `json:"merchant_id, optional"`
+	PayType    string  `json:"pay_type, optional"`
+	TradeNo    string  `json:"trade_no, optional"`
+	OutTradeNo string  `json:"out_trade_no, optional"`
+	Money      float64 `json:"money, optional"`
+	MoneyTrue  float64 `json:"money_true, optional"`
+	Fee        float64 `json:"fee, optional"`
+	State      int64   `json:"state, optional"`
+	Sign       string  `json:"sign, optional"`
+	SignType   string  `json:"sign_type, optional"`
 }
 
 // form 格式

@@ -2,24 +2,26 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/liepay/internal/logic"
-	"github.com/copo888/channel_app/liepay/internal/svc"
-	"github.com/copo888/channel_app/liepay/internal/types"
+	"github.com/copo888/channel_app/sandianlingpay/internal/logic"
+	"github.com/copo888/channel_app/sandianlingpay/internal/svc"
+	"github.com/copo888/channel_app/sandianlingpay/internal/types"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
 	"net/http"
 )
 
-func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func PayOrderQueryHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		span := trace.SpanFromContext(r.Context())
 		defer span.End()
 
-		var req types.ProxyPayOrderRequest
+		var req types.PayOrderQueryRequest
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
@@ -38,8 +40,15 @@ func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			})
 		}
 
-		l := logic.NewProxyPayOrderLogic(r.Context(), ctx)
-		resp, err := l.ProxyPayOrder(&req)
+		l := logic.NewPayOrderQueryLogic(r.Context(), ctx)
+		// 驗證密鑰
+		authenticationPaykey := r.Header.Get("authenticationPaykey")
+		if isOK, err := utils.MicroServiceVerification(authenticationPaykey, ctx.Config.ApiKey.PayKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
+			err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
+			responsex.Json(w, r, err.Error(), nil, err)
+			return
+		}
+		resp, err := l.PayOrderQuery(&req)
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {

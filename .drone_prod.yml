@@ -9,7 +9,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -31,13 +32,13 @@ steps:
         - docker build -t zhongshoupay -f zhongshoupay/Dockerfile .
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/zhongshoupay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: lepay
@@ -50,7 +51,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -72,13 +74,12 @@ steps:
         - docker build -t lepay -f lepay/Dockerfile .
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/lepay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 ---
 kind: pipeline
 name: taotaopay
@@ -91,7 +92,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -113,13 +115,13 @@ steps:
         - docker build -t taotaopay -f taotaopay/Dockerfile .
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/taotaopay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: wanlisinpay
@@ -132,7 +134,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -154,13 +157,12 @@ steps:
         - docker build -t wanlisinpay -f wanlisinpay/Dockerfile .
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/wanlisinpay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 ---
 kind: pipeline
 name: wangjhepay
@@ -173,7 +175,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -195,13 +198,12 @@ steps:
         - docker build -t wangjhepay -f wangjhepay/Dockerfile .
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/wangjhepay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -214,7 +216,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -236,13 +239,12 @@ steps:
         - docker build -t shenfutongpay6 -f shenfutongpay6/Dockerfile .
         - docker-compose -f shenfutongpay6/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/shenfutongpay6*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 ---
 kind: pipeline
 name: stpay
@@ -255,7 +257,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -277,13 +280,13 @@ steps:
         - docker build -t stpay -f stpay/Dockerfile .
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/stpay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: ailefupay
@@ -296,7 +299,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -318,13 +322,13 @@ steps:
         - docker build -t ailefupay -f ailefupay/Dockerfile .
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/ailefupay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: huanyupay
@@ -337,7 +341,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -359,13 +364,13 @@ steps:
         - docker build -t huanyupay -f huanyupay/Dockerfile .
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/huanyupay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: lyubupay
@@ -378,7 +383,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -400,14 +406,14 @@ steps:
         - docker build -t lyubupay -f lyubupay/Dockerfile .
         - docker-compose -f lyubupay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/lyubupay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 
+    
 ---
 kind: pipeline
 name: liepay
@@ -420,7 +426,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -442,13 +449,12 @@ steps:
         - docker build -t liepay -f liepay/Dockerfile .
         - docker-compose -f liepay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/liepay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 
 ---
 kind: pipeline
@@ -462,7 +468,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -484,13 +491,13 @@ steps:
         - docker build -t vcpay2 -f vcpay2/Dockerfile .
         - docker-compose -f vcpay2/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/vcpay2*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 
 ---
 kind: pipeline
@@ -504,7 +511,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -526,13 +534,13 @@ steps:
         - docker build -t mlbproxypay2 -f mlbproxypay2/Dockerfile .
         - docker-compose -f mlbproxypay2/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/mlbproxypay2*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 
 ---
 kind: pipeline
@@ -546,7 +554,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -568,13 +577,13 @@ steps:
         - docker build -t sinshangpay -f sinshangpay/Dockerfile .
         - docker-compose -f sinshangpay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/sinshangpay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: baisiangpay
@@ -587,7 +596,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -609,13 +619,13 @@ steps:
         - docker build -t baisiangpay -f baisiangpay/Dockerfile .
         - docker-compose -f baisiangpay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/baisiangpay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: vp8pay
@@ -628,7 +638,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -650,13 +661,13 @@ steps:
         - docker build -t vp8pay -f vp8pay/Dockerfile .
         - docker-compose -f vp8pay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/vp8pay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
+
 ---
 kind: pipeline
 name: jstpay
@@ -669,7 +680,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -691,13 +703,12 @@ steps:
         - docker build -t jstpay -f jstpay/Dockerfile .
         - docker-compose -f jstpay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/jstpay*
       event:
         - push
-trigger:
-  branch:
-    - stage
+        - tag
+        - published
 
 ---
 kind: pipeline
@@ -711,7 +722,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -733,15 +745,13 @@ steps:
         - docker build -t mlbpay -f mlbpay/Dockerfile .
         - docker-compose -f mlbpay/docker-compose.yml up -d
     when:
-      branch:
-        - stage
+      ref:
+        - refs/tags/mlbpay*
       event:
         - push
         - tag
         - published
-trigger:
-  branch:
-    - stage
+
 ---
 kind: pipeline
 name: jindepay
@@ -754,7 +764,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:
@@ -782,6 +793,7 @@ steps:
         - push
         - tag
         - published
+
 ---
 kind: pipeline
 name: sandianlingpay
@@ -794,7 +806,8 @@ steps:
     image: appleboy/drone-ssh
     settings:
       host:
-        from_secret: host
+        - 172.28.222.65
+        - 172.28.164.3
       username:
         from_secret: user
       password:

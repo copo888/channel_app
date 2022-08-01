@@ -104,30 +104,28 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip             string `json:"ip, optional"`
-	MchId          int64  `json:"mch_id, optional"`
-	DfMchOrderNo   string `json:"df_mch_order_no, optional"`
-	TransOrderNo   string `json:"trans_order_no, optional"`
-	Amount         string `json:"amount, optional"`
-	RealAmount     string `json:"real_amount, optional"`
-	ServiceCharge  string `json:"service_charge, optional"`
-	ProcessingTime string `json:"processing_time, optional"`
-	Status         string `json:"status, optional"`
-	Sign           string `json:"sign, optional"`
+	Ip         string `form:"ip, optional"`
+	AfterBalance int `form:"afterbalance"`
+	Amount int `form:"amount, optional"`
+	Currency string `form:"currency, optional"`
+	Mhtorderno string `form:"mhtorderno, optional"`
+	Note string `form:"note, optional"`
+	Payouttime string `form:"payouttime, optional"`
+	Pforderno string `form:"pforderno, optional"`
+	Random string `form:"random, optional"`
+	ResultCode int `form:"resultcode, optional"`
+	Sign string `form:"sign"`
 }
 
 type PayCallBackRequest struct {
-	MyIp         string `json:"myIp, optional"`
-	MchId        string `json:"mch_id, optional"`
-	MchOrderNo   string `json:"mch_order_no, optional"`
-	TransOrderNo string `json:"trans_order_no, optional"`
-	Amount       string `json:"amount, optional"`
-	RealAmount   string `json:"real_amount, optional"`
-	RandomString string `json:"random_string, optional"`
-	SuccessTime  string `json:"success_time, optional"`
-	Status       int64  `json:"status, optional"`
-	Attach       string `json:"attach, optional"`
-	Sign         string `json:"sign, optional"`
+	MyIp       string `form:"myIp, optional"`
+	Attach string `form:"attach, optional"`
+	Currency string `form:"currency"`
+	Mhtorderno string `form:"mhtorderno"`
+	Paidamount string `form:"paidamount"`
+	Pforderno string `form:"pforderno"`
+	Random string `form:"random"`
+	Sign string `form:"sign"`
 }
 
 // form 格式

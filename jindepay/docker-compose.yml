@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: jindepay
+    image: jindepay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/jindepay:/app/logs
