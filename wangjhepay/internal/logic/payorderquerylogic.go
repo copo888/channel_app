@@ -34,7 +34,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -53,32 +53,32 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Set("sign", sign)
 
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	// 忽略證書
 	tr := &http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
+		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Transport(tr).Timeout(10).Trace(span).Form(data)
 	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理
 	channelResp := struct {
 		Code int64  `json:"code"`
 		Msg  string `json:"msg, optional"`
 		Time int64  `json:"time"`
 		Data struct {
-			OrderSn string `json:"order_sn"`
-			SysOrderSn string `json:"sys_order_sn"`
-			Money string `json:"money"`
-			PayMoney string `json:"pay_money"`
-			AddTime int64 `json:"add_time"`
-			PayTime int64 `json:"pay_time"`
-			PayState int64 `json:"pay_state"` //支付状态： 0未支付,1已支付,2已取消
+			OrderSn      string `json:"order_sn"`
+			SysOrderSn   string `json:"sys_order_sn"`
+			Money        string `json:"money"`
+			PayMoney     string `json:"pay_money"`
+			AddTime      int64  `json:"add_time"`
+			PayTime      int64  `json:"pay_time"`
+			PayState     int64  `json:"pay_state"` //支付状态： 0未支付,1已支付,2已取消
 			PayStateText string `json:"pay_state_text"`
 		} `json:"data"`
 	}{}
@@ -100,9 +100,9 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}
 
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount: orderAmount,
+		OrderAmount:    orderAmount,
 		ChannelOrderNo: channelResp.Data.SysOrderSn,
-		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
+		OrderStatus:    orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}
 
 	return

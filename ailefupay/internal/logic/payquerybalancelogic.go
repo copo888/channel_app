@@ -3,12 +3,12 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/copo888/channel_app/common/errorx"
-	model2 "github.com/copo888/channel_app/common/model"
-	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/ailefupay/internal/payutils"
 	"github.com/copo888/channel_app/ailefupay/internal/svc"
 	"github.com/copo888/channel_app/ailefupay/internal/types"
+	"github.com/copo888/channel_app/common/errorx"
+	model2 "github.com/copo888/channel_app/common/model"
+	"github.com/copo888/channel_app/common/responsex"
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
@@ -32,7 +32,7 @@ func NewPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) Pa
 
 func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBalanceResponse, err error) {
 
-	logx.Infof("Enter PayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
+	logx.WithContext(l.ctx).Infof("Enter PayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
 
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -64,7 +64,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	//data.Sign = sign
 
 	// 請求渠道
-	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayQueryBalanceUrl, data)
+	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(10).Trace(span).JSON(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
@@ -72,10 +72,10 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		available_balance string
