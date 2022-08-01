@@ -69,7 +69,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("merchantNo", channel.MerId)
 	data.Set("orderNo", req.OrderNo)
 	data.Set("amount", transactionAmount)
-	data.Set("name", channelBankMap.BankName)
+	data.Set("name", req.ReceiptAccountName)
 	data.Set("bankName", req.ReceiptCardBankName)
 	data.Set("bankAccount", req.ReceiptAccountNumber)
 	data.Set("datetime", utils.GetDateTimeSring(utils.YYYYMMddHHmmss2))
