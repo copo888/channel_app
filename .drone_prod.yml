@@ -146,9 +146,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout wanlisinpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin wanlisinpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f wanlisinpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=wanlisinpay" --quiet)
