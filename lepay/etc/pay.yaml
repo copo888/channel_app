@@ -5,6 +5,8 @@ ProjectName: ${APP_NAME}
 Mode: ${APP_MODE}
 Verbose: ${HTTP_VERBOSE}
 
+Timeout: 15000
+
 Server: ${SERVER}
 
 Log:

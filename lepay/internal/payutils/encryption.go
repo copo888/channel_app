@@ -118,9 +118,21 @@ func CovertToMap(req interface{}, reqType string) map[string]string {
 		jsonTag := val.Type().Field(i).Tag.Get(reqType) // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
-		if name != "sign" && name != "myIp" { // 過濾不需加簽參數
+
+		kind := val.Field(i).Kind()
+		if kind == reflect.Struct {
+			val2 := val.Field(i)
+			for j := 0; j < val2.Type().NumField(); j++ {
+				jsonTag2 := val2.Type().Field(j).Tag.Get(reqType) // [依据不同请求类型更改] from / json
+				parts2 := strings.Split(jsonTag2, ",")
+				name2 := parts2[0]
+				m[name+"%5B"+name2+"%5D"] = url.QueryEscape(val2.Field(j).String())
+			}
+		} else if name != "sign" && name != "myIp" {
+			// 過濾不需加簽參數
 			m[name] = url.QueryEscape(val.Field(i).String())
 		}
+
 	}
 
 	return m

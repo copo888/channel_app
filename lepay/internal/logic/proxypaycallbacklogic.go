@@ -59,9 +59,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == 2 || req.Status == 6 {
-		status = "20"
+		status = "1"
 	} else if req.Status == 4 || req.Status == 5 {
-		status = "30"
+		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
@@ -88,7 +88,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
-		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, errx.Error())
 	} else if res.Status() != 200 {
 		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}
