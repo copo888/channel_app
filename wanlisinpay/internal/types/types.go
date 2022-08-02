@@ -117,12 +117,12 @@ type ProxyPayCallBackRequest struct {
 type PayCallBackRequest struct {
 	MyIp       string `form:"myIp, optional"`
 	Moeny      string `form:"money, optional"`
-	PayMoney   string `form:"payMoney, optional"`
-	PayTime    string `form:"payTime, optional"`
-	OrderSn    string `form:"orderSn, optional"`
-	SysOrderSn string `form:"sysOrderSn, optional"`
+	PayMoney   string `form:"pay_money, optional"`
+	PayTime    string `form:"pay_time, optional"`
+	OrderSn    string `form:"order_sn, optional"`
+	SysOrderSn string `form:"sys_order_sn, optional"`
 	Sign       string `form:"sign, optional"`
-	PayState   string `form:"payState, optional"`
+	PayState   string `form:"pay_state, optional"`
 }
 
 type ReceiverInfoVO struct {
