@@ -88,7 +88,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
-		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, errx.Error())
 	} else if res.Status() != 200 {
 		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}
