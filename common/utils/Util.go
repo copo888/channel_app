@@ -24,6 +24,17 @@ const (
 	LOWER UppLowType = 2
 )
 
+const (
+	yyyy              string = "yyyy"
+	yyyyMMdd          string = "yyyyMMdd"
+	HHmmss            string = "HHmmss"
+	yyyyMMddHHmm      string = "yyyyMMddHHmm"
+	YYYYMMddHHmmss    string = "yyyyMMddHHmmss"
+	YYYYMMddHHmmssSSS string = "yyyyMMddHHmmssSSS"
+	YYYY_MM_dd        string = "yyyy-MM-dd"
+	YYYYMMddHHmmss2   string = "yyyy-MM-dd HH:mm:ss"
+)
+
 func init() {
 	rand.Seed(time.Now().UnixNano())
 }
@@ -100,7 +111,7 @@ func IPChecker(myip string, whitelist string) bool {
 	return false
 }
 
-//FloatMul 浮點數乘法 (precision=4)
+//FloatMul 浮點數乘法 (precision=3)
 func FloatMul(s string, p string, precisions ...int32) float64 {
 
 	f1, _ := decimal.NewFromString(s)
@@ -118,7 +129,7 @@ func FloatMul(s string, p string, precisions ...int32) float64 {
 	return res
 }
 
-//FloatDiv 浮點數除法 (precision=4)
+//FloatDiv 浮點數除法 (precision=3)
 func FloatDiv(s string, p string, precisions ...int32) float64 {
 
 	f1, _ := decimal.NewFromString(s)
@@ -135,8 +146,89 @@ func FloatDiv(s string, p string, precisions ...int32) float64 {
 	return res
 }
 
+func GetDecimal(amount string, precisions ...int32) float64 {
+	f1, _ := decimal.NewFromString(amount)
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Truncate(precision).Float64()
+	return res
+}
+
+func GetDecimal_Float(amount float64, precisions ...int32) float64 {
+	f1 := decimal.NewFromFloat(amount)
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Truncate(precision).Float64()
+	return res
+}
+
+//FloatMulF 浮點數乘法 (precision=4)
+func FloatMulF(s float64, p float64, precisions ...int32) float64 {
+
+	f1 := decimal.NewFromFloat(s)
+	f2 := decimal.NewFromFloat(p)
+
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Mul(f2).Truncate(precision).Float64()
+	return res
+}
+
+//FloatDivF 浮點數除法 (precision=4)
+func FloatDivF(s float64, p float64, precisions ...int32) float64 {
+
+	f1 := decimal.NewFromFloat(s)
+	f2 := decimal.NewFromFloat(p)
+
+	var precision int32
+	if len(precisions) > 0 {
+		precision = precisions[0]
+	} else {
+		precision = 3
+	}
+	res, _ := f1.Div(f2).Truncate(precision).Float64()
+	return res
+}
+
+//取得時間戳
 func GetCurrentMilliSec() int64 {
 	unixNano := time.Now().UnixNano()
 	return unixNano / 1000000
 	//Number of millisecond elapsed since Unix epoch
+}
+
+func GetDateTimeSring(timePattern string) string {
+	if strings.EqualFold(YYYYMMddHHmmss, timePattern) {
+		return time.Now().Format("200601021504")
+	} else if strings.EqualFold(YYYYMMddHHmmss2, timePattern) {
+		return time.Now().Format("2006-01-02 15:04:05")
+	}
+	return ""
+}
+
+// ParseIntTime int時間隔式處理
+func ParseIntTime(t int64) string {
+	return time.Unix(t, 0).UTC().Format("2006-01-02 15:04:05")
+}
+
+// ParseTime 時間隔式處理
+func ParseTime(t string) string {
+	timeString, err := time.Parse(time.RFC3339, t)
+	if err != nil {
+	}
+	str := strings.Split(timeString.String(), " +")
+	res := str[0]
+	return res
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/taotaopay/internal/payutils"
 	"github.com/copo888/channel_app/taotaopay/internal/svc"
 	"github.com/copo888/channel_app/taotaopay/internal/types"
@@ -31,7 +32,7 @@ func NewPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) Pa
 
 func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBalanceResponse, err error) {
 
-	logx.Infof("Enter PayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
+	logx.WithContext(l.ctx).Infof("Enter PayQueryBalance. channelName: %s", l.svcCtx.Config.ProjectName)
 
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -42,11 +43,12 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 取值
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
-	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchant_number", channel.MerId)
+	data.Set("appid", channel.MerId)
+	data.Set("nonce_str", randomID)
 
 	// 組請求參數 FOR JSON
 	//data := struct {
@@ -59,15 +61,13 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.Sign = sign
 
 	// 請求渠道
-	logx.Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(10).Trace(span).JSON(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
