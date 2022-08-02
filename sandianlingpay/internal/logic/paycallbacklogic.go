@@ -36,7 +36,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %#v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -59,7 +59,6 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//orderAmount := utils.FloatDiv(amountStr, "100")
 	orderAmount := utils.FloatDiv(req.Paidamount, "100")
 
-
 	//orderStatus := "1"
 	//if req.TradeStatus == "1" {
 	//	orderStatus = "20"
@@ -68,7 +67,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.Mhtorderno,
 		ChannelOrderNo: req.Pforderno, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    "20",        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderStatus:    "20",          // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}

@@ -24,13 +24,12 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.PayOrderRequest
 
-
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
 
-		logx.Infof("%#v",req)
+		logx.WithContext(r.Context()).Infof("%#v", req)
 
 		if err := vaildx.Validator.Struct(req); err != nil {
 			responsex.Json(w, r, responsex.INVALID_PARAMETER, nil, err)

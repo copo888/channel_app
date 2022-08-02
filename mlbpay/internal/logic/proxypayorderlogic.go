@@ -34,13 +34,6 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 
-	//組返回給backOffice 的代付返回物件
-	//測試
-	//return &types.ProxyPayOrderResponse{
-	//	ChannelOrderNo: "TESTTRADEID_000011111",
-	//	OrderStatus:    "",
-	//}, nil
-
 	logx.Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 	APP_SECRET := "8Y6boCksJE6DD5B0s0p7pw"
 
@@ -69,8 +62,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("merchantNo", channel.MerId)
 	data.Set("orderNo", req.OrderNo)
 	data.Set("amount", transactionAmount)
-	data.Set("name", channelBankMap.BankName)
-	data.Set("bankName", req.ReceiptCardBankName)
+	data.Set("name", req.ReceiptAccountName)
+	data.Set("bankName", channelBankMap.MapCode)
 	data.Set("bankAccount", req.ReceiptAccountNumber)
 	data.Set("datetime", utils.GetDateTimeSring(utils.YYYYMMddHHmmss2))
 	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")

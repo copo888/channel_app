@@ -33,7 +33,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 	auth := "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjAsInBsYXRmb3JtSWQiOjE1OCwiYWdlbnRJZCI6MCwidmVyc2lvbiI6MSwicGF5bWVudElkIjowLCJpYXQiOjE2NTM0NzUwNjd9.N1FBN6L95D4n1UxBtuoC464gbeCZsb5RKQunWhwWPew"
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -47,7 +47,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Set("Authorization", auth)
 	payQueryUrl := channel.PayQueryUrl + "?payment_cl_id=" + req.OrderNo
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", payQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", payQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Get(payQueryUrl).Header("Authorization", auth).Timeout(10).Trace(span).Do()
@@ -55,20 +55,20 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	} else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	type PayData struct {
 		ErrorCode string `json:"error_code"`
 		ErrorMsg  string `json:"error_msg"`
 		Data      []struct {
-			Amount        float64 `json:"amount"` // 單位:分
-			RealAmount   float64 `json:"real_amount"`
-			PaymentId    string  `json:"payment_id"`
-			PaymentClId string `json:"payment_cl_id"`
-			Status        int64 `json:"status"`
+			Amount      float64 `json:"amount"` // 單位:分
+			RealAmount  float64 `json:"real_amount"`
+			PaymentId   string  `json:"payment_id"`
+			PaymentClId string  `json:"payment_cl_id"`
+			Status      int64   `json:"status"`
 		} `json:"data"`
 	}
 	// 渠道回覆處理
@@ -89,7 +89,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	resp = &types.PayOrderQueryResponse{
 		OrderAmount: utils.FloatDivF(channelResp.Data[0].Amount, 100), // 單位:元
-		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
+		OrderStatus: orderStatus,                                      //订单状态: 状态 0处理中，1成功，2失败
 	}
 
 	return

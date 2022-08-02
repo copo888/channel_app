@@ -31,7 +31,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -42,13 +42,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 檢查 userId
 	if req.PayType == "YK" && len(req.UserId) == 0 {
-		logx.Errorf("userId不可为空 userId:%s", req.UserId)
+		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
+	//notifyUrl := "http://dd2e-211-75-36-190.ngrok.io/api/pay-call-back"
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
@@ -68,26 +68,38 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("sign", sign)
 
 	// 請求渠道
-	logx.Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
 	if ChnErr != nil {
+		logx.Errorf(ChnErr.Error())
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code int    `json:"code"`
-		Msg  string `json:"msg, optional"`
-		Data struct {
-			Url string `json:"url,optional"`
-		} `json:"data"`
-		Time float64 `json:"time"`
+		Code int         `json:"code"`
+		Msg  string      `json:"msg, optional"`
+		Data interface{} `json:"data,optional"`
+		Time float64     `json:"time"`
 	}{}
 
 	// 返回body 轉 struct
 	if err = res.DecodeJSON(&channelResp); err != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
+	} else if channelResp.Code != 100 { // 渠道狀態碼判斷
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	}
+	channelResp2 := struct {
+		Code int    `json:"code"`
+		Msg  string `json:"msg, optional"`
+		Data struct {
+			Url string `json:"url,optional"`
+		} `json:"data,optional"`
+		Time float64 `json:"time"`
+	}{}
+	if err = res.DecodeJSON(&channelResp2); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
 	} else if channelResp.Code != 100 { // 渠道狀態碼判斷
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
@@ -122,7 +134,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
-		PayPageInfo:    channelResp.Data.Url,
+		PayPageInfo:    channelResp2.Data.Url,
 		ChannelOrderNo: "",
 	}
 
