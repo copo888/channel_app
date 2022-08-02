@@ -55,6 +55,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	amount := utils.FloatMul(req.TransactionAmount, "100") // 單位:分
+	amountInt := int(amount)
 	// 組請求參數 FOR JSON
 	data := struct {
 		PlatformId  string `json:"platform_id"`
@@ -69,7 +70,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PlatformId:  channel.MerId,
 		ServiceId:   req.ChannelPayType,
 		PaymentClId: req.OrderNo,
-		Amount:      fmt.Sprintf("%f", amount), // 單位:分
+		Amount:      fmt.Sprintf("%d", amountInt), // 單位:分
 		NotifyUrl:   notifyUrl,
 		Name:        req.UserId,
 		RequestTime: strconv.FormatInt(time.Now().Unix(), 10),

@@ -51,6 +51,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//}
 	// 取值
 	amount := utils.FloatMul(req.TransactionAmount, "100") // 單位:分
+	amountInt := int(amount)
 	// 組請求參數 FOR JSON
 	data := struct {
 		PlatformId  string `json:"platform_id"`
@@ -66,7 +67,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		PlatformId:  channel.MerId,
 		ServiceId:   "SVC0004",
 		PayoutClId: req.OrderNo,
-		Amount:      fmt.Sprintf("%f", amount), // 單位:分
+		Amount:      fmt.Sprintf("%d", amountInt), // 單位:分
 		NotifyUrl:   l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 		Name:        req.ReceiptAccountName,
 		Number:      req.ReceiptAccountNumber,
