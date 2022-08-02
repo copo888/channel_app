@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
@@ -108,8 +109,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).Form(data)
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	if ChnErr != nil {
-		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChannelResp.Body())
+		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, string(ChannelResp.Body()))
+	} else if ChannelResp.Status() < 200 && ChannelResp.Status() >= 300 {
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
+		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
