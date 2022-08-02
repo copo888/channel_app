@@ -126,7 +126,7 @@ func CovertToMap(req interface{}, reqType string) map[string]string {
 				jsonTag2 := val2.Type().Field(j).Tag.Get(reqType) // [依据不同请求类型更改] from / json
 				parts2 := strings.Split(jsonTag2, ",")
 				name2 := parts2[0]
-				m[name+"["+name2+"]"] = url.QueryEscape(val2.Field(j).String())
+				m[name+"%5B"+name2+"%5D"] = url.QueryEscape(val2.Field(j).String())
 			}
 		} else if name != "sign" && name != "myIp" {
 			// 過濾不需加簽參數

@@ -50,6 +50,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
+	notifyUrl = "https://api.copoonline.com:9075/lepay/api/proxy-pay-call-back"
 	//notifyUrl = "http://9e7c-211-75-36-190.ngrok.io/api/proxy-pay-call-back"
 	//data := url.Values{}
 	//data.Set("partner", channel.MerId)
@@ -102,7 +103,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 加簽
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey)
 	data.Sign = sign
-	
+
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,代付請求參數:%#v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).JSON(data)
