@@ -79,7 +79,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Sign            string              `json:"sign"`
 		NotifyUrl       string              `json:"notify_url"`
 		OrderNumber     string              `json:"order_number"`
-		BankAccountInfo BankAccountInfoData `json:"bank_account_info"`
+		BankAccountInfo []BankAccountInfoData `json:"bank_account_info"`
 	}
 
 	// 組請求參數 FOR JSON
@@ -88,21 +88,20 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		OrderNumber:    req.OrderNo,
 		NotifyUrl:      notifyUrl,
 		Amount:         transactionAmount,
-		BankAccountInfo: BankAccountInfoData{
+		BankAccountInfo: []BankAccountInfoData{{
 			Bank:           channelBankMap.MapCode,
 			BankBranch:     req.ReceiptCardBranch,
 			CardNumber:     req.ReceiptAccountNumber,
 			CardHolderName: req.ReceiptAccountName,
 			City:           req.ReceiptCardCity,
 			Province:       req.ReceiptCardProvince,
-		},
+		}},
 	}
 
 	// 加簽
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey)
 	data.Sign = sign
 
-	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,代付請求參數:%#v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).JSON(data)
