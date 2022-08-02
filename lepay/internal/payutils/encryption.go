@@ -120,8 +120,8 @@ func CovertToMap(req interface{}, reqType string) map[string]string {
 		name := parts[0]
 
 		kind := val.Field(i).Kind()
-		if kind == reflect.Slice {
-			val2 := val.Field(i).Index(0)
+		if kind == reflect.Struct {
+			val2 := val.Field(i)
 			for j := 0; j < val2.Type().NumField(); j++ {
 				jsonTag2 := val2.Type().Field(j).Tag.Get(reqType) // [依据不同请求类型更改] from / json
 				parts2 := strings.Split(jsonTag2, ",")
