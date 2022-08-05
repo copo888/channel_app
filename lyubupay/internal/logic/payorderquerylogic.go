@@ -34,7 +34,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -61,7 +61,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Sign = sign
 
 	// 請求渠道
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
@@ -69,10 +69,10 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	} else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {
@@ -81,7 +81,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		Data struct {
 			TradeNo string `json:"trade_no"`
 			PayUrl  string `json:"pay_url"`
-			State   int64 `json:"state"`
+			State   int64  `json:"state"`
 			Money   string `json:"money"`
 		} `json:"data"`
 	}{}
@@ -98,14 +98,14 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}
 
 	orderStatus := "0"
-	if channelResp.Data.State == 2 {  // 订单状态：0=失败，1=待支付，2=支付成功，3=冲正
+	if channelResp.Data.State == 2 { // 订单状态：0=失败，1=待支付，2=支付成功，3=冲正
 		orderStatus = "1"
 	}
 
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount: orderAmount,
+		OrderAmount:    orderAmount,
 		ChannelOrderNo: channelResp.Data.TradeNo,
-		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
+		OrderStatus:    orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}
 
 	return

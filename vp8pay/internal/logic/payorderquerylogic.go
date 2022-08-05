@@ -32,7 +32,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -43,7 +43,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 請求渠道
 	url := channel.PayQueryUrl + "/" + req.OrderNo
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", url)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", url)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Get(url).
@@ -55,21 +55,21 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	} else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {
 		Success bool   `json:"success"`
 		Message string `json:"message"`
 		Data    struct {
-			TradeNo       string `json:"trade_no"`
-			OutTradeNo    string `json:"out_trade_no"`
-			Amount        string `json:"amount"`
+			TradeNo       string  `json:"trade_no"`
+			OutTradeNo    string  `json:"out_trade_no"`
+			Amount        string  `json:"amount"`
 			RequestAmount float64 `json:"request_amount"`
-			State         string `json:"state"`
+			State         string  `json:"state"`
 		} `json:"data"`
 	}{}
 

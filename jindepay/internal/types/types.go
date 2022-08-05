@@ -115,17 +115,17 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp       string `json:"myIp, optional"`
-	MerchantId int64 `json:"merchant_id, optional"`
-	PayType    string `json:"pay_type, optional"`
-	TradeNo    string `json:"trade_no, optional"`
-	OutTradeNo string `json:"out_trade_no, optional"`
+	MyIp       string  `json:"myIp, optional"`
+	MerchantId int64   `json:"merchant_id, optional"`
+	PayType    string  `json:"pay_type, optional"`
+	TradeNo    string  `json:"trade_no, optional"`
+	OutTradeNo string  `json:"out_trade_no, optional"`
 	Money      float64 `json:"money, optional"`
 	MoneyTrue  float64 `json:"money_true, optional"`
 	Fee        float64 `json:"fee, optional"`
-	State      int64 `json:"state, optional"`
-	Sign       string `json:"sign, optional"`
-	SignType   string `json:"sign_type, optional"`
+	State      int64   `json:"state, optional"`
+	Sign       string  `json:"sign, optional"`
+	SignType   string  `json:"sign_type, optional"`
 }
 
 // form 格式

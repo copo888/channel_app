@@ -38,3 +38,5 @@ ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd
   ProxyKey: zrdfSeWd
+
+Timeout: 15000

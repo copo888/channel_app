@@ -33,7 +33,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -44,7 +44,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	/** UserId 必填時使用 **/
 	if req.PayType == "YK" && len(req.UserId) == 0 {
-		logx.Errorf("userId不可为空 userId:%s", req.UserId)
+		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
 
@@ -69,7 +69,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.sign = sign
 
 	// 請求渠道
-	logx.Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
 	//span := trace.SpanFromContext(l.ctx)
 
 	client := &http.Client{
@@ -87,14 +87,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 	pageUrl, _ := res.Location()
 
-	logx.Infof("Status: %s  payUrl: %s", res.Status, payUrl)
+	logx.WithContext(l.ctx).Infof("Status: %s  payUrl: %s", res.Status, payUrl)
 	if pageUrl == nil {
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
 		bodyStr := string(body)
 		idx := strings.Index(bodyStr, "orange")
-		msg := bodyStr[idx+7:idx+67]
-		logx.Infof("Status: %s  msg: %s", res.Status, bodyStr)
+		msg := bodyStr[idx+7 : idx+67]
+		logx.WithContext(l.ctx).Infof("Status: %s  msg: %s", res.Status, bodyStr)
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, msg)
 	}
 	resp = &types.PayOrderResponse{

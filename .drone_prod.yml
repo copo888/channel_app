@@ -33,7 +33,7 @@ steps:
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/zhongshoupay*
+        - refs/tags/zhongshoupay_prod_*
       event:
         - push
         - tag
@@ -63,9 +63,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout lepay
+        - git checkout master
         - git checkout -- .
-        - git pull origin lepay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f lepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=lepay" --quiet)
@@ -75,7 +75,7 @@ steps:
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/lepay*
+        - refs/tags/lepay_prod_*
       event:
         - push
         - tag
@@ -116,7 +116,7 @@ steps:
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/taotaopay*
+        - refs/tags/taotaopay_prod_*
       event:
         - push
         - tag
@@ -146,9 +146,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout wanlisinpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin wanlisinpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f wanlisinpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=wanlisinpay" --quiet)
@@ -158,7 +158,7 @@ steps:
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wanlisinpay*
+        - refs/tags/wanlisinpay_prod_*
       event:
         - push
         - tag
@@ -199,7 +199,7 @@ steps:
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wangjhepay*
+        - refs/tags/wangjhepay_prod_*
       event:
         - push
         - tag
@@ -240,7 +240,7 @@ steps:
         - docker-compose -f shenfutongpay6/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/shenfutongpay6*
+        - refs/tags/shenfutongpay6_prod_*
       event:
         - push
         - tag
@@ -281,7 +281,7 @@ steps:
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/stpay*
+        - refs/tags/stpay_prod_*
       event:
         - push
         - tag
@@ -323,7 +323,7 @@ steps:
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/ailefupay*
+        - refs/tags/ailefupay_prod_*
       event:
         - push
         - tag
@@ -365,7 +365,7 @@ steps:
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/huanyupay*
+        - refs/tags/huanyupay_prod_*
       event:
         - push
         - tag
@@ -407,7 +407,7 @@ steps:
         - docker-compose -f lyubupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/lyubupay*
+        - refs/tags/lyubupay_prod_*
       event:
         - push
         - tag
@@ -450,7 +450,7 @@ steps:
         - docker-compose -f liepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/liepay*
+        - refs/tags/liepay_prod_*
       event:
         - push
         - tag
@@ -492,7 +492,7 @@ steps:
         - docker-compose -f vcpay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vcpay2*
+        - refs/tags/vcpay2_prod_*
       event:
         - push
         - tag
@@ -523,9 +523,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout mlbproxypay2
+        - git checkout master
         - git checkout -- .
-        - git pull origin mlbproxypay2
+        - git pull origin master
         - go mod tidy
         - docker-compose -f mlbproxypay2/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=mlbproxypay2" --quiet)
@@ -535,7 +535,7 @@ steps:
         - docker-compose -f mlbproxypay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mlbproxypay2*
+        - refs/tags/mlbproxypay2_prod_*
       event:
         - push
         - tag
@@ -578,7 +578,7 @@ steps:
         - docker-compose -f sinshangpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/sinshangpay*
+        - refs/tags/sinshangpay_prod_*
       event:
         - push
         - tag
@@ -620,7 +620,7 @@ steps:
         - docker-compose -f baisiangpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/baisiangpay*
+        - refs/tags/baisiangpay_prod_*
       event:
         - push
         - tag
@@ -662,7 +662,7 @@ steps:
         - docker-compose -f vp8pay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vp8pay*
+        - refs/tags/vp8pay_prod_*
       event:
         - push
         - tag
@@ -704,7 +704,7 @@ steps:
         - docker-compose -f jstpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/jstpay*
+        - refs/tags/jstpay_prod_*
       event:
         - push
         - tag
@@ -734,9 +734,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout mlbpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin mlbpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f mlbpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=mlbpay" --quiet)
@@ -746,7 +746,7 @@ steps:
         - docker-compose -f mlbpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mlbpay*
+        - refs/tags/mlbpay_prod_*
       event:
         - push
         - tag
@@ -776,9 +776,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout jindepay
+        - git checkout master
         - git checkout -- .
-        - git pull origin jindepay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f jindepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=jindepay" --quiet)
@@ -788,7 +788,7 @@ steps:
         - docker-compose -f jindepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/jindepay*
+        - refs/tags/jindepay_prod_*
       event:
         - push
         - tag
@@ -830,7 +830,89 @@ steps:
         - docker-compose -f sandianlingpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/sandianlingpay*
+        - refs/tags/sandianlingpay_prod_*
+      event:
+        - push
+        - tag
+        - published
+---
+kind: pipeline
+name: wtpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-wtpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f wtpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wtpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wtpay wtpay/pay.go
+        - docker build -t wtpay -f wtpay/Dockerfile .
+        - docker-compose -f wtpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/wtpay_prod_*
+      event:
+        - push
+        - tag
+        - published
+---
+kind: pipeline
+name: shahepay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-shahepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout shahepay
+        - git checkout -- .
+        - git pull origin shahepay
+        - go mod tidy
+        - docker-compose -f shahepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=shahepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/shahepay shahepay/pay.go
+        - docker build -t shahepay -f shahepay/Dockerfile .
+        - docker-compose -f shahepay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/shahepay_prod_*
       event:
         - push
         - tag

@@ -35,7 +35,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -76,8 +76,8 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	//data.sign = sign
 
 	// 請求渠道
-	url := channel.PayQueryUrl+"?mhtorderno="+req.OrderNo+"&opmhtid="+channel.MerId+"&random="+randomID+"&sign="+sign;
-	logx.Infof("支付查詢请求地址:%s,支付請求參數:%v", url, data)
+	url := channel.PayQueryUrl + "?mhtorderno=" + req.OrderNo + "&opmhtid=" + channel.MerId + "&random=" + randomID + "&sign=" + sign
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", url, data)
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Get(url).Timeout(10).Trace(span).Form(data)
@@ -85,31 +85,31 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
-	}  else if res.Status() != 200 {
-		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	} else if res.Status() != 200 {
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code  int `json:"rtCode"`
-		Msg   string `json:"msg"`
-		Result struct{
-			Accno string `json:"accno"`
-			Attach string `json:"attach"`
-			Currency string `json:"currency"`
-			Fromip string `json:"fromip"`
+		Code   int    `json:"rtCode"`
+		Msg    string `json:"msg"`
+		Result struct {
+			Accno          string `json:"accno"`
+			Attach         string `json:"attach"`
+			Currency       string `json:"currency"`
+			Fromip         string `json:"fromip"`
 			Lastnotifytime string `json:"lastnotifytime"`
-			Notifystatus int `json:"notifystatus"`
-			Notifyurl string `json:"notifyurl"`
-			Orderamount int `json:"orderamount"`
-			Ordertime string `json:"ordertime"`
-			Paidamount int `json:"paidamount"`
-			Payername string `json:"payername"`
-			Pforderno string `json:"pforderno"`
-			Settletime string `json:"settletime"`
-			Status int `json:"status"`
+			Notifystatus   int    `json:"notifystatus"`
+			Notifyurl      string `json:"notifyurl"`
+			Orderamount    int    `json:"orderamount"`
+			Ordertime      string `json:"ordertime"`
+			Paidamount     int    `json:"paidamount"`
+			Payername      string `json:"payername"`
+			Pforderno      string `json:"pforderno"`
+			Settletime     string `json:"settletime"`
+			Status         int    `json:"status"`
 		} `json:"result, optional"`
 	}{}
 
@@ -130,7 +130,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	orderStatus := "0"
 	if channelResp.Result.Status == 1 {
 		orderStatus = "1"
-	}else if channelResp.Result.Status == 2 {
+	} else if channelResp.Result.Status == 2 {
 		orderStatus = "2"
 	}
 

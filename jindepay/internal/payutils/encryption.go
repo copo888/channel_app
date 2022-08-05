@@ -101,7 +101,7 @@ func SortAndSignFromObj(data interface{}, screctKey string) string {
 
 // SortAndSignFromMap MAP 排序后加签
 func SortAndSignFromMap(newData map[string]string, screctKey string) string {
-	newSource := JoinStringsInASCII(newData, "&", false, false, screctKey)
+	newSource := JoinStringsInASCII(newData, "&", false, true, screctKey)
 	newSign := GetSign(newSource)
 	logx.Info("加签参数: ", newSource)
 	logx.Info("签名字串: ", newSign)

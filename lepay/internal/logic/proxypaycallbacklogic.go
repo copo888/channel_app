@@ -35,7 +35,7 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -45,7 +45,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 	//檢查白名單
 	if isWhite := utils.IPChecker(req.Ip, channel.WhiteList); !isWhite {
-		logx.Errorf("IP: " + req.Ip)
+		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
@@ -59,9 +59,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == 2 || req.Status == 6 {
-		status = "20"
+		status = "1"
 	} else if req.Status == 4 || req.Status == 5 {
-		status = "30"
+		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
@@ -87,8 +87,8 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
-		logx.Error(errx.Error())
-		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		logx.WithContext(l.ctx).Error(errx.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, errx.Error())
 	} else if res.Status() != 200 {
 		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}

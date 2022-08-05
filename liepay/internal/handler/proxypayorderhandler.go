@@ -38,8 +38,6 @@ func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			})
 		}
 
-
-
 		l := logic.NewProxyPayOrderLogic(r.Context(), ctx)
 		resp, err := l.ProxyPayOrder(&req)
 		if err != nil {

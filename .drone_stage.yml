@@ -32,13 +32,11 @@ steps:
         - docker-compose -f zhongshoupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/zhongshoupay*
+        - refs/tags/zhongshoupay_stage_*
       event:
-        - published
         - push
         - tag
-
-
+        - published
 ---
 kind: pipeline
 name: lepay
@@ -62,9 +60,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout lepay
+        - git checkout stage
         - git checkout -- .
-        - git pull origin lepay
+        - git pull origin stage
         - go mod tidy
         - docker-compose -f lepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=lepay" --quiet)
@@ -74,14 +72,11 @@ steps:
         - docker-compose -f lepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/lepay*
+        - refs/tags/lepay_stage_*
       event:
         - push
         - tag
         - published
-
-
-
 ---
 kind: pipeline
 name: taotaopay
@@ -117,12 +112,11 @@ steps:
         - docker-compose -f taotaopay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/taotaopay*
+        - refs/tags/taotaopay_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: wanlisinpay
@@ -146,9 +140,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout wanlisinpay
+        - git checkout stage
         - git checkout -- .
-        - git pull origin wanlisinpay
+        - git pull origin stage
         - go mod tidy
         - docker-compose -f wanlisinpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=wanlisinpay" --quiet)
@@ -158,12 +152,11 @@ steps:
         - docker-compose -f wanlisinpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wanlisinpay*
+        - refs/tags/wanlisinpay_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: wangjhepay
@@ -199,12 +192,11 @@ steps:
         - docker-compose -f wangjhepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/wangjhepay*
+        - refs/tags/wangjhepay_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -240,12 +232,11 @@ steps:
         - docker-compose -f shenfutongpay6/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/shenfutongpay6*
+        - refs/tags/shenfutongpay6_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: stpay
@@ -281,12 +272,11 @@ steps:
         - docker-compose -f stpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/stpay*
+        - refs/tags/stpay_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: ailefupay
@@ -322,12 +312,11 @@ steps:
         - docker-compose -f ailefupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/ailefupay*
+        - refs/tags/ailefupay_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: huanyupay
@@ -363,12 +352,11 @@ steps:
         - docker-compose -f huanyupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/huanyupay*
+        - refs/tags/huanyupay_stage_*
       event:
         - push
         - tag
         - published
-
 ---
 kind: pipeline
 name: lyubupay
@@ -404,12 +392,11 @@ steps:
         - docker-compose -f lyubupay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/lyubupay*
+        - refs/tags/lyubupay_stage_*
       event:
         - push
         - tag
         - published
-
 
 ---
 kind: pipeline
@@ -446,12 +433,11 @@ steps:
         - docker-compose -f liepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/liepay*
+        - refs/tags/liepay_stage_*
       event:
         - push
         - tag
         - published
-
 
 ---
 kind: pipeline
@@ -488,16 +474,11 @@ steps:
         - docker-compose -f vcpay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vcpay2*
+        - refs/tags/vcpay2_stage_*
       event:
         - push
         - tag
         - published
-trigger:
-  ref:
-    - refs/tags/vcpay2*
-  branch:
-    - stage
 
 ---
 kind: pipeline
@@ -534,22 +515,11 @@ steps:
         - docker-compose -f mlbproxypay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mlbproxypay2*
+        - refs/tags/mlbproxypay2_stage_*
       event:
-        - published
         - push
         - tag
-#trigger:
-#  ref:
-#    - refs/tags/mlbproxypay2*
-#  branch:
-#    - stage
-#  event:
-#    - published 
-#    - push
-#    - tag
-    
-
+        - published
 
 ---
 kind: pipeline
@@ -586,7 +556,7 @@ steps:
         - docker-compose -f sinshangpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/sinshangpay*
+        - refs/tags/sinshangpay_stage_*
       event:
         - push
         - tag
@@ -627,12 +597,11 @@ steps:
         - docker-compose -f baisiangpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/baisiangpay*
+        - refs/tags/baisiangpay_stage_*
       event:
         - push
         - tag
         - published
-        
 
 ---
 kind: pipeline
@@ -669,8 +638,7 @@ steps:
         - docker-compose -f vp8pay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vp8pay*
-     
+        - refs/tags/vp8pay_stage_*
       event:
         - push
         - tag
@@ -711,7 +679,7 @@ steps:
         - docker-compose -f jstpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/jstpay*
+        - refs/tags/jstpay_stage_*
       event:
         - push
         - tag
@@ -740,9 +708,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout mlbpay
+        - git checkout stage
         - git checkout -- .
-        - git pull origin mlbpay
+        - git pull origin stage
         - go mod tidy
         - docker-compose -f mlbpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=mlbpay" --quiet)
@@ -752,7 +720,7 @@ steps:
         - docker-compose -f mlbpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mlbpay*
+        - refs/tags/mlbpay_stage_*
       event:
         - push
         - tag
@@ -781,9 +749,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout jindepay
+        - git checkout stage
         - git checkout -- .
-        - git pull origin jindepay
+        - git pull origin stage
         - go mod tidy
         - docker-compose -f jindepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=jindepay" --quiet)
@@ -793,7 +761,7 @@ steps:
         - docker-compose -f jindepay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/jindepay*
+        - refs/tags/jindepay_stage_*
       event:
         - push
         - tag
@@ -833,7 +801,87 @@ steps:
         - docker-compose -f sandianlingpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/sandianlingpay*
+        - refs/tags/sandianlingpay_stage_*
+      event:
+        - push
+        - tag
+        - published
+---
+kind: pipeline
+name: wtpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-wtpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f wtpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wtpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wtpay wtpay/pay.go
+        - docker build -t wtpay -f wtpay/Dockerfile .
+        - docker-compose -f wtpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/wtpay_stage_*
+      event:
+        - push
+        - tag
+        - published
+---
+kind: pipeline
+name: shahepay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-shahepay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout shahepay
+        - git checkout -- .
+        - git pull origin shahepay
+        - go mod tidy
+        - docker-compose -f shahepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=shahepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/shahepay shahepay/pay.go
+        - docker build -t shahepay -f shahepay/Dockerfile .
+        - docker-compose -f shahepay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/shahepay_stage_*
       event:
         - push
         - tag

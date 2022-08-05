@@ -14,7 +14,7 @@ import (
 
 func GetSign(source string) string {
 	data := []byte(source)
-	source2 := fmt.Sprintf("%x",sha256.Sum256(data))
+	source2 := fmt.Sprintf("%x", sha256.Sum256(data))
 	logx.Infof("sha256 %s", source2)
 	result := fmt.Sprintf("%x", md5.Sum([]byte(source2)))
 	return strings.ToUpper(result)

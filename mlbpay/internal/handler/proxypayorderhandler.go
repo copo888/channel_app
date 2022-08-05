@@ -43,7 +43,7 @@ func ProxyPayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		// 驗證密鑰
 		authenticationProxykey := r.Header.Get("authenticationProxykey")
-		logx.Infof("authenticationProxykey: %s，ProxyKey:%s，PublicKey:%s", authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey)
+		logx.WithContext(r.Context()).Infof("authenticationProxykey: %s，ProxyKey:%s，PublicKey:%s", authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey)
 		if isOK, err := utils.MicroServiceVerification(authenticationProxykey, ctx.Config.ApiKey.ProxyKey, ctx.Config.ApiKey.PublicKey); err != nil || !isOK {
 			err = errorx.New(responsex.INTERNAL_SIGN_ERROR)
 			responsex.Json(w, r, err.Error(), nil, err)

@@ -2,13 +2,13 @@ package handler
 
 import (
 	"encoding/json"
+	"github.com/copo888/channel_app/baisiangpay/internal/logic"
+	"github.com/copo888/channel_app/baisiangpay/internal/svc"
+	"github.com/copo888/channel_app/baisiangpay/internal/types"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/baisiangpay/internal/logic"
-	"github.com/copo888/channel_app/baisiangpay/internal/svc"
-	"github.com/copo888/channel_app/baisiangpay/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
@@ -24,13 +24,12 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.PayOrderRequest
 
-
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
 
-		logx.Infof("%#v",req)
+		logx.WithContext(r.Context()).Infof("%#v", req)
 
 		if err := vaildx.Validator.Struct(req); err != nil {
 			responsex.Json(w, r, responsex.INVALID_PARAMETER, nil, err)

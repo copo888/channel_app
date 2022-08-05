@@ -29,7 +29,7 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		logx.Infof("%#v", req)
+		logx.WithContext(r.Context()).Infof("%#v", req)
 
 		if err := vaildx.Validator.Struct(req); err != nil {
 			responsex.Json(w, r, responsex.INVALID_PARAMETER, nil, err)

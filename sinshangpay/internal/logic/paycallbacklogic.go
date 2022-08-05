@@ -36,7 +36,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -64,7 +64,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.MchOrderNo,
 		ChannelOrderNo: req.PayOrderId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderStatus:    orderStatus,    // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    utils.FloatDiv(req.Income, "100"),
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
@@ -92,7 +92,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	if err = res.DecodeJSON(&payCallBackVO); err != nil {
 		return "err", err
 	} else if payCallBackVO.Code != "0" {
-		return "err", err
+		return "err", errorx.New(payCallBackVO.Code)
 	}
 
 	return "success", nil
