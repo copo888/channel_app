@@ -886,3 +886,43 @@ steps:
         - push
         - tag
         - published
+---
+kind: pipeline
+name: shandianpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-shandianpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f shandianpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=shandianpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/shandianpay shandianpay/pay.go
+        - docker build -t shandianpay -f shandianpay/Dockerfile .
+        - docker-compose -f shandianpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/shandianpay_stage_*
+      event:
+        - push
+        - tag
+        - published
