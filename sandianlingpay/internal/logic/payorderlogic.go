@@ -55,7 +55,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	ip := utils.GetRandomIp()
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	amount := utils.FloatMul(req.TransactionAmount, "100")
-	amountStr := fmt.Sprintf("%v", amount)
+	amountStr := fmt.Sprintf("%.0f", amount)
 	randomMhtuserid := utils.GetRandomString(6, utils.ALL, utils.MIX)
 
 	// 組請求參數
@@ -113,19 +113,19 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	}  else if res.Status() != 200 {
+	} else if res.Status() != 200 {
 		logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    int `json:"rtCode"`
-		Msg     string `json:"msg, optional"`
-		Sign    string `json:"sign"`
+		Code   int    `json:"rtCode"`
+		Msg    string `json:"msg, optional"`
+		Sign   string `json:"sign"`
 		Result struct {
 			Pforderno string `json:"pforderno"`
-			Payurl string `json:"payurl"`
+			Payurl    string `json:"payurl"`
 		} `json:"result"`
 	}{}
 
