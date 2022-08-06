@@ -56,18 +56,18 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	orderAmount = utils.FloatDiv(req.TxnAmt, "100")
 	var status = "0" //渠道回調狀態01---处理中 10---交易成功 20---交易失败 30---其他状态（需联系管理人员）
 	if req.TxnStatus == "01" {
-		status = "1"
+		status = "0"
 	} else if req.TxnStatus == "10" {
-		status = "2"
+		status = "1"
 	} else if req.TxnStatus == "20" || req.TxnStatus == "30" {
-		status = "3"
+		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.OrderId,
 		ChannelOrderNo:      req.TxnId,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
-		ChannelResultStatus: status, //0待处理，1处理中，2成功，3失败
+		ChannelResultStatus: status, //0处理中，1成功，2失败
 		ChannelResultNote:   "",
 		Amount:              orderAmount,
 		ChannelCharge:       0,
