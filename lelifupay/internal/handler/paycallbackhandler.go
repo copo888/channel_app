@@ -29,10 +29,10 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		}
 
 		// Form 格式
-		//if err := httpx.ParseForm(r, &req); err != nil {
-		//	responsex.Json(w, r, responsex.FAIL, nil, err)
-		//	return
-		//}
+		if err := httpx.ParseForm(r, &req); err != nil {
+			responsex.Json(w, r, responsex.FAIL, nil, err)
+			return
+		}
 
 		logx.WithContext(r.Context()).Infof("%#v", req)
 
