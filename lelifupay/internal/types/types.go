@@ -134,7 +134,7 @@ type PayCallBackRequest struct {
 	OrderDate string `form:"orderDate"`
 	OrderTime string `form:"orderTime"`
 	MerId string `form:"merId"`
-	ExtInfo string `form:"txnId"`
+	ExtInfo string `form:"extInfo"`
 	OrderId string `form:"orderId"`
 	TxnId string `form:"txnId"`
 	TxnAmt string `form:"txnAmt"`
