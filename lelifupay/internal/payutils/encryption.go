@@ -167,7 +167,7 @@ func CovertToMapForm(req interface{}) map[string]string {
 		jsonTag := val.Type().Field(i).Tag.Get("form") // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
-		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
+		if name != "mac" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
 			if val.Field(i).Type().Name() == "float64" {
 				precise := GetDecimalPlaces(val.Field(i).Float())
 				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)
