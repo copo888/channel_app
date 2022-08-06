@@ -960,7 +960,7 @@ steps:
         - published
 ---
 kind: pipeline
-name: shandianpay
+name: lelifupay
 
 clone:
   disable: true
