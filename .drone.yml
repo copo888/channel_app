@@ -946,3 +946,44 @@ steps:
 trigger:
   branch:
     - shandianpay
+---
+kind: pipeline
+name: lelifupay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-lelifupay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout lelifupay
+        - git checkout -- .
+        - git pull origin lelifupay
+        - go mod tidy
+        - docker-compose -f lelifupay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=lelifupay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/lelifupay lelifupay/pay.go
+        - docker build -t lelifupay -f lelifupay/Dockerfile .
+        - docker-compose -f lelifupay/docker-compose.yml up -d
+    when:
+      branch:
+        - lelifupay
+      event:
+        - push
+trigger:
+  branch:
+    - lelifupay
