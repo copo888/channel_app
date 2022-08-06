@@ -113,7 +113,7 @@ type ProxyPayCallBackRequest struct {
 	OrderDate string `form:"orderDate"`
 	OrderTime string `form:"orderTime"`
 	MerId string `form:"merId"`
-	ExtInfo string `form:"extInfo"`
+	ExtInfo string `form:"extInfo, optional"`
 	OrderId string `form:"orderId"`
 	TxnId string `form:"txnId"`
 	TxnAmt string `form:"txnAmt"`
@@ -134,7 +134,7 @@ type PayCallBackRequest struct {
 	OrderDate string `form:"orderDate"`
 	OrderTime string `form:"orderTime"`
 	MerId string `form:"merId"`
-	ExtInfo string `form:"extInfo"`
+	ExtInfo string `form:"extInfo, optional"`
 	OrderId string `form:"orderId"`
 	TxnId string `form:"txnId"`
 	TxnAmt string `form:"txnAmt"`
