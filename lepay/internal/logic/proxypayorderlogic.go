@@ -50,6 +50,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
+	var branch string
+	if req.ReceiptCardBranch == "" {
+		branch = req.ReceiptCardBankName
+	} else {
+		branch = req.ReceiptCardBranch
+	}
 
 	//notifyUrl = "http://9e7c-211-75-36-190.ngrok.io/api/proxy-pay-call-back"
 	//data := url.Values{}
@@ -92,7 +98,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Amount:         transactionAmount,
 		BankAccountInfo: BankAccountInfoData{
 			Bank:           channelBankMap.MapCode,
-			BankBranch:     req.ReceiptCardBranch,
+			BankBranch:     branch,
 			CardNumber:     req.ReceiptAccountNumber,
 			CardHolderName: req.ReceiptAccountName,
 			City:           req.ReceiptCardCity,
