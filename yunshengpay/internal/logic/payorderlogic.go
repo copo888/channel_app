@@ -52,8 +52,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 取值
-	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl := "http://b931-211-75-36-190.ngrok.io" + "/api/pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	orderTime := time.Now().Format("2006-01-02 15:04:05")
