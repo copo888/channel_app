@@ -45,4 +45,4 @@ Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
   Port: ${MERCHANT_SERVICE_PORT}
 
-Timeout: 15000
+Timeout: 30000

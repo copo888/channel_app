@@ -113,7 +113,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(10).Trace(span).Form(data)
 
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(reqObj)
+	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(reqObj)
 
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
