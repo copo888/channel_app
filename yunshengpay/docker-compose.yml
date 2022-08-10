@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: yunshengpay
+    image: yunshengpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/yunshengpay:/app/logs
