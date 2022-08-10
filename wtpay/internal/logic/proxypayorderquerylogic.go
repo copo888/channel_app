@@ -50,7 +50,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%#v", proxyPayQueryUrl, data)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Get(proxyPayQueryUrl).Header("Authorization", auth).Timeout(10).Trace(span).Do()
+	ChannelResp, ChnErr := gozzle.Get(proxyPayQueryUrl).Header("Authorization", auth).Timeout(20).Trace(span).Do()
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())

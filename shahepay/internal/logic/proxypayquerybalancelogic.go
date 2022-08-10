@@ -63,7 +63,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(10).Trace(span).Form(data)
+	res, chnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(20).Trace(span).Form(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, chnErr.Error())

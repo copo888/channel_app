@@ -74,8 +74,8 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 
 	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", reqUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Get(reqUrl).Timeout(10).Trace(span).JSON(data)
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
+	res, ChnErr := gozzle.Get(reqUrl).Timeout(20).Trace(span).JSON(data)
+	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())

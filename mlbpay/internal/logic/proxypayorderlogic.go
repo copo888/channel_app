@@ -80,7 +80,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 請求渠道
 	logx.Infof("代付下单请求地址:%s,代付請求參數:%#v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {
 		logx.Error("渠道返回錯誤: ", ChnErr.Error())

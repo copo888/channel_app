@@ -53,7 +53,7 @@ func (l *TxProxyPayOrderQueryLogic) TxProxyPayOrderQuery(req *types.TxProxyPayOr
 	data.Set("sign", sign)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, err := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(10).Trace(span).Form(data)
+	res, err := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).Form(data)
 	if err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
 	}

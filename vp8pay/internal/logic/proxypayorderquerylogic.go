@@ -52,7 +52,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		Header("Accept", "application/json").
 		Header("Content-Type", "application/json").
 		Header("Authorization", "Bearer "+channel.MerKey).
-		Timeout(10).Trace(span).Do()
+		Timeout(20).Trace(span).Do()
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())

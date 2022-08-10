@@ -50,7 +50,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", payQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Get(payQueryUrl).Header("Authorization", auth).Timeout(10).Trace(span).Do()
+	res, chnErr := gozzle.Get(payQueryUrl).Header("Authorization", auth).Timeout(20).Trace(span).Do()
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())

@@ -80,7 +80,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/pay-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
-	res, errx := gozzle.Post(url).Timeout(10).Trace(span).Header("authenticationPaykey", payKey).JSON(payCallBackBO)
+	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationPaykey", payKey).JSON(payCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		return "err", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())

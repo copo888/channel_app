@@ -64,7 +64,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())

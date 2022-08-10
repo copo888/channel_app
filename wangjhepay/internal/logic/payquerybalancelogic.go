@@ -74,8 +74,8 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).JSON(data)
-	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Transport(tr).Timeout(10).Trace(span).Form(data)
+	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	}

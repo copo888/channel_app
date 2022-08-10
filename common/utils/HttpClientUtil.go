@@ -42,7 +42,7 @@ func SubmitForm(url string, param url.Values, context context.Context) (*gozzle.
 
 	t := http.DefaultTransport.(*http.Transport)
 	t.MaxConnsPerHost = 100 //最大連線池數
-	resp, err := gozzle.Post(url).Transport(t).Timeout(10).Trace(span).Form(param)
+	resp, err := gozzle.Post(url).Transport(t).Timeout(20).Trace(span).Form(param)
 	if err != nil {
 		logx.WithContext(context).Error("渠道返回错误: ", err.Error())
 	}

@@ -61,7 +61,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	res, ChnErr := gozzle.Post(channel.PayUrl).
 		Header("Accept", "application/json").
 		Header("Authorization", "Bearer "+channel.MerKey).
-		Timeout(10).Trace(span).JSON(data)
+		Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())

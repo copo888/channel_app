@@ -50,7 +50,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		Header("Accept", "application/json").
 		Header("Content-Type", "application/json").
 		Header("Authorization", "Bearer "+channel.MerKey).
-		Timeout(10).Trace(span).Do()
+		Timeout(20).Trace(span).Do()
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
