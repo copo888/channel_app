@@ -2,15 +2,16 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/yunshengpay/internal/payutils"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strconv"
+	"time"
 
 	"github.com/copo888/channel_app/yunshengpay/internal/svc"
 	"github.com/copo888/channel_app/yunshengpay/internal/types"
@@ -53,50 +54,81 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
-	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
+	//transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
+	orderTime := time.Now().Format("2006-01-02 15:04:05")
+	nonce := utils.GetRandomString(10, utils.ALL, utils.MIX)
 
-	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-	data.Set("tradeNo", req.OrderNo)
-	data.Set("amount", transactionAmount)
-	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
-	data.Set("bankCode", channelBankMap.MapCode)
-	data.Set("subsidiaryBank", req.ReceiptCardBankName)
-	data.Set("subbranch", req.ReceiptCardBranch)
-	data.Set("province", req.ReceiptCardProvince)
-	data.Set("city", req.ReceiptCardCity)
-	data.Set("bankCardNo", req.ReceiptAccountNumber)
-	data.Set("bankCardholder", req.ReceiptAccountName)
+	dataInit := struct {
+		MerchId        string  `json:"merchantId"`
+		UserId         string  `json:"userId"`
+		OrderId        string  `json:"orderId"`
+		OrderTime      string  `json:"orderTime"`
+		Amount         float64 `json:"amount"`
+		BankCardNo     string  `json:"account"`
+		BankCardholder string  `json:"holder"`
+		BankCode       string  `json:"bank"`
+		BankName       string  `json:"bankName"`
+		NotifyUrl      string  `json:"notifyUrl"`
+		Nonce          string  `json:"nonce"`
+		Timestamp      string  `json:"timestamp"`
+	}{
+		MerchId:        channel.MerId,
+		UserId:         channel.MerId,
+		OrderId:        req.OrderNo,
+		OrderTime:      orderTime,
+		Amount:         amountFloat,
+		BankCardNo:     req.ReceiptAccountNumber,
+		BankCardholder: req.ReceiptAccountName,
+		BankCode:       channelBankMap.MapCode,
+		BankName:       req.ReceiptCardBankName,
+		//NotifyUrl :  l.svcCtx.Config.Server+"/api/proxy-pay-call-back",
+		NotifyUrl: "http://f676-211-75-36-190.ngrok.io" + "/api/proxy-pay-call-back",
+		Nonce:     nonce,
+		Timestamp: timestamp,
+	}
+	dataBytes, err := json.Marshal(dataInit)
 
+	encryptContent := utils.EnPwdCode(string(dataBytes), channel.MerKey)
+	// 組請求參數 FOR JSON
+	reqObj := struct {
+		Id   string `json:"id"`
+		Data string `json:"data"`
+	}{
+		Id:   channel.MerId,
+		Data: encryptContent,
+	}
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	data.Set("sign", sign)
+	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	//data.Set("sign", sign)
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%#v", channel.ProxyPayUrl, data)
+	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%#v", channel.ProxyPayUrl, reqObj)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).Form(data)
+	res, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).JSON(reqObj)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if ChannelResp.Status() != 200 {
-		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
+	} else if res.Status() != 200 {
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
-	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
+	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+	response := utils.DePwdCode(string(res.Body()), channel.MerKey)
+	logx.WithContext(l.ctx).Infof("返回解密: %s", response)
+
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool   `json:"success"`
+		Code    int    `json:"code"`
 		Msg     string `json:"msg"`
-		TradeId string `json:"tradeId"` //渠道訂單號
+		TradeId string `json:"transId"` //渠道訂單號
 	}{}
 
-	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
+	if err = json.Unmarshal([]byte(response), &channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if channelResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Msg)
+	} else if channelResp.Code != 0 {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 

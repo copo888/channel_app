@@ -37,7 +37,7 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -96,7 +96,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}
 	//else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
-	//   return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
+	//  return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
 	//} else if BoProxyRespVO.Code != "000"{
 	//	return "fail",errorx.New(BoProxyRespVO.Message)
 	//}

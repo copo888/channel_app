@@ -35,7 +35,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
