@@ -82,10 +82,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankCardholder: req.ReceiptAccountName,
 		BankCode:       channelBankMap.MapCode,
 		BankName:       req.ReceiptCardBankName,
-		//NotifyUrl :  l.svcCtx.Config.Server+"/api/proxy-pay-call-back",
-		NotifyUrl: "http://f676-211-75-36-190.ngrok.io" + "/api/proxy-pay-call-back",
-		Nonce:     nonce,
-		Timestamp: timestamp,
+		NotifyUrl:      l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		Nonce:          nonce,
+		Timestamp:      timestamp,
 	}
 	dataBytes, err := json.Marshal(dataInit)
 
