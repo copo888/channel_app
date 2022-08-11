@@ -60,8 +60,8 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	tr := &http.Transport{
 		TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 	}
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Transport(tr).Timeout(10).Trace(span).Form(data)
-	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(10).Trace(span).JSON(data)
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
+	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	}

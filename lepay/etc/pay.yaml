@@ -5,7 +5,7 @@ ProjectName: ${APP_NAME}
 Mode: ${APP_MODE}
 Verbose: ${HTTP_VERBOSE}
 
-Timeout: 15000
+Timeout: 25000
 
 Server: ${SERVER}
 

@@ -21,9 +21,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout zhongshoupay
+        - git checkout master
         - git checkout -- .
-        - git pull origin zhongshoupay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f zhongshoupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=zhongshoupay" --quiet)
@@ -104,9 +104,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout taotaopay
+        - git checkout master
         - git checkout -- .
-        - git pull origin taotaopay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f taotaopay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=taotaopay" --quiet)
@@ -187,9 +187,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout wangjhepay
+        - git checkout master
         - git checkout -- .
-        - git pull origin wangjhepay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f wangjhepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=wangjhepay" --quiet)
@@ -228,9 +228,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout shenfutongpay6
+        - git checkout master
         - git checkout -- .
-        - git pull origin shenfutongpay6
+        - git pull origin master
         - go mod tidy
         - docker-compose -f shenfutongpay6/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=shenfutongpay6" --quiet)
@@ -269,9 +269,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout stpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin stpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f stpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=stpay" --quiet)
@@ -311,9 +311,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout ailefupay
+        - git checkout master
         - git checkout -- .
-        - git pull origin ailefupay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f ailefupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=ailefupay" --quiet)
@@ -353,9 +353,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout huanyupay
+        - git checkout master
         - git checkout -- .
-        - git pull origin huanyupay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f huanyupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=huanyupay" --quiet)
@@ -395,9 +395,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout lyubupay
+        - git checkout master
         - git checkout -- .
-        - git pull origin lyubupay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f lyubupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=lyubupay" --quiet)
@@ -438,9 +438,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout liepay
+        - git checkout master
         - git checkout -- .
-        - git pull origin liepay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f liepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=liepay" --quiet)
@@ -480,9 +480,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout vcpay2
+        - git checkout master
         - git checkout -- .
-        - git pull origin vcpay2
+        - git pull origin master
         - go mod tidy
         - docker-compose -f vcpay2/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=vcpay2" --quiet)
@@ -566,9 +566,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout sinshangpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin sinshangpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f sinshangpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=sinshangpay" --quiet)
@@ -608,9 +608,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout baisiangpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin baisiangpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f baisiangpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=baisiangpay" --quiet)
@@ -650,9 +650,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout vp8pay
+        - git checkout master
         - git checkout -- .
-        - git pull origin vp8pay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f vp8pay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=vp8pay" --quiet)
@@ -692,9 +692,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout jstpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin jstpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f jstpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=jstpay" --quiet)
@@ -818,9 +818,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout sandianlingpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin sandianlingpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f sandianlingpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=sandianlingpay" --quiet)
@@ -900,9 +900,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout shahepay
+        - git checkout master
         - git checkout -- .
-        - git pull origin shahepay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f shahepay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=shahepay" --quiet)
@@ -941,9 +941,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout shandianpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin shandianpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f shandianpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=shandianpay" --quiet)
@@ -982,9 +982,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout lelifupay
+        - git checkout master
         - git checkout -- .
-        - git pull origin lelifupay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f lelifupay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=lelifupay" --quiet)
@@ -1024,9 +1024,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout yunshengpay
+        - git checkout master
         - git checkout -- .
-        - git pull origin yunshengpay
+        - git pull origin master
         - go mod tidy
         - docker-compose -f yunshengpay/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=yunshengpay" --quiet)

@@ -79,7 +79,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).
 		Header("Accept", "application/json").
 		Header("Authorization", "Bearer "+channel.MerKey).
-		Timeout(10).Trace(span).JSON(data)
+		Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())

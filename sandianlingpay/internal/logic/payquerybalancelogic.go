@@ -70,9 +70,9 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	url := channel.PayQueryBalanceUrl + "?opmhtid=" + channel.MerId + "&random=" + randomID + "&sign=" + sign
 	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", url, data)
 	span := trace.SpanFromContext(l.ctx)
-	//res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(10).Trace(span).JSON(data)
+	//res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(20).Trace(span).JSON(data)
 
-	res, ChnErr := gozzle.Get(url).Timeout(10).Trace(span).Form(data)
+	res, ChnErr := gozzle.Get(url).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())

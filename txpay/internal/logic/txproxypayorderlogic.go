@@ -78,7 +78,7 @@ func (l *TxProxyPayOrderLogic) TxProxyPayOrder(req *types.TxProxyPayOrderRequest
 	data.Set("sign", sign)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, err := gozzle.Post(channel.ProxyPayUrl).Timeout(10).Trace(span).Form(data)
+	res, err := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).Form(data)
 	if err != nil {
 
 	}

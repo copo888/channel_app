@@ -72,7 +72,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
-	res, err := gozzle.Post(channel.PayUrl).Timeout(10).Trace(span).Form(data)
+	res, err := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
 	logx.Info(fmt.Sprintf("channel payOrder reply: url: %s, resp: %s ", channel.PayUrl, res))
 	if err != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, err.Error())
