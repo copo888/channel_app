@@ -172,7 +172,7 @@ service pay {
 	post /pay-query (PayOrderQueryRequest) returns (PayOrderQueryResponse)
 	
 	@handler PayCallBackHandler
-	post /pay-call-back (PayCallBackRequest) returns (string)
+	get /pay-call-back (PayCallBackRequest) returns (string)
 	
 	@handler PayQueryBalanceHandler
 	post /pay-query-balance-internal returns (PayQueryInternalBalanceResponse)

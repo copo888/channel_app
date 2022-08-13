@@ -23,7 +23,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: PayOrderQueryHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/pay-call-back",
 				Handler: PayCallBackHandler(serverCtx),
 			},
