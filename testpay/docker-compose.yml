@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: testpay
+    image: testpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/testpay:/app/logs
