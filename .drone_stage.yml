@@ -1083,7 +1083,7 @@ steps:
         - docker-compose -f htpay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/yunshengpay_stage_*
+        - refs/tags/htpay_stage_*
       event:
         - push
         - tag
