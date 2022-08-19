@@ -6,15 +6,14 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/htpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/htpay/internal/svc"
+	"github.com/copo888/channel_app/htpay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,7 +34,7 @@ func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 
 func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQueryRequest) (resp *types.ProxyPayOrderQueryResponse, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrderQuery. channelName: %s, ProxyPayOrderQueryRequest: %+v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrderQuery. channelName: %s, ProxyPayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -45,19 +44,23 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10301")
-	data.Set("outTradeNo", req.OrderNo)
+	data := struct {
+		MerchId      string `json:"mch_id"`
+		DfMchOrderNo string `json:"df_mch_order_no"`
+		Sign         string `json:"sign"`
+	}{
+		MerchId:      channel.MerId,
+		DfMchOrderNo: req.OrderNo,
+	}
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	data.Set("sign", sign)
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey)
+	data.Sign = sign
 
-	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%+v", channel.ProxyPayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -69,25 +72,23 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Success    bool   `json:"success"`
-		Msg        string `json:"msg"`
-		OutTradeNo string `json:"outTradeNo"`
-		Amount     string `json:"amount"`
-		Status     string `json:"status"`
-		StatusStr  string `json:"statusStr"`
+		Status       string `json:"status"`
+		Msg          string `json:"msg"`
+		TransOrderNo string `json:"trans_order_no"` //渠道訂單號
+		RefCode      string `json:"refCode"`
+		RefMsg       string `json:"refMsg"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s: %s", channelQueryResp.Success, channelQueryResp.Msg)
+	} else if channelQueryResp.Status != "success" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Msg)
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Status == "1" {
+	if channelQueryResp.RefCode == "1" {
 		orderStatus = "20"
-	} else if strings.Index("2,3,5", channelQueryResp.Status) > -1 {
+	} else if strings.Index("2,5,7,8", channelQueryResp.RefCode) > -1 {
 		orderStatus = "30"
 	}
 
@@ -95,6 +96,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	return &types.ProxyPayOrderQueryResponse{
 		Status: 1,
 		//CallBackStatus: ""
+		ChannelOrderNo:   channelQueryResp.TransOrderNo,
 		OrderStatus:      orderStatus,
 		ChannelReplyDate: time.Now().Format("2006-01-02 15:04:05"),
 		//ChannelCharge =

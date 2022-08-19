@@ -6,9 +6,9 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/samplepay/internal/logic"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/htpay/internal/logic"
+	"github.com/copo888/channel_app/htpay/internal/svc"
+	"github.com/copo888/channel_app/htpay/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
@@ -29,7 +29,7 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		logx.WithContext(r.Context()).Infof("%+v", req)
+		logx.WithContext(r.Context()).Infof("%#v", req)
 
 		if err := vaildx.Validator.Struct(req); err != nil {
 			responsex.Json(w, r, responsex.INVALID_PARAMETER, nil, err)

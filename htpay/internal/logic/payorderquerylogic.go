@@ -2,18 +2,17 @@ package logic
 
 import (
 	"context"
+	"crypto/md5"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
-	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/htpay/internal/payutils"
+	"github.com/copo888/channel_app/htpay/internal/svc"
+	"github.com/copo888/channel_app/htpay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -35,7 +34,7 @@ func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayO
 
 func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (resp *types.PayOrderQueryResponse, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %+v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrderQuery. channelName: %s, PayOrderQueryRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -43,46 +42,28 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
-	// 組請求參數
-	data := url.Values{}
-	if req.OrderNo != "" {
-		data.Set("trade_no", req.OrderNo)
-	}
-	if req.ChannelOrderNo != "" {
-		data.Set("order_no", req.ChannelOrderNo)
-	}
-	data.Set("appid", channel.MerId)
-	data.Set("nonce_str", randomID)
 
 	// 組請求參數 FOR JSON
-	//data := struct {
-	//	merchId  string
-	//	orderId  string
-	//	time     string
-	//	signType string
-	//	sign     string
-	//}{
-	//	merchId:  channel.MerId,
-	//	orderId:  req.OrderNo,
-	//	time:     timestamp,
-	//	signType: "MD5",
-	//}
-
-	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	data.Set("sign", sign)
+	data := struct {
+		MerchId      string `json:"mch_id"`
+		MchOrderNo   string `json:"mch_order_no"`
+		RandomString string `json:"random_string"`
+		Sign         string `json:"sign"`
+	}{
+		MerchId:      channel.MerId,
+		MchOrderNo:   req.OrderNo,
+		RandomString: fmt.Sprintf("%x", md5.Sum([]byte(req.OrderNo))),
+	}
 
 	// 加簽 JSON
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.sign = sign
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey)
+	data.Sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
-	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -94,25 +75,29 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code  string `json:"code"`
-		Msg   string `json:"msg"`
-		State string `json:"state"` //状态 1-成功 2-等待付款 7-关闭
-		Money string `json:"money"`
+		Status string `json:"status"`
+		Msg    string `json:"msg, optional"`
+		Data   struct {
+			TransOrderNo string `json:"trans_order_no"`
+			Amount       string `json:"amount"`
+			RealAmount   string `json:"real_amount"`
+			Status       string `json:"status"`
+		} `json:"data"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Code != "0000" {
+	} else if channelResp.Status != "success" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Money, 64)
+	orderAmount, errParse := strconv.ParseFloat(channelResp.Data.Amount, 64)
 	if errParse != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"
-	if channelResp.State == "1" {
+	if channelResp.Status == "2" {
 		orderStatus = "1"
 	}
 

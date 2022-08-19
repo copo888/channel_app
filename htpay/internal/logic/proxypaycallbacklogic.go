@@ -8,15 +8,13 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/htpay/internal/svc"
+	"github.com/copo888/channel_app/htpay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -37,7 +35,7 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -51,27 +49,28 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
+
+	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Status == "2" {
+		status = "1"
+	} else if req.Status == "3" {
+		status = "2"
 	}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
-		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
-		status = "2"
-	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.DfMchOrderNo,
+		ChannelOrderNo:      req.TransOrderNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
+		ChannelResultNote:   "",
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
@@ -79,7 +78,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	// call boadmin callback api
 	span := trace.SpanFromContext(l.ctx)
-	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.PayKey, l.svcCtx.Config.ApiKey.PublicKey)
+	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
 	if errk != nil {
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
@@ -87,7 +86,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
-	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
+	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
@@ -96,7 +95,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}
 	//else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
-	//  return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
+	//   return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
 	//} else if BoProxyRespVO.Code != "000"{
 	//	return "fail",errorx.New(BoProxyRespVO.Message)
 	//}

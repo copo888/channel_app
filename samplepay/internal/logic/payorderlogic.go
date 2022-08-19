@@ -35,7 +35,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
@@ -98,7 +98,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.sign = sign
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	// 若有證書問題 請使用
 	//tr := &http.Transport{

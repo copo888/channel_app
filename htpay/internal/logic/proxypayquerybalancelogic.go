@@ -6,14 +6,13 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
+	"github.com/copo888/channel_app/htpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"time"
 
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/htpay/internal/svc"
+	"github.com/copo888/channel_app/htpay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -42,25 +41,23 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-
-	//JSON 格式
-	//data := struct {
-	//	MerchId   string `json:"partner"`
-	//}{
-	//	MerchId: channel.MerId,
-	//}
+	data := struct {
+		MerchId      string `json:"mch_id"`
+		RandomString string `json:"random_string"`
+		Sign         string `json:"sign"`
+	}{
+		MerchId:      channel.MerId,
+		RandomString: "97f000cc-a117-4c77-ae26-446a118f3551",
+	}
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	data.Set("sign", sign)
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey)
+	data.Sign = sign
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", channel.ProxyPayQueryBalanceUrl, data)
+	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%#v", channel.ProxyPayQueryUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(20).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -72,22 +69,23 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		Balance string `json:"balance"`
+		Status string `json:"status"`
+		Msg    string `json:"msg"`
+		Data   struct {
+			Balance string `json:"balance"`
+		} `json:"data"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if balanceQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
+	} else if balanceQueryResp.Status != "success" {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
 	}
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Balance,
+		ProxyPayBalance:    balanceQueryResp.Data.Balance,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
