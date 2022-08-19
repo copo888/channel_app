@@ -21,6 +21,7 @@ type PayOrderRequest {
 	SourceIp          string `json:"sourceIp, optional"`
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
+	PlayerId          string `json:"playerId, optional"`
 }
 
 type PayOrderResponse {
@@ -79,6 +80,7 @@ type ProxyPayOrderRequest {
 	ReceiptCardBranch    string `json:"receiptCardBranch"`
 	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
+	PlayerId             string `json:"playerId, optional"`
 }
 
 type ProxyPayOrderResponse {
@@ -110,14 +112,14 @@ type ProxyPayQueryInternalBalanceResponse {
 	ErrorMsgtring      string `json:"errorMsgtring"`
 }
 
-type ProxyPayCallBackRequest struct {
+type ProxyPayCallBackRequest {
 	Ip      string `json:"ip, optional"`
 	OrderNo string `json:"orderNo, optional"`
 	Amount  string `json:"amount, optional"`
 	Status  string `json:"status, optional"`
 }
 
-type PayCallBackRequest struct {
+type PayCallBackRequest {
 	MyIp    string `json:"myIp, optional"`
 	OrderNo string `json:"orderNo, optional"`
 	Amount  string `json:"amount, optional"`
