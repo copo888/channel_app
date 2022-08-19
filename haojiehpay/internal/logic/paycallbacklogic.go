@@ -15,7 +15,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 )
 
@@ -56,11 +55,11 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp str
 
 	amount := utils.FloatDiv(req.Amount, "100") // 單位:分
 
-	var orderAmount float64
-	orderAmount = utils.FloatDivF(amount, 100)
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
+	//var orderAmount float64
+	//orderAmount = utils.FloatDivF(amount, 100)
+	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+	//	return "fail", errorx.New(responsex.INVALID_AMOUNT)
+	//}
 
 	orderStatus := "1"
 	if req.Status == "2" || req.Status == "3" { //支付状态,0-订单生成,1-支付中,2- 支付成功,3-业务处理完成(成功),5-支付失败
@@ -73,7 +72,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp str
 		PayOrderNo:     req.MchOrderNo,
 		ChannelOrderNo: req.PayOrderId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		OrderAmount:    amount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
