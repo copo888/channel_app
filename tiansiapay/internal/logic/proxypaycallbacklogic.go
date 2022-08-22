@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
@@ -9,6 +10,7 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"time"
@@ -49,20 +51,39 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 
+	crypted, _ := base64.StdEncoding.DecodeString(req.Params)
+	logx.WithContext(l.ctx).Infof("base64解密后的：%s", crypted)
+	callBackBytes := payutils.AesDecrypt(crypted, []byte(l.svcCtx.Config.AesKey))
+	logx.WithContext(l.ctx).Infof("解密后的明文：%s", string(callBackBytes))
+
+	callBack := struct {
+		OrderNo         string  `json:"orderNo, optional"`
+		OrderStatus     int64   `json:"orderStatus, optional"`
+		OrderAmount     float64 `json:"orderAmount, optional"`
+		PaidAmount      float64 `json:"paidAmount, optional"`
+		PlayerName      string  `json:"playerName, optional"`
+		MerchantOrderId string  `json:"merchantOrderId, optional"`
+		DepositName     string  `json:"depositName, optional"`
+	}{}
+
+	if err = json.Unmarshal(callBackBytes, &callBack); err != nil {
+		return "fail", err
+	}
+
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.OrderStatus == 1 {
+	if callBack.OrderStatus == 1 {
 		status = "1"
-	} else if req.OrderStatus == 2 {
+	} else if callBack.OrderStatus == 2 {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.MerchantOrderId,
-		ChannelOrderNo:      req.OrderNo,
+		ProxyPayOrderNo:     callBack.MerchantOrderId,
+		ChannelOrderNo:      callBack.OrderNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   "",
-		Amount:              req.PaidAmount,
+		Amount:              callBack.PaidAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}

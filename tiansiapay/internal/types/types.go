@@ -106,14 +106,10 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip              string  `form:"ip, optional"`
-	OrderNo         string  `json:"orderNo, optional"`
-	OrderStatus     int64   `json:"orderStatus, optional"`
-	OrderAmount     float64 `json:"orderAmount, optional"`
-	PaidAmount      float64 `json:"paidAmount, optional"`
-	PlayerName      string  `json:"playerName, optional"`
-	MerchantOrderId string  `json:"merchantOrderId, optional"`
-	DepositName     string  `json:"depositName, optional"`
+	Ip             string  `json:"ip, optional"`
+	Params         string  `json:"params, optional"`
+	Signature      string  `json:"signature, optional"`
+	MerchantOrderId string `json:"merchantOrderId, optional"`
 }
 
 type ProxyPayConfirmRequest struct {
@@ -127,14 +123,10 @@ type ProxyPayConfirmRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp            string  `json:"myIp, optional"`
-	OrderNo         string  `json:"orderNo, optional"`
-	OrderStatus     int64   `json:"orderStatus, optional"`
-	OrderAmount     float64 `json:"orderAmount, optional"`
-	PaidAmount      float64 `json:"paidAmount, optional"`
-	PlayerName      string  `json:"playerName, optional"`
-	MerchantOrderId string  `json:"merchantOrderId, optional"`
-	DepositName     string  `json:"depositName, optional"`
+	MyIp           string  `json:"myIp, optional"`
+	Params         string  `json:"params, optional"`
+	Signature      string  `json:"signature, optional"`
+	MerchantOrderId string `json:"merchantOrderId, optional"`
 }
 
 type ReceiverInfoVO struct {
