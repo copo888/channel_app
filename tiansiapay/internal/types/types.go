@@ -113,13 +113,10 @@ type ProxyPayCallBackRequest struct {
 }
 
 type ProxyPayConfirmRequest struct {
-	Ip              string  `form:"ip, optional"`
-	UserName        string  `json:"userName, optional"`
-	PayAmout        float64 `json:"payAmout, optional"`
-	MerchantOrderId string  `json:"merchantOrderId, optional"`
-	BankNum         string  `json:"bankNum, optional"`
-	BankOwner       string  `json:"bankOwner, optional"`
-	OrderType       int64   `json:"orderType, optional"`
+	Ip             string  `json:"ip, optional"`
+	Params         string  `json:"params, optional"`
+	Signature      string  `json:"signature, optional"`
+	MerchantOrderId string `json:"merchantOrderId, optional"`
 }
 
 type PayCallBackRequest struct {

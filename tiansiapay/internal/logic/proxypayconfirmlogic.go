@@ -2,12 +2,14 @@ package logic
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 
 	"github.com/copo888/channel_app/tiansiapay/internal/svc"
 	"github.com/copo888/channel_app/tiansiapay/internal/types"
@@ -32,7 +34,6 @@ func NewProxyPayConfirmLogic(ctx context.Context, svcCtx *svc.ServiceContext) Pr
 func (l *ProxyPayConfirmLogic) ProxyPayConfirm(req *types.ProxyPayConfirmRequest) (resp string, err error) {
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayConfirm. channelName: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
 
-	var order typesX.Order
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -45,11 +46,34 @@ func (l *ProxyPayConfirmLogic) ProxyPayConfirm(req *types.ProxyPayConfirmRequest
 		return "白名单错误", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 
-	if err = l.svcCtx.MyDB.Table("tx_orders").Where("order_no = ?", req.MerchantOrderId).Take(&order).Error; err != nil {
+
+	crypted, _ := base64.StdEncoding.DecodeString(req.Params)
+	logx.WithContext(l.ctx).Infof("base64解密后的：%s", crypted)
+	callBackBytes := payutils.AesDecrypt(crypted, []byte(l.svcCtx.Config.AesKey))
+	logx.WithContext(l.ctx).Infof("解密后的明文：%s", string(callBackBytes))
+
+	callBack :=  struct {
+		Ip              string  `form:"ip, optional"`
+		UserName        string  `json:"userName, optional"`
+		PayAmout        float64 `json:"payAmout, optional"`
+		MerchantOrderId string  `json:"merchantOrderId, optional"`
+		BankNum         string  `json:"bankNum, optional"`
+		BankOwner       string  `json:"bankOwner, optional"`
+		OrderType       int64   `json:"orderType, optional"`
+	}{}
+
+	if err = json.Unmarshal(callBackBytes, &callBack); err != nil {
+		return "fail", err
+	}
+
+	var order typesX.Order
+
+
+	if err = l.svcCtx.MyDB.Table("tx_orders").Where("order_no = ?", callBack.MerchantOrderId).Take(&order).Error; err != nil {
 		return "取得订单错误", errorx.New(responsex.IP_DENIED, err.Error())
 	}
 
-	if req.PayAmout != order.OrderAmount {
+	if callBack.PayAmout != order.OrderAmount {
 		return "金额错误", errorx.New(responsex.IP_DENIED, err.Error())
 	}
 
