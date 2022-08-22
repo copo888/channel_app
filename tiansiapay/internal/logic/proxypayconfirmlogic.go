@@ -55,7 +55,6 @@ func (l *ProxyPayConfirmLogic) ProxyPayConfirm(req *types.ProxyPayConfirmRequest
 	callBack :=  struct {
 		Ip              string  `form:"ip, optional"`
 		UserName        string  `json:"userName, optional"`
-		PayAmout        float64 `json:"payAmout, optional"`
 		MerchantOrderId string  `json:"merchantOrderId, optional"`
 		BankNum         string  `json:"bankNum, optional"`
 		BankOwner       string  `json:"bankOwner, optional"`
@@ -71,10 +70,6 @@ func (l *ProxyPayConfirmLogic) ProxyPayConfirm(req *types.ProxyPayConfirmRequest
 
 	if err = l.svcCtx.MyDB.Table("tx_orders").Where("order_no = ?", callBack.MerchantOrderId).Take(&order).Error; err != nil {
 		return "取得订单错误", errorx.New(responsex.IP_DENIED, err.Error())
-	}
-
-	if callBack.PayAmout != order.OrderAmount {
-		return "金额错误", errorx.New(responsex.IP_DENIED, err.Error())
 	}
 
 	result := struct {
