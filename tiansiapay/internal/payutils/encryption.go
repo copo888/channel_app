@@ -1,15 +1,9 @@
 package payutils
 
 import (
-	"bytes"
-	"crypto/aes"
 	"crypto/md5"
 	"crypto/sha256"
-	"encoding/base64"
-	"encoding/hex"
-	"errors"
 	"fmt"
-	"github.com/copo888/channel_app/common/errorx"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/url"
 	"reflect"
@@ -21,7 +15,7 @@ import (
 func GetSign(source string) string {
 	data := []byte(source)
 	result := fmt.Sprintf("%x", md5.Sum(data))
-	return result
+	return strings.ToUpper(result)
 }
 
 /*
@@ -179,86 +173,4 @@ func GetDecimalPlaces(f float64) int {
 type liFangEncryptionInterface interface {
 	LiFangEncrypt() (string, error) // 立方停車加密
 	LiFangDecrypt() ([]byte, error) // 立方停車解密
-}
-
-type LiFangEncryptionStruct struct {
-	Key               string // 立方密鑰
-	NeedEncryptString string // 需要加密的字符串
-	NeedDecryptString string // 需要解密的字符串
-}
-
-// NewLiFangEncryption 創建立方加解密對象
-func NewLiFangEncryption(lfs *LiFangEncryptionStruct) liFangEncryptionInterface {
-	return &LiFangEncryptionStruct{
-		Key:               lfs.Key,
-		NeedEncryptString: lfs.NeedEncryptString,
-		NeedDecryptString: lfs.NeedDecryptString,
-	}
-}
-
-func (lfs *LiFangEncryptionStruct) LiFangEncrypt() (encodeStr string, err error) {
-	decodeKey, err := base64.StdEncoding.DecodeString(lfs.Key) //這一行是說，將Key密鑰進行base64編碼，這一行與加密 AES/ECB/PKCS5Padding 沒有關係
-	aseByte, err := aesEncrypt([]byte(lfs.NeedEncryptString), decodeKey)//這一行開始就是 AES/ECB/PKCS5Padding 的標準加密了
-	encodeStr = strings.ToUpper(hex.EncodeToString(aseByte)) //把加密後的字符串變爲大寫
-	return
-}
-
-func (lfs *LiFangEncryptionStruct) LiFangDecrypt() (lastByte []byte, err error) {
-	hexStrByte, err := hex.DecodeString(lfs.NeedDecryptString) //這一行的意思，把需要解密的字符串從16進制字符轉爲2進制byte數組
-	decodeKey, err := base64.StdEncoding.DecodeString(lfs.Key) //這行還是將Key密鑰進行base64編碼
-	lastByte, err = aesDecrypt(hexStrByte, decodeKey) // 這裏開始就是 AES/ECB/PKCS5Padding 的標準解密了
-	return
-}
-
-func aesEncrypt(src, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key) // 生成加密用的block對象
-	if err != nil {
-		return nil, err
-	}
-	bs := block.BlockSize() // 根據傳入的密鑰，返回block的大小，也就是俗稱的數據塊位數，如128位，192位，256位
-	src = pKCS5Padding(src, bs)// 這裏是PKCS5Padding填充方式，繼續向下看
-	if len(src)%bs != 0 { // 如果加密字符串的byte長度不能整除數據塊位數，則表示當前加密的塊大小不適用
-		return nil, errorx.New("Need a multiple of the blocksize")
-	}
-	out := make([]byte, len(src))
-	dst := out
-	for len(src) > 0 {
-		block.Encrypt(dst, src[:bs]) // 開始用已經產生的key來加密
-		src = src[bs:]
-		dst = dst[bs:]
-	}
-	return out, nil
-}
-
-func aesDecrypt(src, key []byte) ([]byte, error) {
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return nil, err
-	}
-
-	out := make([]byte, len(src))
-	dst := out
-	bs := block.BlockSize()
-	if len(src)%bs != 0 {
-		return nil, errors.New("crypto/cipher: input not full blocks")
-	}
-	for len(src) > 0 {
-		block.Decrypt(dst, src[:bs])
-		src = src[bs:]
-		dst = dst[bs:]
-	}
-	out = pKCS5UnPadding(out)
-	return out, nil
-}
-
-func pKCS5Padding(ciphertext []byte, blockSize int) []byte {
-	padding := blockSize - len(ciphertext)%blockSize
-	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
-	return append(ciphertext, padtext...)
-}
-
-func pKCS5UnPadding(origData []byte) []byte {
-	length := len(origData)
-	unpadding := int(origData[length-1])
-	return origData[:(length - unpadding)]
 }

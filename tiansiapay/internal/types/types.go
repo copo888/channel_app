@@ -14,6 +14,7 @@ type PayOrderRequest struct {
 	SourceIp          string `json:"sourceIp, optional"`
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
+	PlayerId          string `json:"playerId, optional"`
 }
 
 type PayOrderResponse struct {
@@ -72,6 +73,7 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBranch    string `json:"receiptCardBranch"`
 	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
+	PlayerId             string `json:"playerId, optional"`
 }
 
 type ProxyPayOrderResponse struct {
@@ -104,42 +106,36 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
-	Charset    string `form:"charset, optional"`
-	Amount     string `form:"amount, optional"`
-	StatusStr  string `form:"statusStr, optional"`
-	OutTradeNo string `form:"outTradeNo, optional"`
-	Sign       string `form:"sign, optional"`
-	SignType   string `form:"signType, optional"`
-	Status     string `form:"status, optional"`
+	Ip              string  `form:"ip, optional"`
+	OrderNo         string  `json:"orderNo, optional"`
+	OrderStatus     int64   `json:"orderStatus, optional"`
+	OrderAmount     float64 `json:"orderAmount, optional"`
+	PaidAmount      float64 `json:"paidAmount, optional"`
+	PlayerName      string  `json:"playerName, optional"`
+	MerchantOrderId string  `json:"merchantOrderId, optional"`
+	DepositName     string  `json:"depositName, optional"`
+}
+
+type ProxyPayConfirmRequest struct {
+	Ip              string  `form:"ip, optional"`
+	UserName        string  `json:"userName, optional"`
+	PayAmout        float64 `json:"payAmout, optional"`
+	MerchantOrderId string  `json:"merchantOrderId, optional"`
+	BankNum         string  `json:"bankNum, optional"`
+	BankOwner       string  `json:"bankOwner, optional"`
+	OrderType       int64   `json:"orderType, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp     string `json:"myIp, optional"`
-	Code     string `json:"code, optional"`
-	Msg      string `json:"msg, optional"`
-	Sign     string `json:"sign, optional"`
-	MerchId  string `json:"merchId, optional"`
-	Money    string `json:"money, optional"`
-	TradeNo  string `json:"tradeNo, optional"`
-	OrderId  string `json:"orderId, optional"`
-	Time     string `json:"time, optional"`
-	SignType string `json:"signType, optional"`
-	PayType  string `json:"payType, optional"`
+	MyIp            string  `json:"myIp, optional"`
+	OrderNo         string  `json:"orderNo, optional"`
+	OrderStatus     int64   `json:"orderStatus, optional"`
+	OrderAmount     float64 `json:"orderAmount, optional"`
+	PaidAmount      float64 `json:"paidAmount, optional"`
+	PlayerName      string  `json:"playerName, optional"`
+	MerchantOrderId string  `json:"merchantOrderId, optional"`
+	DepositName     string  `json:"depositName, optional"`
 }
-
-// form 格式
-//type PayCallBackRequest struct {
-//	MyIp       string `form:"myIp, optional"`
-//	RealAmount string `form:"realAmount, optional"`
-//	Charset    string `form:"charset, optional"`
-//	Amount     string `form:"amount, optional"`
-//	StatusStr  string `form:"statusStr, optional"`
-//	OutTradeNo string `form:"outTradeNo, optional"`
-//	Sign       string `form:"sign, optional"`
-//	SignType   string `form:"signType, optional"`
-//	Status     string `form:"status, optional"`
-//}
 
 type ReceiverInfoVO struct {
 	CardName   string  `json:"cardName"`

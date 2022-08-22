@@ -14,16 +14,16 @@ import (
 	"net/http"
 )
 
-func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
+func ProxyPayConfirmHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 
 		span := trace.SpanFromContext(r.Context())
 		defer span.End()
 
-		var req types.ProxyPayCallBackRequest
+		var req types.ProxyPayConfirmRequest
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
-			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
+			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
 
@@ -42,13 +42,12 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		myIP := exnet.ClientIP(r)
 		req.Ip = myIP
 
-		l := logic.NewProxyPayCallBackLogic(r.Context(), ctx)
-		resp, err := l.ProxyPayCallBack(&req)
+		l := logic.NewProxyPayConfirmLogic(r.Context(), ctx)
+		resp, err := l.ProxyPayConfirm(&req)
 		if err != nil {
-			responsex.Json(w, r, err.Error(), resp, err)
+			responsex.Json(w, r, err.Error(), nil, err)
 		} else {
-			w.Write([]byte(resp))
-			//responsex.Json(w, r, responsex.SUCCESS, resp, err)
+			responsex.Json(w, r, responsex.SUCCESS, resp, err)
 		}
 	}
 }

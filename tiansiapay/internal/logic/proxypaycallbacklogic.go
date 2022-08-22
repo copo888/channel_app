@@ -2,17 +2,15 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/tiansiapay/internal/svc"
@@ -50,29 +48,21 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
-	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+	if req.OrderStatus == 1 {
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if req.OrderStatus == 2 {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.MerchantOrderId,
+		ChannelOrderNo:      req.OrderNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
-		Amount:              orderAmount,
+		ChannelResultNote:   "",
+		Amount:              req.PaidAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}
@@ -95,11 +85,13 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	} else if res.Status() != 200 {
 		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
 	}
-	//else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
-	//  return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
-	//} else if BoProxyRespVO.Code != "000"{
-	//	return "fail",errorx.New(BoProxyRespVO.Message)
-	//}
 
-	return "success", nil
+	result := struct {
+		Code int64   `json:"code"`
+		Msg string `json:"msg"`
+	}{}
+
+	result.Code = 200
+	resultJson, _ := json.Marshal(result)
+	return string(resultJson), nil
 }

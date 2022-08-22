@@ -28,12 +28,6 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 			return
 		}
 
-		// Form 格式
-		//if err := httpx.ParseForm(r, &req); err != nil {
-		//	responsex.Json(w, r, responsex.FAIL, nil, err)
-		//	return
-		//}
-
 		logx.WithContext(r.Context()).Infof("%+v", req)
 
 		if err := vaildx.Validator.Struct(req); err != nil {

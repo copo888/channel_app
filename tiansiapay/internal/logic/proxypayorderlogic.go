@@ -2,14 +2,15 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strconv"
 
 	"github.com/copo888/channel_app/tiansiapay/internal/svc"
@@ -51,58 +52,94 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
 		return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
 	}
-	// 組請求參數
-	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
-	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
+	// 取值
+	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
+	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
+	randomIp := utils.GetRandomIp()
+	payAmount, _ := strconv.ParseFloat(req.TransactionAmount, 64)
+	deviceId := utils.GetRandomString(16, 0, 0)
+	// 組請求參數 FOR JSON
+	paramsStruct := struct {
+		UserName        string  `json:"userName"`
+		DeviceType      int64   `json:"deviceType"`
+		DeviceId        string  `json:"deviceId"`
+		LoginIp         string  `json:"loginIp"`
+		MerchantOrderId string  `json:"merchantOrderId"`
+		OrderType       int64   `json:"orderType"`
+		NotifyUrl       string  `json:"notifyUrl"`
+		PayAmount       float64 `json:"sign"`
+		BankCode        string  `json:"bankCode"`
+		BankNum         string  `json:"bankNum"`
+		BankOwner       string  `json:"bankOwner"`
+		BankAddress     string  `json:"bankAddress"`
+	}{
+		UserName:        req.PlayerId,
+		DeviceType:      9,
+		DeviceId:        deviceId,
+		LoginIp:         randomIp,
+		MerchantOrderId: req.OrderNo,
+		OrderType:       0,
+		PayAmount:       payAmount,
+		NotifyUrl:       notifyUrl,
+		BankCode:        channelBankMap.MapCode,
+		BankNum:         req.ReceiptAccountNumber,
+		BankOwner:       req.ReceiptAccountName,
+		BankAddress:     req.ReceiptCardCity,
+	}
 
-	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-	data.Set("tradeNo", req.OrderNo)
-	data.Set("amount", transactionAmount)
-	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
-	data.Set("bankCode", channelBankMap.MapCode)
-	data.Set("subsidiaryBank", req.ReceiptCardBankName)
-	data.Set("subbranch", req.ReceiptCardBranch)
-	data.Set("province", req.ReceiptCardProvince)
-	data.Set("city", req.ReceiptCardCity)
-	data.Set("bankCardNo", req.ReceiptAccountNumber)
-	data.Set("bankCardholder", req.ReceiptAccountName)
+	paramsJson, _ := json.Marshal(paramsStruct)
+	paramsJsonStr := string(paramsJson[:])
 
-	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	data.Set("sign", sign)
+	_, params := payutils.AesEncrypt(paramsJsonStr, l.svcCtx.Config.AesKey)
+
+	merchantNo, _ := strconv.ParseInt(channel.MerId, 10, 64)
+
+	// 組請求參數 FOR JSON
+	data := struct {
+		MerchantNo int64  `json:"merchantNo"`
+		Signature  string `json:"signature"`
+		Params     string `json:"params"`
+	}{
+		MerchantNo: merchantNo,
+		Params:     params,
+		Signature:  payutils.Md5V(paramsJsonStr+channel.MerKey, l.ctx),
+	}
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)
+	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,代付請求參數:%+v,代付原始參數:%s", channel.PayUrl, data, paramsJsonStr)
+
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if ChannelResp.Status() != 200 {
+	} else if ChannelResp.Status() < 200 || ChannelResp.Status() >= 300 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		TradeId string `json:"tradeId"` //渠道訂單號
+		Code int64  `json:"code"`
+		Msg  string `json:"msg"`
+		Data struct {
+			OrderId   string  `json:"orderId"`
+			PayAmount float64 `json:"payAmount"`
+			BankCode  string  `json:"bankCode"`
+		} `json:"data"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if channelResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Msg)
+	} else if channelResp.Code != 200 {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: channelResp.TradeId,
+		ChannelOrderNo: channelResp.Data.OrderId,
 		OrderStatus:    "",
 	}
 

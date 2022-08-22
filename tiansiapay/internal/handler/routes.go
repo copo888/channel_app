@@ -49,6 +49,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 			},
 			{
 				Method:  http.MethodPost,
+				Path:    "/proxy-pay-confirm",
+				Handler: ProxyPayConfirmHandler(serverCtx),
+			},
+			{
+				Method:  http.MethodPost,
 				Path:    "/proxy-pay-query-balance-internal",
 				Handler: ProxyPayQueryBalanceHandler(serverCtx),
 			},

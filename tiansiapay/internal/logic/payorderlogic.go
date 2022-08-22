@@ -47,9 +47,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	randomIp := utils.GetRandomIp()
-	randomString := utils.GetRandomString(16, 0, 0)
 	payAmount, _ := strconv.ParseFloat(req.TransactionAmount, 64)
-
+	deviceId := utils.GetRandomString(16,0,0)
 	// 組請求參數 FOR JSON
 	paramsStruct := struct {
 		UserName         string  `json:"userName"`
@@ -61,9 +60,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PayAmount        float64 `json:"sign"`
 		DepositName      string  `json:"deposit_name"`
 	}{
-		UserName:         randomString,
+		UserName:         req.PlayerId,
 		DeviceType:       9,
-		DeviceId:         payutils.GetSign("COPO"),
+		DeviceId:         payutils.Md5V(deviceId, l.ctx),
 		LoginIp:          randomIp,
 		MerchantOrderId:  req.OrderNo,
 		DepositNotifyUrl: notifyUrl,
@@ -73,10 +72,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	paramsJson, err := json.Marshal(paramsStruct)
 	paramsJsonStr := string(paramsJson[:])
 
-	params, err := payutils.NewLiFangEncryption(&payutils.LiFangEncryptionStruct{
-		Key:               l.svcCtx.Config.AesKey,
-		NeedEncryptString: paramsJsonStr,
-	}).LiFangEncrypt()
+	_, params := payutils.AesEncrypt(paramsJsonStr, l.svcCtx.Config.AesKey)
 
 	merchantNo, _ := strconv.ParseInt(channel.MerId, 10, 64)
 
@@ -88,11 +84,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}{
 		MerchantNo: merchantNo,
 		Params: params,
-		Signature: payutils.GetSign(paramsJsonStr + channel.MerKey),
+		Signature: payutils.Md5V(paramsJsonStr + channel.MerKey, l.ctx),
 	}
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v,支付原始參數:%s", channel.PayUrl, data, paramsJsonStr)
 	span := trace.SpanFromContext(l.ctx)
 
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
@@ -106,19 +102,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    string `json:"code"`
-		Msg     string `json:"msg, optional"`
-		Sign    string `json:"sign"`
-		Money   string `json:"money"`
-		OrderId string `json:"orderId"`
-		PayUrl  string `json:"payUrl"`
-		PayInfo struct {
-			Name       string `json:"name"`
-			Card       string `json:"card"`
-			Bank       string `json:"bank"`
-			Subbranch  string `json:"subbranch"`
-			ExpiringAt string `json:"expiring_at"`
-		} `json:"payInfo"`
+		Code    int64 `json:"code"`
+		Msg     string `json:"msg"`
+		Data struct {
+			Url       string `json:"url"`
+		} `json:"data"`
 	}{}
 
 	// 返回body 轉 struct
@@ -127,13 +115,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 渠道狀態碼判斷
-	if channelResp.Code != "0000" {
+	if channelResp.Code != 200 {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
-		PayPageInfo:    channelResp.PayUrl,
+		PayPageInfo:    channelResp.Data.Url,
 		ChannelOrderNo: "",
 	}
 

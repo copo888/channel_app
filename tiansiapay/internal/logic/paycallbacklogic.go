@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/apimodel/vo"
@@ -9,10 +10,8 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/tiansiapay/internal/svc"
@@ -51,26 +50,16 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
 	}
 
-	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+	orderStatus := "1"
+	if req.OrderStatus == 1 {
+		orderStatus = "20"
 	}
-
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
-
-	//orderStatus := "1"
-	//if req.TradeStatus == "1" {
-	//	orderStatus = "20"
-	//}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.OrderId,
-		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    "20",        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		PayOrderNo:     req.MerchantOrderId,
+		ChannelOrderNo: req.OrderNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderAmount:    req.PaidAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
@@ -99,5 +88,13 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "success", nil
+
+	result := struct {
+		Code int64   `json:"code"`
+		Msg string `json:"msg"`
+	}{}
+
+	result.Code = 200
+	resultJson, _ := json.Marshal(result)
+	return string(resultJson), nil
 }
