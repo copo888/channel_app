@@ -57,8 +57,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		LoginIp          string  `json:"loginIp"`
 		MerchantOrderId  string  `json:"merchantOrderId"`
 		DepositNotifyUrl string  `json:"depositNotifyUrl"`
-		PayAmount        float64 `json:"sign"`
-		DepositName      string  `json:"deposit_name"`
+		PayAmount        float64 `json:"payAmount"`
+		DepositName      string  `json:"depositName"`
 	}{
 		UserName:         req.PlayerId,
 		DeviceType:       9,
