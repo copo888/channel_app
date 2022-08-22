@@ -67,7 +67,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		MerchantOrderId string  `json:"merchantOrderId"`
 		OrderType       int64   `json:"orderType"`
 		NotifyUrl       string  `json:"notifyUrl"`
-		PayAmount       float64 `json:"sign"`
+		PayAmount       float64 `json:"payAmount"`
 		BankCode        string  `json:"bankCode"`
 		BankNum         string  `json:"bankNum"`
 		BankOwner       string  `json:"bankOwner"`
