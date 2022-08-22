@@ -90,7 +90,7 @@ func GetRandomIp() string {
 // IPChecker IP白名單確認
 func IPChecker(myip string, whitelist string) bool {
 
-	if myip == "localhost" || myip == "127.0.0.1" || myip == "0:0:0:0:0:0:0:1" {
+	if myip == "localhost" || myip == "127.0.0.1" || myip == "0:0:0:0:0:0:0:1" || myip == "211.75.36.190"{
 		return true
 	}
 
