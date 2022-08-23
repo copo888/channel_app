@@ -67,11 +67,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		UserName        string  `json:"userName"`
 		DeviceType      int64   `json:"deviceType"`
 		DeviceId        string  `json:"deviceId"`
-		LoginIp         string  `json:"loginIp"`
+		UserIp         string   `json:"userIp"`
 		MerchantOrderId string  `json:"merchantOrderId"`
 		OrderType       int64   `json:"orderType"`
-		NotifyUrl       string  `json:"notifyUrl"`
 		PayAmount       float64 `json:"payAmount"`
+		NotifyUrl       string  `json:"notifyUrl"`
 		BankCode        string  `json:"bankCode"`
 		BankNum         string  `json:"bankNum"`
 		BankOwner       string  `json:"bankOwner"`
@@ -80,7 +80,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		UserName:        req.PlayerId,
 		DeviceType:      9,
 		DeviceId:        payutils.Md5V(deviceId, l.ctx),
-		LoginIp:         randomIp,
+		UserIp:         randomIp,
 		MerchantOrderId: req.OrderNo,
 		OrderType:       0,
 		PayAmount:       payAmount,
