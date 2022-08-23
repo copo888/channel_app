@@ -11,6 +11,7 @@ import (
 	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"math"
 	"strconv"
 
 	"github.com/copo888/channel_app/tiansiapay/internal/svc"
@@ -56,18 +57,21 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	randomIp := utils.GetRandomIp()
-	payAmount, _ := strconv.ParseFloat(req.TransactionAmount, 64)
+	payAmount1, _ := strconv.ParseFloat(req.TransactionAmount, 64)
+	payAmount :=  math.Floor(payAmount1*100)/100
+
 	deviceId := utils.GetRandomString(16, 0, 0)
+
 	// 組請求參數 FOR JSON
 	paramsStruct := struct {
 		UserName        string  `json:"userName"`
 		DeviceType      int64   `json:"deviceType"`
 		DeviceId        string  `json:"deviceId"`
-		LoginIp         string  `json:"loginIp"`
+		UserIp         string   `json:"userIp"`
 		MerchantOrderId string  `json:"merchantOrderId"`
 		OrderType       int64   `json:"orderType"`
+		PayAmount       float64 `json:"payAmount"`
 		NotifyUrl       string  `json:"notifyUrl"`
-		PayAmount       float64 `json:"sign"`
 		BankCode        string  `json:"bankCode"`
 		BankNum         string  `json:"bankNum"`
 		BankOwner       string  `json:"bankOwner"`
@@ -75,8 +79,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}{
 		UserName:        req.PlayerId,
 		DeviceType:      9,
-		DeviceId:        deviceId,
-		LoginIp:         randomIp,
+		DeviceId:        payutils.Md5V(deviceId, l.ctx),
+		UserIp:         randomIp,
 		MerchantOrderId: req.OrderNo,
 		OrderType:       0,
 		PayAmount:       payAmount,

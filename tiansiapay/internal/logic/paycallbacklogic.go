@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
@@ -10,6 +11,7 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/tiansiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"time"
@@ -50,16 +52,35 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
 	}
 
+	crypted, _ := base64.StdEncoding.DecodeString(req.Params)
+	logx.WithContext(l.ctx).Infof("base64解密后的：%s", crypted)
+	callBackBytes := payutils.AesDecrypt(crypted, []byte(l.svcCtx.Config.AesKey))
+	logx.WithContext(l.ctx).Infof("解密后的明文：%s", string(callBackBytes))
+
+	callBack := struct {
+		OrderNo         string  `json:"orderNo, optional"`
+		OrderStatus     int64   `json:"orderStatus, optional"`
+		OrderAmount     float64 `json:"orderAmount, optional"`
+		PaidAmount      float64 `json:"paidAmount, optional"`
+		PlayerName      string  `json:"playerName, optional"`
+		MerchantOrderId string  `json:"merchantOrderId, optional"`
+		DepositName     string  `json:"depositName, optional"`
+	}{}
+
+	if err = json.Unmarshal(callBackBytes, &callBack); err != nil {
+		return "fail", err
+	}
+
 	orderStatus := "1"
-	if req.OrderStatus == 1 {
+	if callBack.OrderStatus == 1 {
 		orderStatus = "20"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.MerchantOrderId,
-		ChannelOrderNo: req.OrderNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		PayOrderNo:     callBack.MerchantOrderId,
+		ChannelOrderNo: callBack.OrderNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    req.PaidAmount,
+		OrderAmount:    callBack.PaidAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

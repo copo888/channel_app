@@ -45,9 +45,10 @@ func ProxyPayConfirmHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		l := logic.NewProxyPayConfirmLogic(r.Context(), ctx)
 		resp, err := l.ProxyPayConfirm(&req)
 		if err != nil {
-			responsex.Json(w, r, err.Error(), nil, err)
+			responsex.Json(w, r, err.Error(), resp, err)
 		} else {
-			responsex.Json(w, r, responsex.SUCCESS, resp, err)
+			w.Write([]byte(resp))
+			//responsex.Json(w, r, responsex.SUCCESS, resp, err)
 		}
 	}
 }
