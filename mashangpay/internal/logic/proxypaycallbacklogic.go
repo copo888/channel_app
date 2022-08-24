@@ -44,9 +44,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
 	//檢查白名單
-	if isWhite := utils.IPChecker(req.Ip, channel.WhiteList); !isWhite {
-		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)
-		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
+	if isWhite := utils.IPChecker(req.MyIp, channel.WhiteList); !isWhite {
+		logx.WithContext(l.ctx).Errorf("IP: " + req.MyIp)
+		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
 	}
 	// 檢查驗簽
 	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
@@ -54,22 +54,22 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Data.Amount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0"                  //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Data.Status == "Success" { //Success;成功	Failed;失败
+	var status = "0"             //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Status == "Success" { //Success;成功	Failed;失败
 		status = "1"
-	} else if req.Data.Status == "Failed" {
+	} else if req.Status == "Failed" {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.Data.MerchantOrderId,
-		ChannelOrderNo:      req.Data.GamerOrderId,
+		ProxyPayOrderNo:     req.MerchantOrderId,
+		ChannelOrderNo:      req.GamerOrderId,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.Data.Status,
+		ChannelResultNote:   req.Status,
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",

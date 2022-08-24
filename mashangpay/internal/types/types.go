@@ -106,20 +106,20 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip       string    `form:"ip, optional"`
-	Result   bool      `json:"result, optional"`
-	ErrorMsg string    `json:"errorMsg, optional"`
-	Data     ProxyData `json:"data"`
+	MyIp            string `json:"ip, optional"`
+	GamerOrderId    string `json:"gamerOrderId, optional"`
+	MerchantOrderId string `json:"merchantOrderId, optional"`
+	CurrencyCode    string `json:"currencyCode, optional"`
+	PaymentTypeCode string `json:"paymentTypeCode, optional"`
+	Amount          string `json:"amount, optional"`
+	Remark          string `json:"remark, optional"`
+	Status          string `json:"status, optional"`
+	Mp              string `json:"mp, optional"`
+	Sign            string `json:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp     string   `json:"myIp, optional"`
-	Result   bool     `json:"result, optional"`
-	ErrorMsg string   `json:"errorMsg, optional"`
-	Data     InfoData `json:"data, optional"`
-}
-
-type ProxyData struct {
+	MyIp            string `json:"ip, optional"`
 	GamerOrderId    string `json:"gamerOrderId, optional"`
 	MerchantOrderId string `json:"merchantOrderId, optional"`
 	CurrencyCode    string `json:"currencyCode, optional"`
@@ -129,18 +129,6 @@ type ProxyData struct {
 	Status          string `json:"status, optional"`
 	Mp              string `json:"mp, optional"`
 	Sign            string `json:"sign, optional"`
-}
-
-type InfoData struct {
-	GamerOrderId    string `json:"gamerOrderId, optional"`
-	MerchantOrderId string `json:"merchantOrderId, optional"`
-	Sign            string `json:"sign, optional"`
-	CurrencyCode    string `json:"currencyCode, optional"`
-	PaymentTypeCode string `json:"paymentTypeCode, optional"`
-	Amount          string `json:"amount, optional"`
-	Remark          string `json:"remark, optional"`
-	Mp              string `json:"mp, optional"`
-	Status          string `json:"status, optional"`
 }
 
 type ReceiverInfoVO struct {
