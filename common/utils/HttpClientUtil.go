@@ -93,17 +93,17 @@ func init() {
 	}
 }
 
-func main() {
-	//httpposturl := "https://ayeshaj:9000/register"
-	parm := url.Values{}
-	parm.Add("client_id", "ayeshaj")
-	parm.Add("response_type", "code")
-	parm.Add("scope", "public_profile")
-	parm.Add("redirect_uri", "http://ayeshaj:8080/playground")
-
-	//resp ,err := SubmitForm2(httpposturl,parm)
-	//if err !=nil{
-	//	fmt.Println(err.Error())
-	//}
-	//fmt.Println(resp.Body)
-}
+//func main() {
+//	//httpposturl := "https://ayeshaj:9000/register"
+//	parm := url.Values{}
+//	parm.Add("client_id", "ayeshaj")
+//	parm.Add("response_type", "code")
+//	parm.Add("scope", "public_profile")
+//	parm.Add("redirect_uri", "http://ayeshaj:8080/playground")
+//
+//	//resp ,err := SubmitForm2(httpposturl,parm)
+//	//if err !=nil{
+//	//	fmt.Println(err.Error())
+//	//}
+//	//fmt.Println(resp.Body)
+//}
