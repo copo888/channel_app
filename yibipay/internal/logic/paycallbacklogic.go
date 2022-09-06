@@ -12,6 +12,7 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/yibipay/internal/svc"
@@ -63,12 +64,12 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	if chnResp.Code == "200" && chnResp.Data.OrderStatus == "1" {
 		orderStatus = "20"
 	}
-
+	orderAmount, _ := strconv.ParseFloat(chnResp.Data.OrderPaidInAmount, 64)
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     chnResp.Data.DepositOrderId,
 		ChannelOrderNo: chnResp.Data.TransactionId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,                // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    chnResp.Data.OrderPaidInAmount,
+		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
@@ -103,25 +104,25 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 type channelResp struct {
 	Code string `json:"code"` //200 代表成功,500 代表服务器内部错误,
 	Data struct {
-		CreatedAt           string  `json:"createdAt,optional"`
-		DepositOrderId      string  `json:"depositOrderId,optional"`      //商户自己生成的唯一订单号
-		OrderPaidInAmount   float64 `json:"orderPaidInAmount,optional"`   //用户实际付款金额
-		OrderStatus         string  `json:"orderStatus,optional"`         //1为确认成功，2为进行中，9确认失败
-		RecommendDepositCny float64 `json:"recommendDepositCny,optional"` //推荐商户给会员充值人民币金额
-		RequestAmount       string  `json:"requestAmount,optional"`       //用户申请充值金额，页面显示的充值金额可能和实际充值金额不符
-		RequestCurrency     string  `json:"requestCurrency,optional"`
-		SettlementAmount    float64 `json:"settlementAmount,optional"` //商户账户实际收款金额,商户账户实际的帐变金额,可能跟用户付款金额不同,	因为有汇率转换的汇差
-		SettlementAssetType string  `json:"settlementAssetType,optional"`
-		TransactionId       string  `json:"transactionId,optional"` //币汇记账凭证编号,商户账户到账的唯一凭证,请使用此Id进行幂等操作为会员上分
-		TransactionType     string  `json:"transactionType,optional"`
-		UserCode            string  `json:"userCode,optional"`
+		CreatedAt           string `json:"createdAt,optional"`
+		DepositOrderId      string `json:"depositOrderId,optional"`      //商户自己生成的唯一订单号
+		OrderPaidInAmount   string `json:"orderPaidInAmount,optional"`   //用户实际付款金额
+		OrderStatus         string `json:"orderStatus,optional"`         //1为确认成功，2为进行中，9确认失败
+		RecommendDepositCny string `json:"recommendDepositCny,optional"` //推荐商户给会员充值人民币金额
+		RequestAmount       string `json:"requestAmount,optional"`       //用户申请充值金额，页面显示的充值金额可能和实际充值金额不符
+		RequestCurrency     string `json:"requestCurrency,optional"`
+		SettlementAmount    string `json:"settlementAmount,optional"` //商户账户实际收款金额,商户账户实际的帐变金额,可能跟用户付款金额不同,	因为有汇率转换的汇差
+		SettlementAssetType string `json:"settlementAssetType,optional"`
+		TransactionId       string `json:"transactionId,optional"` //币汇记账凭证编号,商户账户到账的唯一凭证,请使用此Id进行幂等操作为会员上分
+		TransactionType     string `json:"transactionType,optional"`
+		UserCode            string `json:"userCode,optional"`
 	} `json:"data,optional"`
 	MerchantCode string `json:"merchantCode,optional"`
 	Message      string `json:"message,optional"`
 	Request      struct {
 		MerchantCode string `json:"merchantCode"`
-		MerchantId   int    `json:"merchantId"`
-		Timestamp    int    `json:"timestamp"`
+		MerchantId   string `json:"merchantId"`
+		Timestamp    string `json:"timestamp"`
 	} `json:"request,optional"`
-	Timestamp int `json:"timestamp,optional"`
+	Timestamp string `json:"timestamp,optional"`
 }
