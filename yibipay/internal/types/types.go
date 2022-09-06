@@ -134,8 +134,8 @@ type Data struct {
 type PayCallBackRequest struct {
 	MyIp         string `json:"myIp, optional"`
 	MerchantCode string `json:"merchantCode, optional"`
-	Message      string `json:"message, optional"`
-	Timestamp    int    `json:"timestamp, optional"`
+	Params       string `json:"params, optional"`
+	Sign         string `json:"signature, optional"`
 }
 
 type ReceiverInfoVO struct {

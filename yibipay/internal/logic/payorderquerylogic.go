@@ -50,7 +50,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	// 組請求參數 FOR JSON
 	dataInit := struct {
 		MerchId       string `json:"merchantCode"`
-		OrderId       string `json:"orderId"`
+		OrderId       string `json:"depositOrderId"`
 		TimeStamp     string `json:"timestamp"`
 		TransactionId string `json:"transactionId"`
 	}{
@@ -98,32 +98,36 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	paramsDecode := utils.DePwdCode(channelResp.Params, aesKey)
 	logx.WithContext(l.ctx).Infof("paramsDecode: %s", paramsDecode)
 	channelResp2 := struct {
-		//Code string `json:"code"`
+		Code string `json:"code"`
 		Data struct {
-			Code          string `json:"code,optional"`
-			Amount        string `json:"amount,optional"`
-			CreatedAt     string `json:"createdAt,optional"`
-			Success       bool   `json:"success,optional"`
-			TransactionId string `json:"transactionId,optional"`
-		} `json:"params,optional"`
-		Message string `json:"message,optional"`
+			OrderPaidInAmount   string `json:"orderPaidInAmount,optional"`   //用户实际付款金额
+			RecommendDepositCny string `json:"recommendDepositCny,optional"` //推荐商户给会员充值人民币金额
+			RequestAmount       string `json:"requestAmount,optional"`       //用户申请充值金额，页面显示的充值金额可能和实际充值金额不符
+			SettlementAmount    string `json:"settlementAmount,optional"`    //商户账户实际收款金额,商户账户实际的帐变金额,可能跟用户付款金额不同,因为有汇率转换的汇差
+			CreatedAt           string `json:"createdAt,optional"`
+			TransactionId       string `json:"transactionId,optional"`
+			OrderStatus         string `json:"orderStatus"` //1为确认成功，2为进行中，9确认失败
+		} `json:"data,optional"`
+		Message   string `json:"message,optional"`
+		Timestamp string `json:"timestamp,optional"`
 	}{}
 	if err = json.Unmarshal([]byte(paramsDecode), &channelResp2); err != nil {
 		logx.WithContext(l.ctx).Errorf("反序列化失败: ", err)
 	}
-	if channelResp2.Data.Code != "200" {
+	if channelResp2.Code != "200" {
+		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s: %s", channelResp2.Code, channelResp2.Message)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp2.Message)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp2.Data.Amount, 64)
+	orderAmount, errParse := strconv.ParseFloat(channelResp2.Data.OrderPaidInAmount, 64)
 	if errParse != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"
-	if channelResp2.Data.Success == true {
+	if channelResp2.Data.OrderStatus == "1" {
 		orderStatus = "1"
-	} else if channelResp2.Data.Success == false {
+	} else if channelResp2.Data.OrderStatus == "9" {
 		orderStatus = "2"
 	}
 
