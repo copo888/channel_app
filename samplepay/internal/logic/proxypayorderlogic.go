@@ -69,9 +69,40 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("bankCardNo", req.ReceiptAccountNumber)
 	data.Set("bankCardholder", req.ReceiptAccountName)
 
+	//data := struct {
+	//	Partner string `json:"partner"`
+	//	Service string `json:"service"`
+	//	TradeNo string `json:"tradeNo"`
+	//	Amount string `json:"amount"`
+	//	NotifyUrl string `json:"notifyUrl"`
+	//	BankCode string `json:"bankCode"`
+	//	SubsidiaryBank string `json:"subsidiaryNank"`
+	//	Subbranch string `json:"subbranch"`
+	//	Province string `json:"province"`
+	//	City string `json:"city"`
+	//	BankCardNo string `json:"bankCardNo"`
+	//	BankCardholder string `json:"bankCardHolder"`
+	//	Sign string `json:"sign"`
+	//}{
+	//	Partner: channel.MerId,
+	//	Service: "10201",
+	//	TradeNo: req.OrderNo,
+	//	Amount: transactionAmount,
+	//	NotifyUrl: l.svcCtx.Config.Server+"/api/proxy-pay-call-back",
+	//	BankCode: channelBankMap.MapCode,
+	//	SubsidiaryBank: req.ReceiptCardBankName,
+	//	Subbranch: req.ReceiptCardBranch,
+	//	Province: req.ReceiptCardProvince,
+	//	City: req.ReceiptCardCity,
+	//	BankCardNo: req.ReceiptAccountNumber,
+	//	BankCardholder: req.ReceiptAccountName,
+	//}
+
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
+	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
+	//data.Sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)

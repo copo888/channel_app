@@ -5,11 +5,62 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/des"
+	"crypto/md5"
 	"encoding/base64"
+	"encoding/json"
 	"errors"
+	"fmt"
+	"github.com/gioco-play/gozzle"
+	"github.com/zeromicro/go-zero/core/logx"
 	"strings"
 	"time"
 )
+
+func GetSign(source string) string {
+	data := []byte(source)
+	result := fmt.Sprintf("%x", md5.Sum(data))
+	return result
+}
+func main() {
+	//url := "https://wallet-api.coinez.net/wallet-api/echo"
+	url := "https://wallet-api.coinez.net/wallet-api/testKey"
+	merchantCode := "VAHG9"
+	aesKey := "qHp8VxRtzQ7HpBfE"
+	md5Key := "NmW236rjx8gTeHLs"
+
+	dataInit := struct {
+		AssetType  string `json:"assetType"`
+		BigDecimal string `json:"bigDecimal"`
+		Now        string `json:"now"`
+		TimeStamp  string `json:"timeStamp"`
+	}{
+		AssetType:  "1",
+		BigDecimal: "1234567890.1234567890123456789",
+		Now:        "2020-10-06 01:16:10",
+		TimeStamp:  "1601918170152",
+	}
+	dataBytes, err := json.Marshal(dataInit)
+	if err != nil {
+		logx.Error(err.Error())
+	}
+	params := EnPwdCode(string(dataBytes), aesKey)
+	sign := GetSign(params + md5Key)
+	data := struct {
+		MerchantCode string `json:"merchantCode"`
+		Params       string `json:"params"`    //参数密文
+		Signature    string `json:"signature"` //参数签名(params + md5key)
+	}{
+		MerchantCode: merchantCode,
+		Params:       params,
+		Signature:    sign,
+	}
+
+	res, ChnErr := gozzle.Post(url).Timeout(20).JSON(data)
+	if ChnErr != nil {
+		logx.Error(ChnErr.Error())
+	}
+	logx.Info(res)
+}
 
 func MicroServiceEncrypt(key, publicKey string) (sing string, err error) {
 	str := key + time.Now().Format("200601021504")
