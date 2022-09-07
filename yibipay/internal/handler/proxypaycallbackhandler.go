@@ -22,10 +22,15 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.ProxyPayCallBackRequest
 
-		if err := httpx.ParseForm(r, &req); err != nil {
-			responsex.Json(w, r, responsex.FAIL, nil, err)
+		if err := httpx.ParseJsonBody(r, &req); err != nil {
+			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 			return
 		}
+
+		//if err := httpx.ParseForm(r, &req); err != nil {
+		//	responsex.Json(w, r, responsex.FAIL, nil, err)
+		//	return
+		//}
 
 		if err := vaildx.Validator.Struct(req); err != nil {
 			responsex.Json(w, r, responsex.INVALID_PARAMETER, nil, err)
