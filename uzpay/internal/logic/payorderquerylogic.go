@@ -43,24 +43,22 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		return
 	}
 	//randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
-	//var payTypeCode string
-	//if err = l.svcCtx.MyDB.Table("tx_orders").Select("pay_type_code").Where("order_no = ?", req.OrderNo).Take(&payTypeCode).Error; err != nil {
-	//	return nil, err
-	//}
-	//
+	var payTypeCode string
+	if err = l.svcCtx.MyDB.Table("tx_orders").Select("pay_type_code").Where("order_no = ?", req.OrderNo).Take(&payTypeCode).Error; err != nil {
+		return nil, err
+	}
+	
 	var merKey, uid string
-	uid = "55640"
-	merKey = "405967717d0f5371031d2a73c1eb9951"
-	//if payTypeCode == "AK"{
-	//	uid = "55639"
-	//	merKey = "2161963f230d7fcc7656aeeb3634b074"
-	//}else if payTypeCode == "YK" {
-	//	uid = "55640"
-	//	merKey = "405967717d0f5371031d2a73c1eb9951"
-	//}else if payTypeCode == "A5" {
-	//	uid = "55641"
-	//	merKey = "2ff3ef77a229c0111ef2033b8f25343a"
-	//}
+	if payTypeCode == "AK"{
+		uid = "55639"
+		merKey = "2161963f230d7fcc7656aeeb3634b074"
+	}else if payTypeCode == "YK" {
+		uid = "55640"
+		merKey = "405967717d0f5371031d2a73c1eb9951"
+	}else if payTypeCode == "A5" {
+		uid = "55641"
+		merKey = "2ff3ef77a229c0111ef2033b8f25343a"
+	}
 	// 組請求參數
 	data := url.Values{}
 	if req.OrderNo != "" {
