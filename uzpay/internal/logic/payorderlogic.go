@@ -94,6 +94,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount     string `json:"amount"`
 		Orderid   string `json:"orderid"`
 		FromBankFlag      string `json:"from_bankflag"`
+		FromComment  string `json:"from_comment"`
 		NotifyUrl string `json:"notify"`
 		Cate   string `json:"cate"`
 		Userid string `json:"userid"`
@@ -109,6 +110,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Userid: randomID,
 		Userip: ip,
 		FromBankFlag: from_bankflag,
+		FromComment: req.MerchantOrderNo,
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {

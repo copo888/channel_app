@@ -15,6 +15,7 @@ type PayOrderRequest struct {
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
 	PlayerId          string `json:"playerId, optional"`
+	MerchantOrderNo   string `json:"merchantOrderNo, optional"`
 }
 
 type PayOrderResponse struct {
