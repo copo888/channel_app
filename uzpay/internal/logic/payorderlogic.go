@@ -178,7 +178,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
 			CardName:   channelResp.Info.Card.Cardname,
 			CardNumber: channelResp.Info.Card.Cardnumber,
-			BankName:   channelResp.Info.Card.Location,
+			BankName:   channelResp.Info.Card.Bankflag,
 			Amount:     amount,
 			Link:       "",
 			Remark:     "",
