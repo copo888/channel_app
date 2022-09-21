@@ -104,7 +104,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	resp = &types.PayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		WithdrawBalance:    fmt.Sprintf("'%s'",channelResp.Bals.Cny.Bal),
+		WithdrawBalance:    fmt.Sprintf("%f",channelResp.Bals.Cny.Bal),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
