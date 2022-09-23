@@ -14,6 +14,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,10 +36,10 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 
 	// 組返回給backOffice 的代付返回物件(測試四)
-	return &types.ProxyPayOrderResponse{
-		ChannelOrderNo: "TESTTRADEID_000011111",
-		OrderStatus:    "",
-	}, nil
+	//return &types.ProxyPayOrderResponse{
+	//	ChannelOrderNo: "TESTTRADEID_000011111",
+	//	OrderStatus:    "",
+	//}, nil
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 	APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
@@ -106,6 +107,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
+	} else if strings.Index(channelResp.Msg, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Msg)
 	} else if channelResp.Code != 0 {
 		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
