@@ -106,29 +106,27 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	MyIp    string          `json:"myIp, optional"`
-	Code    int64           `json:"code, optional"`
-	Message string          `json:"message, optional"`
+	MyIp    string               `json:"myIp, optional"`
+	Code    int64                `json:"code, optional"`
+	Message string               `json:"message, optional"`
 	Data    ProxyPayCallBackData `json:"data, optional"`
 }
 
 type ProxyPayCallBackData struct {
-	Mid int64 `json:"mid, optional"`
-	No string `json:"no, optional"`
-	OrderNo string `json:"order_no, optional"`
-	Amount string `json:"amount, optional"`
+	Mid          int64  `json:"mid, optional"`
+	No           string `json:"no, optional"`
+	OrderNo      string `json:"order_no, optional"`
+	Amount       string `json:"amount, optional"`
 	ActualAmount string `json:"actual_amount, optional"`
-	Fee string `json:"fee, optional"`
-	FromCardNo string `json:"from_card_no, optional"`
-	CreatedTime int64 `json:"created_time, optional"`
-	TransferTime int64 `json:"transfer_time, optional"`
-	NotifyTime int64 `json:"notify_time, optional"`
-	Status string `json:"status, optional"`
-	Extra string `json:"extra, optional"`
-	Sign string `json:"sign, optional"`
+	Fee          string `json:"fee, optional"`
+	FromCardNo   string `json:"from_card_no, optional"`
+	CreatedTime  int64  `json:"created_time, optional"`
+	TransferTime int64  `json:"transfer_time, optional"`
+	NotifyTime   int64  `json:"notify_time, optional"`
+	Status       string `json:"status, optional"`
+	Extra        string `json:"extra, optional"`
+	Sign         string `json:"sign, optional"`
 }
-
-
 
 type PayCallBackRequest struct {
 	MyIp    string          `json:"myIp, optional"`
@@ -138,18 +136,18 @@ type PayCallBackRequest struct {
 }
 
 type PayCallBackData struct {
-	Mid           int64  `json:"mid, optional"`
-	No            string `json:"no, optional"`
+	Mid          int64  `json:"mid, optional"`
+	No           string `json:"no, optional"`
 	OrderNo      string `json:"order_no, optional"`
-	Amount        string `json:"amount, optional"`
+	Amount       string `json:"amount, optional"`
 	ActualAmount string `json:"actual_amount, optional"`
-	Fee           string `json:"fee, optional"`
+	Fee          string `json:"fee, optional"`
 	CreatedTime  int64  `json:"created_time, optional"`
 	DepositTime  int64  `json:"deposit_time, optional"`
 	NotifyTime   int64  `json:"notify_time, optional"`
-	Status        string `json:"status, optional"`
-	Extra         string `json:"extra, optional"`
-	Sign          string `json:"sign, optional"`
+	Status       string `json:"status, optional"`
+	Extra        string `json:"extra, optional"`
+	Sign         string `json:"sign, optional"`
 	OrigAmount   string `json:"orig_amount, optional"`
 	PayerName    string `json:"payer_name, optional"`
 }
