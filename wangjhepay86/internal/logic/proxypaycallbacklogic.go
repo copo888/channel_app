@@ -8,7 +8,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/wangjhepay86/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
@@ -49,10 +48,6 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if isWhite := utils.IPChecker(req.MyIp, channel.WhiteList); !isWhite {
 		logx.WithContext(l.ctx).Errorf("IP: " + req.MyIp)
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
-	}
-	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Data.Sign, req.Data, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
 	var orderAmount float64
