@@ -40,7 +40,7 @@ ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd
   ProxyKey: zrdfSeWd
-  ChannelKey: ${CHANNEL_KEY}
+  ChannelKey: 45df68d5934d3e27e3cc3a167a051846306b3867
 
 Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
