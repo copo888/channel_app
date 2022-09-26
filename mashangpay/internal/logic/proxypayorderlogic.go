@@ -72,7 +72,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (res
 		MerchId:           channel.MerId,
 		OrderId:           req.OrderNo,
 		BankCode:          channelBankMap.MapCode,
-		BankAccountName:   req.ReceiptCardBankName,
+		BankAccountName:   req.ReceiptAccountName,
 		BankAccountNumber: req.ReceiptAccountNumber,
 		Branch:            req.ReceiptCardBankName,
 		Province:          req.ReceiptCardProvince,
