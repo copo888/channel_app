@@ -145,19 +145,19 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success    bool `json:"success"`
+		Success    bool `json:"success, optional"`
 		Msg     string `json:"msg, optional"`
 		Info struct {
-			Action string `json:"action"`
-			Qrurl string `json:"qrurl"`
+			Action string `json:"action, optional"`
+			Qrurl string `json:"qrurl, optional"`
 			Card struct {
-				Bankflag       string `json:"bankflag"`
-				Cardnumber       string `json:"cardnumber"`
-				Cardname      string `json:"cardname"`
-				Location  string `json:"location"`
-				Comment string `json:"comment"`
-			} `json:"card"`
-		} `json:"info"`
+				Bankflag       string `json:"bankflag, optional"`
+				Cardnumber       string `json:"cardnumber, optional"`
+				Cardname      string `json:"cardname, optional"`
+				Location  string `json:"location, optional"`
+				Comment string `json:"comment, optional"`
+			} `json:"card, optional"`
+		} `json:"info, optional"`
 	}{}
 
 	// 返回body 轉 struct
