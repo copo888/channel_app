@@ -1454,3 +1454,85 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: uzpay7777
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-uzpay7777
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f uzpay7777/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=uzpay7777" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/uzpay7777 uzpay7777/pay.go
+        - docker build -t uzpay7777 -f uzpay7777/Dockerfile .
+        - docker-compose -f uzpay7777/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/uzpay7777_stage_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
+name: uzpay1881
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-uzpay1881
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f uzpay1881/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=uzpay1881" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/uzpay1881 uzpay1881/pay.go
+        - docker build -t uzpay1881 -f uzpay1881/Dockerfile .
+        - docker-compose -f uzpay1881/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/uzpay1881_stage_*
+      event:
+        - push
+        - tag
+        - published
