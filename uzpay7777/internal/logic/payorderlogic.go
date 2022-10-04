@@ -56,6 +56,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	ip := utils.GetRandomIp()
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	uid := channel.MerId
+	userId := ""
+	if len(req.UserId) > 0 {
+		userId = req.UserId
+	}
 
 	// Copo777（支转卡）:55639 (cate=3) 300～10000 (AK)
 	// Copo888（卡转卡）:55640 (cate=remit) 500～10000 (YK) 100~10000
@@ -79,6 +83,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount     string `json:"amount"`
 		Orderid   string `json:"orderid"`
 		FromBankFlag      string `json:"from_bankflag"`
+		FromUsername string `json:"from_username"`
 		FromComment  string `json:"from_comment"`
 		NotifyUrl string `json:"notify"`
 		Cate   string `json:"cate"`
@@ -96,6 +101,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Userip: ip,
 		FromBankFlag: "BANK",
 		FromComment: req.MerchantOrderNo,
+		FromUsername: userId,
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
