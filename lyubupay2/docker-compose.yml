@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: lyubupay2
+    image: lyubupay2
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/lyubupay2:/app/logs
