@@ -121,7 +121,7 @@ type ProxyPayCallBackRequest {
 	Status     string `form:"status, optional"`
 }
 
-type PayCallBackRequest struct {
+type PayCallBackRequest {
 	MyIp       string `form:"myIp, optional"`
 	RealAmount string `form:"realAmount, optional"`
 	Charset    string `form:"charset, optional"`
@@ -171,4 +171,7 @@ service zhongshoupay {
 	
 	@handler ProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
+	
+	@handler HealthTestConnHandler
+	get /test-conn () returns (string)
 }
