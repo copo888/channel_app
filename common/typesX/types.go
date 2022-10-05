@@ -82,7 +82,6 @@ type ChannelPayType struct {
 	MapCode           string  `json:"mapCode, optional"`
 }
 
-
 type Order struct {
 	ID                      int64   `json:"id"`
 	Type                    string  `json:"type"` //收支方式  (代付 DF 支付 ZF 下發 XF 內充 NC)
@@ -132,4 +131,29 @@ type Order struct {
 	IsMerchantCallback      string  `json:"isMerchantCallback, optional"`  //是否已经回调商户(0：否、1:是、2:不需回调)(透过API需提供的资讯)
 	CreatedBy               string  `json:"createdBy, optional"`
 	UpdatedBy               string  `json:"updatedBy, optional"`
+}
+
+type TransactionLogData struct {
+	MerchantNo      string `json:"merchantNo"`
+	MerchantOrderNo string `json:"merchantOrderNo"`
+	OrderNo         string `json:"orderNo"`
+	LogType         string `json:"logType"`
+	LogSource       string `json:"logSource"`
+	Content         string `json:"content"`
+	ErrCode         string `json:"errCode"`
+	ErrMsg          string `json:"errMsg"`
+}
+
+type TxLog struct {
+	ID              int64  `json:"id"`
+	MerchantCode    string `json:"merchantCode, optional"`
+	OrderNo         string `json:"orderNo, optional"`
+	MerchantOrderNo string `json:"merchantOrderNo, optional"`
+	ChannelOrderNo  string `json:"channelOrderNo, optional"`
+	LogType         string `json:"logType, optional"`
+	LogSource       string `json:"logSource, optional"`
+	Content         string `json:"content, optional"`
+	CreatedAt       string `json:"createdAt, optional"`
+	ErrorCode       string `json:"errorCode, optional"`
+	ErrorMsg        string `json:"errorMsg, optional"`
 }
