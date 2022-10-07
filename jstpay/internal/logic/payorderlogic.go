@@ -67,6 +67,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PayType    string `json:"PayType"`
 		UID        string `json:"UID"`
 		IPAddress  string `json:"IPAddress"`
+		ReturnUrl  string `json:"ReturnUrl"`
 		NoticeUrl  string `json:"NoticeUrl"`
 		SignCode   string `json:"SignCode"`
 	}{
@@ -78,12 +79,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PayType:    req.ChannelPayType,
 		UID:        randomID,
 		IPAddress:  ip,
+		ReturnUrl:  req.PageUrl,
 		NoticeUrl:  notifyUrl,
 	}
 	// 加簽
 	m := payutils.CovertToMap(data)
 	delete(m, "IPAddress")
 	delete(m, "NoticeUrl")
+	delete(m, "ReturnUrl")
 	delete(m, "SignCode")
 	source := payutils.JoinStringsInASCII(m, "&", false, true, channel.MerKey)
 	sign := payutils.GetSign(source)
