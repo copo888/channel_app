@@ -114,7 +114,6 @@ type ProxyPayCallBackRequest struct {
 	Status     string `form:"status, optional"`
 }
 
-// form 格式
 type PayCallBackRequest struct {
 	MyIp       string `form:"myIp, optional"`
 	RealAmount string `form:"realAmount, optional"`

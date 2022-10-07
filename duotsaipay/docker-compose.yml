@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: duotsaipay
+    image: duotsaipay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/duotsaipay:/app/logs

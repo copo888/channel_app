@@ -188,4 +188,7 @@ service pay {
 	
 	@handler ProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
+	
+	@handler HealthTestConnHandler
+	get /test-conn () returns (string)
 }

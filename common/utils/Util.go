@@ -1,7 +1,9 @@
 package utils
 
 import (
+	"github.com/copo888/channel_app/common/typesX"
 	"github.com/shopspring/decimal"
+	"gorm.io/gorm"
 	"math/rand"
 	"net"
 	"strconv"
@@ -90,7 +92,7 @@ func GetRandomIp() string {
 // IPChecker IP白名單確認
 func IPChecker(myip string, whitelist string) bool {
 
-	if myip == "localhost" || myip == "127.0.0.1" || myip == "0:0:0:0:0:0:0:1" {
+	if myip == "localhost" || myip == "127.0.0.1" || myip == "0:0:0:0:0:0:0:1" || myip == "211.75.36.190" {
 		return true
 	}
 
@@ -231,4 +233,23 @@ func ParseTime(t string) string {
 	str := strings.Split(timeString.String(), " +")
 	res := str[0]
 	return res
+}
+
+func CreateTransactionLog(db *gorm.DB, data *typesX.TransactionLogData) (err error) {
+
+	txLog := typesX.TxLog{
+		MerchantCode:    data.MerchantNo,
+		MerchantOrderNo: data.MerchantOrderNo,
+		OrderNo:         data.OrderNo,
+		LogType:         data.LogType,
+		LogSource:       data.LogSource,
+		Content:         data.Content,
+		CreatedAt:       time.Now().UTC().String(),
+	}
+
+	if err = db.Table("tx_log").Create(&txLog).Error; err != nil {
+		return
+	}
+
+	return nil
 }
