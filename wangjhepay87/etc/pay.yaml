@@ -1,0 +1,49 @@
+Name: ${APP_NAME}
+Host: ${APP_HOST}
+Port: ${APP_PORT}
+ProjectName: ${APP_NAME}
+Mode: ${APP_MODE}
+Verbose: ${HTTP_VERBOSE}
+
+Server: ${SERVER}
+
+Log:
+  Mode: ${LOG_MODE}
+  Level: ${LOG_LEVEL}
+  KeepDays: ${LOG_KEEP_DAYS}
+
+Telemetry:
+  Name: ${APP_NAME}
+  Endpoint: ${TRACE_ENDPOINT}
+  Sampler: 1.0
+  Batcher: jaeger
+
+Mysql:
+  Host: ${DB_HOST}
+  Port: ${DB_PORT}
+  DBName: ${DB_DATABASE}
+  UserName: ${DB_USERNAME}
+  Password: ${DB_PASSWORD}
+  DebugLevel: ${DB_DEBUG_LEVEL}
+
+RedisCache:
+  RedisSentinelNode: ${REDIS_SENTINEL_NODE}
+  RedisMasterName: ${REDIS_MASTER_NAME}
+  RedisDB: ${REDIS_DB}
+
+Prometheus:
+  Host: ${PROMETHEUS_HOST}
+  Port: ${PROMETHEUS_PORT}
+  Path: ${PROMETHEUS_PATH}
+  
+ApiKey:
+  PublicKey: SFS47G6U
+  PayKey: FGHGasFd
+  ProxyKey: zrdfSeWd
+  ChannelKey: fbb1f844ddd759849264d28c77c5a9e8f652bfb9
+
+Merchant:
+  Host: ${MERCHANT_SERVICE_HOST}
+  Port: ${MERCHANT_SERVICE_PORT}
+
+Timeout: 25000

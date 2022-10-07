@@ -3,9 +3,12 @@ package logic
 import (
 	"context"
 	"fmt"
+	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	model "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/typesX"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/zhongshoupay/internal/payutils"
 	"github.com/copo888/channel_app/zhongshoupay/internal/svc"
 	"github.com/copo888/channel_app/zhongshoupay/internal/types"
@@ -70,6 +73,17 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	sign := payutils.SortAndSignFromUrlValues(data, merchantKey)
 	data.Set("sign", sign)
 
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.DATA_REQUEST_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", data)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
 	res, err := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
@@ -87,7 +101,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if !channelResp.Success {
+	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.RESPONSE_FROM_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
+	if !channelResp.Success {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 

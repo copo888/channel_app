@@ -3,10 +3,13 @@ package logic
 import (
 	"bytes"
 	"context"
+	"fmt"
+	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/jindepay/internal/payutils"
 	"github.com/copo888/channel_app/jindepay/internal/svc"
 	"github.com/copo888/channel_app/jindepay/internal/types"
@@ -67,6 +70,17 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("sign_type", "md5")
 	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
 	//data.sign = sign
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.DATA_REQUEST_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", data)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)

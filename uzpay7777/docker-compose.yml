@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: uzpay7777
+    image: uzpay7777
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/uzpay7777:/app/logs

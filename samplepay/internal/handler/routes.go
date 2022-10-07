@@ -52,6 +52,11 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Path:    "/proxy-pay-query-balance-internal",
 				Handler: ProxyPayQueryBalanceHandler(serverCtx),
 			},
+			{
+				Method:  http.MethodGet,
+				Path:    "/test-conn",
+				Handler: HealthTestConnHandler(serverCtx),
+			},
 		},
 		rest.WithPrefix("/api"),
 	)

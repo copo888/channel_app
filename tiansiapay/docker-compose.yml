@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: tiansiapay
+    image: tiansiapay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/tiansiapay:/app/logs

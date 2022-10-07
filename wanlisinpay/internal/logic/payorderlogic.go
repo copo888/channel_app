@@ -2,10 +2,13 @@ package logic
 
 import (
 	"context"
+	"fmt"
+	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/wanlisinpay/internal/payutils"
 	"github.com/copo888/channel_app/wanlisinpay/internal/svc"
 	"github.com/copo888/channel_app/wanlisinpay/internal/types"
@@ -67,6 +70,17 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
 
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.DATA_REQUEST_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", data)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
@@ -88,7 +102,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 返回body 轉 struct
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if channelResp.Code != 100 { // 渠道狀態碼判斷
+	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.RESPONSE_FROM_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
+	if channelResp.Code != 100 { // 渠道狀態碼判斷
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 	channelResp2 := struct {
@@ -101,7 +128,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}{}
 	if err = res.DecodeJSON(&channelResp2); err != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
-	} else if channelResp.Code != 100 { // 渠道狀態碼判斷
+	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.RESPONSE_FROM_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
+	if channelResp.Code != 100 { // 渠道狀態碼判斷
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
