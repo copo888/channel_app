@@ -60,6 +60,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		DepositNotifyUrl string  `json:"depositNotifyUrl"`
 		PayAmount        float64 `json:"payAmount"`
 		DepositName      string  `json:"depositName"`
+		ReturnUrl        string  `json:"returnUrl"`
 	}{
 		UserName:         req.PlayerId,
 		DeviceType:       9,
@@ -69,6 +70,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		DepositNotifyUrl: notifyUrl,
 		PayAmount:        payAmount,
 		DepositName:      req.UserId,
+		ReturnUrl:        req.PageUrl,
 	}
 	paramsJson, err := json.Marshal(paramsStruct)
 	paramsJsonStr := string(paramsJson[:])
