@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: zhiyuanpay
+    image: zhiyuanpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/zhiyuanpay:/app/logs
