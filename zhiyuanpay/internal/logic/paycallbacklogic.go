@@ -71,7 +71,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	transactionAmount := utils.FloatDiv(req.Amount, "100", 3)
 
 	orderStatus := "1"
-	if req.Status == "2" {
+	if req.Status == "1" {
 		orderStatus = "20"
 	}
 
