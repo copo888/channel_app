@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: wangjhepay116
+    image: wangjhepay116
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/wangjhepay116:/app/logs
