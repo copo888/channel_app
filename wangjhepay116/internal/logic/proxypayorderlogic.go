@@ -91,8 +91,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Bank_province: req.ReceiptCardProvince,
 		Bank_city:     req.ReceiptCardCity,
 		Bank_branch:   req.ReceiptCardBranch,
-		//Notify_url:    l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
-		Notify_url:    "https://4a83-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back",
+		Notify_url:    l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		//Notify_url:    "https://4a83-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back",
 	}
 
 	// 加簽

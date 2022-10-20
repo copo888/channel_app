@@ -54,7 +54,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl = "https://4a83-211-75-36-190.jp.ngrok.io/api/pay-call-back"
+	//notifyUrl = "https://4a83-211-75-36-190.jp.ngrok.io/api/pay-call-back"
 	timestamp := time.Now().Unix()
 	ip := utils.GetRandomIp()
 
