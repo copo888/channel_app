@@ -63,6 +63,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	payAmount :=  math.Floor(payAmount1*100)/100
 
 	deviceId := utils.GetRandomString(16, 0, 0)
+	playerId := req.PlayerId
+	if len(playerId) == 0 {
+		playerId = utils.GetRandomString(30, utils.ALL, utils.MIX)
+		logx.WithContext(l.ctx).Infof("playerId空值 給隨機參數:%s", playerId)
+	}
 
 	// 組請求參數 FOR JSON
 	paramsStruct := struct {
