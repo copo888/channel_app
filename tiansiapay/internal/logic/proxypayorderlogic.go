@@ -84,7 +84,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankOwner       string  `json:"bankOwner"`
 		BankAddress     string  `json:"bankAddress"`
 	}{
-		UserName:        req.PlayerId,
+		UserName:        playerId,
 		DeviceType:      9,
 		DeviceId:        payutils.Md5V(deviceId, l.ctx),
 		UserIp:         randomIp,
