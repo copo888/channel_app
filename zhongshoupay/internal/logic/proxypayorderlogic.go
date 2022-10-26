@@ -42,7 +42,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//TODO 測試渠道返
 	testResp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: "ChannelOrderNoTEST",
+		ChannelOrderNo: "ChannelOrderNoTEST2",
 		OrderStatus:    "",
 	}
 	return testResp, nil
