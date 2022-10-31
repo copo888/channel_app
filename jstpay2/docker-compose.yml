@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: jstpay2
+    image: jstpay2
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/jstpay2:/app/logs
