@@ -645,13 +645,13 @@ steps:
 
 ---
 kind: pipeline
-name: vp8pay
+name: vp8pay2
 
 clone:
   disable: true
 
 steps:
-  - name: docker-vp8pay
+  - name: docker-vp8pay2
     image: appleboy/drone-ssh
     settings:
       host:
@@ -670,15 +670,15 @@ steps:
         - git checkout -- .
         - git pull origin stage
         - go mod tidy
-        - docker-compose -f vp8pay/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=vp8pay" --quiet)
+        - docker-compose -f vp8pay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=vp8pay2" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/vp8pay vp8pay/pay.go
-        - docker build -t vp8pay -f vp8pay/Dockerfile .
-        - docker-compose -f vp8pay/docker-compose.yml up -d
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/vp8pay2 vp8pay2/pay.go
+        - docker build -t vp8pay2 -f vp8pay2/Dockerfile .
+        - docker-compose -f vp8pay2/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/vp8pay_stage_*
+        - refs/tags/vp8pay2_stage_*
       event:
         - push
         - tag
@@ -1697,3 +1697,43 @@ steps:
         - tag
         - published
 
+---
+kind: pipeline
+name: vp8pay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-vp8pay2
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f vp8pay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=vp8pay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/vp8pay2 vp8pay2/pay.go
+        - docker build -t vp8pay2 -f vp8pay2/Dockerfile .
+        - docker-compose -f vp8pay2/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/vp8pay2_stage_*
+      event:
+        - push
+        - tag
+        - published
