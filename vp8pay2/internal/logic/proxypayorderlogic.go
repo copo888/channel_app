@@ -75,7 +75,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		CallbackUrl:   l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
 
-	// 加簽
+	// 加簽2
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey+"ZCnikn2BmKBc6hAzdZkdSrVXF5YrutpMDstJSu5CnbgMwgdTT9VpA0geDF9J")
 	data.Sign = sign
 
