@@ -76,7 +76,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 
 	// 加簽
-	sign := payutils.SortAndSignFromObj(data, channel.MerKey+"4PEKQ6viEaWxF8k1arBkVGOF4Xw0Ipp5rXUEF2jVnY7MeJHRFO32WcGUYKKq")
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey+"ZCnikn2BmKBc6hAzdZkdSrVXF5YrutpMDstJSu5CnbgMwgdTT9VpA0geDF9J")
 	data.Sign = sign
 
 	//寫入交易日志
