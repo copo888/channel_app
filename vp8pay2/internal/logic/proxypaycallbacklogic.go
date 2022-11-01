@@ -50,7 +50,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey+"4PEKQ6viEaWxF8k1arBkVGOF4Xw0Ipp5rXUEF2jVnY7MeJHRFO32WcGUYKKq"); !isSameSign {
+	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey+"ZCnikn2BmKBc6hAzdZkdSrVXF5YrutpMDstJSu5CnbgMwgdTT9VpA0geDF9J"); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
