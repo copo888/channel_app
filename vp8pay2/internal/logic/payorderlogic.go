@@ -34,7 +34,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
-	// 取得取道資訊
+	// 取得取道資訊1
 	var channel typesX.ChannelData
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
