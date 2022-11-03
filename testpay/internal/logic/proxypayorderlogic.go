@@ -2,8 +2,6 @@ package logic
 
 import (
 	"context"
-	"github.com/copo888/channel_app/common/errorx"
-	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/testpay/internal/svc"
 	"github.com/copo888/channel_app/testpay/internal/types"
@@ -28,7 +26,6 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
-	return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, "123")
 	resp := &types.ProxyPayOrderResponse{
 		ChannelOrderNo: utils.GetRandomString(10, 0, 0),
 		OrderStatus:    "",
