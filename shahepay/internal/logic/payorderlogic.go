@@ -16,6 +16,8 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -61,6 +63,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Subject         string `json:"subject"`
 		GuestRealName   string `json:"guest_real_name"`
 		PaymentMethod   string `json:"payment_method"`
+		ForceMatching   bool   `json:"force_matching,optional"`
 	}{
 		AccountName:     channel.MerId,
 		MerchantOrderId: req.OrderNo,
@@ -70,6 +73,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Subject:         "订单",
 		GuestRealName:   req.UserId,
 		PaymentMethod:   req.ChannelPayType,
+	}
+
+	if strings.EqualFold(req.JumpType, "json") {
+		params.ForceMatching = true
 	}
 
 	// 加簽
@@ -109,8 +116,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		ID         string `json:"id"`
-		PaymentUrl string `json:"payment_url, optional"`
+		ID          string `json:"id"`
+		PaymentUrl  string `json:"payment_url, optional"`
+		TotalAmount string `json:"total_amount"`
+		BankAccount struct {
+			Name           string `json:"name"`
+			AccountName    string `json:"account_name"`
+			BankName       string `json:"bank_name"`
+			BankBranchName string `json:"bank_branch_name"`
+		} `json:"bank_account,optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -125,14 +139,40 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		OrderNo:   req.OrderNo,
 		LogType:   constants.RESPONSE_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+		Content:   fmt.Sprintf("%+v", channelResp),
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
+	if strings.EqualFold(req.JumpType, "json") {
+		var amount float64
+		if amount, err = strconv.ParseFloat(channelResp.TotalAmount, 64); err != nil {
+			logx.WithContext(l.ctx).Errorf("反卡讯息金额错误:%s", err.Error())
+		}
+		// 返回json
+		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+			CardName:   channelResp.BankAccount.Name,
+			CardNumber: channelResp.BankAccount.AccountName,
+			BankName:   channelResp.BankAccount.BankName,
+			BankBranch: channelResp.BankAccount.BankBranchName,
+			Amount:     amount,
+			Link:       "",
+			Remark:     "",
+		})
+		if err3 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		}
 
-	resp = &types.PayOrderResponse{
-		PayPageType:    "url",
-		PayPageInfo:    channelResp.PaymentUrl,
-		ChannelOrderNo: channelResp.ID,
+		resp = &types.PayOrderResponse{
+			PayPageType:    "json",
+			PayPageInfo:    string(receiverInfoJson),
+			ChannelOrderNo: channelResp.ID,
+		}
+	} else {
+		resp = &types.PayOrderResponse{
+			PayPageType:    "url",
+			PayPageInfo:    channelResp.PaymentUrl,
+			ChannelOrderNo: channelResp.ID,
+		}
 	}
 
 	return
