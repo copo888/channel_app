@@ -58,6 +58,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	timestamp := time.Now().Unix()
 	ip := utils.GetRandomIp()
 
+	userName := strings.TrimSpace(req.UserId)
+	userName = strings.Replace(userName, " ", "", -1)
+
 	// 組請求參數 FOR JSON
 	data := struct {
 		Mid        string  `json:"mid"`
@@ -80,7 +83,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Gateway: req.ChannelPayType,
 		Ip: ip,
 		Notify_url: notifyUrl,
-		Name: req.UserId,
+		Name: userName,
 	}
 
 	if strings.EqualFold(req.JumpType, "json") {
