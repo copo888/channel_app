@@ -134,7 +134,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
 	}
 
-	//寫入交易日志
+	//寫入交易日志2
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
