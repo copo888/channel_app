@@ -128,19 +128,6 @@ type PayCallBackRequest struct {
 	PayType  string `json:"payType, optional"`
 }
 
-// form 格式
-//type PayCallBackRequest struct {
-//	MyIp       string `form:"myIp, optional"`
-//	RealAmount string `form:"realAmount, optional"`
-//	Charset    string `form:"charset, optional"`
-//	Amount     string `form:"amount, optional"`
-//	StatusStr  string `form:"statusStr, optional"`
-//	OutTradeNo string `form:"outTradeNo, optional"`
-//	Sign       string `form:"sign, optional"`
-//	SignType   string `form:"signType, optional"`
-//	Status     string `form:"status, optional"`
-//}
-
 type ReceiverInfoVO struct {
 	CardName   string  `json:"cardName"`
 	CardNumber string  `json:"cardNumber"`

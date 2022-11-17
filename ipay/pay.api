@@ -121,7 +121,7 @@ type ProxyPayCallBackRequest {
 	Status     string `form:"status, optional"`
 }
 
-type PayCallBackRequest struct {
+type PayCallBackRequest {
 	MyIp     string `json:"myIp, optional"`
 	Code     string `json:"code, optional"`
 	Msg      string `json:"msg, optional"`
@@ -186,4 +186,7 @@ service pay {
 	
 	@handler ProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
+	
+	@handler HealthTestConnHandler
+	get /test-conn () returns (string)
 }
