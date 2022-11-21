@@ -134,14 +134,14 @@ type Order struct {
 }
 
 type TransactionLogData struct {
-	MerchantNo      string `json:"merchantNo"`
-	MerchantOrderNo string `json:"merchantOrderNo"`
-	OrderNo         string `json:"orderNo"`
-	LogType         string `json:"logType"`
-	LogSource       string `json:"logSource"`
-	Content         string `json:"content"`
-	ErrCode         string `json:"errCode"`
-	ErrMsg          string `json:"errMsg"`
+	MerchantNo      string      `json:"merchantNo"`
+	MerchantOrderNo string      `json:"merchantOrderNo"`
+	OrderNo         string      `json:"orderNo"`
+	LogType         string      `json:"logType"`
+	LogSource       string      `json:"logSource"`
+	Content         interface{} `json:"content"`
+	ErrCode         string      `json:"errCode"`
+	ErrMsg          string      `json:"errMsg"`
 }
 
 type TxLog struct {
@@ -153,6 +153,7 @@ type TxLog struct {
 	LogType         string `json:"logType, optional"`
 	LogSource       string `json:"logSource, optional"`
 	Content         string `json:"content, optional"`
+	Log             string `json:"log, optional"`
 	CreatedAt       string `json:"createdAt, optional"`
 	ErrorCode       string `json:"errorCode, optional"`
 	ErrorMsg        string `json:"errorMsg, optional"`

@@ -31,11 +31,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
 	if strings.EqualFold(req.JumpType, "json") {
-		transactionAmount, _ := strconv.ParseFloat( req.TransactionAmount, 64);
+		transactionAmount, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 
 		// 返回json
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-			CardName:  "王小銘",
+			CardName:   "王小銘",
 			CardNumber: "11111111111111",
 			BankName:   "工商银行",
 			BankBranch: "工商银行XX",

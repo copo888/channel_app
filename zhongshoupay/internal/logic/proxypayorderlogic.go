@@ -41,11 +41,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 
 	//TODO 測試渠道返
-	//testResp := &types.ProxyPayOrderResponse{
-	//	ChannelOrderNo: "ChannelOrderNoTEST",
-	//	OrderStatus:    "",
-	//}
-	//return testResp, nil
+	testResp := &types.ProxyPayOrderResponse{
+		ChannelOrderNo: "ChannelOrderNoTEST",
+		OrderStatus:    "",
+	}
+	return testResp, nil
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)

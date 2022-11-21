@@ -15,6 +15,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"math"
 	"strconv"
+	"strings"
 
 	"github.com/copo888/channel_app/tiansiapay/internal/svc"
 	"github.com/copo888/channel_app/tiansiapay/internal/types"
@@ -60,16 +61,21 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	randomIp := utils.GetRandomIp()
 	payAmount1, _ := strconv.ParseFloat(req.TransactionAmount, 64)
-	payAmount :=  math.Floor(payAmount1*100)/100
+	payAmount := math.Floor(payAmount1*100) / 100
 
 	deviceId := utils.GetRandomString(16, 0, 0)
+	playerId := req.PlayerId
+	if len(playerId) == 0 {
+		playerId = utils.GetRandomString(30, utils.ALL, utils.MIX)
+		logx.WithContext(l.ctx).Infof("playerId空值 給隨機參數:%s", playerId)
+	}
 
 	// 組請求參數 FOR JSON
 	paramsStruct := struct {
 		UserName        string  `json:"userName"`
 		DeviceType      int64   `json:"deviceType"`
 		DeviceId        string  `json:"deviceId"`
-		UserIp         string   `json:"userIp"`
+		UserIp          string  `json:"userIp"`
 		MerchantOrderId string  `json:"merchantOrderId"`
 		OrderType       int64   `json:"orderType"`
 		PayAmount       float64 `json:"payAmount"`
@@ -79,10 +85,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankOwner       string  `json:"bankOwner"`
 		BankAddress     string  `json:"bankAddress"`
 	}{
-		UserName:        req.PlayerId,
+		UserName:        playerId,
 		DeviceType:      9,
 		DeviceId:        payutils.Md5V(deviceId, l.ctx),
-		UserIp:         randomIp,
+		UserIp:          randomIp,
 		MerchantOrderId: req.OrderNo,
 		OrderType:       0,
 		PayAmount:       payAmount,
@@ -162,7 +168,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if channelResp.Code != 200 {
+	if strings.Index(channelResp.Msg, "余额不足") > -1 || channelResp.Code == 500 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Msg)
+	} else if channelResp.Code != 200 {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
