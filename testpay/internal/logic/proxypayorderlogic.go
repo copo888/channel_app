@@ -24,7 +24,7 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 }
 
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
-
+	//TEST
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
 	resp := &types.ProxyPayOrderResponse{
 		ChannelOrderNo: utils.GetRandomString(10, 0, 0),
