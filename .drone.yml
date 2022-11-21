@@ -1784,3 +1784,45 @@ steps:
 trigger:
   branch:
     - vp8pay2
+
+---
+kind: pipeline
+name: ipay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-ipay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout ipay
+        - git checkout -- .
+        - git pull origin ipay
+        - go mod tidy
+        - docker-compose -f ipay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ipay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ipay ipay/pay.go
+        - docker build -t ipay -f ipay/Dockerfile .
+        - docker-compose -f ipay/docker-compose.yml up -d
+    when:
+      branch:
+        - ipay
+      event:
+        - push
+trigger:
+  branch:
+    - ipay
