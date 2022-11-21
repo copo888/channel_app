@@ -28,7 +28,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
 	resp := &types.ProxyPayOrderResponse{
 		ChannelOrderNo: utils.GetRandomString(10, 0, 0),
-		OrderStatus:    "",
+		OrderStatus:    "20",
 	}
 
 	return resp, nil
