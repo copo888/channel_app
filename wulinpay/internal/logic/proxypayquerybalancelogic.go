@@ -80,7 +80,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	} else if balanceQueryResp.Code != 0 {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Code)
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %d: %s", balanceQueryResp.Code)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR)
 	}
 

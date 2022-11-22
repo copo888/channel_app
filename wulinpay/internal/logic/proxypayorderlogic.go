@@ -143,7 +143,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 
 	if channelResp.Code != 0 {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %d: %s", channelResp.Code, channelResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
