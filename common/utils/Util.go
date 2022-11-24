@@ -106,6 +106,9 @@ func IPChecker(myip string, whitelist string) bool {
 			ip = ip + "/32"
 		}
 		_, ipnetA, _ := net.ParseCIDR(ip)
+		if ipnetA == nil {
+			continue
+		}
 		ipB := net.ParseIP(myip)
 
 		if ipnetA.Contains(ipB) {
