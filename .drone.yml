@@ -1869,3 +1869,45 @@ steps:
 trigger:
   branch:
     - wulinpay
+
+---
+kind: pipeline
+name: changshengpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-changshengpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout changshengpay
+        - git checkout -- .
+        - git pull origin changshengpay
+        - go mod tidy
+        - docker-compose -f changshengpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=changshengpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/changshengpay changshengpay/pay.go
+        - docker build -t changshengpay -f changshengpay/Dockerfile .
+        - docker-compose -f changshengpay/docker-compose.yml up -d
+    when:
+      branch:
+        - changshengpay
+      event:
+        - push
+trigger:
+  branch:
+    - changshengpay
