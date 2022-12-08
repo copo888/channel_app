@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
@@ -71,9 +72,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		ErrorCode      int64  `json:"error_code"`
 		Message        string `json:"message"`
 		Data           struct {
-			AvailableBalance string `json:"available_balance"`
-			Balance          string `json:"balance"`
-			FrozenBalance    string `json:"frozen_balance"`
+			AvailableBalance json.Number  `json:"available_balance"`
 		} `json:"data"`
 	}{}
 
@@ -88,7 +87,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Data.AvailableBalance,
+		ProxyPayBalance:    balanceQueryResp.Data.AvailableBalance.String(),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
