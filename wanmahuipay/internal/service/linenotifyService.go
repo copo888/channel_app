@@ -6,12 +6,11 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/wanmahuipay/internal/svc"
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 )
-
 
 func CallLineSendURL (ctx context.Context, svcCtx *svc.ServiceContext, message string) {
 	go func() {
@@ -20,6 +19,7 @@ func CallLineSendURL (ctx context.Context, svcCtx *svc.ServiceContext, message s
 }
 
 func DoCallLineSendURL (ctx context.Context, svcCtx *svc.ServiceContext, message string) error {
+
 	span := trace.SpanFromContext(ctx)
 	notifyUrl := fmt.Sprintf("%s:%d/line/send", svcCtx.Config.LineSend.Host, svcCtx.Config.LineSend.Port)
 	data := struct {

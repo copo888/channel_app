@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: wanmahuipay
+    image: wanmahuipay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/wanmahuipay:/app/logs

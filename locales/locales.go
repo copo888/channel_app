@@ -9,7 +9,6 @@ import (
 func init() {
 	initEn(language.Make("en"))
 }
-
 // initEn will init en support.
 func initEn(tag language.Tag) {
 	message.SetString(tag, "0", "Success")

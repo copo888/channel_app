@@ -1860,3 +1860,44 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: wanmahuipay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-wanmahuipay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f wanmahuipay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wanmahuipay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wanmahuipay wanmahuipay/pay.go
+        - docker build -t wanmahuipay -f wanmahuipay/Dockerfile .
+        - docker-compose -f wanmahuipay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/wanmahuipay_stage_*
+      event:
+        - push
+        - tag
+        - published
