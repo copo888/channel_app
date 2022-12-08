@@ -9,7 +9,6 @@ import (
 	"github.com/copo888/channel_app/wanmahuipay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/wanmahuipay/internal/svc"
@@ -72,7 +71,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		ErrorCode      int64  `json:"error_code"`
 		Message        string `json:"message"`
 		Data           struct {
-			AvailableBalance int64 `json:"available_balance"`
+			AvailableBalance string `json:"available_balance"`
 			Balance          string `json:"balance"`
 			FrozenBalance    string `json:"frozen_balance"`
 		} `json:"data"`
@@ -84,12 +83,12 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.HttpStatusCode, balanceQueryResp.Message)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Message)
 	}
-	ProxyPayBalance := strconv.FormatInt(balanceQueryResp.Data.AvailableBalance, 10)
+	//ProxyPayBalance := strconv.FormatInt(balanceQueryResp.Data.AvailableBalance, 10)
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    ProxyPayBalance,
+		ProxyPayBalance:    balanceQueryResp.Data.AvailableBalance,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
