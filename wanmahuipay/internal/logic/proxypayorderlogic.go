@@ -122,7 +122,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			SystemOrderNumber string `json:"system_order_number"`
 			OrderNumber       string `json:"order_number"`
 			Amount            string `json:"amount"`
-			Status         string `json:"status"`
 		} `json:"data"`
 	}{}
 
