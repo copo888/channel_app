@@ -109,7 +109,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    fmt.Sprintf("%f", balanceQueryResp2.AccountInfo.TotalDeposit),
+		ProxyPayBalance:    fmt.Sprintf("%f", balanceQueryResp2.AccountInfo.TotalDeduct),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 

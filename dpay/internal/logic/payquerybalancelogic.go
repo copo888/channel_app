@@ -13,6 +13,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -41,13 +42,14 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	}
 
 	// 取值
-	//timestamp := time.Now().Format("20060102150405")
+	timestamp := time.Now().Unix()
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchant_number", channel.MerId)
+	data.Set("cus_code", channel.MerId)
+	data.Set("ut", strconv.FormatInt(timestamp, 10))
 
 	// 組請求參數 FOR JSON
 	//data := struct {
@@ -66,7 +68,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%+v", channel.PayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(20).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(20).Trace(span).Form(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {
@@ -77,18 +79,40 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
-	channelResp := struct {
-		available_balance string
+	balanceQueryResp := struct {
+		Result string   `json:"result"`
+		status     int `json:"status"`
+		Message string `json:"message"`
 	}{}
 
-	if err3 := res.DecodeJSON(&channelResp); err3 != nil {
+	if err3 := res.DecodeJSON(&balanceQueryResp); err3 != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+	} else if balanceQueryResp.Result != "success" {
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Result, balanceQueryResp.Message)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Message)
+	}
+
+	balanceQueryResp2 := struct {
+		AccountInfo struct{
+			NickName string `json:"nick_name"`
+			Email string `json:"email"`
+			TotalDeposit float64 `json:"total_deposit"`
+			TotalDeduct float64 `json:"total_deduct"`
+			ContactPerson string `json:"contact_person"`
+			ContactPhone string `json:"contact_phone"`
+			Company string `json:"company"`
+			CreatedAt string `json:"created_at"`
+		} `json:"account_info, optional"`
+	}{}
+
+	if err3 := res.DecodeJSON(&balanceQueryResp2); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	}
 
 	resp = &types.PayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		WithdrawBalance:    channelResp.available_balance,
+		WithdrawBalance:    fmt.Sprintf("%f", balanceQueryResp2.AccountInfo.TotalDeposit),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
