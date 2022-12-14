@@ -1953,3 +1953,87 @@ steps:
 trigger:
   branch:
     - wanmahuipay
+
+---
+kind: pipeline
+name: powerpay1881
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-powerpay1881
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout powerpay1881
+        - git checkout -- .
+        - git pull origin powerpay1881
+        - go mod tidy
+        - docker-compose -f powerpay1881/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=powerpay1881" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/powerpay1881 powerpay1881/pay.go
+        - docker build -t powerpay1881 -f powerpay1881/Dockerfile .
+        - docker-compose -f powerpay1881/docker-compose.yml up -d
+    when:
+      branch:
+        - powerpay1881
+      event:
+        - push
+trigger:
+  branch:
+    - powerpay1881
+
+---
+kind: pipeline
+name: dpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-dpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout dpay
+        - git checkout -- .
+        - git pull origin dpay
+        - go mod tidy
+        - docker-compose -f dpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=dpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/dpay dpay/pay.go
+        - docker build -t dpay -f dpay/Dockerfile .
+        - docker-compose -f dpay/docker-compose.yml up -d
+    when:
+      branch:
+        - dpay
+      event:
+        - push
+trigger:
+  branch:
+    - dpay

@@ -9,15 +9,15 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/dpay/internal/payutils"
-	"github.com/copo888/channel_app/dpay/internal/service"
+	"github.com/copo888/channel_app/powerpay1881/internal/payutils"
+	"github.com/copo888/channel_app/powerpay1881/internal/service"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
 
-	"github.com/copo888/channel_app/dpay/internal/svc"
-	"github.com/copo888/channel_app/dpay/internal/types"
+	"github.com/copo888/channel_app/powerpay1881/internal/svc"
+	"github.com/copo888/channel_app/powerpay1881/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -60,19 +60,18 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 
 	data := url.Values{}
-	data.Set("cus_code", channel.MerId)
-	data.Set("cus_order_sn", req.OrderNo)
-	data.Set("payment_flag", "pay_webbk")
+	data.Set("partner", channel.MerId)
+	data.Set("service", "10201")
+	data.Set("tradeNo", req.OrderNo)
 	data.Set("amount", transactionAmount)
-	data.Set("notify_url", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
-	//data.Set("notify_url", "https://107c-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back")
-	data.Set("bank_code", channelBankMap.MapCode)
-	//data.Set("subsidiaryBank", req.ReceiptCardBankName)
-	//data.Set("subbranch", req.ReceiptCardBranch)
-	//data.Set("province", req.ReceiptCardProvince)
-	//data.Set("city", req.ReceiptCardCity)
-	data.Set("bank_account", req.ReceiptAccountNumber)
-	data.Set("account_name", req.ReceiptAccountName)
+	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
+	data.Set("bankCode", channelBankMap.MapCode)
+	data.Set("subsidiaryBank", req.ReceiptCardBankName)
+	data.Set("subbranch", req.ReceiptCardBranch)
+	data.Set("province", req.ReceiptCardProvince)
+	data.Set("city", req.ReceiptCardCity)
+	data.Set("bankCardNo", req.ReceiptAccountNumber)
+	data.Set("bankCardholder", req.ReceiptAccountName)
 
 	//data := struct {
 	//	Partner string `json:"partner"`
@@ -128,20 +127,20 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.DoCallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.DoCallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Result string   `json:"result"`
-		Status int `json:"status"`
-		Message string `json:"message, optional"`
+		Success bool   `json:"success"`
+		Msg     string `json:"msg"`
+		TradeId string `json:"tradeId"` //渠道訂單號
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -159,31 +158,14 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if channelResp.Result != "success" {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Result, channelResp.Message)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
-	}
-
-	channelResp2 := struct {
-		OrderInfo struct{
-			OrderSn string `json:"order_sn"`
-			CusOrderSn string `json:"cus_order_sn"`
-			CurrencyType string `json:"currency_type"`
-			OriginalAmount float64 `json:"original_amount"`
-			OrderAmount float64 `json:"order_amount"`
-			ExchangeAmount float64 `json:"exchange_amount"`
-			CusBeforeDeductions float64 `json:"cus_before_deductions"`
-			CusAfterDeductions float64 `json:"cus_after_deductions"`
-		}`json:"order_info, optional"`
-	}{}
-
-	if err := ChannelResp.DecodeJSON(&channelResp2); err != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
+	if channelResp.Success != true {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Msg)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: channelResp2.OrderInfo.OrderSn,
+		ChannelOrderNo: channelResp.TradeId,
 		OrderStatus:    "",
 	}
 
