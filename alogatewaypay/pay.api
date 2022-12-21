@@ -23,12 +23,12 @@ type PayOrderRequest {
 	JumpType          string `json:"jumpType, optional"`
 	PlayerId          string `json:"playerId, optional"`
 	//印度渠道要求商户资料
-	Address 		  string `json:"address, optionial"`
-	City    		  string `json:"city, optionial"`
-	ZipCode 		  string `json:"zipCode, optionial"`
-	Country 		  string `json:"country, optionial"`
-	Phone   		  string `json:"phone, optionial"`
-	Email   		  string `json:"email, optionial"`
+	Address string `json:"address, optionial"`
+	City    string `json:"city, optionial"`
+	ZipCode string `json:"zipCode, optionial"`
+	Country string `json:"country, optionial"`
+	Phone   string `json:"phone, optionial"`
+	Email   string `json:"email, optionial"`
 }
 
 type PayOrderResponse {
@@ -120,28 +120,36 @@ type ProxyPayQueryInternalBalanceResponse {
 }
 
 type ProxyPayCallBackRequest {
-	Ip         string `form:"ip, optional"`
-	Charset    string `form:"charset, optional"`
-	Amount     string `form:"amount, optional"`
-	StatusStr  string `form:"statusStr, optional"`
-	OutTradeNo string `form:"outTradeNo, optional"`
-	Sign       string `form:"sign, optional"`
-	SignType   string `form:"signType, optional"`
-	Status     string `form:"status, optional"`
+	Ip                string `xml:"ip, optional"`
+	Transactionid     string `xml:"transactionid"`
+	Merchantaccount   string `xml:"merchantaccount"`
+	MerchantOrder     string `xml:"merchant_order"`
+	Amount            string `xml:"amount"`
+	Currency          string `xml:"currency"`
+	Customername      string `xml:"customername"`
+	Bankcode          string `xml:"bankcode"`
+	Bankaccountnumber string `xml:"bankaccountnumber"`
+	Status            string `xml:"status"`
+	Message           string `xml:"message"`
+	Control           string `xml:"control"`
 }
 
 type PayCallBackRequest {
-	MyIp     string `json:"myIp, optional"`
-	Code     string `json:"code, optional"`
-	Msg      string `json:"msg, optional"`
-	Sign     string `json:"sign, optional"`
-	MerchId  string `json:"merchId, optional"`
-	Money    string `json:"money, optional"`
-	TradeNo  string `json:"tradeNo, optional"`
-	OrderId  string `json:"orderId, optional"`
-	Time     string `json:"time, optional"`
-	SignType string `json:"signType, optional"`
-	PayType  string `json:"payType, optional"`
+	MyIp              string `form:"myIp, optional"`
+	Code              string `form:"code, optional"`
+	Msg               string `form:"msg, optional"`
+	TradeNo           string `form:"transactionid, optional"`
+	OrderId           string `form:"merchant_order, optional"`
+	Money             string `form:"amount, optional"`
+	Currency          string `form:"currency, optional"`
+	BankCode          string `form:"bankCode, optional"`
+	BankTransactionId string `form:"bank_transactionid, optional"`
+	Status            string `form:"status, optional"`
+	Message           string `form:"message, optional"` //Paid / Refunded / Successful requested
+	BillingDescriptor string `form:"billingdescriptor, optional"`
+	FirstName         string `form:"first_name, optional"`
+	LastName          string `form:"last_name, optional"`
+	Control           string `form:"control, optional"`
 }
 
 // form 格式
