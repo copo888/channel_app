@@ -58,8 +58,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 	// 組請求參數
 	amounFloat := utils.FloatMul(req.TransactionAmount, "100")
-	notifyUrl := "http://b170-211-75-36-190.ngrok.io" + "/api/proxy-pay-call-back"
-	//notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
 	//encName := b64.URLEncoding.EncodeToString([]byte(req.ReceiptAccountName))
 
 	data := url.Values{}
