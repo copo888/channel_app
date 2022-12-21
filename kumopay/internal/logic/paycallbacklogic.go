@@ -64,6 +64,8 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
 	}
 
+	// 把传送过去的 body 中的 (trade_no, amount, out_trade_no, state) + api_token + notify_token 做 md5
+
 	// 檢查驗簽
 	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey + channel.MerId); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
