@@ -108,7 +108,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
 	//span := trace.SpanFromContext(l.ctx)
-	// 若有證書問題 請使用
 
 	client := http.Client{
 		CheckRedirect: func(req *http.Request, via []*http.Request) error {
