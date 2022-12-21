@@ -13,7 +13,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/alogatewaypay/internal/svc"
@@ -74,7 +73,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//}
 
 	orderStatus := "1" // Refunded / Successfully requested
-	if req.Status == "A0" && strings.Index(req.Message, "Paid") > 0 {
+	if req.Status == "A0" {
 		orderStatus = "20"
 	}
 

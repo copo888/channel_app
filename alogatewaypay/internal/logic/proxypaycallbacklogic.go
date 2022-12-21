@@ -71,7 +71,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "A0" && strings.Index(req.Message, "Paid") > -1 {
+	if req.Status == "A0" {
 		status = "1"
 	} else if strings.Index(req.Status, "EU") > -1 || strings.Index(req.Status, "TR") > -1 || strings.Index(req.Status, "FI") > -1 {
 		status = "2"
