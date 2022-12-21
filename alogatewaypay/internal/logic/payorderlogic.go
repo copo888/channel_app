@@ -37,7 +37,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req)
-	//INDIA NETBANKING DEPOSIT
+	//INDIA NETBANKING DEPOSIT1
 	merchantAccount := "901720"
 	PartnerControl := "4f8e98f980ca58374726d814d73546b6"
 
