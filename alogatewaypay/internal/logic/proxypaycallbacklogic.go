@@ -78,8 +78,8 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.Transactionid,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.MerchantOrder,
+		ChannelOrderNo:      req.Transactionid,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   req.Message,
