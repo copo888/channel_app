@@ -66,10 +66,24 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	// 把传送过去的 body 中的 (trade_no, amount, out_trade_no, state) + api_token + notify_token 做 md5
 
+	//// 檢查驗簽
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey + channel.MerId); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey + channel.MerId); !isSameSign {
+	precise := payutils.GetDecimalPlaces(req.RequestAmount)
+	requestAmount := strconv.FormatFloat(req.RequestAmount, 'f', precise, 64)
+
+	source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
+		req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	sign := payutils.GetSign(source)
+	logx.Info("verifySource: ", source)
+	logx.Info("verifySign: ", sign)
+	logx.Info("reqSign: ", req.Sign)
+	if req.Sign != sign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
+
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {

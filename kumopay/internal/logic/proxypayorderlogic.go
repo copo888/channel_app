@@ -69,7 +69,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}{
 		OutTradeNo: req.OrderNo,
 		BankId: channelBankMap.MapCode,
-		BankOwner: req.ReceiptCardBankName,
+		BankOwner: req.ReceiptAccountName,
 		AccountNumber: req.ReceiptAccountNumber,
 		Amount: transactionAmount,
 		CallbackUrl: l.svcCtx.Config.Server+"/api/proxy-pay-call-back",
@@ -115,7 +115,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Data    struct {
 			TradeNo    string `json:"trade_no"`
 			OutTradeNo string `json:"out_trade_no"`
-			Amount     string `json:"amount"`
+			Amount     float64 `json:"amount"`
 			BankId string `json:"bank_id"`
 			AccountNumber string `json:"account_number"`
 			BankOwner string `json:"bank_owner"`
