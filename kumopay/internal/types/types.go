@@ -109,6 +109,7 @@ type ProxyPayCallBackRequest struct {
 	Ip          string `form:"ip, optional"`
 	TradeNo     string `json:"trade_no, optional"`
 	Amount      string `json:"amount, optional"`
+	RequestAmount float64 `json:"request_amount, optional"`
 	OutTradeNo  string `json:"out_trade_no, optional"`
 	State       string `json:"state, optional"`
 	Sign        string `json:"sign, optional"`

@@ -63,8 +63,17 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
+
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey + channel.MerId); !isSameSign {
+	precise := payutils.GetDecimalPlaces(req.RequestAmount)
+	requestAmount := strconv.FormatFloat(req.RequestAmount, 'f', precise, 64)
+	source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
+		req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	sign := payutils.GetSign(source)
+	logx.Info("verifySource: ", source)
+	logx.Info("verifySign: ", sign)
+	logx.Info("reqSign: ", req.Sign)
+	if req.Sign != sign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
