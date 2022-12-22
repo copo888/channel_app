@@ -65,10 +65,8 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	// 檢查驗簽
-	precise := payutils.GetDecimalPlaces(req.RequestAmount)
-	requestAmount := strconv.FormatFloat(req.RequestAmount, 'f', precise, 64)
-	source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
-		req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	source := fmt.Sprintf("amount=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+		req.Amount, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
 	sign := payutils.GetSign(source)
 	logx.Info("verifySource: ", source)
 	logx.Info("verifySign: ", sign)
@@ -82,7 +80,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.State == "completed " {
+	if req.State == "completed" {
 		status = "1"
 	} else if strings.Index("reject,failed,refund", req.State) > -1 {
 		status = "2"

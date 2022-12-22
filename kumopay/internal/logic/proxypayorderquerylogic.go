@@ -81,7 +81,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Data.State == "completed " {
+	if channelQueryResp.Data.State == "completed" {
 		orderStatus = "20"
 	} else if strings.Index("reject,failed,refund", channelQueryResp.Data.State) > -1 {
 		orderStatus = "30"
