@@ -39,7 +39,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		ChannelOrderNo: "TEST122",
 		OrderStatus:    "20",
 	}, nil
-	// 取得取道資訊
+	// 取得取道資訊11
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 
