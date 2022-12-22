@@ -15,6 +15,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/copo888/channel_app/samplepay/internal/svc"
 	"github.com/copo888/channel_app/samplepay/internal/types"
@@ -158,7 +159,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if channelResp.Success != true {
+	if strings.Index(channelResp.Msg, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Success, channelResp.Msg)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Msg)
+	} else if channelResp.Success != true {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
