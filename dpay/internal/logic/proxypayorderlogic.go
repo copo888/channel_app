@@ -11,13 +11,13 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/dpay/internal/payutils"
 	"github.com/copo888/channel_app/dpay/internal/service"
+	"github.com/copo888/channel_app/dpay/internal/svc"
+	"github.com/copo888/channel_app/dpay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
-
-	"github.com/copo888/channel_app/dpay/internal/svc"
-	"github.com/copo888/channel_app/dpay/internal/types"
+	"strings"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -139,8 +139,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Result string   `json:"result"`
-		Status int `json:"status"`
+		Result  string `json:"result"`
+		Status  int    `json:"status"`
 		Message string `json:"message, optional"`
 	}{}
 
@@ -158,23 +158,25 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
-
-	if channelResp.Result != "success" {
+	if channelResp.Status == 410 || strings.Index(channelResp.Message, "代付金不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Status, channelResp.Message)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Message)
+	} else if channelResp.Result != "success" {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Result, channelResp.Message)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
 	channelResp2 := struct {
-		OrderInfo struct{
-			OrderSn string `json:"order_sn"`
-			CusOrderSn string `json:"cus_order_sn"`
-			CurrencyType string `json:"currency_type"`
-			OriginalAmount float64 `json:"original_amount"`
-			OrderAmount float64 `json:"order_amount"`
-			ExchangeAmount float64 `json:"exchange_amount"`
+		OrderInfo struct {
+			OrderSn             string  `json:"order_sn"`
+			CusOrderSn          string  `json:"cus_order_sn"`
+			CurrencyType        string  `json:"currency_type"`
+			OriginalAmount      float64 `json:"original_amount"`
+			OrderAmount         float64 `json:"order_amount"`
+			ExchangeAmount      float64 `json:"exchange_amount"`
 			CusBeforeDeductions float64 `json:"cus_before_deductions"`
-			CusAfterDeductions float64 `json:"cus_after_deductions"`
-		}`json:"order_info, optional"`
+			CusAfterDeductions  float64 `json:"cus_after_deductions"`
+		} `json:"order_info, optional"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp2); err != nil {

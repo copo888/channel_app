@@ -1879,6 +1879,48 @@ steps:
 
 ---
 kind: pipeline
+name: kumopay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-kumopay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f kumopay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=kumopay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopay kumopay/pay.go
+        - docker build -t kumopay -f kumopay/Dockerfile .
+        - docker-compose -f kumopay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/kumopay_prod_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
 name: alogatewaypay
 
 clone:
@@ -1914,6 +1956,48 @@ steps:
     when:
       ref:
         - refs/tags/alogatewaypay_prod_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
+name: hueifutongpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-hueifutongpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f hueifutongpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=hueifutongpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/hueifutongpay hueifutongpay/pay.go
+        - docker build -t hueifutongpay -f hueifutongpay/Dockerfile .
+        - docker-compose -f hueifutongpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/hueifutongpay_prod_*
       event:
         - push
         - tag
