@@ -2,23 +2,19 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
+	"github.com/copo888/channel_app/common/constants/redisKey"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/quickpay/internal/payutils"
-	"github.com/copo888/channel_app/quickpay/internal/service"
 	"github.com/copo888/channel_app/quickpay/internal/svc"
 	"github.com/copo888/channel_app/quickpay/internal/types"
-	"io/ioutil"
-
-	"net/http"
-	"net/url"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -65,7 +61,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl = "https://f2c0-211-75-36-190.jp.ngrok.io/api/pay-call-back"
+	notifyUrl = "https://47f2-211-75-36-190.jp.ngrok.io/api/pay-call-back"
 	timestamp := time.Now()
 	tf := timestamp.Format("2006-01-02 03:04:05PM")
 	tfs := timestamp.Format("20060102150405")
@@ -76,35 +72,43 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	// 組請求參數
-	data := url.Values{}
-	data.Set("Merchant", channel.MerId)
-	data.Set("MerchantTrxRef", req.OrderNo)
-	data.Set("Currency", req.Currency)
-	data.Set("Customer", randomID)
-	data.Set("Amount", transactionAmount)
-	data.Set("DateTime",tf)
-	data.Set("SuccessURI", req.PageUrl)
-	data.Set("FailedURI","http://dev.copo.pro/#/home")
-	data.Set("BankURI", notifyUrl)
-	data.Set("Bank", channelBankMap.MapCode)
+	//data := url.Values{}
+	//data.Set("Merchant", channel.MerId)
+	//data.Set("MerchantTrxRef", req.OrderNo)
+	//data.Set("Currency", req.Currency)
+	//data.Set("Customer", randomID)
+	//data.Set("Amount", transactionAmount)
+	//data.Set("DateTime",tf)
+	//data.Set("SuccessURI", req.PageUrl)
+	//data.Set("FailedURI","http://dev.copo.pro/#/home")
+	//data.Set("BackURI", notifyUrl)
+	//data.Set("Bank", channelBankMap.MapCode)
 
 	// 組請求參數 FOR JSON
-	//data := struct {
-	//	MerchId   string `json:"merchId"`
-	//	Money     string `json:"money"`
-	//	OrderId   string `json:"orderId"`
-	//	Time      string `json:"time"`
-	//	NotifyUrl string `json:"notifyUrl"`
-	//	PayType   string `json:"payType"`
-	//	sign      string `json:"sign"`
-	//}{
-	//	MerchId:   channel.MerId,
-	//	Money:     req.TransactionAmount,
-	//	OrderId:   req.OrderNo,
-	//	Time:      timestamp,
-	//	NotifyUrl: notifyUrl,
-	//	PayType:   req.ChannelPayType,
-	//}
+	data := struct {
+		Merchant   string `json:"Merchant"`
+		MerchantTrxRef     string `json:"MerchantTrxRef"`
+		Currency   string `json:"Currency"`
+		Customer      string `json:"Customer"`
+		Amount string `json:"Amount"`
+		DateTime   string `json:"DateTime"`
+		SuccessURI      string `json:"SuccessURI"`
+		FailedURI   string `json:"FailedURI"`
+		BackURI    string `json:"BackURI"`
+		Bank       string `json:"Bank"`
+		Key        string `json:"Key"`
+	}{
+		Merchant:   channel.MerId,
+		Amount:     req.TransactionAmount,
+		MerchantTrxRef:   req.OrderNo,
+		Currency: req.Currency,
+		Customer: req.UserId,
+		DateTime:      tf,
+		SuccessURI: req.PageUrl,
+		FailedURI:   req.PageFailedUrl,
+		BackURI: notifyUrl,
+		Bank: channelBankMap.MapCode,
+	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	data.Set("reType", "INFO")
@@ -113,7 +117,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 加簽
 	source := channel.MerId+randomID+transactionAmount+req.Currency+tfs+channel.MerKey
 	sign := payutils.GetSign(source)
-	data.Set("Key", sign)
+	data.Key = sign
 	logx.WithContext(l.ctx).Info("加签参数: ", source)
 	logx.WithContext(l.ctx).Info("签名字串: ", sign)
 	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
@@ -141,51 +145,35 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
+	//
+	//if ChnErr != nil {
+	//	logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
+	//	msg := fmt.Sprintf("支付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
+	//	service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+	//	return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+	//}else if res.Status() != 200 {
+	//	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), res.Body)
+	//	msg := fmt.Sprintf("支付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", res.Status(), req.OrderNo)
+	//	service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+	//	return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
+	//}
 
-	client := http.Client{
-		CheckRedirect: func(req *http.Request, via []*http.Request) error {
-			return http.ErrUseLastResponse
-		}}
-
-	requset, err := http.NewRequest("POST", channel.PayUrl, strings.NewReader(data.Encode()))
-	requset.Header.Set("Content-Type", "application/form")
-	res, ChnErr := client.Do(requset)
-
-	pageUrl := res.Header.Values("Location")
-	logx.Infof("pageUrl: ", pageUrl)
-	if ChnErr != nil {
-		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
-		msg := fmt.Sprintf("支付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if res.StatusCode != 200 {
-		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.StatusCode, res.Body)
-		msg := fmt.Sprintf("支付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", res.StatusCode, req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.StatusCode))
-	}
-
-	defer res.Body.Close()
-	bodyBytes, _ := ioutil.ReadAll(res.Body)
-	stringBody := string(bodyBytes)
-	fmt.Sprintf(stringBody)
-	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.StatusCode, res.Body)
-	// 渠道回覆處理 [請依照渠道返回格式 自定義]
-	channelResp := struct {
-		Code    string `json:"code"`
-		Msg     string `json:"msg, optional"`
-		Sign    string `json:"sign"`
-		Money   string `json:"money"`
-		OrderId string `json:"orderId"`
-		PayUrl  string `json:"payUrl"`
-		PayInfo struct {
-			Name       string `json:"name"`
-			Card       string `json:"card"`
-			Bank       string `json:"bank"`
-			Subbranch  string `json:"subbranch"`
-			ExpiringAt string `json:"expiring_at"`
-		} `json:"payInfo"`
-	}{}
+	//// 渠道回覆處理 [請依照渠道返回格式 自定義]
+	//channelResp := struct {
+	//	Code    string `json:"code"`
+	//	Msg     string `json:"msg, optional"`
+	//	Sign    string `json:"sign"`
+	//	Money   string `json:"money"`
+	//	OrderId string `json:"orderId"`
+	//	PayUrl  string `json:"payUrl"`
+	//	PayInfo struct {
+	//		Name       string `json:"name"`
+	//		Card       string `json:"card"`
+	//		Bank       string `json:"bank"`
+	//		Subbranch  string `json:"subbranch"`
+	//		ExpiringAt string `json:"expiring_at"`
+	//	} `json:"payInfo"`
+	//}{}
 
 	// 返回body 轉 struct
 	//if err = res.DecodeJSON(&channelResp); err != nil {
@@ -193,20 +181,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//}
 
 	//寫入交易日志
-	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
-		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
+	//if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+	//	MerchantNo: req.MerchantId,
+	//	//MerchantOrderNo: req.OrderNo,
+	//	OrderNo:   req.OrderNo,
+	//	LogType:   constants.RESPONSE_FROM_CHANNEL,
+	//	LogSource: constants.API_ZF,
+	//	Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+	//	logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	//}
 
 	// 渠道狀態碼判斷
-	if channelResp.Code != "0000" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
-	}
+	//if channelResp.Code != "0000" {
+	//	return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	//}
 
 	// 若需回傳JSON 請自行更改
 	//if strings.EqualFold(req.JumpType, "json") {
@@ -235,9 +223,23 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	}, nil
 	//}
 
+	// 资料转JSON
+	dataJson, err := json.Marshal(data)
+	if err != nil {
+		return nil, errorx.New(responsex.DECODE_JSON_ERROR)
+	}
+	// 存 Redis
+	redisKey := redisKey.CACHE_PAY_ORDER_CHANNEL_REDIRECT+req.OrderNo
+	logx.WithContext(l.ctx).Infof("redisKey : ", redisKey)
+	if err = l.svcCtx.RedisClient.Set(l.ctx, redisKey, dataJson, 15*time.Minute).Err(); err != nil {
+		return nil, errorx.New(responsex.GENERAL_EXCEPTION)
+	}
+
+	url := fmt.Sprintf("%s/#/redirectPage?id=%s", l.svcCtx.Config.FrontEndDomain, req.OrderNo)
+
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
-		PayPageInfo:    channelResp.PayUrl,
+		PayPageInfo:    url,
 		ChannelOrderNo: "",
 	}
 

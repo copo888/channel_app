@@ -9,6 +9,7 @@ type Config struct {
 	rest.RestConf
 	service.ServiceConf
 	Server string
+	FrontEndDomain string
 	Mysql  struct {
 		Host       string
 		Port       int

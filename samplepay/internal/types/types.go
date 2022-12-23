@@ -21,6 +21,7 @@ type PayOrderRequest struct {
 	Country           string `json:"country, optionial"`
 	Phone             string `json:"phone, optionial"`
 	Email             string `json:"email, optionial"`
+	PageFailedUrl     string `json:"pageFailedUrl, optional"`
 }
 
 type PayOrderResponse struct {

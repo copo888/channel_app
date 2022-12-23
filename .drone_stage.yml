@@ -2106,3 +2106,44 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: quickpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-quickpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f quickpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=quickpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/quickpay quickpay/pay.go
+        - docker build -t quickpay -f quickpay/Dockerfile .
+        - docker-compose -f quickpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/quickpay_stage_*
+      event:
+        - push
+        - tag
+        - published

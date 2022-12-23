@@ -4,7 +4,7 @@ Port: ${APP_PORT}
 ProjectName: ${APP_NAME}
 Mode: ${APP_MODE}
 Verbose: ${HTTP_VERBOSE}
-
+FrontEndDomain: ${APP_FRONT_END_DOMAIN}
 Server: ${SERVER}
 
 Log:
