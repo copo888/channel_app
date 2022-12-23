@@ -69,8 +69,10 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
+	orderAmount = utils.FloatDivF(orderAmount, 100) //单位分转元
+
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == 20 {
 		status = "1"
