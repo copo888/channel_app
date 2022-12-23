@@ -113,24 +113,24 @@ type ProxyPayQueryInternalBalanceResponse struct {
 
 type ProxyPayCallBackRequest struct {
 	Ip         string `form:"ip, optional"`
-	BizNo      string `json:"bizNo, optional"`
-	BizOrderNo string `json:"bizOrderNo, optional"`
-	OrderId    int64  `json:"orderId, optional"`
-	Status     int64  `json:"status, optional"`
-	Amount     string `json:"amount, optional"`
-	Timestamp  string `json:"timestamp, optional"`
-	Sign       string `json:"sign, optional"`
+	BizNo      string `form:"bizNo, optional"`
+	BizOrderNo string `form:"bizOrderNo, optional"`
+	OrderId    int64  `form:"orderId, optional"`
+	Status     int64  `form:"status, optional"`
+	Amount     string `form:"amount, optional"`
+	Timestamp  string `form:"timestamp, optional"`
+	Sign       string `form:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp       string `json:"myIp, optional"`
-	BizNo      string `json:"bizNo, optional"`
-	BizOrderNo string `json:"bizOrderNo, optional"`
-	OrderId    int64  `json:"orderId, optional"`
-	Status     int64  `json:"status, optional"`
-	Amount     string `json:"amount, optional"`
-	Timestamp  string `json:"timestamp, optional"`
-	Sign       string `json:"sign, optional"`
+	MyIp       string `form:"myIp, optional"`
+	BizNo      string `form:"bizNo, optional"`
+	BizOrderNo string `form:"bizOrderNo, optional"`
+	OrderId    int64  `form:"orderId, optional"`
+	Status     int64  `form:"status, optional"`
+	Amount     string `form:"amount, optional"`
+	Timestamp  string `form:"timestamp, optional"`
+	Sign       string `form:"sign, optional"`
 }
 
 type ReceiverInfoVO struct {
