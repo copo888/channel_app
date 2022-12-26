@@ -6,7 +6,7 @@ clone:
 
 steps:
   - name: docker-zhongshoupay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -48,7 +48,7 @@ clone:
 
 steps:
   - name: docker-lepay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -89,7 +89,7 @@ clone:
 
 steps:
   - name: docker-taotaopay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -131,7 +131,7 @@ clone:
 
 steps:
   - name: docker-wanlisinpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -172,7 +172,7 @@ clone:
 
 steps:
   - name: docker-wangjhepay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -213,7 +213,7 @@ clone:
 
 steps:
   - name: docker-shenfutongpay6
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -254,7 +254,7 @@ clone:
 
 steps:
   - name: docker-stpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -296,7 +296,7 @@ clone:
 
 steps:
   - name: docker-ailefupay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -338,7 +338,7 @@ clone:
 
 steps:
   - name: docker-huanyupay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -380,7 +380,7 @@ clone:
 
 steps:
   - name: docker-lyubupay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -423,7 +423,7 @@ clone:
 
 steps:
   - name: docker-liepay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -465,7 +465,7 @@ clone:
 
 steps:
   - name: docker-vcpay2
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -508,7 +508,7 @@ clone:
 
 steps:
   - name: docker-mlbproxypay2
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -551,7 +551,7 @@ clone:
 
 steps:
   - name: docker-sinshangpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -593,7 +593,7 @@ clone:
 
 steps:
   - name: docker-baisiangpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -635,7 +635,7 @@ clone:
 
 steps:
   - name: docker-vp8pay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -677,7 +677,7 @@ clone:
 
 steps:
   - name: docker-jstpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -719,7 +719,7 @@ clone:
 
 steps:
   - name: docker-mlbpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -761,7 +761,7 @@ clone:
 
 steps:
   - name: docker-jindepay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -803,7 +803,7 @@ clone:
 
 steps:
   - name: docker-sandianlingpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -844,7 +844,7 @@ clone:
 
 steps:
   - name: docker-wtpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -885,7 +885,7 @@ clone:
 
 steps:
   - name: docker-shahepay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -926,7 +926,7 @@ clone:
 
 steps:
   - name: docker-shandianpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -967,7 +967,7 @@ clone:
 
 steps:
   - name: docker-lelifupay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1009,7 +1009,7 @@ clone:
 
 steps:
   - name: docker-yunshengpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1051,7 +1051,7 @@ clone:
 
 steps:
   - name: docker-mashangpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1094,7 +1094,7 @@ clone:
 
 steps:
   - name: docker-yibipay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1136,7 +1136,7 @@ clone:
 
 steps:
   - name: docker-uzpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1178,7 +1178,7 @@ clone:
 
 steps:
   - name: docker-shenfutongpay7
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1219,7 +1219,7 @@ clone:
 
 steps:
   - name: docker-wangjhepay86
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1260,7 +1260,7 @@ clone:
 
 steps:
   - name: docker-wangjhepay87
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1303,7 +1303,7 @@ clone:
 
 steps:
   - name: docker-duotsaipay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1344,7 +1344,7 @@ clone:
 
 steps:
   - name: docker-uzpay7777
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1385,7 +1385,7 @@ clone:
 
 steps:
   - name: docker-uzpay1881
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1426,7 +1426,7 @@ clone:
 
 steps:
   - name: docker-lyubupay2
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1467,7 +1467,7 @@ clone:
 
 steps:
   - name: docker-zhiyuanpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1508,7 +1508,7 @@ clone:
 
 steps:
   - name: docker-wangjhepay116
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1550,7 +1550,7 @@ clone:
 
 steps:
   - name: docker-jstpay2
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1592,7 +1592,7 @@ clone:
 
 steps:
   - name: docker-vp8pay2
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1634,7 +1634,7 @@ clone:
 
 steps:
   - name: docker-ipay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1676,7 +1676,7 @@ clone:
 
 steps:
   - name: docker-wulinpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1718,7 +1718,7 @@ clone:
 
 steps:
   - name: docker-changshengpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1760,7 +1760,7 @@ clone:
 
 steps:
   - name: docker-wanmahuipay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1802,7 +1802,7 @@ clone:
 
 steps:
   - name: docker-powerpay1881
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1844,7 +1844,7 @@ clone:
 
 steps:
   - name: docker-dpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1886,7 +1886,7 @@ clone:
 
 steps:
   - name: docker-kumopay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1928,7 +1928,7 @@ clone:
 
 steps:
   - name: docker-alogatewaypay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -1970,7 +1970,7 @@ clone:
 
 steps:
   - name: docker-hueifutongpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
@@ -2012,7 +2012,7 @@ clone:
 
 steps:
   - name: docker-quickpay
-    image: appleboy/drone-ssh
+     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
         - 172.28.222.65
