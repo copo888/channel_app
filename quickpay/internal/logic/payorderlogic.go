@@ -86,6 +86,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 組請求參數 FOR JSON
 	data := struct {
+		RequestUrl string `json:"requestUrl"`
 		Merchant   string `json:"Merchant"`
 		MerchantTrxRef     string `json:"MerchantTrxRef"`
 		Currency   string `json:"Currency"`
@@ -98,6 +99,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Bank       string `json:"Bank"`
 		Key        string `json:"Key"`
 	}{
+		RequestUrl: channel.PayUrl,
 		Merchant:   channel.MerId,
 		Amount:     req.TransactionAmount,
 		MerchantTrxRef:   req.OrderNo,
