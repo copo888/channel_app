@@ -2089,13 +2089,13 @@ steps:
 
 ---
 kind: pipeline
-name: wgopay
+name: wgopay88
 
 clone:
   disable: true
 
 steps:
-  - name: docker-wgopay
+  - name: docker-wgopay88
     image: appleboy/drone-ssh
     settings:
       host:
@@ -2115,12 +2115,12 @@ steps:
         - git checkout -- .
         - git pull origin master
         - go mod tidy
-        - docker-compose -f wgopay/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=wgopay" --quiet)
+        - docker-compose -f wgopay88/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wgopay88" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wgopay wgopay/pay.go
-        - docker build -t wgopay -f wgopay/Dockerfile .
-        - docker-compose -f wgopay/docker-compose.yml up -d
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wgopay88 wgopay88/pay.go
+        - docker build -t wgopay88 -f wgopay88/Dockerfile .
+        - docker-compose -f wgopay88/docker-compose.yml up -d
     when:
       ref:
         - refs/tags/wgopay_prod_*

@@ -4,7 +4,7 @@ RUN apk update --no-cache && apk add --no-cache ca-certificates tzdata
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
-COPY /bin/wgopay /app/wgopay
-COPY wgopay/etc /app/etc
+COPY /bin/wgopay88 /app/wgopay88
+COPY wgopay88/etc /app/etc
 
-CMD ["./wgopay", "-f", "etc/pay.yaml"]
+CMD ["./wgopay88", "-f", "etc/pay.yaml"]

@@ -6,9 +6,9 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 
-	"github.com/copo888/channel_app/wgopay/internal/config"
-	"github.com/copo888/channel_app/wgopay/internal/handler"
-	"github.com/copo888/channel_app/wgopay/internal/svc"
+	"github.com/copo888/channel_app/wgopay88/internal/config"
+	"github.com/copo888/channel_app/wgopay88/internal/handler"
+	"github.com/copo888/channel_app/wgopay88/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
