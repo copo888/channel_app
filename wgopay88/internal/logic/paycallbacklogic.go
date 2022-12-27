@@ -9,13 +9,13 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/wgopay/internal/payutils"
+	"github.com/copo888/channel_app/wgopay88/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"time"
 
-	"github.com/copo888/channel_app/wgopay/internal/svc"
-	"github.com/copo888/channel_app/wgopay/internal/types"
+	"github.com/copo888/channel_app/wgopay88/internal/svc"
+	"github.com/copo888/channel_app/wgopay88/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

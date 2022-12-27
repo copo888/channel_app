@@ -4,7 +4,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/copo888/channel_app/wgopay/internal/svc"
+	"github.com/copo888/channel_app/wgopay88/internal/svc"
 
 	"github.com/zeromicro/go-zero/rest"
 )

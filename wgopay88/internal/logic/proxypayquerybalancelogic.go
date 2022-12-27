@@ -11,8 +11,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"time"
 
-	"github.com/copo888/channel_app/wgopay/internal/svc"
-	"github.com/copo888/channel_app/wgopay/internal/types"
+	"github.com/copo888/channel_app/wgopay88/internal/svc"
+	"github.com/copo888/channel_app/wgopay88/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
