@@ -15,7 +15,7 @@ import (
 func GetSign(source string) string {
 	data := []byte(source)
 	result := fmt.Sprintf("%x", md5.Sum(data))
-	return result
+	return strings.ToLower(result)
 }
 
 /*

@@ -61,7 +61,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl = "https://47f2-211-75-36-190.jp.ngrok.io/api/pay-call-back"
+	//notifyUrl = "https://effa-211-75-36-190.jp.ngrok.io/api/pay-call-back"
 
 	timestamp := time.Now()
 	tf := timestamp.Format("2006-01-02 03:04:05PM")
@@ -105,7 +105,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount:     req.TransactionAmount,
 		MerchantTrxRef:   req.OrderNo,
 		Currency: req.Currency,
-		Customer: req.UserId,
+		Customer: randomID,
 		DateTime:      tf,
 		SuccessURI: req.PageUrl,
 		FailedURI:   req.PageFailedUrl,
@@ -238,7 +238,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION)
 	}
 
-	url := fmt.Sprintf("%s/#/redirectPage?id=%s", l.svcCtx.Config.FrontEndDomain, req.OrderNo)
+	url := fmt.Sprintf("%s/#/redirectPage?orderNo=%s", l.svcCtx.Config.FrontEndDomain, req.OrderNo)
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
