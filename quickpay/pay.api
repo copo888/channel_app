@@ -125,16 +125,16 @@ type ProxyPayCallBackRequest {
 }
 
 type PayCallBackRequest {
-	MyIp          string `form:"myIp, optional"`
-	Merchant      string `form:"merchant, optional"`
-	Reference     string `form:"reference, optional"`
-	Merchanttxref string `form:"merchanttxref, optional"`
-	Amount        string `form:"amount, optional"`
-	Customer      string `form:"customer, optional"`
-	Datetime      string `form:"datetime, optional"`
-	Key           string `form:"key, optional"`
-	Status        string `form:"status, optional"`
-	Bankref       string `form:"bankref, optional"`
+	MyIp           string `form:"myIp, optional"`
+	Merchant       string `form:"merchant, optional"`
+	Reference      string `form:"reference, optional"`
+	Merchanttrxref string `form:"merchanttrxref, optional"`
+	Amount         string `form:"amount, optional"`
+	Customer       string `form:"customer, optional"`
+	Datetime       string `form:"datetime, optional"`
+	Key            string `form:"key, optional"`
+	Status         string `form:"status, optional"`
+	Bankref        string `form:"bankref, optional"`
 }
 
 // form 格式

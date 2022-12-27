@@ -43,7 +43,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: req.MerchId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.Merchanttxref, //輸入COPO訂單號
+		OrderNo:   req.Merchanttrxref, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
 		Content:   fmt.Sprintf("%+v", req)}); err != nil {
@@ -84,7 +84,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.Merchanttxref,
+		PayOrderNo:     req.Merchanttrxref,
 		ChannelOrderNo: req.Reference, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
