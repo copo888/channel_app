@@ -13,6 +13,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/wgopay/internal/svc"
@@ -130,8 +131,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
-
-	if channelResp.ErrorCode != "0000" {
+	if channelResp.ErrorCode == "0018" || strings.Index(channelResp.ErrorMsg, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.ErrorCode, channelResp.ErrorMsg)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.ErrorMsg)
+	} else if channelResp.ErrorCode != "0000" {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.ErrorCode, channelResp.ErrorMsg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg)
 	}
 
