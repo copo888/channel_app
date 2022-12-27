@@ -46,7 +46,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return
 	}
 
-	/** UserId 必填時使用 **/
+	/** UserId 必填時使用1 **/
 	if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
