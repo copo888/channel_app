@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: lanyunpay
+    image: lanyunpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/lanyunpay:/app/logs
