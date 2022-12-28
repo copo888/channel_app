@@ -127,14 +127,18 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		service.DoCallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.StatusCode == 302 && pageUrl == nil {
+		defer res.Body.Close()
+		bodyBytes, _ := ioutil.ReadAll(res.Body)
+		stringBody := string(bodyBytes)
+		logx.WithContext(l.ctx).Errorf("Http status : %s,Http Body :%s", res.Status, stringBody)
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, "status:302。未回传支付网址")
 	} else if res.StatusCode == 200 {
 		defer res.Body.Close()
 		bodyBytes, _ := ioutil.ReadAll(res.Body)
 		stringBody := string(bodyBytes)
 		beginIndex := strings.Index(stringBody, "message")
-		logx.WithContext(l.ctx).Error("Http Body ErrorMsg :", stringBody[beginIndex+16:beginIndex+122])
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, stringBody[beginIndex+16:beginIndex+122])
+		logx.WithContext(l.ctx).Errorf("Http status : %s,Http Body ErrorMsg :", res.Status, stringBody)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, stringBody[beginIndex+16:beginIndex+200])
 	} else if res.StatusCode != 200 && res.StatusCode != 302 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status, res.Body)
 		msg := fmt.Sprintf("支付提单，呼叫渠道返回Http状态码錯誤: '%s'，订单号： '%s'", res.Status, req.OrderNo)
