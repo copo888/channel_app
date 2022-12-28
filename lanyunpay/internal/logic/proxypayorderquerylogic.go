@@ -87,20 +87,19 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		FxStatus int64  `json:"fxstatus"`
+		FxStatus json.Number  `json:"fxstatus"`
 		FxMsg  string `json:"fxmsg"`
 		FxBody string `json:"fxbody"`
 	}{}
 
 	var bodyResp []struct {
-		Fxfee    float64  `json:"fxfee"`
-		FxStatus int64  `json:"fxstatus"`
+		FxStatus json.Number  `json:"fxstatus"`
 		FxCode   string  `json:"fxcode"`
 	}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.FxStatus != 1 {
+	} else if channelQueryResp.FxStatus.String() != "1" {
 		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s: %s", channelQueryResp.FxStatus, channelQueryResp.FxMsg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.FxMsg)
 	}
@@ -111,9 +110,9 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if bodyResp[0].FxStatus == 1 {
+	if bodyResp[0].FxStatus == "1" {
 		orderStatus = "20"
-	} else if bodyResp[0].FxStatus == -1 || bodyResp[0].FxStatus == 3 {
+	} else if bodyResp[0].FxStatus.String() == "-1" || bodyResp[0].FxStatus.String() == "3" {
 		orderStatus = "30"
 	}
 

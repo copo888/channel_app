@@ -136,7 +136,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		FxStatus int64  `json:"fxstatus"`
+		FxStatus json.Number `json:"fxstatus"`
 		FxMsg  string `json:"fxmsg"`
 		FxBody string `json:"fxbody"`
 	}{}
@@ -157,15 +157,15 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 
 	if strings.Index(channelResp.FxMsg, "余额不足") > -1 {
-		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.FxStatus, channelResp.FxMsg)
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.FxStatus.String(), channelResp.FxMsg)
 		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.FxMsg)
-	} else if channelResp.FxStatus != 1 {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.FxStatus, channelResp.FxMsg)
+	} else if channelResp.FxStatus.String() != "1" {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.FxStatus.String(), channelResp.FxMsg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.FxMsg)
 	}
 
 	var bodyResp []struct {
-		FxStatus int64  `json:"fxstatus"`
+		FxStatus json.Number  `json:"fxstatus"`
 		FxCode   string  `json:"fxcode"`
 	}
 
@@ -173,8 +173,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
 	}
 
-	if bodyResp[0].FxStatus != 1 {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", bodyResp[0].FxStatus, bodyResp[0].FxCode)
+	if bodyResp[0].FxStatus.String() != "1" {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", bodyResp[0].FxStatus.String(), bodyResp[0].FxCode)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, bodyResp[0].FxCode)
 	}
 
