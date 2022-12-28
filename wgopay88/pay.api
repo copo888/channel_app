@@ -110,8 +110,8 @@ type ProxyPayQueryInternalBalanceResponse {
 	ErrorMsgtring      string `json:"errorMsgtring"`
 }
 
-type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
+type ProxyPayCallBackRequest {
+	Ip          string `form:"ip, optional"`
 	TradeNo     string `form:"tradeNo, optional"`
 	OrderAmount string `form:"orderAmount, optional"`
 	TradeStatus string `form:"tradeStatus, optional"`
@@ -119,7 +119,7 @@ type ProxyPayCallBackRequest struct {
 	Sign        string `form:"sign, optional"`
 }
 
-type PayCallBackRequest struct {
+type PayCallBackRequest {
 	MyIp        string `form:"myIp, optional"`
 	TradeNo     string `form:"tradeNo, optional"`
 	TopupAmount string `form:"topupAmount, optional"`
@@ -179,4 +179,7 @@ service pay {
 	
 	@handler ProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
+	
+	@handler HealthTestConnHandler
+	get /test-conn () returns (string)
 }
