@@ -58,7 +58,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	//}
 	keys := []string{}
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, keys, channel.MerKey)
+	sign := payutils.SortAndSignFromUrlValues(l.ctx, data, keys, channel.MerKey)
 	data.Set("sign", sign)
 	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
 	//data.Sign = sign

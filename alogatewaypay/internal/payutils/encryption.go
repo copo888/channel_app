@@ -1,6 +1,7 @@
 package payutils
 
 import (
+	"context"
 	"crypto/hmac"
 	"crypto/md5"
 	"crypto/sha1"
@@ -100,15 +101,15 @@ func JoinStringsInASCII(data map[string]string, keys []string, sep string, onlyV
 //}
 
 // SortAndSignFromUrlValues map 排序后加签 使用HMAC_SH1
-func SortAndSignFromUrlValues(values url.Values, keys []string, screctKey string) string {
+func SortAndSignFromUrlValues(ctx context.Context, values url.Values, keys []string, screctKey string) string {
 	m := CovertUrlValuesToMap(values)
-	return SortAndSignFromMap(m, keys, screctKey)
+	return SortAndSignFromMap(ctx, m, keys, screctKey)
 }
 
 // SortAndSignFromUrlValues map 排序后加签，使用SHA1 Hash
-func SortAndSignFromUrlValues_2(values url.Values, keys []string, screctKey string) string {
+func SortAndSignFromUrlValues_2(ctx context.Context, values url.Values, keys []string, screctKey string) string {
 	m := CovertUrlValuesToMap(values)
-	return SortAnd_SHA1_Hash_SignFromMap(m, keys, screctKey)
+	return SortAnd_SHA1_Hash_SignFromMap(ctx, m, keys, screctKey)
 }
 
 //func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string {
@@ -127,19 +128,19 @@ func SortAndSignFromUrlValues_2(values url.Values, keys []string, screctKey stri
 //}
 
 // SortAndSignFromMap MAP 排序后加签
-func SortAndSignFromMap(newData map[string]string, keys []string, secretKey string) string {
+func SortAndSignFromMap(ctx context.Context, newData map[string]string, keys []string, secretKey string) string {
 	newSource := JoinStringsInASCII(newData, keys, "", true, false, "")
 	newSign := GetSign_HMAC_SHA1(newSource, secretKey)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 
-func SortAnd_SHA1_Hash_SignFromMap(newData map[string]string, keys []string, secretKey string) string {
+func SortAnd_SHA1_Hash_SignFromMap(ctx context.Context, newData map[string]string, keys []string, secretKey string) string {
 	newSource := JoinStringsInASCII(newData, keys, "", true, false, secretKey)
 	newSign := GetSign_SHA1_Hash(newSource)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 
