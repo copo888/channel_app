@@ -77,7 +77,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	keys := []string{"merchantaccount", "merchantorder", "amount", "currency", "customername", "bankcode", "bankaccountnumber"}
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues_2(data, keys, partnerControl)
+	sign := payutils.SortAndSignFromUrlValues_2(l.ctx, data, keys, partnerControl)
 	data.Set("control", sign)
 	data.Set("version", "11")
 	data.Set("serverreturnurl", notifyUrl)

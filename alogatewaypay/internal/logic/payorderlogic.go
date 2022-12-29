@@ -73,21 +73,21 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 	data.Set("amount", fmt.Sprintf("%.f", amounFloat))
 	data.Set("currency", "INR") //印度盧比
-	data.Set("first_name", req.UserId)
-	data.Set("last_name", req.UserId)
-	data.Set("address1", req.Address) //请商户传
-	data.Set("city", req.City)        //请商户传
-	data.Set("zip_code", req.ZipCode) //请商户传
-	data.Set("country", req.Country)  //请商户传(EX:IN)
-	data.Set("phone", req.Phone)      //请商户传
-	data.Set("email", req.Email)      //请商户传
+	data.Set("first_name", strings.ReplaceAll(req.UserId, " ", ""))
+	data.Set("last_name", strings.ReplaceAll(req.UserId, " ", ""))
+	data.Set("address1", strings.ReplaceAll(req.Address, " ", "")) //请商户传
+	data.Set("city", req.City)                                     //请商户传
+	data.Set("zip_code", req.ZipCode)                              //请商户传
+	data.Set("country", req.Country)                               //请商户传(EX:IN)
+	data.Set("phone", req.Phone)                                   //请商户传
+	data.Set("email", req.Email)                                   //请商户传
 	data.Set("merchant_order", req.OrderNo)
 	data.Set("merchant_product_desc", "deposit")
 	data.Set("return_url", notifyUrl)
 	keys := []string{"merchant_account", "amount", "currency", "first_name", "last_name", "address1", "city", "zip_code", "country", "phone", "email", "merchant_order", "merchant_product_desc", "return_url"}
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, keys, control)
+	sign := payutils.SortAndSignFromUrlValues(l.ctx, data, keys, control)
 	data.Set("control", sign)
 	data.Set("apiversion", "3")
 	data.Set("version", "11")

@@ -52,7 +52,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 
 	keys := []string{}
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, keys, channel.MerKey)
+	sign := payutils.SortAndSignFromUrlValues(l.ctx, data, keys, channel.MerKey)
 	data.Set("sign", sign)
 
 	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%+v", channel.ProxyPayQueryUrl, data)

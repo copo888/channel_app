@@ -71,7 +71,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	keys := []string{}
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, keys, channel.MerKey)
+	sign := payutils.SortAndSignFromUrlValues(l.ctx, data, keys, channel.MerKey)
 	data.Set("sign", sign)
 
 	// 加簽 JSON
