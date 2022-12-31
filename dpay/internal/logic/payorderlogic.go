@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
@@ -170,37 +171,49 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		} `json:"order_info, optional"`
 	}{}
 
+	channelResp3 := struct {
+		ExtraData struct {
+			CardInfo struct {
+				BankName string `json:"bank_name"`
+				BankBranch string `json:"bank_branch"`
+				CardNumber string `json:"card_number"`
+				CardName string `json:"card_name"`
+			} `json:"card_info, optional"`
+		} `json:"extra_data, optional"`
+	}{}
+
 	// 返回body 轉 struct
 	if err = res.DecodeJSON(&channelResp2); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
+	// 返回body 轉 struct
+	if err = res.DecodeJSON(&channelResp3); err != nil {
+		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+	}
+
 	// 若需回傳JSON 請自行更改
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
-	//	if err2 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	//	}
-	//	// 返回json
-	//	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-	//		CardName:   channelResp.PayInfo.Name,
-	//		CardNumber: channelResp.PayInfo.Card,
-	//		BankName:   channelResp.PayInfo.Bank,
-	//		BankBranch: channelResp.PayInfo.Subbranch,
-	//		Amount:     amount,
-	//		Link:       "",
-	//		Remark:     "",
-	//	})
-	//	if err3 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	//	}
-	//	return &types.PayOrderResponse{
-	//		PayPageType:    "json",
-	//		PayPageInfo:    string(receiverInfoJson),
-	//		ChannelOrderNo: "",
-	//		IsCheckOutMer:  false, // 自組收銀台回傳 true
-	//	}, nil
-	//}
+	if strings.EqualFold(req.JumpType, "json") {
+		// 返回json
+		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+			CardName:   channelResp3.ExtraData.CardInfo.CardName,
+			CardNumber: channelResp3.ExtraData.CardInfo.CardNumber,
+			BankName:   channelResp3.ExtraData.CardInfo.BankName,
+			BankBranch: channelResp3.ExtraData.CardInfo.BankBranch,
+			Amount:     channelResp2.OrderInfo.OrderAmount,
+			Link:       "",
+			Remark:     "",
+		})
+		if err3 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		}
+		return &types.PayOrderResponse{
+			PayPageType:    "json",
+			PayPageInfo:    string(receiverInfoJson),
+			ChannelOrderNo: "",
+			IsCheckOutMer:  false, // 自組收銀台回傳 true
+		}, nil
+	}
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
