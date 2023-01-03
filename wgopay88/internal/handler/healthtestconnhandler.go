@@ -20,7 +20,7 @@ func HealthTestConnHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {
-			responsex.Json(w, r, responsex.SUCCESS, resp, err)
+			w.Write([]byte(resp))
 		}
 	}
 }
