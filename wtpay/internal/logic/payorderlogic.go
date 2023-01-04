@@ -149,13 +149,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 若需回傳JSON 請自行更改
 	if strings.EqualFold(req.JumpType, "json") {
+
+		amountDollar := utils.FloatDivF(channelResp.Data.PaymentInfo.Amount, 100) // 單位:分
 		// 返回json
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
 			CardName:   channelResp.Data.PaymentInfo.Receiver.CardName,
 			CardNumber: channelResp.Data.PaymentInfo.Receiver.CardNumber,
 			BankName:   channelResp.Data.PaymentInfo.Receiver.BankName,
 			BankBranch: channelResp.Data.PaymentInfo.Receiver.BankBranch,
-			Amount:     channelResp.Data.PaymentInfo.Amount,
+			Amount:     amountDollar,
 			Link:       channelResp.Data.Link,
 			Remark:     "",
 		})

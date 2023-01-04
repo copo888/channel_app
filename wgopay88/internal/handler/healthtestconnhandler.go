@@ -16,11 +16,11 @@ func HealthTestConnHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		defer span.End()
 
 		l := logic.NewHealthTestConnLogic(r.Context(), ctx)
-		resp, err := l.HealthTestConn()
+		resp, err := l.HealthTestConn() //
 		if err != nil {
 			responsex.Json(w, r, err.Error(), nil, err)
 		} else {
-			responsex.Json(w, r, responsex.SUCCESS, resp, err)
+			w.Write([]byte(resp))
 		}
 	}
 }

@@ -2333,3 +2333,45 @@ steps:
 trigger:
   branch:
     - lanyunpay
+
+---
+kind: pipeline
+name: limafupay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-limafupay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout limafupay
+        - git checkout -- .
+        - git pull origin limafupay
+        - go mod tidy
+        - docker-compose -f limafupay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=limafupay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/limafupay limafupay/pay.go
+        - docker build -t limafupay -f limafupay/Dockerfile .
+        - docker-compose -f limafupay/docker-compose.yml up -d
+    when:
+      branch:
+        - limafupay
+      event:
+        - push
+trigger:
+  branch:
+    - limafupay
