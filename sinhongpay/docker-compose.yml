@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: sinhongpay
+    image: sinhongpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/sinhongpay:/app/logs
