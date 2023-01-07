@@ -63,10 +63,16 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
-
 	// 檢查驗簽
-	source := fmt.Sprintf("amount=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
-		req.Amount, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	source := ""
+	if len(req.Errors) > 0 {
+		source = fmt.Sprintf("amount=%s&errors=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+			req.Amount, req.Errors, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	} else {
+		source = fmt.Sprintf("amount=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+			req.Amount, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	}
+
 	sign := payutils.GetSign(source)
 	logx.Info("verifySource: ", source)
 	logx.Info("verifySign: ", sign)
@@ -91,7 +97,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		ChannelOrderNo:      req.TradeNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   "",
+		ChannelResultNote:   req.Errors,
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",

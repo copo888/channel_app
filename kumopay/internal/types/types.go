@@ -112,6 +112,7 @@ type ProxyPayCallBackRequest struct {
 	OutTradeNo  string `json:"out_trade_no, optional"`
 	State       string `json:"state, optional"`
 	Sign        string `json:"sign, optional"`
+	Errors      string `json:"errors, optional"`
 	CallbackUrl string `json:"callback_url, optional"`
 }
 
