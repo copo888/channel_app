@@ -12,7 +12,6 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
-	"io"
 	"net/http"
 )
 
@@ -24,14 +23,12 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.ProxyPayCallBackRequest
 
-		if body, err := io.ReadAll(r.Body); err == nil {
-			logx.WithContext(r.Context()).Infof("Enter ProxyPayCallBack Request body: %s", string(body))
-		}
-
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
+
+		logx.WithContext(r.Context()).Infof("%+v", req)
 
 		if err := vaildx.Validator.Struct(req); err != nil {
 			responsex.Json(w, r, responsex.INVALID_PARAMETER, nil, err)
