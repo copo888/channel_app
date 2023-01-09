@@ -65,7 +65,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
@@ -97,7 +97,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/pay-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationPaykey", payKey).JSON(payCallBackBO)
-	logx.Info("回调后资讯: ", res)
+	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
 	if errx != nil {
 		return "err", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	} else if res.Status() != 200 {

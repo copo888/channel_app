@@ -1,6 +1,7 @@
 package payutils
 
 import (
+	"context"
 	"crypto/md5"
 	"crypto/sha256"
 	"fmt"
@@ -62,14 +63,14 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 }
 
 // VerifySign 验签
-func VerifySign(reqSign string, data interface{}, screctKey string) bool {
+func VerifySign(reqSign string, data interface{}, screctKey string, ctx context.Context) bool {
 	m := CovertToMap(data)
 	source := JoinStringsInASCII(m, "&", false, false, screctKey)
 	sign := GetSign(source)
 	fmt.Sprintf("-------" + source)
-	logx.Info("verifySource: ", source)
-	logx.Info("verifySign: ", sign)
-	logx.Info("reqSign: ", reqSign)
+	logx.WithContext(ctx).Info("verifySource: ", source)
+	logx.WithContext(ctx).Info("verifySign: ", sign)
+	logx.WithContext(ctx).Info("reqSign: ", reqSign)
 
 	if reqSign == sign {
 		return true
@@ -79,9 +80,9 @@ func VerifySign(reqSign string, data interface{}, screctKey string) bool {
 }
 
 // SortAndSignFromUrlValues map 排序后加签
-func SortAndSignFromUrlValues(values url.Values, screctKey string) string {
+func SortAndSignFromUrlValues(values url.Values, screctKey string, ctx context.Context) string {
 	m := CovertUrlValuesToMap(values)
-	return SortAndSignFromMap(m, screctKey)
+	return SortAndSignFromMap(m, screctKey, ctx)
 }
 
 func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string {
@@ -90,21 +91,21 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 }
 
 // SortAndSignFromObj 物件 排序后加签
-func SortAndSignFromObj(data interface{}, screctKey string) string {
+func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
 	m := CovertToMap(data)
 	newSource := JoinStringsInASCII(m, "&", false, false, screctKey)
 	newSign := GetSign(newSource)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 
 // SortAndSignFromMap MAP 排序后加签
-func SortAndSignFromMap(newData map[string]string, screctKey string) string {
+func SortAndSignFromMap(newData map[string]string, screctKey string, ctx context.Context) string {
 	newSource := JoinStringsInASCII(newData, "&", false, false, screctKey)
 	newSign := GetSign(newSource)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 

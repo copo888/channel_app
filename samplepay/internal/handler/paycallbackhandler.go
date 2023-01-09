@@ -12,6 +12,7 @@ import (
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"io"
 	"net/http"
 )
 
@@ -22,6 +23,10 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		defer span.End()
 
 		var req types.PayCallBackRequest
+
+		if body, err := io.ReadAll(r.Body); err == nil {
+			logx.WithContext(r.Context()).Infof("Enter PayCallBack Request body: %s", string(body))
+		}
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)

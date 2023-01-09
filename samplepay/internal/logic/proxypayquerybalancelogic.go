@@ -54,7 +54,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	//}
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
 
 	// 請求渠道

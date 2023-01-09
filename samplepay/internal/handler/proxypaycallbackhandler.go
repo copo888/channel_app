@@ -8,9 +8,11 @@ import (
 	"github.com/copo888/channel_app/samplepay/internal/svc"
 	"github.com/copo888/channel_app/samplepay/internal/types"
 	"github.com/thinkeridea/go-extend/exnet"
+	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"io"
 	"net/http"
 )
 
@@ -21,6 +23,10 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		defer span.End()
 
 		var req types.ProxyPayCallBackRequest
+
+		if body, err := io.ReadAll(r.Body); err == nil {
+			logx.WithContext(r.Context()).Infof("Enter ProxyPayCallBack Request body: %s", string(body))
+		}
 
 		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)

@@ -64,7 +64,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
@@ -101,7 +101,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
 	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
-	logx.Info("回调后资讯: ", res)
+	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
