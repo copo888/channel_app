@@ -46,7 +46,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 
 	data := url.Values{}
-	data.Set("userid", channel.MerId)
+	data.Set("userid", "2")
 	data.Set("username", channel.MerId)
 	data.Set("orderno", req.OrderNo)
 

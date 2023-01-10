@@ -44,7 +44,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	}
 
 	data := url.Values{}
-	data.Set("userid", channel.MerId)
+	data.Set("userid", "2")
 	data.Set("username", channel.MerId)
 
 	// 加簽

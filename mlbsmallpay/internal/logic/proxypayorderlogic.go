@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
@@ -111,7 +110,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Status json.Number `json:"Status"`
+		Status string `json:"Status"`
+		Msg    string `json:"msg"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -129,12 +129,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if strings.Index(channelResp.Status.String(), "余额不足") > -1 {
-		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Status.String())
-		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Status.String())
-	} else if channelResp.Status.String() != "1" {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Status)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Status.String())
+	if strings.Index(channelResp.Status, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Status, channelResp.Msg)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Msg)
+	} else if channelResp.Status != "1" {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Status, channelResp.Msg)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
 	//組返回給backOffice 的代付返回物件
