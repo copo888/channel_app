@@ -146,7 +146,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		if channelResp.Errors != nil {
 			message += fmt.Sprintf(": %s", channelResp.Errors)
 		}
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, message)
 	}
 
 	//組返回給backOffice 的代付返回物件
