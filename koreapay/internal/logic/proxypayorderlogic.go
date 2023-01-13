@@ -85,7 +85,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	paramsJson, _ := json.Marshal(content)
 	paramsJsonStr := string(paramsJson)
 	// 加簽
-	aesData := payutils.AESEncrypt(strings.ReplaceAll(paramsJsonStr, " ", ""), []byte(channel.MerKey))
+	aesData := payutils.AESEncrypt(strings.ReplaceAll(paramsJsonStr, " ", ""), []byte(channel.MerKey), l.svcCtx.Config.Channel.Pass1, l.svcCtx.Config.Channel.Pass2)
 	encryptedString := base64.StdEncoding.EncodeToString(aesData)
 
 	// 組請求參數 FOR JSON

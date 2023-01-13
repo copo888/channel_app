@@ -51,3 +51,7 @@ Merchant:
   Port: ${MERCHANT_SERVICE_PORT}
 
 Timeout: 25000
+
+Channel:
+  Pass1: ${PASS1}
+  Pass2: ${PASS2}

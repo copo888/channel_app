@@ -12,9 +12,9 @@ import (
 	"strings"
 )
 
-var (
-	initialVector = "865b808b" + "94e792d2" // MerchantPass1 + MerchantPass2
-)
+//var (
+//	initialVector = "865b808b" + "94e792d2" // MerchantPass1 + MerchantPass2
+//)
 
 func AesDecrypt(crypted, key []byte) []byte {
 	block, err := aes.NewCipher(key)
@@ -47,7 +47,7 @@ func AesDecrypt(crypted, key []byte) []byte {
 //	return crypted, base64.StdEncoding.EncodeToString(crypted)
 //}
 
-func AESEncrypt(src string, key []byte) []byte {
+func AESEncrypt(src string, key []byte, pass1 string, pass2 string) []byte {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		fmt.Println("key error1", err)
@@ -55,6 +55,7 @@ func AESEncrypt(src string, key []byte) []byte {
 	if src == "" {
 		fmt.Println("plain content empty")
 	}
+	initialVector := pass1 + pass2
 	ecb := cipher.NewCBCEncrypter(block, []byte(initialVector))
 	content := []byte(src)
 	content = PKCS5Padding(content, block.BlockSize())
@@ -64,7 +65,7 @@ func AESEncrypt(src string, key []byte) []byte {
 	return crypted
 }
 
-func AESDecrypt(crypt []byte, key []byte) []byte {
+func AESDecrypt(crypt []byte, key []byte, pass1 string, pass2 string) []byte {
 	block, err := aes.NewCipher(key)
 	if err != nil {
 		fmt.Println("key error1", err)
@@ -72,6 +73,7 @@ func AESDecrypt(crypt []byte, key []byte) []byte {
 	if len(crypt) == 0 {
 		fmt.Println("plain content empty")
 	}
+	initialVector := pass1 + pass2
 	ecb := cipher.NewCBCDecrypter(block, []byte(initialVector))
 	decrypted := make([]byte, len(crypt))
 	ecb.CryptBlocks(decrypted, crypt)

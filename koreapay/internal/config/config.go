@@ -38,4 +38,9 @@ type Config struct {
 		Host string
 		Port int
 	}
+
+	Channel struct {
+		Pass1 string
+		Pass2 string
+	}
 }
