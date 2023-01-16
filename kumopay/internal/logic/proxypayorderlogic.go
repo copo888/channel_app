@@ -14,6 +14,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 
 	"github.com/copo888/channel_app/kumopay/internal/svc"
 	"github.com/copo888/channel_app/kumopay/internal/types"
@@ -57,7 +58,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
-
+	req.ReceiptAccountName = strings.TrimSpace(req.ReceiptAccountName)
 	data := struct {
 		OutTradeNo string `json:"out_trade_no"`
 		BankId string `json:"bank_id"`
