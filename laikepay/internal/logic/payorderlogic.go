@@ -54,7 +54,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	timestamp := utils.GetDateTimeSring(utils.YYYYMMddHHmmss)
 	randomID := utils.GetRandomString(5, utils.ALL, utils.MIX)
 
-	// 組請求參數
+	// 組請求參數1
 	data := url.Values{}
 	data.Set("p1_merchantno", channel.MerId)
 	data.Set("p2_amount", req.TransactionAmount) //小数点后保留两位。
