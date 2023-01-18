@@ -59,8 +59,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//notifyUrl := "http://83d6-211-75-36-190.ngrok.io/api/pay-call-back"
 	//amount, err := strconv.ParseFloat(req.TransactionAmount, 64)
 	amounFloat := utils.FloatMul(req.TransactionAmount, "100")
-
-	ip := utils.GetRandomIp()
+	var ip string
+	if len(req.SourceIp) > 0 {
+		ip = req.SourceIp
+	} else {
+		ip = utils.GetRandomIp()
+	}
 	var control string
 	// 組請求參數
 	data := url.Values{}
