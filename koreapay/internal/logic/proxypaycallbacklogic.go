@@ -56,7 +56,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	encryptedMsg, _ := base64.StdEncoding.DecodeString(req.Message)
-	decryptedText := payutils.AESDecrypt(encryptedMsg, []byte(channel.MerKey))
+	decryptedText := payutils.AESDecrypt(encryptedMsg, []byte(channel.MerKey), l.svcCtx.Config.Channel.Pass1, l.svcCtx.Config.Channel.Pass2)
 	var MessageData ProxyMessage
 	if err1 := json.Unmarshal(decryptedText, &MessageData); err1 != nil {
 		return "", errorx.New(responsex.PARAMETER_TYPE_ERROE, err.Error())

@@ -14,6 +14,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 
 	"github.com/copo888/channel_app/kumopay/internal/svc"
 	"github.com/copo888/channel_app/kumopay/internal/types"
@@ -57,7 +58,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
-
+	req.ReceiptAccountName = strings.TrimSpace(req.ReceiptAccountName)
 	data := struct {
 		OutTradeNo string `json:"out_trade_no"`
 		BankId string `json:"bank_id"`
@@ -112,6 +113,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	channelResp := struct {
 		Success bool `json:"success"`
 		Message string `json:"message"`
+		Errors interface{} `json:"errors"`
 		Data    struct {
 			TradeNo    string `json:"trade_no"`
 			OutTradeNo string `json:"out_trade_no"`
@@ -141,7 +143,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	if channelResp.Success != true {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Message)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
+		message := channelResp.Message
+		if channelResp.Errors != nil {
+			message += fmt.Sprintf(": %s", channelResp.Errors)
+		}
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, message)
 	}
 
 	//組返回給backOffice 的代付返回物件

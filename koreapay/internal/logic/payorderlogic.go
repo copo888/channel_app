@@ -95,7 +95,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	paramsJson, err := json.Marshal(content)
 	paramsJsonStr := string(paramsJson)
 	// 加簽
-	aesData := payutils.AESEncrypt(strings.ReplaceAll(paramsJsonStr, " ", ""), []byte(channel.MerKey))
+	aesData := payutils.AESEncrypt(strings.ReplaceAll(paramsJsonStr, " ", ""), []byte(channel.MerKey), l.svcCtx.Config.Channel.Pass1, l.svcCtx.Config.Channel.Pass2)
 	encryptedString := base64.StdEncoding.EncodeToString(aesData)
 	data.Message = encryptedString
 	logx.Infof("paramsJsonStr: %s , data.Message(Encrypted): %s", paramsJsonStr, data.Message)

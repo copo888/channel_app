@@ -40,18 +40,9 @@ ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd
   ProxyKey: zrdfSeWd
-  LineKey: GHddFKsa
-
-LineSend:
-  Host: ${LINE_HOST}
-  Port: ${LINE_PORT}
 
 Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
   Port: ${MERCHANT_SERVICE_PORT}
 
 Timeout: 25000
-
-Channel:
-  Pass1: ${PASS1}
-  Pass2: ${PASS2}
