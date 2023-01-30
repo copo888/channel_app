@@ -14,7 +14,6 @@ import (
 	"github.com/copo888/channel_app/mlbsmallpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/mlbsmallpay/internal/svc"
@@ -43,7 +42,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		OrderNo:   req.Order, //輸入COPO訂單號
+		OrderNo:   req.OrderNo, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
 		Content:   fmt.Sprintf("%+v", req)}); err != nil {
@@ -62,35 +61,26 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
 	}
 
-	// 加簽
-	newSource1 := req.Order + req.M + channel.MerId
-	newSource2 := payutils.GetSign(newSource1) + channel.MerKey
-	newSign := payutils.GetSign(newSource2)
-	logx.WithContext(l.ctx).Info("verifySource1: ", newSource1)
-	logx.WithContext(l.ctx).Info("verifySource1: ", newSource2)
-	logx.WithContext(l.ctx).Info("verifySign: ", newSign)
-	logx.WithContext(l.ctx).Info("reqSign: ", req.Md5key)
-
 	// 檢查驗簽
-	if req.Md5key != newSign {
+	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.M, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
+	//var orderAmount float64
+	//if orderAmount, err = strconv.ParseFloat(req.Paid, 64); err != nil {
+	//	return "fail", errorx.New(responsex.INVALID_AMOUNT)
+	//}
 
 	orderStatus := "1"
-	if req.Status == "3" {
+	if req.Status == "PAID" || req.Status == "MANUAL PAID" {
 		orderStatus = "20"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.Order,
-		ChannelOrderNo: "CHN_" + req.Order, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		PayOrderNo:     req.OrderNo,
+		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		OrderAmount:    req.Paid,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

@@ -38,4 +38,5 @@ type Config struct {
 		Host  string
 		Port  int
 	}
+	AppSecret string
 }

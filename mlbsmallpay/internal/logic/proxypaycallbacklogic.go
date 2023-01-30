@@ -13,7 +13,6 @@ import (
 	"github.com/copo888/channel_app/mlbsmallpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/mlbsmallpay/internal/svc"
@@ -44,7 +43,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.Orderid, //輸入COPO訂單號
+		OrderNo:   req.OrderNo, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req)}); err != nil {
@@ -57,36 +56,30 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if err != nil {
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
-	// 加簽
-	newSource1 := req.Orderid + req.Amount + channel.MerId
-	newSource2 := payutils.GetSign(newSource1) + channel.MerKey
-	newSign := payutils.GetSign(newSource2)
-	logx.WithContext(l.ctx).Info("verifySource1: ", newSource1)
-	logx.WithContext(l.ctx).Info("verifySource1: ", newSource2)
-	logx.WithContext(l.ctx).Info("verifySign: ", newSign)
-	logx.WithContext(l.ctx).Info("reqSign: ", req.Sign)
 
 	// 檢查驗簽
-	if req.Sign != newSign {
+	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
-	var status = "2" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "success" {
+	//var orderAmount float64
+	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
+	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Status == "PAID" {
 		status = "1"
+	} else if req.Status == "CANCELLED" {
+		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     "CHN_" + req.Orderid,
+		ProxyPayOrderNo:     req.TradeNo,
 		ChannelOrderNo:      "",
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   req.Status,
-		Amount:              orderAmount,
+		Amount:              req.Amount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}

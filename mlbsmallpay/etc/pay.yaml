@@ -51,3 +51,5 @@ Merchant:
   Port: ${MERCHANT_SERVICE_PORT}
 
 Timeout: 25000
+
+AppSecret: eCXrD5SAvUuzfqglthNtqw

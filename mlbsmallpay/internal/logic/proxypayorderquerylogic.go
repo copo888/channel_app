@@ -10,7 +10,6 @@ import (
 	"github.com/copo888/channel_app/mlbsmallpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"time"
 
 	"github.com/copo888/channel_app/mlbsmallpay/internal/svc"
@@ -44,23 +43,29 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	if err1 != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
+	unix := time.Now().Unix()
 
-	data := url.Values{}
-	data.Set("userid", "2")
-	data.Set("username", channel.MerId)
-	data.Set("orderno", req.OrderNo)
+	data := struct {
+		MerchantNo string `json:"merchantNo"`
+		OrderNo    string `json:"orderNo"`
+		TradeNo    string `json:"tradeNo"`
+		Time       int64  `json:"time"`
+		AppSecret  string `json:"appSecret"`
+		Sign       string `json:"sign"`
+	}{
+		MerchantNo: channel.MerId,
+		OrderNo:    req.OrderNo,
+		Time:       unix,
+		AppSecret:  l.svcCtx.Config.AppSecret,
+	}
 
-	// 加簽
-	newSource := channel.MerId
-	newSign := payutils.GetSign(newSource)
-	data.Set("sign", newSign)
-	logx.WithContext(l.ctx).Info("加签参数: ", newSource)
-	logx.WithContext(l.ctx).Info("签名字串: ", newSign)
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
+	data.Sign = sign
 
 	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%+v", channel.ProxyPayQueryUrl, data)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -72,9 +77,12 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Amount  json.Number `json:"amount"`
-		Orderno string      `json:"orderno"`
-		Status  json.Number `json:"status"`
+		Code    int64       `json:"code"`
+		Text    string      `json:"text"`
+		Status  string      `json:"status"`
+		Paid    json.Number `json:"paid"`
+		TradeNo string      `json:"tradeNo"`
+		OrderNo string      `json:"orderNo"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
@@ -82,9 +90,9 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Status.String() == "1" {
+	if channelQueryResp.Status == "PAID" {
 		orderStatus = "20"
-	} else if channelQueryResp.Status.String() == "2" {
+	} else if channelQueryResp.Status == "CANCELLED" {
 		orderStatus = "30"
 	}
 

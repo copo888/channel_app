@@ -59,13 +59,13 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	} else {
 		sort.Strings(list)
 	}
-	return strings.Join(list, sep) + "&" + key
+	return strings.Join(list, sep) + key
 }
 
 // VerifySign 验签
 func VerifySign(reqSign string, data interface{}, screctKey string, ctx context.Context) bool {
 	m := CovertToMap(data)
-	source := JoinStringsInASCII(m, "&", false, false, screctKey)
+	source := JoinStringsInASCII(m, "&", false, true, screctKey)
 	sign := GetSign(source)
 	fmt.Sprintf("-------" + source)
 	logx.WithContext(ctx).Info("verifySource: ", source)
@@ -85,16 +85,16 @@ func SortAndSignFromUrlValues(values url.Values, screctKey string, ctx context.C
 	return SortAndSignFromMap(m, screctKey, ctx)
 }
 
-func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string {
+func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string, ctx context.Context) string {
 	m := CovertUrlValuesToMap(values)
-	return SortAndSignSHA256FromMap(m, screctKey)
+	return SortAndSignSHA256FromMap(m, screctKey, ctx)
 }
 
 // SortAndSignFromObj 物件 排序后加签
 func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
 	m := CovertToMap(data)
-	newSource := JoinStringsInASCII(m, "&", false, false, screctKey)
-	newSign := GetSign(newSource)
+	newSource := JoinStringsInASCII(m, "&", false, true, screctKey)
+	newSign := GetSign_SHA256(newSource, ctx)
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
 	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
@@ -102,25 +102,25 @@ func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context)
 
 // SortAndSignFromMap MAP 排序后加签
 func SortAndSignFromMap(newData map[string]string, screctKey string, ctx context.Context) string {
-	newSource := JoinStringsInASCII(newData, "&", false, false, screctKey)
+	newSource := JoinStringsInASCII(newData, "&", false, true, screctKey)
 	newSign := GetSign(newSource)
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
 	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 
-func SortAndSignSHA256FromMap(newData map[string]string, screctKey string) string {
+func SortAndSignSHA256FromMap(newData map[string]string, screctKey string, ctx context.Context) string {
 	newSource := JoinStringsInASCII(newData, "&", false, true, screctKey)
-	newSign := GetSign_SHA256(newSource)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
+	newSign := GetSign_SHA256(newSource, ctx)
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 
-func GetSign_SHA256(source string) string {
+func GetSign_SHA256(source string, ctx context.Context) string {
 	data := []byte(source)
 	source2 := fmt.Sprintf("%x", sha256.Sum256(data))
-	logx.Infof("sha256 %s", source2)
+	logx.WithContext(ctx).Infof("sha256 %s", source2)
 	result := fmt.Sprintf("%x", md5.Sum([]byte(source2)))
 	return strings.ToUpper(result)
 }
@@ -143,7 +143,11 @@ func CovertToMap(req interface{}) map[string]string {
 		jsonTag := val.Type().Field(i).Tag.Get("json") // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
-		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
+		if name != "sign" && name != "myIp" && name != "ip" &&
+			name != "bankBranch" && name != "memo" &&
+			name != "userName" && name != "channelNo" && name != "payeeName" &&
+			name != "returnUrl" && name != "appSecret" { // 過濾不需加簽參數
+
 			if val.Field(i).Type().Name() == "float64" {
 				precise := GetDecimalPlaces(val.Field(i).Float())
 				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)

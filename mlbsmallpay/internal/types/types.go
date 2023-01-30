@@ -113,22 +113,37 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip      string `form:"ip, optional"`
-	Shid    string `form:"shid, optional"`
-	Orderid string `form:"orderid, optional"`
-	Amount  string `form:"amount, optional"`
-	Money   string `form:"money, optional"`
-	Sxf     string `form:"sxf, optional"`
-	Status  string `form:"status, optional"`
-	Sign    string `form:"sign, optional"`
+	Ip          string `json:"ip, optional"`
+	Status      string `json:"status, optional"`
+	TradeNo     string `json:"tradeNo, optional"`
+	OrderNo     string `json:"orderNo, optional"`
+	Amount      float64 `json:"amount, optional"`
+	Name        string `json:"name, optional"`
+	BankName    string `json:"bankName, optional"`
+	BankAccount string `json:"bankAccount, optional"`
+	BankBranch  string `json:"bankBranch, optional"`
+	Memo        string `json:"memo, optional"`
+	Mobile      string `json:"mobile, optional"`
+	Fee         float64 `json:"fee, optional"`
+	Extra       string `json:"extra, optional"`
+	Sign        string `json:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp   string `json:"myIp, optional"`
-	Order  string `json:"order, optional"`
-	M      string `json:"m, optional"`
-	Status string `json:"status, optional"`
-	Md5key string `json:"md5key, optional"`
+	MyIp              string  `json:"myIp, optional"`
+	Status            string  `json:"status, optional"`
+	TradeNo           string  `json:"tradeNo, optional"`
+	OrderNo           string  `json:"orderNo, optional"`
+	UserNo            string  `json:"userNo, optional"`
+	UserName          string  `json:"userName, optional"`
+	ChannelNo         string  `json:"channelNo, optional"`
+	Amount            float64 `json:"amount, optional"`
+	AmountBeforeFixed float64 `json:"amountBeforeFixed, optional"`
+	Discount          float64 `json:"discount, optional"`
+	Lucky             float64 `json:"lucky, optional"`
+	Paid              float64 `json:"paid, optional"`
+	Extra             string  `json:"extra, optional"`
+	Sign              string  `json:"sign, optional"`
 }
 
 type ReceiverInfoVO struct {

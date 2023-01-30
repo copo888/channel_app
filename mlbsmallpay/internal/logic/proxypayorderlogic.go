@@ -13,9 +13,9 @@ import (
 	"github.com/copo888/channel_app/mlbsmallpay/internal/service"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/copo888/channel_app/mlbsmallpay/internal/svc"
 	"github.com/copo888/channel_app/mlbsmallpay/internal/types"
@@ -59,26 +59,43 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
+	datetime := time.Now().Format("2006-01-02 15:04:05")
+	unix := time.Now().Unix()
 
-	data := url.Values{}
-	data.Set("shid", channel.MerId)
-	data.Set("orderid", req.OrderNo)
-	data.Set("pay", "yl")
-	data.Set("amount", transactionAmount)
-	data.Set("bankname", req.ReceiptCardBankName)
-	data.Set("bankcard", req.ReceiptAccountNumber)
-	data.Set("accountname", req.ReceiptAccountName)
-	data.Set("subbranch", req.ReceiptCardBranch)
-	data.Set("notifyurl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
+	data := struct {
+		MerchantNo  string `json:"merchantNo"`
+		OrderNo     string `json:"orderNo"`
+		Amount      string `json:"amount"`
+		Name        string `json:"name"`
+		BankName    string `json:"bankName"`
+		BankAccount string `json:"bankAccount"`
+		BankBranch  string `json:"bankBranch"`
+		Memo        string `json:"memo"`
+		Mobile      string `json:"mobile"`
+		Datetime    string `json:"datetime"`
+		NotifyUrl   string `json:"notifyUrl"`
+		ReverseUrl  string `json:"reverseUrl"`
+		Extra       string `json:"extra"`
+		Time        int64  `json:"time"`
+		AppSecret   string `json:"appSecret"`
+		Sign        string `json:"sign"`
+	}{
+		MerchantNo:  channel.MerId,
+		OrderNo:     req.OrderNo,
+		Amount:      transactionAmount,
+		Name:        req.ReceiptAccountName,
+		BankName:    req.ReceiptCardBankName,
+		BankAccount: req.ReceiptAccountNumber,
+		BankBranch:  req.ReceiptCardBranch,
+		Datetime:    datetime,
+		NotifyUrl:   l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		ReverseUrl:  l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		Time:        unix,
+		AppSecret:   l.svcCtx.Config.AppSecret,
+	}
 
-	// 加簽
-	newSource1 := req.OrderNo + transactionAmount + channel.MerId
-	newSource2 := payutils.GetSign(newSource1) + channel.MerKey
-	newSign := payutils.GetSign(newSource2)
-	data.Set("sign", newSign)
-	logx.WithContext(l.ctx).Info("加签参数1: ", newSource1)
-	logx.WithContext(l.ctx).Info("加签参数2: ", newSource2)
-	logx.WithContext(l.ctx).Info("签名字串: ", newSign)
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
+	data.Sign = sign
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -94,7 +111,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -110,8 +127,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Status string `json:"Status"`
-		Msg    string `json:"msg"`
+		Code    int64  `json:"Code"`
+		Text    string `json:"text"`
+		OrderNo string `json:"orderNo"`
+		TradeNo string `json:"tradeNo"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -129,17 +148,17 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if strings.Index(channelResp.Status, "余额不足") > -1 {
-		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Status, channelResp.Msg)
-		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Msg)
-	} else if channelResp.Status != "1" {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Status, channelResp.Msg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	if strings.Index(channelResp.Text, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Code, channelResp.Text)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Text)
+	} else if channelResp.Code != 0 {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Code, channelResp.Text)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Text)
 	}
 
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: "CHN_" + req.OrderNo,
+		ChannelOrderNo: channelResp.TradeNo,
 		OrderStatus:    "",
 	}
 
