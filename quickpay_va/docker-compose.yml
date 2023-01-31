@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: quickpay_va
+    image: quickpay_va
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/quickpay_va:/app/logs
