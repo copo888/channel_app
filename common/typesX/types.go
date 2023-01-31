@@ -142,6 +142,7 @@ type TransactionLogData struct {
 	Content         interface{} `json:"content"`
 	ErrCode         string      `json:"errCode"`
 	ErrMsg          string      `json:"errMsg"`
+	TraceId         string      `json:"traceId"`
 }
 
 type TxLog struct {
@@ -157,4 +158,5 @@ type TxLog struct {
 	CreatedAt       string `json:"createdAt, optional"`
 	ErrorCode       string `json:"errorCode, optional"`
 	ErrorMsg        string `json:"errorMsg, optional"`
+	TraceId         string `json:"traceId, optional"`
 }
