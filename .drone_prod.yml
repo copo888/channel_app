@@ -2341,13 +2341,13 @@ steps:
 
 ---
 kind: pipeline
-name: quickpay_VA
+name: quickpay_va
 
 clone:
   disable: true
 
 steps:
-  - name: docker-quickpay_VA
+  - name: docker-quickpay_va
     image: appleboy/drone-ssh
     settings:
       host:
@@ -2367,15 +2367,15 @@ steps:
         - git checkout -- .
         - git pull origin master
         - go mod tidy
-        - docker-compose -f quickpay_VA/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=quickpay_VA" --quiet)
+        - docker-compose -f quickpay_va/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=quickpay_va" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/quickpay_VA quickpay_VA/pay.go
-        - docker build -t quickpay_VA -f quickpay_VA/Dockerfile .
-        - docker-compose -f quickpay_VA/docker-compose.yml up -d
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/quickpay_va quickpay_va/pay.go
+        - docker build -t quickpay_va -f quickpay_va/Dockerfile .
+        - docker-compose -f quickpay_va/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/quickpay_VA_prod_*
+        - refs/tags/quickpay_va_prod_*
       event:
         - push
         - tag
