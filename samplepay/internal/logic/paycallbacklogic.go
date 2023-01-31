@@ -27,6 +27,7 @@ type PayCallBackLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+	traceID string
 }
 
 func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCallBackLogic {
@@ -34,6 +35,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -48,7 +50,9 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		OrderNo:   req.OrderId, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", req)}); err != nil {
+		Content:   fmt.Sprintf("%+v", req),
+		TraceId:   l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 

@@ -27,6 +27,7 @@ type ProxyPayOrderLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
+	traceID string
 }
 
 func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayOrderLogic {
@@ -34,6 +35,7 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -116,7 +118,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		OrderNo:   req.OrderNo,
 		LogType:   constants.DATA_REQUEST_CHANNEL,
 		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", data)}); err != nil {
+		Content:   fmt.Sprintf("%+v", data),
+		TraceId:   l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
@@ -155,7 +159,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		OrderNo:   req.OrderNo,
 		LogType:   constants.RESPONSE_FROM_CHANNEL,
 		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+		Content:   fmt.Sprintf("%+v", channelResp),
+		TraceId:   l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
