@@ -253,6 +253,7 @@ func CreateTransactionLog(db *gorm.DB, data *typesX.TransactionLogData) (err err
 		OrderNo:         data.OrderNo,
 		LogType:         data.LogType,
 		LogSource:       data.LogSource,
+		TraceId:         data.TraceId,
 		Content:         string(jsonContent),
 		CreatedAt:       time.Now().UTC().String(),
 	}
