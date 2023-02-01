@@ -97,20 +97,20 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Header("Authorization", "Bearer "+channel.MerKey).
 		Timeout(20).Trace(span).JSON(data)
 
-	if strings.Index(ChnErr.Error(), "connection reset by peer") > -1 {
+	if ChnErr != nil {
+		if strings.Index(ChnErr.Error(), "connection reset by peer") > -1 {
 
-		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
-		msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+			logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
+			msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
+			service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 
-		//組返回給backOffice 的代付返回物件
-		resp := &types.ProxyPayOrderResponse{
-			ChannelOrderNo: "",
-			OrderStatus:    "",
+			//組返回給backOffice 的代付返回物件
+			resp := &types.ProxyPayOrderResponse{
+				ChannelOrderNo: "",
+				OrderStatus:    "",
+			}
+			return resp, nil
 		}
-
-		return resp, nil
-	} else if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
