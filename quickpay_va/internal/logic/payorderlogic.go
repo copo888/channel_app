@@ -63,7 +63,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	//ip := utils.GetRandomIp()
-	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	timestamp := time.Now()
 	tf := timestamp.Format("2006-01-02 03:04:05PM")
 	tfs := timestamp.Format("20060102150405")
@@ -96,7 +96,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}{
 		RequestUrl: channel.PayUrl,
 		Merchant:   channel.MerId,
-		Customer:  randomID,
+		Customer:  req.OrderNo,
 		Description: req.OrderNo,
 		DateTime:      tf,
 		SuccessURI: req.PageUrl,
@@ -109,7 +109,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//}
 
 	// 加簽
-	source := channel.MerId+randomID+tfs+channel.MerKey
+	source := channel.MerId+req.OrderNo+tfs+channel.MerKey
 	sign := payutils.GetSign(source)
 	data.Key = sign
 	logx.WithContext(l.ctx).Info("加签参数: ", source)
