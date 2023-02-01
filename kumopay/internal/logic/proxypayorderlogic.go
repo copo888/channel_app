@@ -60,24 +60,24 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 	req.ReceiptAccountName = strings.TrimSpace(req.ReceiptAccountName)
 	data := struct {
-		OutTradeNo string `json:"out_trade_no"`
-		BankId string `json:"bank_id"`
-		BankOwner string `json:"bank_owner"`
+		OutTradeNo    string `json:"out_trade_no"`
+		BankId        string `json:"bank_id"`
+		BankOwner     string `json:"bank_owner"`
 		AccountNumber string `json:"account_number"`
-		Amount string `json:"amount"`
-		CallbackUrl string `json:"callback_url"`
-		Sign string `json:"sign"`
+		Amount        string `json:"amount"`
+		CallbackUrl   string `json:"callback_url"`
+		Sign          string `json:"sign"`
 	}{
-		OutTradeNo: req.OrderNo,
-		BankId: channelBankMap.MapCode,
-		BankOwner: req.ReceiptAccountName,
+		OutTradeNo:    req.OrderNo,
+		BankId:        channelBankMap.MapCode,
+		BankOwner:     req.ReceiptAccountName,
 		AccountNumber: req.ReceiptAccountNumber,
-		Amount: transactionAmount,
-		CallbackUrl: l.svcCtx.Config.Server+"/api/proxy-pay-call-back",
+		Amount:        transactionAmount,
+		CallbackUrl:   l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
 
 	// 加簽
-	sign := payutils.SortAndSignFromObj(data, channel.MerKey + channel.MerId)
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey+channel.MerId)
 	data.Sign = sign
 
 	//寫入交易日志
@@ -97,7 +97,20 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Header("Authorization", "Bearer "+channel.MerKey).
 		Timeout(20).Trace(span).JSON(data)
 
-	if ChnErr != nil {
+	if strings.Index(ChnErr.Error(), "connection reset by peer") > -1 {
+
+		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
+		msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
+		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+
+		//組返回給backOffice 的代付返回物件
+		resp := &types.ProxyPayOrderResponse{
+			ChannelOrderNo: "",
+			OrderStatus:    "",
+		}
+
+		return resp, nil
+	} else if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
@@ -111,18 +124,18 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool `json:"success"`
-		Message string `json:"message"`
-		Errors interface{} `json:"errors"`
+		Success bool        `json:"success"`
+		Message string      `json:"message"`
+		Errors  interface{} `json:"errors"`
 		Data    struct {
-			TradeNo    string `json:"trade_no"`
-			OutTradeNo string `json:"out_trade_no"`
-			Amount     float64 `json:"amount"`
-			BankId string `json:"bank_id"`
-			AccountNumber string `json:"account_number"`
-			BankOwner string `json:"bank_owner"`
-			CallbackUrl string `json:"callback_url"`
-			State string `json:"state"`
+			TradeNo       string  `json:"trade_no"`
+			OutTradeNo    string  `json:"out_trade_no"`
+			Amount        float64 `json:"amount"`
+			BankId        string  `json:"bank_id"`
+			AccountNumber string  `json:"account_number"`
+			BankOwner     string  `json:"bank_owner"`
+			CallbackUrl   string  `json:"callback_url"`
+			State         string  `json:"state"`
 		} `json:"data"`
 	}{}
 
