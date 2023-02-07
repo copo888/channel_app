@@ -87,7 +87,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("email", req.Email)                                   //请商户传
 	data.Set("merchant_order", req.OrderNo)
 	data.Set("merchant_product_desc", "deposit")
-	data.Set("return_url", notifyUrl)
+	data.Set("return_url", req.PageUrl)
 	keys := []string{"merchant_account", "amount", "currency", "first_name", "last_name", "address1", "city", "zip_code", "country", "phone", "email", "merchant_order", "merchant_product_desc", "return_url"}
 
 	// 加簽
