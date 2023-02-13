@@ -61,8 +61,6 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data.Set("signature", sign)
 
 	// 加簽 JSON
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
