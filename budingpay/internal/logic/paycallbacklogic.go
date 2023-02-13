@@ -89,8 +89,6 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
-	//测试
-	return "success", nil
 
 	/** 回調至 merchant service **/
 	span := trace.SpanFromContext(l.ctx)
