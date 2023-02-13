@@ -37,7 +37,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s,channelName: %s, PayCallBackRequest: %+v", req.OrderId, l.svcCtx.Config.ProjectName, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -95,7 +95,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/pay-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationPaykey", payKey).JSON(payCallBackBO)
-	logx.Info("回调后资讯: ", res)
+	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
 	if errx != nil {
 		return "err", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	} else if res.Status() != 200 {

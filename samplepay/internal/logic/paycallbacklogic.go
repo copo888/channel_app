@@ -25,23 +25,23 @@ import (
 
 type PayCallBackLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
 	traceID string
 }
 
 func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCallBackLogic {
 	return PayCallBackLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
 		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.MerchId, l.svcCtx.Config.ProjectName, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{

@@ -37,7 +37,7 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. orderNo:%s, channelName: %s, ProxyPayCallBackRequest: %+v", req.MerchantOrder, l.svcCtx.Config.ProjectName, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -99,7 +99,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
 	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
-	logx.Info("回调后资讯: ", res)
+	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
