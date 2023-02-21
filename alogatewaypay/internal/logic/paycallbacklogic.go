@@ -75,6 +75,8 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	orderStatus := "1" // Refunded / Successfully requested
 	if req.Status == "A0" {
 		orderStatus = "20"
+	} else if req.Status == "TR12" {
+		orderStatus = "30"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
