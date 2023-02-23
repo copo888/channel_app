@@ -96,7 +96,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankName string `json:"bankName"`
 		BankCode string `json:"bankCode"`
 		BankNo string `json:"bankNo"`
-		AccName string `json:"accName"`
+		AcctName string `json:"acctName"`
 		CertNo string `json:"certNo"`
 		Mobile string `json:"mobile"`
 		Title string `json:"title"`
@@ -113,7 +113,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankName: "bank",
 		BankCode: "CMB",
 		BankNo: req.ReceiptAccountNumber,
-		AccName: req.ReceiptAccountName,
+		AcctName: req.ReceiptAccountName,
 		CertNo: "23444444000099999900",
 		Mobile: req.ReceiptAccountNumber,
 		Title: "消费",
@@ -175,7 +175,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Code    int `json:"code"`
 		Msg     string `json:"msg, optional"`
 		Sign    string `json:"sign,optional"`
-		Context string `json:"context,optional"`
+		Context []byte `json:"context,optional"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -210,10 +210,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		OrderState string `json:"orderState, optional"`
 		Msg string `json:"msg, optional"`
 	}{}
-	ct := payutils.DecodingRSA([]byte(channelResp.Context), channel.MerKey)
 
-	json.Unmarshal([]byte(ct),respCon)
-	logx.WithContext(l.ctx).Errorf("代付提单渠道返回参数解密: %s", respCon)
+	json.Unmarshal(channelResp.Context,&respCon)
+	logx.WithContext(l.ctx).Errorf("代付提单渠道返回参数解密: %+v", respCon)
 
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{

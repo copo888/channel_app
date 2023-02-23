@@ -58,8 +58,8 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 組請求參數 FOR JSON
 	data := struct {
-		MerchNo  string
-		OrderNo  string
+		MerchNo  string `json:"merchNo"`
+		OrderNo  string `json:"orderNo"`
 	}{
 		MerchNo :  channel.MerId,
 		OrderNo :  req.OrderNo,

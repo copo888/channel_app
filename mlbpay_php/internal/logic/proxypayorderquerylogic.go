@@ -54,8 +54,8 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 
 	// 組請求參數 FOR JSON
 	data := struct {
-		MerchNo  string
-		OrderNo  string
+		MerchNo  string `json:"merchNo"`
+		OrderNo  string `json:"orderNo"`
 	}{
 		MerchNo :  channel.MerId,
 		OrderNo :  req.OrderNo,
@@ -96,20 +96,20 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Code    string `json:"code"`
+		Code    int `json:"code"`
 		Msg     string `json:"msg, optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.Code != "0" {
+	} else if channelQueryResp.Code != 0 {
 		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s: %s", channelQueryResp.Code, channelQueryResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Msg)
 	}
 
 	channelQueryResp2 := struct {
 		Sign    string `json:"sign,optional"`
-		Context string `json:"context,optional"`
+		Context []byte `json:"context,optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -126,11 +126,9 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		Amount string `json:"amount"`
 	}{}
 
-	ct := payutils.DecodingRSA([]byte(channelQueryResp2.Context), channel.MerKey)
+	json.Unmarshal(channelQueryResp2.Context,&respCon)
 
-	json.Unmarshal([]byte(ct),respCon)
-
-	logx.WithContext(l.ctx).Errorf("代付订单查询渠道返回参数解密: %s", respCon)
+	logx.WithContext(l.ctx).Errorf("代付订单查询渠道返回参数解密: %+v", respCon)
 
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"

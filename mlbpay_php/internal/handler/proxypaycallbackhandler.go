@@ -9,9 +9,9 @@ import (
 	"github.com/copo888/channel_app/mlbpay_php/internal/types"
 	"github.com/thinkeridea/go-extend/exnet"
 	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/rest/httpx"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
+	"io"
 	"net/http"
 )
 
@@ -23,10 +23,20 @@ func ProxyPayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.ProxyPayCallBackRequest
 
-		if err := httpx.ParseJsonBody(r, &req); err != nil {
+		bodyBytes, err := io.ReadAll(r.Body)
+
+		if err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}
+
+		logx.WithContext(r.Context()).Infof("ProxyPayOrder enter: %s", string(bodyBytes))
+
+		if err := json.Unmarshal(bodyBytes, &req); err != nil {
+			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
+			return
+		}
+
 
 		logx.WithContext(r.Context()).Infof("%+v", req)
 

@@ -113,17 +113,21 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip          string `form:"ip, optional"`
-	Sign        string `json:"sign"`
-	Context     string `json:"context"`
-	EncryptType string `json:"encryptType"`
+	Ip      string `form:"ip, optional"`
+	Sign    string `json:"sign, optional"`
+	Context []byte `json:"context, optional"`
+	Code    int    `json:"code"`
+	OrderNo string `json:"orderNo"`
+	MerchNo string `json:"merchNo"`
 }
 
 type PayCallBackRequest struct {
-	MyIp        string `json:"myIp, optional"`
-	Sign        string `json:"sign"`
-	Context     string `json:"context"`
-	EncryptType string `json:"encryptType"`
+	MyIp    string `json:"myIp, optional"`
+	Sign    string `json:"sign, optional"`
+	Context []byte `json:"context, optional"`
+	Code    int    `json:"code"`
+	OrderNo string `json:"orderNo"`
+	MerchNo string `json:"merchNo"`
 }
 
 type ReceiverInfoVO struct {

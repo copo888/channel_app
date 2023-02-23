@@ -16,6 +16,7 @@ import (
 	"github.com/copo888/channel_app/mlbpay_php/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -91,6 +92,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		NotifyUrl string `json:"notifyUrl"`
 		ReqTime   string `json:"reqTime"`
 		UserId    string `json:"userId"`
+		RealName  string `json:"realname"`
 	}{
 		MerchNo:   channel.MerId,
 		Amount:     req.TransactionAmount,
@@ -103,6 +105,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		ReturnUrl: notifyUrl,
 		NotifyUrl: notifyUrl,
 		UserId: randomID,
+		RealName: "unknown",
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
@@ -221,14 +224,45 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		MerchNo string `json:"merchNo"`
 		OrderNo string `json:"orderNo"`
 		OutChannel string `json:"outChannel"`
-		QrcodeUrl string `json:"qrcode_url"`
+		ExpiredTime string `json:"expiredTime"`
+		qrcodeUrl string `json:"qrcodeUrl, optional"`
+		wyBankName string `json:"wyBankName, optional"`
+		WyBankBranch string `json:"wyBankBranch, optional"`
+		WyAccName string `json:"wyAccName, optional"`
+		WyAccCard string `json:"wyAccCard, optional"`
+		Amount string `json:"amount"`
+		Memo string `json:"memo, optional"`
+		Rate string `json:"rate, optional"`
 	}{}
 
 
 	json.Unmarshal(channelResp2.Context,&responseContext)
 
-	logx.WithContext(l.ctx).Errorf("支付提单渠道返回参数解密: %s", responseContext)
+	logx.WithContext(l.ctx).Errorf("支付提单渠道返回参数解密: %+v", responseContext)
+	amount, err2 := strconv.ParseFloat(responseContext.Amount, 64)
+	if err2 != nil {
+				return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
+			}
 
+		// 返回json
+		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+			CardName:   responseContext.WyAccName,
+			CardNumber: responseContext.WyAccCard,
+			BankName:   responseContext.wyBankName,
+			BankBranch: responseContext.WyBankBranch,
+			Amount:     amount,
+			Link:       "",
+			Remark:     "",
+		})
+		if err3 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		}
+		return &types.PayOrderResponse{
+			PayPageType:    "json",
+			PayPageInfo:    string(receiverInfoJson),
+			ChannelOrderNo: "",
+			IsCheckOutMer:  false, // 自組收銀台回傳 true
+		}, nil
 
 	// 若需回傳JSON 請自行更改
 	//if strings.EqualFold(req.JumpType, "json") {
@@ -257,11 +291,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	}, nil
 	//}
 
-	resp = &types.PayOrderResponse{
-		PayPageType:    "url",
-		PayPageInfo:    responseContext.QrcodeUrl,
-		ChannelOrderNo: "",
-	}
+	//resp = &types.PayOrderResponse{
+	//	PayPageType:    "url",
+	//	PayPageInfo:    responseContext.QrcodeUrl,
+	//	ChannelOrderNo: "",
+	//}
 
-	return
+	//return
 }
