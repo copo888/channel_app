@@ -87,6 +87,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//if req.Sign != sign {
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
+	logx.WithContext(l.ctx).Infof("解密参数:%+v", reqCon)
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(reqCon.Amount, 64); err != nil {
