@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
@@ -12,7 +13,11 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/mlbpay_php/internal/svc"
 	"github.com/copo888/channel_app/mlbpay_php/internal/types"
+	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
+	"strings"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -83,46 +88,46 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
-	//var orderAmount float64
-	//if orderAmount, err = strconv.ParseFloat(reqCon.Amount, 64); err != nil {
-	//	return "fail", errorx.New(responsex.INVALID_SIGN)
-	//}
-	//var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	//if reqCon.OrderState == "1" {
-	//	status = "1"
-	//} else if strings.Index("2,4", reqCon.OrderState) > -1 {
-	//	status = "2"
-	//}
-	//
-	//proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-	//	ProxyPayOrderNo:     reqCon.OrderNo,
-	//	ChannelOrderNo:      "",
-	//	ChannelResultAt:     time.Now().Format("20060102150405"),
-	//	ChannelResultStatus: status,
-	//	ChannelResultNote:   "",
-	//	Amount:              orderAmount,
-	//	ChannelCharge:       0,
-	//	UpdatedBy:           "",
-	//}
-	//
-	//// call boadmin callback api
-	//span := trace.SpanFromContext(l.ctx)
-	//payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
-	//if errk != nil {
-	//	return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	//}
-	//
-	////BoProxyRespVO := &vo.BoadminProxyRespVO{}
-	//url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
-	//
-	//res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
-	//logx.WithContext(l.ctx).Info("回调后资讯: ", res)
-	//if errx != nil {
-	//	logx.WithContext(l.ctx).Error(errx.Error())
-	//	return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	//} else if res.Status() != 200 {
-	//	return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
-	//}
+	var orderAmount float64
+	if orderAmount, err = strconv.ParseFloat(reqCon.Amount, 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_SIGN)
+	}
+	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
+	if reqCon.OrderState == "1" {
+		status = "1"
+	} else if strings.Index("2,4", reqCon.OrderState) > -1 {
+		status = "2"
+	}
+
+	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
+		ProxyPayOrderNo:     reqCon.OrderNo,
+		ChannelOrderNo:      "",
+		ChannelResultAt:     time.Now().Format("20060102150405"),
+		ChannelResultStatus: status,
+		ChannelResultNote:   "",
+		Amount:              orderAmount,
+		ChannelCharge:       0,
+		UpdatedBy:           "",
+	}
+
+	// call boadmin callback api
+	span := trace.SpanFromContext(l.ctx)
+	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
+	if errk != nil {
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+	}
+
+	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
+	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
+
+	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
+	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
+	if errx != nil {
+		logx.WithContext(l.ctx).Error(errx.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+	} else if res.Status() != 200 {
+		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
+	}
 	//else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
 	//  return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
 	//} else if BoProxyRespVO.Code != "000"{

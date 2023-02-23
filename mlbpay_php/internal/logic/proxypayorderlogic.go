@@ -65,7 +65,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	timestamp := time.Now().Format("20060102150405")
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	notifyUrl := l.svcCtx.Config.Server+"/api/proxy-pay-call-back"
-	notifyUrl = "https://2eb9-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back"
+	//notifyUrl = "https://2eb9-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back"
 
 	//data := url.Values{}
 	//data.Set("partner", channel.MerId)
