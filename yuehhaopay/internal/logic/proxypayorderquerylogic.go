@@ -87,7 +87,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 				} `json:"0"`
 			} `json:"data"`
 			//操作失败是 907 支付 独有的状态,泛指会员账号无法登入、
-			//会员转账资料有误、会员余额不足等状态。
+			//会员转账资料有误、会员余额不足等状态
 		} `json:"result"`
 	}{}
 
