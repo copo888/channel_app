@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: mlbpay_php
+    image: mlbpay_php
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/mlbpay_php:/app/logs

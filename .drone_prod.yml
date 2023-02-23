@@ -2506,6 +2506,88 @@ steps:
         - push
         - tag
         - published
+---
+kind: pipeline
+name: zihyunpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-zihyunpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f zihyunpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=zihyunpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/zihyunpay zihyunpay/pay.go
+        - docker build -t zihyunpay -f zihyunpay/Dockerfile .
+        - docker-compose -f zihyunpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/zihyunpay_prod_*
+      event:
+        - push
+        - tag
+        - published
+---
+kind: pipeline
+name: mlbpay_php
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-mlbpay_php
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f mlbpay_php/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mlbpay_php" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mlbpay_php mlbpay_php/pay.go
+        - docker build -t mlbpay_php -f mlbpay_php/Dockerfile .
+        - docker-compose -f mlbpay_php/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/mlbpay_php_prod_*
+      event:
+        - push
+        - tag
+        - published
 
 ---
 kind: pipeline
