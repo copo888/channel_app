@@ -81,12 +81,14 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	orderStatus := "1"
 	if req.Status == "00" {
 		orderStatus = "20"
+	} else if req.Status == "01" {
+		orderStatus = "30"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.Merchanttrxref,
 		ChannelOrderNo: req.Reference, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderStatus:    orderStatus,   // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
