@@ -89,7 +89,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errDecode
 	}
 
-	errj := json.Unmarshal([]byte(desString),&desOrder)
+	dd := strings.ReplaceAll(desString, "\x05", "")
+	dby :=[]byte(dd)
+	errj := json.Unmarshal(dby,&desOrder)
 	if errj != nil {
 		logx.WithContext(l.ctx).Errorf("代付回调解析json失败, error : "+errj.Error())
 		return "fail", errj

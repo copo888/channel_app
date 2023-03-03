@@ -19,6 +19,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -88,7 +89,9 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errDecode
 	}
 
-	errj := json.Unmarshal([]byte(desString),&desOrder)
+	dd := strings.ReplaceAll(desString, "\x0f", "")
+	dby :=[]byte(dd)
+	errj := json.Unmarshal(dby,&desOrder)
 	if errj != nil {
 		logx.WithContext(l.ctx).Errorf("支付回调解析json失败, error : "+errj.Error())
 		return "fail", errj
