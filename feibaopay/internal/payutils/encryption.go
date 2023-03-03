@@ -202,12 +202,22 @@ func AES256Decode(cipherText, key, iv string) (resp string, err error) {
 		return "", err
 	}
 
+	//log.Println(">>>>>", cipherTextDecoded)
+
 	block, err := aes.NewCipher(bKey)
 	if err != nil {
 		return "", err
 	}
 
 	mode := cipher.NewCBCDecrypter(block, bIV)
-	mode.CryptBlocks([]byte(cipherTextDecoded), []byte(cipherTextDecoded))
+	mode.CryptBlocks(cipherTextDecoded, cipherTextDecoded)
+	cipherTextDecoded = unPadding(cipherTextDecoded)
 	return strings.TrimSpace(string(cipherTextDecoded)), nil
+}
+
+func unPadding(text []byte) []byte {
+	l := len(text)
+	last := text[l-1]
+	n := int(last)
+	return text[:l-n]
 }
