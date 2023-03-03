@@ -65,7 +65,7 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 // VerifySign 验签
 func VerifySign(reqSign string, data interface{}, screctKey string, ctx context.Context) bool {
 	m := CovertToMap(data)
-	source := JoinStringsInASCII(m, "&", false, false, screctKey)
+	source := JoinStringsInASCII(m, "&", false, true, screctKey)
 	sign := GetSign(source)
 	fmt.Sprintf("-------" + source)
 	logx.WithContext(ctx).Info("verifySource: ", source)
@@ -140,7 +140,7 @@ func CovertToMap(req interface{}) map[string]string {
 
 	val := reflect.ValueOf(req)
 	for i := 0; i < val.Type().NumField(); i++ {
-		jsonTag := val.Type().Field(i).Tag.Get("from") // [依据不同请求类型更改] from / json
+		jsonTag := val.Type().Field(i).Tag.Get("form") // [依据不同请求类型更改] form / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
 		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
@@ -149,7 +149,9 @@ func CovertToMap(req interface{}) map[string]string {
 				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)
 				m[name] = valTrans
 			} else if val.Field(i).Type().Name() == "string" {
-				m[name] = val.Field(i).String()
+				//m[name] = val.Field(i).String()
+				//m[name] = url.QueryEscape(val.Field(i).String())
+				m[name] = strings.ToLower(url.QueryEscape(val.Field(i).String()))
 			} else if val.Field(i).Type().Name() == "int64" {
 
 				m[name] = strconv.FormatInt(val.Field(i).Int(), 10)
