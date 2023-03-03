@@ -22,17 +22,17 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		defer span.End()
 
 		var req types.PayCallBackRequest
-
-		if err := httpx.ParseJsonBody(r, &req); err != nil {
-			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
-			return
-		}
-
-		// Form 格式
-		//if err := httpx.ParseForm(r, &req); err != nil {
-		//	responsex.Json(w, r, responsex.FAIL, nil, err)
+		//
+		//if err := httpx.ParseJsonBody(r, &req); err != nil {
+		//	responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 		//	return
 		//}
+
+		// Form 格式
+		if err := httpx.ParseForm(r, &req); err != nil {
+			responsex.Json(w, r, responsex.FAIL, nil, err)
+			return
+		}
 
 		logx.WithContext(r.Context()).Infof("%+v", req)
 
