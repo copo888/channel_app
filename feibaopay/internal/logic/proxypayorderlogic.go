@@ -67,7 +67,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	notifyUrl := l.svcCtx.Config.Server+"/api/proxy-pay-call-back"
-	notifyUrl = "https://f89d-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back"
+	//notifyUrl = "https://f89d-211-75-36-190.jp.ngrok.io/api/proxy-pay-call-back"
 	timestamp := time.Now().Unix()
 	ip := utils.GetRandomIp()
 
@@ -101,12 +101,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		CityCode string `json:"city_code"`
 		AreaCode string `json:"area_code"`
 	}{
-		Gateway: channelBankMap.MapCode,
+		Gateway: "gcash",
 		MerchantOrderNum: req.OrderNo,
 		Uid: randomID,
 		Amount: transactionAmount,
 		CallbackUrl: notifyUrl,
-		MerchantOrderTime: string(timestamp),
+		MerchantOrderTime: fmt.Sprintf("%v",timestamp),
 		MerchantOrderRemark: "",
 		UserIp: ip,
 		BankCode: channelBankMap.MapCode,

@@ -62,7 +62,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl = "https://f89d-211-75-36-190.jp.ngrok.io/api/pay-call-back"
+	//notifyUrl = "https://f89d-211-75-36-190.jp.ngrok.io/api/pay-call-back"
 	timestamp := time.Now().Unix()
 	ip := utils.GetRandomIp()
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
@@ -215,7 +215,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errDecode
 	}
 
-	fmt.Println(desString)
 	dd := strings.ReplaceAll(desString, "\x03", "")
 	dby :=[]byte(dd)
 	errj := json.Unmarshal(dby,&desOrder)

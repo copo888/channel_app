@@ -130,7 +130,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	var orderStatus = "1"
 	if desOrder.Status == "success" {
 		orderStatus = "20"
-	} else if strings.Index("fail,error,reverted", desOrder.Status) > -1 {
+	} else if strings.Index("fail,fail_done,reverted", desOrder.Status) > -1 {
 		orderStatus = "30"
 	}
 

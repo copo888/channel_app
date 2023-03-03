@@ -122,24 +122,23 @@ type ProxyPayQueryInternalBalanceResponse {
 }
 
 type ProxyPayCallBackRequest {
-	Ip         string `form:"ip, optional"`
-	Charset    string `form:"charset, optional"`
-	Amount     string `form:"amount, optional"`
-	StatusStr  string `form:"statusStr, optional"`
-	OutTradeNo string `form:"outTradeNo, optional"`
-	Sign       string `form:"sign, optional"`
-	SignType   string `form:"signType, optional"`
-	Status     string `form:"status, optional"`
+	Ip               string `form:"ip, optional"`
+	Code             int    `form:"code, optional"`
+	Msg              string `form:"msg, optional"`
+	Merchant         string `form:"merchant"`
+	MerchantOrderNum string `form:"merchant_order_num"`
+	Action           string `form:"action"`
+	Order            string `form:"order"`
 }
 
 type PayCallBackRequest {
-	MyIp             string `json:"myIp, optional"`
-	Code             int    `json:"code, optional"`
-	Msg              string `json:"msg, optional"`
-	Merchant         string `json:"merchant"`
-	MerchantOrderNum string `json:"merchantOrderNum"`
-	Action           string `json:"action"`
-	Order            string `json:"order"`
+	MyIp             string `form:"myIp, optional"`
+	Code             int    `form:"code, optional"`
+	Msg              string `form:"msg, optional"`
+	Merchant         string `form:"merchant"`
+	MerchantOrderNum string `form:"merchant_order_num"`
+	Action           string `form:"action"`
+	Order            string `form:"order"`
 }
 
 // form 格式

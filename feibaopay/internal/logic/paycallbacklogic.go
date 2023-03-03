@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
@@ -9,11 +10,11 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/feibaopay/internal/payutils"
 	"github.com/copo888/channel_app/feibaopay/internal/svc"
 	"github.com/copo888/channel_app/feibaopay/internal/types"
-	"go.opentelemetry.io/otel/trace"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type PayCallBackLogic struct {
@@ -36,7 +37,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.Merchant, l.svcCtx.Config.ProjectName, req)
 
-	//iv := "edbeaacdb228dcac"
+	iv := "edbeaacdb228dcac"
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -68,22 +69,24 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
-	//desOrder := struct {
-	//	Amount string `json:"amount"`
-	//	Gateway string `json:"gateway"`
-	//	Status string `json:"status"`
-	//	MerchantOrderNum string `json:"merchant_order_num"`
-	//	MerchantOrderRemark string `json:"merchant_order_remark"`
-	//}{}
-	//
-	//desString, errDecode := payutils.AES256Decode(req.Order, channel.MerKey, iv)
-	//
-	//if errDecode != nil {
-	//	return "fail", errDecode
-	//}
-	//
-	//json.Unmarshal([]byte(desString),&desOrder)
-	//
+	desOrder := struct {
+		Amount string `json:"amount"`
+		Gateway string `json:"gateway"`
+		Status string `json:"status"`
+		MerchantOrderNum string `json:"merchant_order_num"`
+		MerchantOrderRemark string `json:"merchant_order_remark"`
+	}{}
+
+	desString, errDecode := payutils.AES256Decode(req.Order, channel.MerKey, iv)
+
+	if errDecode != nil {
+		return "fail", errDecode
+	}
+
+	errj := json.Unmarshal([]byte(desString),&desOrder)
+	if errj != nil {
+		return "fail", errj
+	}
 	//var orderAmount float64
 	//if orderAmount, err = strconv.ParseFloat(desOrder.Amount, 64); err != nil {
 	//	return "fail", errorx.New(responsex.INVALID_AMOUNT)
