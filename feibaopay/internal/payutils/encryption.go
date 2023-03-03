@@ -212,7 +212,7 @@ func AES256Decode(cipherText, key, iv string) (resp string, err error) {
 	mode := cipher.NewCBCDecrypter(block, bIV)
 	mode.CryptBlocks(cipherTextDecoded, cipherTextDecoded)
 	cipherTextDecoded = unPadding(cipherTextDecoded)
-	return strings.TrimSpace(string(cipherTextDecoded)), nil
+	return string(cipherTextDecoded), nil
 }
 
 func unPadding(text []byte) []byte {
