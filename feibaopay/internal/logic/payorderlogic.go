@@ -45,7 +45,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req)
 
-	iv := "edbeaacdb228dcac"
+	iv := "c11fa9ed92344d9d"
 
 	// 取得取道資訊
 	var channel typesX.ChannelData
