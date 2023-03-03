@@ -19,7 +19,6 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"strconv"
 	"strings"
 )
 
@@ -121,7 +120,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}{}
 
 	type Result struct {
-		Discountamount string `json:"discountamount"`
+		Discountamount float64 `json:"discountamount"`
 		Cardname string `json:"cardname"`
 		Cardno string `json:"cardno"`
 		Bankname string `json:"bankname"`
@@ -161,17 +160,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		if err = mapstructure.Decode(channelResp.Results, &results); err != nil {
 			return nil, errorx.New(responsex.SYSTEM_ERROR, "格式转换错误")
 		}
-		amount, err2 := strconv.ParseFloat(results.Discountamount, 64)
-		if err2 != nil {
-			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-		}
+
 		// 返回json
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
 			CardName:   results.Cardname,
 			CardNumber: results.Cardno,
 			BankName:   results.Bankname,
 			BankBranch: results.Subbankname,
-			Amount:     amount,
+			Amount:     results.Discountamount,
 			Link:       results.Bankqrcode,
 			Remark:     "",
 		})
