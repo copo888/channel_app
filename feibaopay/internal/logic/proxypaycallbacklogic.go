@@ -90,6 +90,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	dd := strings.ReplaceAll(desString, "\x05", "")
+	dd = strings.ReplaceAll(dd, "\b", "")
 	dby :=[]byte(dd)
 	errj := json.Unmarshal(dby,&desOrder)
 	if errj != nil {
