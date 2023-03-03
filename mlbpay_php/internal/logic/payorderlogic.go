@@ -16,7 +16,6 @@ import (
 	"github.com/copo888/channel_app/mlbpay_php/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -233,36 +232,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount string `json:"amount"`
 		Memo string `json:"memo, optional"`
 		Rate string `json:"rate, optional"`
+		CodeUrl string `json:"code_url"`
 	}{}
 
 
 	json.Unmarshal(channelResp2.Context,&responseContext)
 
 	logx.WithContext(l.ctx).Errorf("支付提单渠道返回参数解密: %+v", responseContext)
-	amount, err2 := strconv.ParseFloat(responseContext.Amount, 64)
-	if err2 != nil {
-				return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-			}
-
-		// 返回json
-		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-			CardName:   responseContext.WyAccName,
-			CardNumber: responseContext.WyAccCard,
-			BankName:   responseContext.wyBankName,
-			BankBranch: responseContext.WyBankBranch,
-			Amount:     amount,
-			Link:       "",
-			Remark:     "",
-		})
-		if err3 != nil {
-			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-		}
-		return &types.PayOrderResponse{
-			PayPageType:    "json",
-			PayPageInfo:    string(receiverInfoJson),
-			ChannelOrderNo: "",
-			IsCheckOutMer:  false, // 自組收銀台回傳 true
-		}, nil
 
 	// 若需回傳JSON 請自行更改
 	//if strings.EqualFold(req.JumpType, "json") {
@@ -291,11 +267,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	}, nil
 	//}
 
-	//resp = &types.PayOrderResponse{
-	//	PayPageType:    "url",
-	//	PayPageInfo:    responseContext.QrcodeUrl,
-	//	ChannelOrderNo: "",
-	//}
+	resp = &types.PayOrderResponse{
+		PayPageType:    "url",
+		PayPageInfo:    responseContext.CodeUrl,
+		ChannelOrderNo: "",
+	}
 
-	//return
+	return
 }
