@@ -2975,7 +2975,7 @@ clone:
   disable: true
 
 steps:
-  - name: docker-rcpay_ue
+  - name: docker-mashangpay8888
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
