@@ -2969,13 +2969,13 @@ trigger:
 
 ---
 kind: pipeline
-name: mashangpay8888
+name: mashanpay8888
 
 clone:
   disable: true
 
 steps:
-  - name: docker-mashangpay8888
+  - name: docker-mashanpay8888
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
@@ -2990,16 +2990,16 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout mashangpay8888
+        - git checkout mashanpay8888
         - git checkout -- .
-        - git pull origin mashangpay8888
+        - git pull origin mashanpay8888
         - go mod tidy
-        - docker-compose -f mashangpay8888/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=mashangpay8888" --quiet)
+        - docker-compose -f mashanpay8888/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mashanpay8888" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mashangpay8888 mashangpay8888/pay.go
-        - docker build -t mashangpay8888 -f mashangpay8888/Dockerfile .
-        - docker-compose -f mashangpay8888/docker-compose.yml up -d
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mashanpay8888 mashanpay8888/pay.go
+        - docker build -t mashanpay8888 -f mashanpay8888/Dockerfile .
+        - docker-compose -f mashanpay8888/docker-compose.yml up -d
     when:
       branch:
         - mashanpay8888
