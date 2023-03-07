@@ -3007,4 +3007,4 @@ steps:
         - push
 trigger:
   branch:
-    - mashangpay8888
+    - mashanpay8888

@@ -2793,7 +2793,7 @@ steps:
         - docker-compose -f mashangpay8888/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/mashangpay8888_prod_*
+        - refs/tags/mashanpay8888_prod_*
       event:
         - push
         - tag
