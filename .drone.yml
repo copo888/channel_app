@@ -3002,7 +3002,7 @@ steps:
         - docker-compose -f mashangpay8888/docker-compose.yml up -d
     when:
       branch:
-        - mashangpay8888
+        - mashanpay8888
       event:
         - push
 trigger:
