@@ -59,7 +59,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
-	//transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 	merchId, _ := strconv.ParseInt(channel.MerId, 10, 64)
 	data := struct {
 		MerchId     int64   `json:"merchant_id"`
