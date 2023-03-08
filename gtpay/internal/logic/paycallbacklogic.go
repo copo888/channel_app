@@ -76,7 +76,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	orderStatus := "0"
 	if req.State == 1 { //1 成功，0 待支付，-1 失败
-		orderStatus = "1"
+		orderStatus = "20"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
