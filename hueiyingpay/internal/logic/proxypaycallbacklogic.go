@@ -46,7 +46,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.AgentpayOrderId, //輸入COPO訂單號
+		OrderNo:   req.MchOrderNo, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req),
