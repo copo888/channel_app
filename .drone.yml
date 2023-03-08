@@ -3008,3 +3008,45 @@ steps:
 trigger:
   branch:
     - mashanpay8888
+
+---
+kind: pipeline
+name: hueiyingpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-hueiyingpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout hueiyingpay
+        - git checkout -- .
+        - git pull origin hueiyingpay
+        - go mod tidy
+        - docker-compose -f hueiyingpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=hueiyingpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/hueiyingpay hueiyingpay/pay.go
+        - docker build -t hueiyingpay -f hueiyingpay/Dockerfile .
+        - docker-compose -f hueiyingpay/docker-compose.yml up -d
+    when:
+      branch:
+        - hueiyingpay
+      event:
+        - push
+trigger:
+  branch:
+    - hueiyingpay
