@@ -36,6 +36,16 @@ func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext)
 func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQueryRequest) (resp *types.ProxyPayOrderQueryResponse, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrderQuery. channelName: %s, ProxyPayOrderQueryRequest: %#v", l.svcCtx.Config.ProjectName, req)
+
+	//組返回給BO 的代付返回物件
+	return &types.ProxyPayOrderQueryResponse{
+		Status: 1,
+		//CallBackStatus: ""
+		OrderStatus:      "30",
+		ChannelReplyDate: time.Now().Format("2006-01-02 15:04:05"),
+		//ChannelCharge =
+	}, errorx.New(responsex.INVALID_STATUS_CODE, "http status : 400")
+
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
