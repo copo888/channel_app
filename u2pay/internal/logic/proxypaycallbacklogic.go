@@ -65,7 +65,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
-	//// 檢查驗簽
+	// 檢查驗簽
 	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
