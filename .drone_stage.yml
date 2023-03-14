@@ -3088,3 +3088,44 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: u2pay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-u2pay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f u2pay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=u2pay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/u2pay u2pay/pay.go
+        - docker build -t u2pay -f u2pay/Dockerfile .
+        - docker-compose -f u2pay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/u2pay_stage_*
+      event:
+        - push
+        - tag
+        - published
