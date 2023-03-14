@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: u2pay
+    image: u2pay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/u2pay:/app/logs
