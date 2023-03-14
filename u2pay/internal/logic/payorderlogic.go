@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
@@ -53,8 +54,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//}
 
 	// 取值
-	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl := "http://d3a1-211-75-36-190.ngrok.io/api/pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
+	//notifyUrl := "http://d3a1-211-75-36-190.ngrok.io/api/pay-call-back"
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
@@ -67,6 +68,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("order_id", req.OrderNo)
 	data.Set("bank_code", "gcash")
 	data.Set("callback_url", notifyUrl)
+	if req.PageUrl == "" {
+		return nil, errorx.New(responsex.INVALID_PARAMETER, "PageUrl:跳转地址不能为空")
+	}
 	data.Set("return_url", req.PageUrl)
 
 	// 加簽
@@ -104,15 +108,16 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    string `json:"status"`
-		Msg     string `json:"message"`
-		OrderId string `json:"order_id,optional"`
-		Money   string `json:"amount,optional"`
-		Sign    string `json:"sign,optional"`
-		PayUrl  string `json:"redirect_url,optional"`
-		PayUrl2 string `json:"qrcode_url,optional"`
+		Code    json.Number `json:"status"`
+		Msg     interface{} `json:"message"`
+		OrderId string      `json:"order_id,optional"`
+		Money   string      `json:"amount,optional"`
+		Sign    string      `json:"sign,optional"`
+		PayUrl  string      `json:"redirect_url,optional"`
+		PayUrl2 string      `json:"qrcode_url,optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -134,8 +139,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 渠道狀態碼判斷
-	if channelResp.Code != "1" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	if channelResp.Code.String() != "1" {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, fmt.Sprintf("%+v", channelResp.Msg))
 	}
 
 	// 若需回傳JSON 請自行更改
