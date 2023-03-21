@@ -3256,9 +3256,9 @@ steps:
         - docker-compose -f kumopaymaya/docker-compose.yml up -d
     when:
       branch:
-        - kumopaymaya
+        - kumopayMaya
       event:
         - push
 trigger:
   branch:
-    - kumopaymaya
+    - kumopayMaya
