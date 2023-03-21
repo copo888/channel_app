@@ -11,14 +11,14 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/kumopayMaya/internal/payutils"
+	"github.com/copo888/channel_app/kumopaymaya/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
 	"time"
 
-	"github.com/copo888/channel_app/kumopayMaya/internal/svc"
-	"github.com/copo888/channel_app/kumopayMaya/internal/types"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

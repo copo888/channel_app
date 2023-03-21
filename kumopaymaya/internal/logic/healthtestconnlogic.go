@@ -3,7 +3,7 @@ package logic
 import (
 	"context"
 
-	"github.com/copo888/channel_app/kumopayMaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

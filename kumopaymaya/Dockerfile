@@ -4,7 +4,7 @@ RUN apk update --no-cache && apk add --no-cache ca-certificates tzdata
 ENV TZ Asia/Shanghai
 
 WORKDIR /app
-COPY /bin/kumopayMaya /app/kumopayMaya
-COPY kumopayMaya/etc /app/etc
+COPY /bin/kumopaymaya /app/kumopaymaya
+COPY kumopaymaya/etc /app/etc
 
-CMD ["./kumopayMaya", "-f", "etc/pay.yaml"]
+CMD ["./kumopaymaya", "-f", "etc/pay.yaml"]

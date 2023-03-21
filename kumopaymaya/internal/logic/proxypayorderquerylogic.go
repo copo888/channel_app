@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/kumopayMaya/internal/svc"
-	"github.com/copo888/channel_app/kumopayMaya/internal/types"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

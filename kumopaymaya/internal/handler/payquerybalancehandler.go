@@ -4,8 +4,8 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"net/http"
 
-	"github.com/copo888/channel_app/kumopayMaya/internal/logic"
-	"github.com/copo888/channel_app/kumopayMaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/logic"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
 	"go.opentelemetry.io/otel/trace"
 )
 

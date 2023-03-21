@@ -3223,13 +3223,13 @@ trigger:
 
 ---
 kind: pipeline
-name: kumopayMaya
+name: kumopaymaya
 
 clone:
   disable: true
 
 steps:
-  - name: docker-kumopayMaya
+  - name: docker-kumopaymaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
@@ -3244,21 +3244,21 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout kumopayMaya
+        - git checkout kumopaymaya
         - git checkout -- .
-        - git pull origin kumopayMaya
+        - git pull origin kumopaymaya
         - go mod tidy
-        - docker-compose -f kumopayMaya/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=kumopayMaya" --quiet)
+        - docker-compose -f kumopaymaya/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=kumopaymaya" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopayMaya kumopayMaya/pay.go
-        - docker build -t kumopayMaya -f kumopayMaya/Dockerfile .
-        - docker-compose -f kumopayMaya/docker-compose.yml up -d
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopaymaya kumopaymaya/pay.go
+        - docker build -t kumopaymaya -f kumopaymaya/Dockerfile .
+        - docker-compose -f kumopaymaya/docker-compose.yml up -d
     when:
       branch:
-        - kumopayMaya
+        - kumopaymaya
       event:
         - push
 trigger:
   branch:
-    - kumopayMaya
+    - kumopaymaya

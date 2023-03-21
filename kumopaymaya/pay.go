@@ -6,9 +6,9 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 
-	"github.com/copo888/channel_app/kumopayMaya/internal/config"
-	"github.com/copo888/channel_app/kumopayMaya/internal/handler"
-	"github.com/copo888/channel_app/kumopayMaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/config"
+	"github.com/copo888/channel_app/kumopaymaya/internal/handler"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"
