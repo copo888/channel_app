@@ -3229,7 +3229,7 @@ clone:
   disable: true
 
 steps:
-  - name: docker-kumopaymaya
+  - name: docker-kumopayMaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
       host:
@@ -3244,9 +3244,9 @@ steps:
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
-        - git checkout kumopaymaya
+        - git checkout kumopayMaya
         - git checkout -- .
-        - git pull origin kumopaymaya
+        - git pull origin kumopayMaya
         - go mod tidy
         - docker-compose -f kumopaymaya/docker-compose.yml down
         - docker rmi -f $(docker images --filter="reference=kumopaymaya" --quiet)
