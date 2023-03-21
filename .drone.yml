@@ -3220,3 +3220,45 @@ steps:
 trigger:
   branch:
     - u2pay
+
+---
+kind: pipeline
+name: kumopaymaya
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-kumopayMaya
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout kumopayMaya
+        - git checkout -- .
+        - git pull origin kumopayMaya
+        - go mod tidy
+        - docker-compose -f kumopaymaya/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=kumopaymaya" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopaymaya kumopaymaya/pay.go
+        - docker build -t kumopaymaya -f kumopaymaya/Dockerfile .
+        - docker-compose -f kumopaymaya/docker-compose.yml up -d
+    when:
+      branch:
+        - kumopayMaya
+      event:
+        - push
+trigger:
+  branch:
+    - kumopayMaya
