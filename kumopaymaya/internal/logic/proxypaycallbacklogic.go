@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/constants"
@@ -11,51 +10,45 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/feibaopay/internal/payutils"
+	"github.com/copo888/channel_app/kumopaymaya/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
 	"strings"
 	"time"
 
-	"github.com/copo888/channel_app/feibaopay/internal/svc"
-	"github.com/copo888/channel_app/feibaopay/internal/types"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ProxyPayCallBackLogic struct {
 	logx.Logger
-	ctx     context.Context
-	svcCtx  *svc.ServiceContext
-	traceID string
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
 }
 
 func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayCallBackLogic {
 	return ProxyPayCallBackLogic{
-		Logger:  logx.WithContext(ctx),
-		ctx:     ctx,
-		svcCtx:  svcCtx,
-		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
+		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
+		svcCtx: svcCtx,
 	}
 }
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.MerchantOrderNum, req)
-
-	iv := "c11fa9ed92344d9d"
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.MerchantOrderNum, //輸入COPO訂單號
+		OrderNo:   req.OutTradeNo, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", req),
-		TraceId:   l.traceID,
-	}); err != nil {
+		Content:   fmt.Sprintf("%+v", req)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
@@ -71,49 +64,40 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
-	//	return "fail", errorx.New(responsex.INVALID_SIGN)
-	//}
-
-	desOrder := struct {
-		Amount string `json:"amount"`
-		Gateway string `json:"gateway"`
-		Status string `json:"status"`
-		MerchantOrderNum string `json:"merchant_order_num"`
-		MerchantOrderRemark string `json:"merchant_order_remark"`
-	}{}
-
-	desString, errDecode := payutils.AES256Decode(req.Order, channel.MerKey, iv)
-
-	if errDecode != nil {
-		return "fail", errDecode
+	source := ""
+	if len(req.Errors) > 0 {
+		source = fmt.Sprintf("amount=%s&errors=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+			req.Amount, req.Errors, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	} else {
+		source = fmt.Sprintf("amount=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+			req.Amount, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
 	}
 
-	dd := strings.ReplaceAll(desString, "\x05", "")
-	dd = strings.ReplaceAll(dd, "\b", "")
-	dby :=[]byte(dd)
-	errj := json.Unmarshal(dby,&desOrder)
-	if errj != nil {
-		logx.WithContext(l.ctx).Errorf("代付回调解析json失败, error : "+errj.Error())
-		return "fail", errj
+	sign := payutils.GetSign(source)
+	logx.Info("verifySource: ", source)
+	logx.Info("verifySign: ", sign)
+	logx.Info("reqSign: ", req.Sign)
+	if req.Sign != sign {
+		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
+
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(desOrder.Amount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if desOrder.Status == "success" {
+	if req.State == "completed" {
 		status = "1"
-	} else if strings.Index("fail,fail_done,reverted", desOrder.Status) > -1 {
+	} else if strings.Index("reject,failed,refund", req.State) > -1 {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.MerchantOrderNum,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.OutTradeNo,
+		ChannelOrderNo:      req.TradeNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.Msg,
+		ChannelResultNote:   req.Errors,
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
@@ -130,7 +114,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
 	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
-	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
+	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
@@ -143,5 +127,5 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//	return "fail",errorx.New(BoProxyRespVO.Message)
 	//}
 
-	return "success", nil
+	return "ok", nil
 }

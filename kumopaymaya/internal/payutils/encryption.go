@@ -58,7 +58,7 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	} else {
 		sort.Strings(list)
 	}
-	return strings.Join(list, sep) + "&key=" + key
+	return strings.Join(list, sep) + key
 }
 
 // VerifySign 验签
@@ -142,7 +142,7 @@ func CovertToMap(req interface{}) map[string]string {
 		jsonTag := val.Type().Field(i).Tag.Get("json") // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
-		if name != "sign" && name != "myIp" && name != "ip" && name != "extend" && name != "from_comment" && name != "from_username" && name != "transactionAmount"{ // 過濾不需加簽參數
+		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
 			if val.Field(i).Type().Name() == "float64" {
 				precise := GetDecimalPlaces(val.Field(i).Float())
 				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)

@@ -5,18 +5,20 @@ import (
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/apimodel/vo"
+	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/uzpay7777/internal/payutils"
+	"github.com/copo888/channel_app/kumopaymaya/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
 	"time"
 
-	"github.com/copo888/channel_app/uzpay7777/internal/svc"
-	"github.com/copo888/channel_app/uzpay7777/internal/types"
+	"github.com/copo888/channel_app/kumopaymaya/internal/svc"
+	"github.com/copo888/channel_app/kumopaymaya/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -39,6 +41,17 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req)
 
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: "",
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OutTradeNo, //輸入COPO訂單號
+		LogType:   constants.CALLBACK_FROM_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("%+v", req)}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -46,34 +59,46 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
 
-	merKey := channel.MerKey
-
 	// 檢查白名單
 	if isWhite := utils.IPChecker(req.MyIp, channel.WhiteList); !isWhite {
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.MyIp)
 	}
 
+	// 把传送过去的 body 中的 (trade_no, amount, out_trade_no, state) + api_token + notify_token 做 md5
+
+	//// 檢查驗簽
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey + channel.MerId); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, merKey); !isSameSign {
+	precise := payutils.GetDecimalPlaces(req.RequestAmount)
+	requestAmount := strconv.FormatFloat(req.RequestAmount, 'f', precise, 64)
+
+	source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
+		req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	sign := payutils.GetSign(source)
+	logx.Info("verifySource: ", source)
+	logx.Info("verifySign: ", sign)
+	logx.Info("reqSign: ", req.Sign)
+	if req.Sign != sign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
+
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.TransactionAmount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
-	orderStatus := "1"
-	if req.Status == "verified" {
-		orderStatus = "20"
-	}else if req.Status == "revoked" {
-		orderStatus = "30"
-	}
+	//orderStatus := "1"
+	//if req.TradeStatus == "1" {
+	//	orderStatus = "20"
+	//}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.Orderid,
-		ChannelOrderNo: req.Oid, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		PayOrderNo:     req.OutTradeNo,
+		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    "20",        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
@@ -103,5 +128,5 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "success", nil
+	return "ok", nil
 }

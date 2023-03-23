@@ -15,7 +15,6 @@ type PayOrderRequest struct {
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
 	PlayerId          string `json:"playerId, optional"`
-	MerchantOrderNo   string `json:"merchantOrderNo, optional"`
 }
 
 type PayOrderResponse struct {
@@ -107,30 +106,25 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip          string `json:"ip, optional"`
-	Amount      string `json:"amount"`
-	Oid         string `json:"oid"`
-	Orderid     string `json:"orderid"`
-	Userid      string `json:"userid"`
-	Service     string `json:"service"`
-	Status      string `json:"status"`
-	CreatedTime string `json:"created_time"`
-	Sign        string `json:"sign"`
-	Extend      string `json:"extend"`
+	Ip          string `form:"ip, optional"`
+	TradeNo     string `json:"trade_no, optional"`
+	Amount      string `json:"amount, optional"`
+	OutTradeNo  string `json:"out_trade_no, optional"`
+	State       string `json:"state, optional"`
+	Sign        string `json:"sign, optional"`
+	Errors      string `json:"errors, optional"`
+	CallbackUrl string `json:"callback_url, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp              string `json:"myIp, optional"`
-	Amount            string `json:"amount"`
-	Oid               string `json:"oid"`
-	Orderid           string `json:"orderid"`
-	Userid            string `json:"userid"`
-	Service           string `json:"service"`
-	Status            string `json:"status"`
-	CreatedTime       string `json:"created_time"`
-	TransactionAmount string `json:"transactionAmount, optional"`
-	Sign              string `json:"sign"`
-	Extend            string `json:"extend"`
+	MyIp          string `json:"myIp, optional"`
+	TradeNo       string `json:"trade_no, optional"`
+	RequestAmount float64 `json:"request_amount, optional"`
+	Amount        string `json:"amount, optional"`
+	OutTradeNo    string `json:"out_trade_no, optional"`
+	State         string `json:"state, optional"`
+	Sign          string `json:"sign, optional"`
+	CallbackUrl   string `json:"callback_url, optional"`
 }
 
 type ReceiverInfoVO struct {
