@@ -13,6 +13,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 
 	"github.com/copo888/channel_app/mashangpay8888/internal/svc"
 	"github.com/copo888/channel_app/mashangpay8888/internal/types"
@@ -142,7 +143,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (res
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if channelResp.Result != true {
+	if strings.Index(channelResp.ErrorMsg.Descript, "代付钱包金额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %t: %s", channelResp.Result, channelResp.ErrorMsg.Descript)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.ErrorMsg.Descript)
+	} else if channelResp.Result != true {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Result, channelResp.ErrorMsg.Descript)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg.Descript)
 	}
