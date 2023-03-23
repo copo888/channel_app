@@ -120,16 +120,17 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp        string `json:"myIp, optional"`
-	Amount      string `json:"amount"`
-	Oid         string `json:"oid"`
-	Orderid     string `json:"orderid"`
-	Userid      string `json:"userid"`
-	Service     string `json:"service"`
-	Status      string `json:"status"`
-	CreatedTime string `json:"created_time"`
-	Sign        string `json:"sign"`
-	Extend      string `json:"extend"`
+	MyIp              string `json:"myIp, optional"`
+	Amount            string `json:"amount"`
+	Oid               string `json:"oid"`
+	Orderid           string `json:"orderid"`
+	Userid            string `json:"userid"`
+	Service           string `json:"service"`
+	Status            string `json:"status"`
+	CreatedTime       string `json:"created_time"`
+	TransactionAmount string `json:"transactionAmount, optional"`
+	Sign              string `json:"sign"`
+	Extend            string `json:"extend"`
 }
 
 type ReceiverInfoVO struct {
