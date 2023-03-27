@@ -115,17 +115,15 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp            string `json:"myIp, optional"`
-	MchId           string `json:"mch_id, optional"`
-	TradeNo         string `json:"trade_no, optional"`
-	OutTradeNo      string `json:"out_trade_no, optional"`
-	OriginalTradeNo string `json:"original_trade_no, optional"`
-	Money           string `json:"money, optional"`
-	NotifyTime      string `json:"notify_time, optional"`
-	Subject         string `json:"subject, optional"`
-	Body            string `json:"body, optional"`
-	Status          int64 `json:"status, optional"`
-	Sign            string `json:"sign, optional"`
+	MyIp        string `form:"myIp, optional"`
+	PayOrderId  string `form:"payOrderId, optional"`
+	MchId       string `form:"mchId, optional"`
+	ProductId   string `form:"productId, optional"`
+	MchOrderNo  string `form:"mchOrderNo, optional"`
+	Amount      string `form:"amount, optional"`
+	Status      string `form:"status, optional"`
+	PaySuccTime string `form:"paySuccTime, optional"` //支付状态,0-订单生成,1-支付中,2-支付成功,3-业务处理完成
+	Sign        string `form:"sign, optional"`
 }
 
 // form 格式
