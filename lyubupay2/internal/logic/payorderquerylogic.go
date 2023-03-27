@@ -7,15 +7,14 @@ import (
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/lyubupay2/internal/payutils"
 	"github.com/copo888/channel_app/lyubupay2/internal/svc"
 	"github.com/copo888/channel_app/lyubupay2/internal/types"
 	"github.com/gioco-play/gozzle"
-	"go.opentelemetry.io/otel/trace"
-	"strconv"
-	"time"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	"go.opentelemetry.io/otel/trace"
+	"net/url"
 )
 
 type PayOrderQueryLogic struct {
@@ -42,29 +41,22 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	timestamp := time.Now().Format("2006-01-02 15:04:05")
+	//timestamp := time.Now().Format("2006-01-02 15:04:05")
 
 	// 組請求參數 FOR JSON
-	data := struct {
-		MchId      string `json:"mch_id"`
-		OutTradeNo string `json:"out_trade_no"`
-		Timestamp  string `json:"timestamp"`
-		Sign       string `json:"sign"`
-	}{
-		MchId:      channel.MerId,
-		OutTradeNo: req.OrderNo,
-		Timestamp:  timestamp,
-	}
+	data := url.Values{}
+	data.Set("mchOrderNo", req.OrderNo)
+	data.Set("mchId", channel.MerId)
 
 	// 加簽 JSON
-	sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	data.Sign = sign
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	data.Set("sign", sign)
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -76,35 +68,27 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code int64  `json:"code"`
-		Msg  string `json:"msg, optional"`
-		Data struct {
-			TradeNo string `json:"trade_no"`
-			PayUrl  string `json:"pay_url"`
-			Status  int64  `json:"status"`
-			Money   string `json:"money"`
-		} `json:"data"`
+		RetCode    string `json:"retCode"`
+		RetMsg     string `json:"retMsg, optional"`
+		Status     string `json:"status"`
+		Amount     string `json:"amount"`
+		PayOrderId string `json:"payOrderId"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Code != 0 {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	} else if channelResp.RetCode != "SUCCESS" {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RetMsg)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Data.Money, 64)
-	if errParse != nil {
-		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
-	}
-
-	orderStatus := "0"
-	if channelResp.Data.Status == 2 { // 订单状态：0=失败，1=待支付，2=支付成功，3=冲正
+	orderStatus := "0" // 支付状态: 0-订单生成,1-支付中,2-支付成功,3-业务处理完成
+	if channelResp.Status == "2" || channelResp.Status == "3" {
 		orderStatus = "1"
 	}
 
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount:    orderAmount,
-		ChannelOrderNo: channelResp.Data.TradeNo,
+		OrderAmount:    utils.FloatDiv(channelResp.Amount, "100"),
+		ChannelOrderNo: channelResp.PayOrderId,
 		OrderStatus:    orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}
 
