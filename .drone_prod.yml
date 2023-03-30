@@ -3051,3 +3051,45 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: easypay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-easypay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f easypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=easypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/easypay easypay/pay.go
+        - docker build -t easypay -f easypay/Dockerfile .
+        - docker-compose -f easypay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/easypay_prod_*
+      event:
+        - push
+        - tag
+        - published
