@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: kumopay1111
+    image: kumopay1111
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/kumopay1111:/app/logs
