@@ -131,7 +131,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//if req.ChannelPayType != "4" {
 	//	data.Set("bankName ", randomID)
 	//}
-	if req.PayType != "YK" {
+	if req.BankCode != "" {
 		data.BankName = channelBankMap.MapCode
 	}
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
