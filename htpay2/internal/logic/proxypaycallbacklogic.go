@@ -77,16 +77,16 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	var status = "0" //渠道回調狀態(0:成功1:失败)
 	if req.Resultcode == "0" {
-		status = "2"
+		status = "1"
 	} else if req.Resultcode == "1" {
-		status = "3"
+		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.Mhtorderno,
 		ChannelOrderNo:      "",
 		ChannelResultAt:     time.Now().Format("20060102150405"),
-		ChannelResultStatus: status, //0待处理，1处理中，2成功，3失败
+		ChannelResultStatus: status, //渠道回調狀態(0:處理中1:成功2:失敗)
 		ChannelResultNote:   "",
 		Amount:              utils.FloatDivF(orderAmount, 100),
 		ChannelCharge:       0,
