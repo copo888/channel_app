@@ -6,6 +6,7 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/htpay2/internal/payutils"
 	"github.com/copo888/channel_app/htpay2/internal/svc"
 	"github.com/copo888/channel_app/htpay2/internal/types"
@@ -13,6 +14,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 	"time"
 )
 
@@ -45,31 +47,23 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 取值
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
-	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchant_number", channel.MerId)
-
-	// 組請求參數 FOR JSON
-	//data := struct {
-	//	MerchantNumber string `json:"merchantNumber"`
-	//	Sign           string `json:"sign"`
-	//}{
-	//	MerchantNumber: channel.MerId,
-	//}
+	data.Set("opmhtid", channel.MerId)
+	data.Set("random", randomID)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.Sign = sign
+
+	queryUrl := channel.ProxyPayQueryBalanceUrl + "?opmhtid=" + channel.MerId + "&random=" + randomID + "&sign=" + sign
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%+v", channel.PayQueryBalanceUrl, data)
+	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%+v", queryUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(20).Trace(span).JSON(data)
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
+	res, ChnErr := gozzle.Get(queryUrl).Timeout(20).Trace(span).Do()
 
 	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
@@ -80,17 +74,26 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		available_balance string
+		RtCode int    `json:"rtCode"`
+		Msg    string `json:"msg,optional"`
+		Result []struct {
+			Balanceavailable float64 `json:"balanceavailable,optional"`
+			Balancereal      float64 `json:"balancereal,optional"`
+			Currency         string  `json:"currency,optional"`
+		} `json:"result,optional"`
 	}{}
 
 	if err3 := res.DecodeJSON(&channelResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	}
 
+	balance := utils.FloatDivF(channelResp.Result[15].Balancereal, 100)
+	amountStr := strconv.FormatFloat(balance, 'f', 3, 64)
+
 	resp = &types.PayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		WithdrawBalance:    channelResp.available_balance,
+		WithdrawBalance:    amountStr,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 

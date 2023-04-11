@@ -111,7 +111,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}
 
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount: channelResp.Result.Paidamount,
+		OrderAmount: utils.FloatDivF(channelResp.Result.Paidamount, 100),
 		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}
 

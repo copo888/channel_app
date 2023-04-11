@@ -88,7 +88,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status, //0待处理，1处理中，2成功，3失败
 		ChannelResultNote:   "",
-		Amount:              orderAmount,
+		Amount:              utils.FloatDivF(orderAmount, 100),
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}
