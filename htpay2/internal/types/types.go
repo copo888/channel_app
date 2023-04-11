@@ -113,32 +113,32 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip           string  `form:"ip, optional"`
-	Resultcode   int     `form:"resultcode"`
-	Afterbalance float64 `form:"afterbalance"`
-	Amount       string  `form:"amount"`
-	Currency     string  `form:"currency"`
-	Mhtorderno   string  `form:"mhtorderno"`
-	Note         string  `form:"note"`
-	Payouttime   string  `form:"payouttime"`
-	Pforderno    string  `form:"pforderno"`
-	Random       string  `form:"random"`
-	Sign         string  `form:"sign"`
+	Ip           string `form:"ip, optional"`
+	Resultcode   string `form:"resultcode, optional"`
+	Afterbalance string `form:"afterbalance, optional"`
+	Amount       string `form:"amount, optional"`
+	Currency     string `form:"currency, optional"`
+	Mhtorderno   string `form:"mhtorderno, optional"`
+	Note         string `form:"note, optional"`
+	Payouttime   string `form:"payouttime, optional"`
+	Pforderno    string `form:"pforderno, optional"`
+	Random       string `form:"random, optional"`
+	Sign         string `form:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp       string  `form:"myIp, optional"`
-	Paidamount float64 `from:"paidamount,optional"`
-	Currency   string  `from:"currency,optional"`
-	Mhtorderno string  `from:"mhtorderno,optional"`
-	Pforderno  string  `from:"pforderno,optional"`
-	Random     string  `from:"random,optional"`
-	Sign       string  `from:"sign,optional"`
-	Note       string  `from:"note,optional"`
-	Paytype    string  `from:"paytype,optional"`
-	Status     string  `from:"status,optional"`
-	Accno      string  `from:"accno,optional"`
-	Attach     string  `from:"attach,optional"`
+	MyIp       string `form:"myIp, optional"`
+	Paidamount string `form:"paidamount, optional"`
+	Currency   string `form:"currency, optional"`
+	Mhtorderno string `form:"mhtorderno, optional"`
+	Pforderno  string `form:"pforderno, optional"`
+	Random     string `form:"random, optional"`
+	Sign       string `form:"sign, optional"`
+	Note       string `form:"note, optional"`
+	Paytype    string `form:"paytype, optional"`
+	Status     string `form:"status, optional"`
+	Accno      string `form:"accno, optional"`
+	Attach     string `form:"attach, optional"`
 }
 
 type ReceiverInfoVO struct {

@@ -76,9 +76,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	var status = "0" //渠道回調狀態(0:成功1:失败)
-	if req.Resultcode == 0 {
+	if req.Resultcode == "0" {
 		status = "2"
-	} else if req.Resultcode == 1 {
+	} else if req.Resultcode == "1" {
 		status = "3"
 	}
 

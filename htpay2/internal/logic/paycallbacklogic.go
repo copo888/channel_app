@@ -85,7 +85,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		PayOrderNo:     req.Mhtorderno,
 		ChannelOrderNo: req.Pforderno, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,   // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    utils.FloatDivF(req.Paidamount, 100),
+		OrderAmount:    utils.FloatDiv(req.Paidamount, "100"),
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
