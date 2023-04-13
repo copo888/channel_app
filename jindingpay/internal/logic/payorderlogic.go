@@ -186,31 +186,28 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 若需回傳JSON 請自行更改
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
-	//	if err2 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	//	}
-	//	// 返回json
-	//	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-	//		CardName:   channelResp.PayInfo.Name,
-	//		CardNumber: channelResp.PayInfo.Card,
-	//		BankName:   channelResp.PayInfo.Bank,
-	//		BankBranch: channelResp.PayInfo.Subbranch,
-	//		Amount:     amount,
-	//		Link:       "",
-	//		Remark:     "",
-	//	})
-	//	if err3 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	//	}
-	//	return &types.PayOrderResponse{
-	//		PayPageType:    "json",
-	//		PayPageInfo:    string(receiverInfoJson),
-	//		ChannelOrderNo: "",
-	//		IsCheckOutMer:  false, // 自組收銀台回傳 true
-	//	}, nil
-	//}
+	if strings.EqualFold(req.JumpType, "json") {
+		respAmount := utils.FloatDiv(channelResp.Amount, "100")
+		// 返回json
+		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+			CardName:   channelResp.PayeeName,
+			CardNumber: channelResp.PayeeAcctNo,
+			BankName:   channelResp.PayeeBankName,
+			BankBranch: channelResp.BranchName,
+			Amount:     respAmount,
+			Link:       "",
+			Remark:     "",
+		})
+		if err3 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		}
+		return &types.PayOrderResponse{
+			PayPageType:    "json",
+			PayPageInfo:    string(receiverInfoJson),
+			ChannelOrderNo: "",
+			IsCheckOutMer:  false, // 自組收銀台回傳 true
+		}, nil
+	}
 
 	//resp = &types.PayOrderResponse{
 	//	PayPageType:    "url",
@@ -236,7 +233,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PayPageType:    "json",
 		PayPageInfo:    string(receiverInfoJson),
 		ChannelOrderNo: "",
-		IsCheckOutMer:  false, // 自組收銀台回傳 true
+		IsCheckOutMer:  true, // 自組收銀台回傳 true
 	}, nil
-	return
 }
