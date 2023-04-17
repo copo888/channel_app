@@ -84,6 +84,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Cid string `json:"cid"`
 		TradeNo string `json:"tradeNo"`
 		Amount string `json:"amount"`
+		AcctName string `json:"acctName"`
 		PayType string `json:"payType"`
 		RequestTime string `json:"requestTime"`
 		NotifyUrl string `json:"notifyUrl"`
@@ -98,6 +99,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		RequestTime: timestamp,
 		NotifyUrl: notifyUrl,
 		ReturnType: "0",
+		AcctName: req.UserId,
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
