@@ -71,7 +71,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	// 檢查驗簽
 	amountStr := strings.TrimRight(req.Amount, "0")
 	amountStr = strings.TrimRight(amountStr, ".")
-	source := channel.MerKey + amountStr + req.OrderId + "0942d89fae1b1aa1423b689b7e4acea1"
+	source := channel.MerKey + amountStr + req.OrderId + "bb7da747f544eb70ab17fa25aa432cb2"
 	sign := payutils.GetSign(source)
 	logx.WithContext(l.ctx).Info("verifySource: ", source)
 	logx.WithContext(l.ctx).Info("verifySign: ", sign)
