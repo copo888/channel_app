@@ -66,7 +66,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		Data    struct {
 			TradeNo    string `json:"trade_no"`
 			OutTradeNo string `json:"out_trade_no"`
-			Amount     string `json:"amount"`
+			Amount     float64 `json:"amount"`
 			AccountNumber string `json:"account_number"`
 			BankOwner string `json:"bank_owner"`
 			State string `json:"state"`
