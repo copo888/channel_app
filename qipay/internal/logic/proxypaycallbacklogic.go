@@ -14,6 +14,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/qipay/internal/svc"
@@ -68,7 +69,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	// 檢查驗簽
-	source := channel.MerKey + req.Amount + req.OrderId + "0942d89fae1b1aa1423b689b7e4acea1"
+	amountStr := strings.TrimRight(req.Amount, "0")
+	amountStr = strings.TrimRight(amountStr, ".")
+	source := channel.MerKey + amountStr + req.OrderId + "0942d89fae1b1aa1423b689b7e4acea1"
 	sign := payutils.GetSign(source)
 	logx.WithContext(l.ctx).Info("verifySource: ", source)
 	logx.WithContext(l.ctx).Info("verifySign: ", sign)
