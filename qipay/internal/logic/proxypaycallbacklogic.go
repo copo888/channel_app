@@ -14,7 +14,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/qipay/internal/svc"
@@ -84,9 +83,15 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "3" {
+	if req.Status == 3 {
 		status = "1"
-	} else if strings.Index("4,90,91,92,95,98,99", req.Status) > -1 {
+	} else if req.Status == 4 ||
+		req.Status == 90 ||
+		req.Status == 91 ||
+		req.Status == 92 ||
+		req.Status == 95 ||
+		req.Status == 98 ||
+		req.Status == 99 {
 		status = "2"
 	}
 
@@ -105,7 +110,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.OrderId,
-		ChannelOrderNo:      req.OrderSid,
+		ChannelOrderNo:      fmt.Sprintf("%d", req.OrderSid),
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   "",

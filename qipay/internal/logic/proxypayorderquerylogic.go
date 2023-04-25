@@ -18,16 +18,16 @@ import (
 
 type ProxyPayOrderQueryLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
 	traceID string
 }
 
 func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayOrderQueryLogic {
 	return ProxyPayOrderQueryLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
 		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
@@ -44,9 +44,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-
-
-	url := channel.ProxyPayQueryUrl+"?order_id="+req.OrderNo
+	url := channel.ProxyPayQueryUrl + "?order_id=" + req.OrderNo
 	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%+v", url, req.OrderNo)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
@@ -68,12 +66,12 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		Code int64  `json:"code"`
 		Msg  string `json:"msg, optional"`
 		Data []struct {
-			OrderSid      int64  `json:"order_sid"`
-			OrderId       string  `json:"order_id"`
-			Payer         string  `json:"payer"`
-			Amount        string `json:"amount"`
-			Status        int64   `json:"status"`
-			Type          int64   `json:"type"`  // 1 為收款,2 為出款
+			OrderSid int64  `json:"order_sid"`
+			OrderId  string `json:"order_id"`
+			Payer    string `json:"payer"`
+			Amount   string `json:"amount"`
+			Status   int64  `json:"status"`
+			Type     int64  `json:"type"` // 1 為收款,2 為出款
 		} `json:"data"`
 	}{}
 
@@ -99,11 +97,18 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, "查无资料")
 	}
 
+	channelStatus := channelQueryResp.Data[0].Status
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Data[0].Status == 3 {
+	if channelStatus == 3 {
 		orderStatus = "20"
-	} else if channelQueryResp.Data[0].Status > 3 {
+	} else if channelStatus == 4 ||
+		channelStatus == 90 ||
+		channelStatus == 91 ||
+		channelStatus == 92 ||
+		channelStatus == 95 ||
+		channelStatus == 98 ||
+		channelStatus == 99 {
 		orderStatus = "30"
 	}
 

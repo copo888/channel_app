@@ -115,12 +115,12 @@ type ProxyPayQueryInternalBalanceResponse struct {
 type ProxyPayCallBackRequest struct {
 	Ip         string `form:"ip, optional"`
 	OrderId    string `json:"order_id, optional"`
-	OrderSid   string `json:"order_sid, optional"`
-	Type       string `json:"type, optional"`
+	OrderSid   int64 `json:"order_sid, optional"`
+	Type       int64 `json:"type, optional"`
 	Amount     string `json:"amount, optional"`
 	Message    string `json:"message, optional"`
-	Status     string `json:"status, optional"`
-	IsFinish   bool `json:"Is_finish, optional"`
+	Status     int64 `json:"status, optional"`
+	IsFinish   string `json:"Is_finish, optional"`
 	FinishTime string `json:"finish_time, optional"`
 	Sign       string `json:"sign, optional"`
 }
@@ -128,12 +128,12 @@ type ProxyPayCallBackRequest struct {
 type PayCallBackRequest struct {
 	MyIp       string `json:"myIp, optional"`
 	OrderId    string `json:"order_id, optional"`
-	OrderSid   string `json:"order_sid, optional"`
-	Type       string `json:"type, optional"`
+	OrderSid   int64 `json:"order_sid, optional"`
+	Type       int64 `json:"type, optional"`
 	Amount     string `json:"amount, optional"`
 	Message    string `json:"message, optional"`
-	Status     string `json:"status, optional"`
-	IsFinish   bool `json:"Is_finish, optional"`
+	Status     int64 `json:"status, optional"`
+	IsFinish   string `json:"Is_finish, optional"`
 	FinishTime string `json:"finish_time, optional"`
 	Sign       string `json:"sign, optional"`
 }
