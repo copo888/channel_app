@@ -141,7 +141,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if strings.Index(channelResp.Msg, "余额不足") > -1 {
+	if strings.Index(channelResp.Msg, "Balance Not Enought") > -1 {
 		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Code, channelResp.Msg)
 		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Msg)
 	} else if channelResp.Code != 200 {

@@ -86,9 +86,22 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == "3" {
 		status = "1"
-	} else if strings.Index("4,90,91,92,95,99", req.Status) > -1 {
+	} else if strings.Index("4,90,91,92,95,98,99", req.Status) > -1 {
 		status = "2"
 	}
+
+	// 訂單狀態表
+	// 0 新訂單
+	// 1 已配對
+	// 2 已收單
+	// 3 已完成
+	// 4 回調失敗
+	// 90 付款超時
+	// 91 收款超時
+	// 92 金額不符
+	// 95 訂單無效
+	// 98 超時配對,無效單
+	// 99 超時配對,無效單
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.OrderId,

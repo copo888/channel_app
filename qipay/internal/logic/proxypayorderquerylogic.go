@@ -87,6 +87,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	// 91 收款超時
 	// 92 金額不符
 	// 95 訂單無效
+	// 98 超時配對,無效單
 	// 99 超時配對,無效單
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
