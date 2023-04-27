@@ -3219,3 +3219,46 @@ steps:
         - push
         - tag
         - published
+
+
+---
+kind: pipeline
+name: dbinpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-dbinpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f dbinpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=dbinpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/dbinpay dbinpay/pay.go
+        - docker build -t htpay2 -f dbinpay/Dockerfile .
+        - docker-compose -f htpay2/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/dbinpay_prod_*
+      event:
+        - push
+        - tag
+        - published
