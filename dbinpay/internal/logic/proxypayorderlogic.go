@@ -76,7 +76,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Account:   req.ReceiptAccountNumber,
 		Bank:      req.ReceiptCardBankName,
 		Branch:    "N/A",
-		Remark:    req.ReceiptAccountNumber + req.ReceiptCardBankName, //HDFC0002007 HDFC0004460 (帳號 +IFSC)
+		Remark:    req.ReceiptAccountNumber + req.Remark, //HDFC0002007 HDFC0004460 (帳號 +IFSC)
 		NotifyUrl: l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
 

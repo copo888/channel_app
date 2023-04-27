@@ -81,6 +81,7 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 	PlayerId             string `json:"playerId, optional"`
+	Remark               string `json:"remark, optional"` //印度渠道需要填IFSC
 }
 
 type ProxyPayOrderResponse struct {
