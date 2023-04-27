@@ -56,9 +56,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//	logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
 	//	return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
 	//}
-	// 組請求參數
-	//amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
-	//transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 
 	data := struct {
 		MerchId   string `json:"client_id"`
