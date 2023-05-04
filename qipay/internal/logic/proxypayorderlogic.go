@@ -72,7 +72,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Amount:    req.TransactionAmount,
 		BankTitle: req.ReceiptAccountName,
 		BankName:  req.ReceiptCardBankName,
-		BankNo:    req.ReceiptCardBankCode,
+		BankNo:    req.ReceiptAccountNumber,
 		Callback:  l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
 
