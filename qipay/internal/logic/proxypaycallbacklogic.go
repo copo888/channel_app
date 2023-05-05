@@ -88,13 +88,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == 3 {
 		status = "1"
-	} else if req.Status == 4 ||
-		req.Status == 90 ||
-		req.Status == 91 ||
-		req.Status == 92 ||
-		req.Status == 95 ||
-		req.Status == 98 ||
-		req.Status == 99 {
+	} else if req.Status >= 90 {
 		status = "2"
 	}
 

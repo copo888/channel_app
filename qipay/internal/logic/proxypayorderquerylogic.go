@@ -102,13 +102,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	var orderStatus = "1"
 	if channelStatus == 3 {
 		orderStatus = "20"
-	} else if channelStatus == 4 ||
-		channelStatus == 90 ||
-		channelStatus == 91 ||
-		channelStatus == 92 ||
-		channelStatus == 95 ||
-		channelStatus == 98 ||
-		channelStatus == 99 {
+	} else if channelStatus >= 90  {
 		orderStatus = "30"
 	}
 
