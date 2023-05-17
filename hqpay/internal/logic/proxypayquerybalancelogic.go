@@ -10,6 +10,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/hqpay/internal/svc"
@@ -45,15 +46,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	}
 
 	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-
-	//JSON 格式
-	//data := struct {
-	//	MerchId   string `json:"partner"`
-	//}{
-	//	MerchId: channel.MerId,
-	//}
+	data.Set("merchant", channel.MerId)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
@@ -75,8 +68,10 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
 		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		Balance string `json:"balance"`
+		Msg     string `json:"message,optional"`
+		Data    struct {
+			Balance float64 `json:"wallet,optional"`
+		} `json:"data,optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
@@ -85,11 +80,11 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
 	}
-
+	balanceStr := strconv.FormatFloat(balanceQueryResp.Data.Balance, 'f', 2, 64)
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Balance,
+		ProxyPayBalance:    balanceStr,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
