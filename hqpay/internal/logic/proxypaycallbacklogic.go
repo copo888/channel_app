@@ -80,8 +80,6 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	} else if req.Success == false {
 		status = "2"
 	}
-	//测试
-	return "success", nil
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.OutTradeNo,

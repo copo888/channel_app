@@ -81,9 +81,6 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		orderStatus = "20"
 	}
 
-	//测试测试
-	return "success", nil
-
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.OrderId,
 		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
