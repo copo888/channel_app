@@ -29,6 +29,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		ChannelOrderNo: utils.GetRandomString(10, 0, 0),
 		OrderStatus:    "20",
 	}
-
+	//
 	return resp, nil
 }
