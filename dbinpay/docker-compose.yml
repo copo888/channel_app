@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: dbinpay
+    image: dbinpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/dbinpay:/app/logs

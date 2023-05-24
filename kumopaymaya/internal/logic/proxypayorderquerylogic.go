@@ -61,15 +61,15 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Success bool   `json:"success"`
+		Success bool `json:"success"`
 		Message string `json:"message"`
 		Data    struct {
-			TradeNo       string `json:"trade_no"`
-			OutTradeNo    string `json:"out_trade_no"`
-			Amount        string `json:"amount"`
+			TradeNo    string `json:"trade_no"`
+			OutTradeNo string `json:"out_trade_no"`
+			Amount     float64 `json:"amount"`
 			AccountNumber string `json:"account_number"`
-			BankOwner     string `json:"bank_owner"`
-			State         string `json:"state"`
+			BankOwner string `json:"bank_owner"`
+			State string `json:"state"`
 		} `json:"data"`
 	}{}
 

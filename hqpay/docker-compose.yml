@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: hqpay
+    image: hqpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/hqpay:/app/logs

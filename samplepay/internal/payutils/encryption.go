@@ -59,7 +59,7 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	} else {
 		sort.Strings(list)
 	}
-	return strings.Join(list, sep) + "&" + key
+	return strings.Join(list, sep) + key
 }
 
 // VerifySign 验签
