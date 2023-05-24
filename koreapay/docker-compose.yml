@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: koreapay
+    image: koreapay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/koreapay:/app/logs

@@ -9,10 +9,8 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/lyubupay2/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/lyubupay2/internal/svc"
@@ -52,25 +50,25 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
+	//var orderAmount float64
+	//if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
+	//	return "fail", errorx.New(responsex.INVALID_AMOUNT)
+	//}
 
+	// 支付状态,0-订单生成,1-支付中,2-支付成功,3-业务处理完成
 	orderStatus := "1"
-	if req.Status == 2 { // 订单状态：0=失败，1=待支付，2=支付成功
+	if req.Status == "2" || req.Status == "3" {
 		orderStatus = "20"
 	}
-
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		PayOrderNo:     req.MchOrderNo,
+		ChannelOrderNo: req.PayOrderId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus,    // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderAmount:    utils.FloatDiv(req.Amount, "100"),
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
@@ -99,5 +97,5 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "SUCCESS", nil
+	return "success", nil
 }

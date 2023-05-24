@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: wgopay88
+    image: wgopay88
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/wgopay88:/app/logs

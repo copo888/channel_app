@@ -13,6 +13,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/jstpay/internal/svc"
@@ -153,7 +154,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if !channelResp.Success {
+	if strings.Index(channelResp.Message, "馀额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Success, channelResp.Message)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Message)
+	} else if !channelResp.Success {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Message)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}

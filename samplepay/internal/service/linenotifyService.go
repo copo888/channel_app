@@ -12,7 +12,13 @@ import (
 	"go.opentelemetry.io/otel/trace"
 )
 
-func DoCallLineSendURL (ctx context.Context, svcCtx *svc.ServiceContext, message string) error {
+func CallLineSendURL(ctx context.Context, svcCtx *svc.ServiceContext, message string) {
+	go func() {
+		DoCallLineSendURL(ctx, svcCtx, message)
+	}()
+}
+
+func DoCallLineSendURL(ctx context.Context, svcCtx *svc.ServiceContext, message string) error {
 	span := trace.SpanFromContext(ctx)
 	notifyUrl := fmt.Sprintf("%s:%d/line/send", svcCtx.Config.LineSend.Host, svcCtx.Config.LineSend.Port)
 	data := struct {

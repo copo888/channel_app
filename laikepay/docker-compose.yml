@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: laikepay
+    image: laikepay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/laikepay:/app/logs

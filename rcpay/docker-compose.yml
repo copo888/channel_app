@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: rcpay
+    image: rcpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/rcpay:/app/logs

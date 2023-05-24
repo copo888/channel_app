@@ -106,6 +106,9 @@ func IPChecker(myip string, whitelist string) bool {
 			ip = ip + "/32"
 		}
 		_, ipnetA, _ := net.ParseCIDR(ip)
+		if ipnetA == nil {
+			continue
+		}
 		ipB := net.ParseIP(myip)
 
 		if ipnetA.Contains(ipB) {
@@ -250,6 +253,7 @@ func CreateTransactionLog(db *gorm.DB, data *typesX.TransactionLogData) (err err
 		OrderNo:         data.OrderNo,
 		LogType:         data.LogType,
 		LogSource:       data.LogSource,
+		TraceId:         data.TraceId,
 		Content:         string(jsonContent),
 		CreatedAt:       time.Now().UTC().String(),
 	}

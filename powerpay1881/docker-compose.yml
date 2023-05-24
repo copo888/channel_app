@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: powerpay1881
+    image: powerpay1881
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/powerpay1881:/app/logs

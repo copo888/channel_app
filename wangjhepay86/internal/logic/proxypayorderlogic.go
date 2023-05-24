@@ -13,6 +13,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/wangjhepay86/internal/svc"
@@ -112,7 +113,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Header("Authorization", "api-key " + l.svcCtx.Config.ApiKey.ChannelKey).Timeout(20).Trace(span).JSON(data)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Header("Authorization", "api-key "+l.svcCtx.Config.ApiKey.ChannelKey).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -123,10 +124,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 
-
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code int64 `json:"code"`
+		Code    int64  `json:"code"`
 		Message string `json:"message"`
 	}{}
 
@@ -145,7 +145,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if channelResp.Code != 200 {
+	if strings.Index(channelResp.Message, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Code, channelResp.Message)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Message)
+	} else if channelResp.Code != 200 {
 		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Code, channelResp.Message)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}

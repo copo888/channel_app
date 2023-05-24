@@ -59,21 +59,21 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.TransactionAmount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
 	orderStatus := "1"
 	if req.Status == "verified" {
 		orderStatus = "20"
-	}else if req.Status == "revoked" {
+	} else if req.Status == "revoked" {
 		orderStatus = "30"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.Orderid,
-		ChannelOrderNo: req.Oid, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		ChannelOrderNo: req.Oid,     // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}

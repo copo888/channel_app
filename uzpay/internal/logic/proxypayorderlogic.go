@@ -9,6 +9,7 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/uzpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
@@ -57,7 +58,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
-	notifyUrl := l.svcCtx.Config.Server+"/api/proxy-pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
 
 	data := url.Values{}
 	data.Set("uid", channel.MerId)
@@ -101,8 +102,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//}
 
 	// 加簽
-	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	//data.Set("sign", sign)
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	data.Set("sign", sign)
 	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
 	//data.Sign = sign
 
@@ -158,7 +159,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: "CHN_"+req.OrderNo,
+		ChannelOrderNo: "CHN_" + req.OrderNo,
 		OrderStatus:    "",
 	}
 

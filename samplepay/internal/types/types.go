@@ -15,6 +15,13 @@ type PayOrderRequest struct {
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
 	PlayerId          string `json:"playerId, optional"`
+	Address           string `json:"address, optionial"`
+	City              string `json:"city, optionial"`
+	ZipCode           string `json:"zipCode, optionial"`
+	Country           string `json:"country, optionial"`
+	Phone             string `json:"phone, optionial"`
+	Email             string `json:"email, optionial"`
+	PageFailedUrl     string `json:"pageFailedUrl, optional"`
 }
 
 type PayOrderResponse struct {

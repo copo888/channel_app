@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: limafupay
+    image: limafupay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/limafupay:/app/logs

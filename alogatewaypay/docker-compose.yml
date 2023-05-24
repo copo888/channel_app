@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: alogatewaypay
+    image: alogatewaypay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/alogatewaypay:/app/logs
