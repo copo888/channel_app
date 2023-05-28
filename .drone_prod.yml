@@ -3471,3 +3471,171 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: newglobalpay1
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-newglobalpay1
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f newglobalpay1/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=newglobalpay1" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/newglobalpay1 newglobalpay1/pay.go
+        - docker build -t newglobalpay1 -f newglobalpay1/Dockerfile .
+        - docker-compose -f newglobalpay1/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/newglobalpay1_prod_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
+name: newglobalpay777
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-newglobalpay777
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f newglobalpay777/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=newglobalpay777" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/newglobalpay777 newglobalpay777/pay.go
+        - docker build -t newglobalpay777 -f newglobalpay777/Dockerfile .
+        - docker-compose -f newglobalpay777/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/newglobalpay777_prod_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
+name: newglobalpay1111
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-newglobalpay1111
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f newglobalpay1111/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=newglobalpay1111" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/newglobalpay1111 newglobalpay1111/pay.go
+        - docker build -t newglobalpay1111 -f newglobalpay1111/Dockerfile .
+        - docker-compose -f newglobalpay1111/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/newglobalpay1111_prod_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
+name: newglobalpay1881
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-newglobalpay1881
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f newglobalpay1881/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=newglobalpay1881" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/newglobalpay1881 newglobalpay1881/pay.go
+        - docker build -t newglobalpay1881 -f newglobalpay1881/Dockerfile .
+        - docker-compose -f newglobalpay1881/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/newglobalpay1881_prod_*
+      event:
+        - push
+        - tag
+        - published
