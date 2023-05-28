@@ -3429,3 +3429,45 @@ steps:
         - push
         - tag
         - published
+
+---
+kind: pipeline
+name: newglobalpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-newglobalpay
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        - 172.28.222.65
+        - 172.28.164.3
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout master
+        - git checkout -- .
+        - git pull origin master
+        - go mod tidy
+        - docker-compose -f newglobalpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=newglobalpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/newglobalpay newglobalpay/pay.go
+        - docker build -t newglobalpay -f newglobalpay/Dockerfile .
+        - docker-compose -f newglobalpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/newglobalpay_prod_*
+      event:
+        - push
+        - tag
+        - published
