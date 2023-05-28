@@ -130,7 +130,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Status string  `json:"status"`
+		Status string `json:"status"`
 		Msg    string `json:"message"`
 	}{}
 
@@ -161,7 +161,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//組返回給backOffice 的代付返回物件
 	resp := &types.ProxyPayOrderResponse{
-		ChannelOrderNo: "",
+		ChannelOrderNo: "CHN" + req.OrderNo,
 		OrderStatus:    "",
 	}
 
