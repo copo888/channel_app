@@ -1,7 +1,7 @@
 ---
 kind: pipeline
 type: docker
-name: transaction-deploy
+name: app-deploy
 
 clone:
   disable: true
