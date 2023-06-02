@@ -75,7 +75,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Ramount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
