@@ -74,6 +74,8 @@ steps:
     ref:
       - refs/tags/api01-apphtpay*
       - refs/tags/api01-testhtpay*
+    status:
+      - success
 
 - name: docker-htpay-api02
   image: appleboy/drone-ssh
@@ -102,6 +104,8 @@ steps:
     ref:
       - refs/tags/api02-apphtpay*
       - refs/tags/api02-testhtpay*
+    status:
+      - success
 
 - name: docker-zhongshoupay-api01
   image: appleboy/drone-ssh
