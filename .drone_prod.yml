@@ -24,8 +24,8 @@ steps:
       - ./api01-before.sh
   when:
     ref:
-      - refs/tags/api01-app*
-      - refs/tags/api01-test*
+      - refs/tags/api01-app-*
+      - refs/tags/api01-test-*
 
 - name: slb-before-api02
   image: appleboy/drone-ssh
@@ -44,8 +44,8 @@ steps:
       - ./api02-before.sh
   when:
     ref:
-      - refs/tags/api02-app*
-      - refs/tags/api02-test*
+      - refs/tags/api02-app-*
+      - refs/tags/api02-test-*
 
 - name: docker-zhongshoupay-api01
   image: appleboy/drone-ssh
@@ -5404,6 +5404,6 @@ steps:
       - ./api-after.sh
   when:
     ref:
-      - refs/tags/api01-app*
-      - refs/tags/api02-app*
+      - refs/tags/api01-app-*
+      - refs/tags/api02-app-*
       - refs/tags/api-bal*
