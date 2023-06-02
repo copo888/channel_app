@@ -5404,6 +5404,6 @@ steps:
       - ./api-after.sh
   when:
     ref:
-      - refs/tags/api01-app*
-      - refs/tags/api02-app*
+      - refs/tags/api01-app-*
+      - refs/tags/api02-app-*
       - refs/tags/api-bal*
