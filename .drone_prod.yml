@@ -72,8 +72,8 @@ steps:
       - docker-compose -f htpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-app-htpay*
-      - refs/tags/api01-test-htpay*
+      - refs/tags/api01-apphtpay*
+      - refs/tags/api01-testhtpay*
     status:
       - success
 
@@ -102,8 +102,8 @@ steps:
       - docker-compose -f htpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-app-htpay*
-      - refs/tags/api02-test-htpay*
+      - refs/tags/api02-apphtpay*
+      - refs/tags/api02-testhtpay*
     status:
       - success
 
@@ -5404,6 +5404,6 @@ steps:
       - ./api-after.sh
   when:
     ref:
-      - refs/tags/api01-app-*
-      - refs/tags/api02-app-*
+      - refs/tags/api01-app*
+      - refs/tags/api02-app*
       - refs/tags/api-bal*
