@@ -14,7 +14,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/newglobalpay1881/internal/svc"
@@ -77,9 +76,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+	if req.Status == "5" {
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if req.Status == "3" {
 		status = "2"
 	}
 
