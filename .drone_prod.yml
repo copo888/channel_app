@@ -5412,8 +5412,8 @@ steps:
       - docker-compose -f newglobalpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appnewglobalpay*
-      - refs/tags/api01-testnewglobalpay*
+      - refs/tags/api01-appnewglobalpay-*
+      - refs/tags/api01-testnewglobalpay-*
     status:
       - success
 
@@ -5442,8 +5442,8 @@ steps:
       - docker-compose -f newglobalpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appnewglobalpay*
-      - refs/tags/api02-testnewglobalpay*
+      - refs/tags/api02-appnewglobalpay-*
+      - refs/tags/api02-testnewglobalpay-*
     status:
       - success
 
@@ -5472,8 +5472,8 @@ steps:
       - docker-compose -f newglobalpay1/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appnewglobalpay1*
-      - refs/tags/api01-testnewglobalpay1*
+      - refs/tags/api01-appnewglobalpay1-*
+      - refs/tags/api01-testnewglobalpay1-*
     status:
       - success
 
@@ -5502,8 +5502,8 @@ steps:
       - docker-compose -f newglobalpay1/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appnewglobalpay1*
-      - refs/tags/api02-testnewglobalpay1*
+      - refs/tags/api02-appnewglobalpay1-*
+      - refs/tags/api02-testnewglobalpay1-*
     status:
       - success
 
@@ -5532,8 +5532,8 @@ steps:
       - docker-compose -f newglobalpay777/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appnewglobalpay777*
-      - refs/tags/api01-testnewglobalpay777*
+      - refs/tags/api01-appnewglobalpay777-*
+      - refs/tags/api01-testnewglobalpay777-*
     status:
       - success
 
@@ -5562,8 +5562,8 @@ steps:
       - docker-compose -f newglobalpay777/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appnewglobalpay777*
-      - refs/tags/api02-testnewglobalpay777*
+      - refs/tags/api02-appnewglobalpay777-*
+      - refs/tags/api02-testnewglobalpay777-*
     status:
       - success
 
@@ -5592,8 +5592,8 @@ steps:
       - docker-compose -f newglobalpay1111/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appnewglobalpay1111*
-      - refs/tags/api01-testnewglobalpay1111*
+      - refs/tags/api01-appnewglobalpay1111-*
+      - refs/tags/api01-testnewglobalpay1111-*
     status:
       - success
 
@@ -5622,8 +5622,8 @@ steps:
       - docker-compose -f newglobalpay1111/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appnewglobalpay1111*
-      - refs/tags/api02-testnewglobalpay1111*
+      - refs/tags/api02-appnewglobalpay1111-*
+      - refs/tags/api02-testnewglobalpay1111-*
     status:
       - success
 
@@ -5652,8 +5652,8 @@ steps:
       - docker-compose -f newglobalpay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appnewglobalpay1881*
-      - refs/tags/api01-testnewglobalpay1881*
+      - refs/tags/api01-appnewglobalpay1881-*
+      - refs/tags/api01-testnewglobalpay1881-*
     status:
       - success
 
@@ -5682,8 +5682,8 @@ steps:
       - docker-compose -f newglobalpay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appnewglobalpay1881*
-      - refs/tags/api02-testnewglobalpay1881*
+      - refs/tags/api02-appnewglobalpay1881-*
+      - refs/tags/api02-testnewglobalpay1881-*
     status:
       - success
 
