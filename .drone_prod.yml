@@ -72,8 +72,8 @@ steps:
       - docker-compose -f htpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphtpay*
-      - refs/tags/api01-testhtpay*
+      - refs/tags/api01-apphtpay-*
+      - refs/tags/api01-testhtpay-*
     status:
       - success
 
@@ -102,8 +102,8 @@ steps:
       - docker-compose -f htpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphtpay*
-      - refs/tags/api02-testhtpay*
+      - refs/tags/api02-apphtpay-*
+      - refs/tags/api02-testhtpay-*
     status:
       - success
 
@@ -132,8 +132,8 @@ steps:
       - docker-compose -f zhongshoupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appzhongshoupay*
-      - refs/tags/api01-testzhongshoupay*
+      - refs/tags/api01-appzhongshoupay-*
+      - refs/tags/api01-testzhongshoupay-*
     status:
       - success
 
@@ -162,8 +162,8 @@ steps:
       - docker-compose -f zhongshoupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appzhongshoupay*
-      - refs/tags/api02-testzhongshoupay*
+      - refs/tags/api02-appzhongshoupay-*
+      - refs/tags/api02-testzhongshoupay-*
     status:
       - success
 
@@ -192,8 +192,8 @@ steps:
       - docker-compose -f lepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applepay*
-      - refs/tags/api01-testlepay*
+      - refs/tags/api01-applepay-*
+      - refs/tags/api01-testlepay-*
     status:
       - success
 
@@ -222,8 +222,8 @@ steps:
       - docker-compose -f lepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applepay*
-      - refs/tags/api02-testlepay*
+      - refs/tags/api02-applepay-*
+      - refs/tags/api02-testlepay-*
     status:
       - success
 
@@ -252,8 +252,8 @@ steps:
       - docker-compose -f taotaopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apptaotaopay*
-      - refs/tags/api01-testtaotaopay*
+      - refs/tags/api01-apptaotaopay-*
+      - refs/tags/api01-testtaotaopay-*
     status:
       - success
 
@@ -282,8 +282,8 @@ steps:
       - docker-compose -f taotaopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apptaotaopay*
-      - refs/tags/api02-testtaotaopay*
+      - refs/tags/api02-apptaotaopay-*
+      - refs/tags/api02-testtaotaopay-*
     status:
       - success
 
@@ -312,8 +312,8 @@ steps:
       - docker-compose -f wanlisinpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwanlisinpay*
-      - refs/tags/api01-testwanlisinpay*
+      - refs/tags/api01-appwanlisinpay-*
+      - refs/tags/api01-testwanlisinpay-*
     status:
       - success
 
@@ -342,8 +342,8 @@ steps:
       - docker-compose -f wanlisinpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwanlisinpay*
-      - refs/tags/api02-testwanlisinpay*
+      - refs/tags/api02-appwanlisinpay-*
+      - refs/tags/api02-testwanlisinpay-*
     status:
       - success
 
@@ -372,8 +372,8 @@ steps:
       - docker-compose -f wangjhepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwangjhepay*
-      - refs/tags/api01-testwangjhepay*
+      - refs/tags/api01-appwangjhepay-*
+      - refs/tags/api01-testwangjhepay-*
     status:
       - success
 
@@ -402,8 +402,8 @@ steps:
       - docker-compose -f wangjhepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwangjhepay*
-      - refs/tags/api02-testwangjhepay*
+      - refs/tags/api02-appwangjhepay-*
+      - refs/tags/api02-testwangjhepay-*
     status:
       - success
 
@@ -432,8 +432,8 @@ steps:
       - docker-compose -f shenfutongpay6/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appshenfutongpay6*
-      - refs/tags/api01-testshenfutongpay6*
+      - refs/tags/api01-appshenfutongpay6-*
+      - refs/tags/api01-testshenfutongpay6-*
     status:
       - success
 
@@ -462,8 +462,8 @@ steps:
       - docker-compose -f shenfutongpay6/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appshenfutongpay6*
-      - refs/tags/api02-testshenfutongpay6*
+      - refs/tags/api02-appshenfutongpay6-*
+      - refs/tags/api02-testshenfutongpay6-*
     status:
       - success
 
@@ -492,8 +492,8 @@ steps:
       - docker-compose -f stpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appstpay*
-      - refs/tags/api01-teststpay*
+      - refs/tags/api01-appstpay-*
+      - refs/tags/api01-teststpay-*
     status:
       - success
 
@@ -522,8 +522,8 @@ steps:
       - docker-compose -f stpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appstpay*
-      - refs/tags/api02-teststpay*
+      - refs/tags/api02-appstpay-*
+      - refs/tags/api02-teststpay-*
     status:
       - success
 
@@ -552,8 +552,8 @@ steps:
       - docker-compose -f ailefupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appailefupay*
-      - refs/tags/api01-testailefupay*
+      - refs/tags/api01-appailefupay-*
+      - refs/tags/api01-testailefupay-*
     status:
       - success
 
@@ -582,8 +582,8 @@ steps:
       - docker-compose -f ailefupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appailefupay*
-      - refs/tags/api02-testailefupay*
+      - refs/tags/api02-appailefupay-*
+      - refs/tags/api02-testailefupay-*
     status:
       - success
 
@@ -612,8 +612,8 @@ steps:
       - docker-compose -f huanyupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphuanyupay*
-      - refs/tags/api01-testhuanyupay*
+      - refs/tags/api01-apphuanyupay-*
+      - refs/tags/api01-testhuanyupay-*
     status:
       - success
 
@@ -642,8 +642,8 @@ steps:
       - docker-compose -f huanyupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphuanyupay*
-      - refs/tags/api02-testhuanyupay*
+      - refs/tags/api02-apphuanyupay-*
+      - refs/tags/api02-testhuanyupay-*
     status:
       - success
 
@@ -672,8 +672,8 @@ steps:
       - docker-compose -f lyubupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applyubupay*
-      - refs/tags/api01-testlyubupay*
+      - refs/tags/api01-applyubupay-*
+      - refs/tags/api01-testlyubupay-*
     status:
       - success
 
@@ -702,8 +702,8 @@ steps:
       - docker-compose -f lyubupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applyubupay*
-      - refs/tags/api02-testlyubupay*
+      - refs/tags/api02-applyubupay-*
+      - refs/tags/api02-testlyubupay-*
     status:
       - success
 
@@ -732,8 +732,8 @@ steps:
       - docker-compose -f liepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appliepay*
-      - refs/tags/api01-testliepay*
+      - refs/tags/api01-appliepay-*
+      - refs/tags/api01-testliepay-*
     status:
       - success
 
@@ -762,8 +762,8 @@ steps:
       - docker-compose -f liepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appliepay*
-      - refs/tags/api02-testliepay*
+      - refs/tags/api02-appliepay-*
+      - refs/tags/api02-testliepay-*
     status:
       - success
 
@@ -792,8 +792,8 @@ steps:
       - docker-compose -f vcpay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appvcpay2*
-      - refs/tags/api01-testvcpay2*
+      - refs/tags/api01-appvcpay2-*
+      - refs/tags/api01-testvcpay2-*
     status:
       - success
 
@@ -822,8 +822,8 @@ steps:
       - docker-compose -f vcpay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appvcpay2*
-      - refs/tags/api02-testvcpay2*
+      - refs/tags/api02-appvcpay2-*
+      - refs/tags/api02-testvcpay2-*
     status:
       - success
 
@@ -852,8 +852,8 @@ steps:
       - docker-compose -f mlbproxypay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmlbproxypay2*
-      - refs/tags/api01-testmlbproxypay2*
+      - refs/tags/api01-appmlbproxypay2-*
+      - refs/tags/api01-testmlbproxypay2-*
     status:
       - success
 
@@ -882,8 +882,8 @@ steps:
       - docker-compose -f mlbproxypay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmlbproxypay2*
-      - refs/tags/api02-testmlbproxypay2*
+      - refs/tags/api02-appmlbproxypay2-*
+      - refs/tags/api02-testmlbproxypay2-*
     status:
       - success
 
@@ -912,8 +912,8 @@ steps:
       - docker-compose -f sinshangpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appsinshangpay*
-      - refs/tags/api01-testsinshangpay*
+      - refs/tags/api01-appsinshangpay-*
+      - refs/tags/api01-testsinshangpay-*
     status:
       - success
 
@@ -942,8 +942,8 @@ steps:
       - docker-compose -f sinshangpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appsinshangpay*
-      - refs/tags/api02-testsinshangpay*
+      - refs/tags/api02-appsinshangpay-*
+      - refs/tags/api02-testsinshangpay-*
     status:
       - success
 
@@ -972,8 +972,8 @@ steps:
       - docker-compose -f baisiangpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appbaisiangpay*
-      - refs/tags/api01-testbaisiangpay*
+      - refs/tags/api01-appbaisiangpay-*
+      - refs/tags/api01-testbaisiangpay-*
     status:
       - success
 
@@ -1002,8 +1002,8 @@ steps:
       - docker-compose -f baisiangpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appbaisiangpay*
-      - refs/tags/api02-testbaisiangpay*
+      - refs/tags/api02-appbaisiangpay-*
+      - refs/tags/api02-testbaisiangpay-*
     status:
       - success
 
@@ -1032,8 +1032,8 @@ steps:
       - docker-compose -f vp8pay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appvp8pay*
-      - refs/tags/api01-testvp8pay*
+      - refs/tags/api01-appvp8pay-*
+      - refs/tags/api01-testvp8pay-*
     status:
       - success
 
@@ -1062,8 +1062,8 @@ steps:
       - docker-compose -f vp8pay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appvp8pay*
-      - refs/tags/api02-testvp8pay*
+      - refs/tags/api02-appvp8pay-*
+      - refs/tags/api02-testvp8pay-*
     status:
       - success
 
@@ -1092,8 +1092,8 @@ steps:
       - docker-compose -f jstpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appjstpay*
-      - refs/tags/api01-testjstpay*
+      - refs/tags/api01-appjstpay-*
+      - refs/tags/api01-testjstpay-*
     status:
       - success
 
@@ -1122,8 +1122,8 @@ steps:
       - docker-compose -f jstpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appjstpay*
-      - refs/tags/api02-testjstpay*
+      - refs/tags/api02-appjstpay-*
+      - refs/tags/api02-testjstpay-*
     status:
       - success
 
@@ -1152,8 +1152,8 @@ steps:
       - docker-compose -f mlbpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmlbpay*
-      - refs/tags/api01-testmlbpay*
+      - refs/tags/api01-appmlbpay-*
+      - refs/tags/api01-testmlbpay-*
     status:
       - success
 
@@ -1182,8 +1182,8 @@ steps:
       - docker-compose -f mlbpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmlbpay*
-      - refs/tags/api02-testmlbpay*
+      - refs/tags/api02-appmlbpay-*
+      - refs/tags/api02-testmlbpay-*
     status:
       - success
 
@@ -1212,8 +1212,8 @@ steps:
       - docker-compose -f jindepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appjindepay*
-      - refs/tags/api01-testjindepay*
+      - refs/tags/api01-appjindepay-*
+      - refs/tags/api01-testjindepay-*
     status:
       - success
 
@@ -1242,8 +1242,8 @@ steps:
       - docker-compose -f jindepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appjindepay*
-      - refs/tags/api02-testjindepay*
+      - refs/tags/api02-appjindepay-*
+      - refs/tags/api02-testjindepay-*
     status:
       - success
 
@@ -1272,8 +1272,8 @@ steps:
       - docker-compose -f sandianlingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appsandianlingpay*
-      - refs/tags/api01-testsandianlingpay*
+      - refs/tags/api01-appsandianlingpay-*
+      - refs/tags/api01-testsandianlingpay-*
     status:
       - success
 
@@ -1302,8 +1302,8 @@ steps:
       - docker-compose -f sandianlingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appsandianlingpay*
-      - refs/tags/api02-testsandianlingpay*
+      - refs/tags/api02-appsandianlingpay-*
+      - refs/tags/api02-testsandianlingpay-*
     status:
       - success
 
@@ -1332,8 +1332,8 @@ steps:
       - docker-compose -f wtpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwtpay*
-      - refs/tags/api01-testwtpay*
+      - refs/tags/api01-appwtpay-*
+      - refs/tags/api01-testwtpay-*
     status:
       - success
 
@@ -1362,8 +1362,8 @@ steps:
       - docker-compose -f wtpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwtpay*
-      - refs/tags/api02-testwtpay*
+      - refs/tags/api02-appwtpay-*
+      - refs/tags/api02-testwtpay-*
     status:
       - success
 
@@ -1392,8 +1392,8 @@ steps:
       - docker-compose -f shahepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appshahepay*
-      - refs/tags/api01-testshahepay*
+      - refs/tags/api01-appshahepay-*
+      - refs/tags/api01-testshahepay-*
     status:
       - success
 
@@ -1422,8 +1422,8 @@ steps:
       - docker-compose -f shahepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appshahepay*
-      - refs/tags/api02-testshahepay*
+      - refs/tags/api02-appshahepay-*
+      - refs/tags/api02-testshahepay-*
     status:
       - success
 
@@ -1452,8 +1452,8 @@ steps:
       - docker-compose -f shandianpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appshandianpay*
-      - refs/tags/api01-testshandianpay*
+      - refs/tags/api01-appshandianpay-*
+      - refs/tags/api01-testshandianpay-*
     status:
       - success
 
@@ -1482,8 +1482,8 @@ steps:
       - docker-compose -f shandianpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appshandianpay*
-      - refs/tags/api02-testshandianpay*
+      - refs/tags/api02-appshandianpay-*
+      - refs/tags/api02-testshandianpay-*
     status:
       - success
 
@@ -1512,8 +1512,8 @@ steps:
       - docker-compose -f lelifupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applelifupay*
-      - refs/tags/api01-testlelifupay*
+      - refs/tags/api01-applelifupay-*
+      - refs/tags/api01-testlelifupay-*
     status:
       - success
 
@@ -1542,8 +1542,8 @@ steps:
       - docker-compose -f lelifupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applelifupay*
-      - refs/tags/api02-testlelifupay*
+      - refs/tags/api02-applelifupay-*
+      - refs/tags/api02-testlelifupay-*
     status:
       - success
 
@@ -1572,8 +1572,8 @@ steps:
       - docker-compose -f yunshengpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appyunshengpay*
-      - refs/tags/api01-testyunshengpay*
+      - refs/tags/api01-appyunshengpay-*
+      - refs/tags/api01-testyunshengpay-*
     status:
       - success
 
@@ -1602,8 +1602,8 @@ steps:
       - docker-compose -f yunshengpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appyunshengpay*
-      - refs/tags/api02-testyunshengpay*
+      - refs/tags/api02-appyunshengpay-*
+      - refs/tags/api02-testyunshengpay-*
     status:
       - success
 
@@ -1632,8 +1632,8 @@ steps:
       - docker-compose -f mashangpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmashangpay*
-      - refs/tags/api01-testmashangpay*
+      - refs/tags/api01-appmashangpay-*
+      - refs/tags/api01-testmashangpay-*
     status:
       - success
 
@@ -1662,8 +1662,8 @@ steps:
       - docker-compose -f mashangpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmashangpay*
-      - refs/tags/api02-testmashangpay*
+      - refs/tags/api02-appmashangpay-*
+      - refs/tags/api02-testmashangpay-*
     status:
       - success
 
@@ -1692,8 +1692,8 @@ steps:
       - docker-compose -f yibipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appyibipay*
-      - refs/tags/api01-testyibipay*
+      - refs/tags/api01-appyibipay-*
+      - refs/tags/api01-testyibipay-*
     status:
       - success
 
@@ -1722,8 +1722,8 @@ steps:
       - docker-compose -f yibipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appyibipay*
-      - refs/tags/api02-testyibipay*
+      - refs/tags/api02-appyibipay-*
+      - refs/tags/api02-testyibipay-*
     status:
       - success
 
@@ -1752,8 +1752,8 @@ steps:
       - docker-compose -f uzpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appuzpay*
-      - refs/tags/api01-testuzpay*
+      - refs/tags/api01-appuzpay-*
+      - refs/tags/api01-testuzpay-*
     status:
       - success
 
@@ -1782,8 +1782,8 @@ steps:
       - docker-compose -f uzpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appuzpay*
-      - refs/tags/api02-testuzpay*
+      - refs/tags/api02-appuzpay-*
+      - refs/tags/api02-testuzpay-*
     status:
       - success
 
@@ -1812,8 +1812,8 @@ steps:
       - docker-compose -f shenfutongpay7/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appshenfutongpay7*
-      - refs/tags/api01-testshenfutongpay7*
+      - refs/tags/api01-appshenfutongpay7-*
+      - refs/tags/api01-testshenfutongpay7-*
     status:
       - success
 
@@ -1842,8 +1842,8 @@ steps:
       - docker-compose -f shenfutongpay7/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appshenfutongpay7*
-      - refs/tags/api02-testshenfutongpay7*
+      - refs/tags/api02-appshenfutongpay7-*
+      - refs/tags/api02-testshenfutongpay7-*
     status:
       - success
 
@@ -1872,8 +1872,8 @@ steps:
       - docker-compose -f wangjhepay86/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwangjhepay86*
-      - refs/tags/api01-testwangjhepay86*
+      - refs/tags/api01-appwangjhepay86-*
+      - refs/tags/api01-testwangjhepay86-*
     status:
       - success
 
@@ -1902,8 +1902,8 @@ steps:
       - docker-compose -f wangjhepay86/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwangjhepay86*
-      - refs/tags/api02-testwangjhepay86*
+      - refs/tags/api02-appwangjhepay86-*
+      - refs/tags/api02-testwangjhepay86-*
     status:
       - success
 
@@ -1932,8 +1932,8 @@ steps:
       - docker-compose -f wangjhepay87/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwangjhepay87*
-      - refs/tags/api01-testwangjhepay87*
+      - refs/tags/api01-appwangjhepay87-*
+      - refs/tags/api01-testwangjhepay87-*
     status:
       - success
 
@@ -1962,8 +1962,8 @@ steps:
       - docker-compose -f wangjhepay87/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwangjhepay87*
-      - refs/tags/api02-testwangjhepay87*
+      - refs/tags/api02-appwangjhepay87-*
+      - refs/tags/api02-testwangjhepay87-*
     status:
       - success
 
@@ -1992,8 +1992,8 @@ steps:
       - docker-compose -f duotsaipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appduotsaipay*
-      - refs/tags/api01-testduotsaipay*
+      - refs/tags/api01-appduotsaipay-*
+      - refs/tags/api01-testduotsaipay-*
     status:
       - success
 
@@ -2022,8 +2022,8 @@ steps:
       - docker-compose -f duotsaipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appduotsaipay*
-      - refs/tags/api02-testduotsaipay*
+      - refs/tags/api02-appduotsaipay-*
+      - refs/tags/api02-testduotsaipay-*
     status:
       - success
 
@@ -2052,8 +2052,8 @@ steps:
       - docker-compose -f uzpay7777/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appuzpay7777*
-      - refs/tags/api01-testuzpay7777*
+      - refs/tags/api01-appuzpay7777-*
+      - refs/tags/api01-testuzpay7777-*
     status:
       - success
 
@@ -2082,8 +2082,8 @@ steps:
       - docker-compose -f uzpay7777/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appuzpay7777*
-      - refs/tags/api02-testuzpay7777*
+      - refs/tags/api02-appuzpay7777-*
+      - refs/tags/api02-testuzpay7777-*
     status:
       - success
 
@@ -2112,8 +2112,8 @@ steps:
       - docker-compose -f uzpay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appuzpay1881*
-      - refs/tags/api01-testuzpay1881*
+      - refs/tags/api01-appuzpay1881-*
+      - refs/tags/api01-testuzpay1881-*
     status:
       - success
 
@@ -2142,8 +2142,8 @@ steps:
       - docker-compose -f uzpay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appuzpay1881*
-      - refs/tags/api02-testuzpay1881*
+      - refs/tags/api02-appuzpay1881-*
+      - refs/tags/api02-testuzpay1881-*
     status:
       - success
 
@@ -2172,8 +2172,8 @@ steps:
       - docker-compose -f lyubupay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applyubupay2*
-      - refs/tags/api01-testlyubupay2*
+      - refs/tags/api01-applyubupay2-*
+      - refs/tags/api01-testlyubupay2-*
     status:
       - success
 
@@ -2202,8 +2202,8 @@ steps:
       - docker-compose -f lyubupay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applyubupay2*
-      - refs/tags/api02-testlyubupay2*
+      - refs/tags/api02-applyubupay2-*
+      - refs/tags/api02-testlyubupay2-*
     status:
       - success
 
@@ -2232,8 +2232,8 @@ steps:
       - docker-compose -f zhiyuanpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appzhiyuanpay*
-      - refs/tags/api01-testzhiyuanpay*
+      - refs/tags/api01-appzhiyuanpay-*
+      - refs/tags/api01-testzhiyuanpay-*
     status:
       - success
 
@@ -2262,8 +2262,8 @@ steps:
       - docker-compose -f zhiyuanpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appzhiyuanpay*
-      - refs/tags/api02-testzhiyuanpay*
+      - refs/tags/api02-appzhiyuanpay-*
+      - refs/tags/api02-testzhiyuanpay-*
     status:
       - success
 
@@ -2292,8 +2292,8 @@ steps:
       - docker-compose -f wangjhepay116/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwangjhepay116*
-      - refs/tags/api01-testwangjhepay116*
+      - refs/tags/api01-appwangjhepay116-*
+      - refs/tags/api01-testwangjhepay116-*
     status:
       - success
 
@@ -2322,8 +2322,8 @@ steps:
       - docker-compose -f wangjhepay116/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwangjhepay116*
-      - refs/tags/api02-testwangjhepay116*
+      - refs/tags/api02-appwangjhepay116-*
+      - refs/tags/api02-testwangjhepay116-*
     status:
       - success
 
@@ -2352,8 +2352,8 @@ steps:
       - docker-compose -f jstpay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appjstpay2*
-      - refs/tags/api01-testjstpay2*
+      - refs/tags/api01-appjstpay2-*
+      - refs/tags/api01-testjstpay2-*
     status:
       - success
 
@@ -2382,8 +2382,8 @@ steps:
       - docker-compose -f jstpay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appjstpay2*
-      - refs/tags/api02-testjstpay2*
+      - refs/tags/api02-appjstpay2-*
+      - refs/tags/api02-testjstpay2-*
     status:
       - success
 
@@ -2412,8 +2412,8 @@ steps:
       - docker-compose -f vp8pay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appvp8pay2*
-      - refs/tags/api01-testvp8pay2*
+      - refs/tags/api01-appvp8pay2-*
+      - refs/tags/api01-testvp8pay2-*
     status:
       - success
 
@@ -2442,8 +2442,8 @@ steps:
       - docker-compose -f vp8pay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appvp8pay2*
-      - refs/tags/api02-testvp8pay2*
+      - refs/tags/api02-appvp8pay2-*
+      - refs/tags/api02-testvp8pay2-*
     status:
       - success
 
@@ -2472,8 +2472,8 @@ steps:
       - docker-compose -f ipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appipay*
-      - refs/tags/api01-testipay*
+      - refs/tags/api01-appipay-*
+      - refs/tags/api01-testipay-*
     status:
       - success
 
@@ -2502,8 +2502,8 @@ steps:
       - docker-compose -f ipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appipay*
-      - refs/tags/api02-testipay*
+      - refs/tags/api02-appipay-*
+      - refs/tags/api02-testipay-*
     status:
       - success
 
@@ -2532,8 +2532,8 @@ steps:
       - docker-compose -f wulinpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwulinpay*
-      - refs/tags/api01-testwulinpay*
+      - refs/tags/api01-appwulinpay-*
+      - refs/tags/api01-testwulinpay-*
     status:
       - success
 
@@ -2562,8 +2562,8 @@ steps:
       - docker-compose -f wulinpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwulinpay*
-      - refs/tags/api02-testwulinpay*
+      - refs/tags/api02-appwulinpay-*
+      - refs/tags/api02-testwulinpay-*
     status:
       - success
 
@@ -2592,8 +2592,8 @@ steps:
       - docker-compose -f changshengpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appchangshengpay*
-      - refs/tags/api01-testchangshengpay*
+      - refs/tags/api01-appchangshengpay-*
+      - refs/tags/api01-testchangshengpay-*
     status:
       - success
 
@@ -2622,8 +2622,8 @@ steps:
       - docker-compose -f changshengpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appchangshengpay*
-      - refs/tags/api02-testchangshengpay*
+      - refs/tags/api02-appchangshengpay-*
+      - refs/tags/api02-testchangshengpay-*
     status:
       - success
 
@@ -2652,8 +2652,8 @@ steps:
       - docker-compose -f wanmahuipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwanmahuipay*
-      - refs/tags/api01-testwanmahuipay*
+      - refs/tags/api01-appwanmahuipay-*
+      - refs/tags/api01-testwanmahuipay-*
     status:
       - success
 
@@ -2682,8 +2682,8 @@ steps:
       - docker-compose -f wanmahuipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwanmahuipay*
-      - refs/tags/api02-testwanmahuipay*
+      - refs/tags/api02-appwanmahuipay-*
+      - refs/tags/api02-testwanmahuipay-*
     status:
       - success
 
@@ -2712,8 +2712,8 @@ steps:
       - docker-compose -f powerpay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apppowerpay1881*
-      - refs/tags/api01-testpowerpay1881*
+      - refs/tags/api01-apppowerpay1881-*
+      - refs/tags/api01-testpowerpay1881-*
     status:
       - success
 
@@ -2742,8 +2742,8 @@ steps:
       - docker-compose -f powerpay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apppowerpay1881*
-      - refs/tags/api02-testpowerpay1881*
+      - refs/tags/api02-apppowerpay1881-*
+      - refs/tags/api02-testpowerpay1881-*
     status:
       - success
 
@@ -2772,8 +2772,8 @@ steps:
       - docker-compose -f dpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appdpay*
-      - refs/tags/api01-testdpay*
+      - refs/tags/api01-appdpay-*
+      - refs/tags/api01-testdpay-*
     status:
       - success
 
@@ -2802,8 +2802,8 @@ steps:
       - docker-compose -f dpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appdpay*
-      - refs/tags/api02-testdpay*
+      - refs/tags/api02-appdpay-*
+      - refs/tags/api02-testdpay-*
     status:
       - success
 
@@ -2832,8 +2832,8 @@ steps:
       - docker-compose -f kumopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appkumopay*
-      - refs/tags/api01-testkumopay*
+      - refs/tags/api01-appkumopay-*
+      - refs/tags/api01-testkumopay-*
     status:
       - success
 
@@ -2862,8 +2862,8 @@ steps:
       - docker-compose -f kumopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appkumopay*
-      - refs/tags/api02-testkumopay*
+      - refs/tags/api02-appkumopay-*
+      - refs/tags/api02-testkumopay-*
     status:
       - success
 
@@ -2892,8 +2892,8 @@ steps:
       - docker-compose -f alogatewaypay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appalogatewaypay*
-      - refs/tags/api01-testalogatewaypay*
+      - refs/tags/api01-appalogatewaypay-*
+      - refs/tags/api01-testalogatewaypay-*
     status:
       - success
 
@@ -2922,8 +2922,8 @@ steps:
       - docker-compose -f alogatewaypay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appalogatewaypay*
-      - refs/tags/api02-testalogatewaypay*
+      - refs/tags/api02-appalogatewaypay-*
+      - refs/tags/api02-testalogatewaypay-*
     status:
       - success
 
@@ -2952,8 +2952,8 @@ steps:
       - docker-compose -f hueifutongpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphueifutongpay*
-      - refs/tags/api01-testhueifutongpay*
+      - refs/tags/api01-apphueifutongpay-*
+      - refs/tags/api01-testhueifutongpay-*
     status:
       - success
 
@@ -2982,8 +2982,8 @@ steps:
       - docker-compose -f hueifutongpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphueifutongpay*
-      - refs/tags/api02-testhueifutongpay*
+      - refs/tags/api02-apphueifutongpay-*
+      - refs/tags/api02-testhueifutongpay-*
     status:
       - success
 
@@ -3012,8 +3012,8 @@ steps:
       - docker-compose -f quickpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appquickpay*
-      - refs/tags/api01-testquickpay*
+      - refs/tags/api01-appquickpay-*
+      - refs/tags/api01-testquickpay-*
     status:
       - success
 
@@ -3042,8 +3042,8 @@ steps:
       - docker-compose -f quickpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appquickpay*
-      - refs/tags/api02-testquickpay*
+      - refs/tags/api02-appquickpay-*
+      - refs/tags/api02-testquickpay-*
     status:
       - success
 
@@ -3072,8 +3072,8 @@ steps:
       - docker-compose -f jioufupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appjioufupay*
-      - refs/tags/api01-testjioufupay*
+      - refs/tags/api01-appjioufupay-*
+      - refs/tags/api01-testjioufupay-*
     status:
       - success
 
@@ -3102,8 +3102,8 @@ steps:
       - docker-compose -f jioufupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appjioufupay*
-      - refs/tags/api02-testjioufupay*
+      - refs/tags/api02-appjioufupay-*
+      - refs/tags/api02-testjioufupay-*
     status:
       - success
 
@@ -3132,8 +3132,8 @@ steps:
       - docker-compose -f wgopay88/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwgopay88*
-      - refs/tags/api01-testwgopay88*
+      - refs/tags/api01-appwgopay88-*
+      - refs/tags/api01-testwgopay88-*
     status:
       - success
 
@@ -3162,8 +3162,8 @@ steps:
       - docker-compose -f wgopay88/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwgopay88*
-      - refs/tags/api02-testwgopay88*
+      - refs/tags/api02-appwgopay88-*
+      - refs/tags/api02-testwgopay88-*
     status:
       - success
 
@@ -3192,8 +3192,8 @@ steps:
       - docker-compose -f lanyunpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applanyunpay*
-      - refs/tags/api01-testlanyunpay*
+      - refs/tags/api01-applanyunpay-*
+      - refs/tags/api01-testlanyunpay-*
     status:
       - success
 
@@ -3222,8 +3222,8 @@ steps:
       - docker-compose -f lanyunpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applanyunpay*
-      - refs/tags/api02-testlanyunpay*
+      - refs/tags/api02-applanyunpay-*
+      - refs/tags/api02-testlanyunpay-*
     status:
       - success
 
@@ -3252,8 +3252,8 @@ steps:
       - docker-compose -f limafupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applimafupay*
-      - refs/tags/api01-testlimafupay*
+      - refs/tags/api01-applimafupay-*
+      - refs/tags/api01-testlimafupay-*
     status:
       - success
 
@@ -3282,8 +3282,8 @@ steps:
       - docker-compose -f limafupay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applimafupay*
-      - refs/tags/api02-testlimafupay*
+      - refs/tags/api02-applimafupay-*
+      - refs/tags/api02-testlimafupay-*
     status:
       - success
 
@@ -3312,8 +3312,8 @@ steps:
       - docker-compose -f koreapay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appkoreapay*
-      - refs/tags/api01-testkoreapay*
+      - refs/tags/api01-appkoreapay-*
+      - refs/tags/api01-testkoreapay-*
     status:
       - success
 
@@ -3342,8 +3342,8 @@ steps:
       - docker-compose -f koreapay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appkoreapay*
-      - refs/tags/api02-testkoreapay*
+      - refs/tags/api02-appkoreapay-*
+      - refs/tags/api02-testkoreapay-*
     status:
       - success
 
@@ -3372,8 +3372,8 @@ steps:
       - docker-compose -f sinhongpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appsinhongpay*
-      - refs/tags/api01-testsinhongpay*
+      - refs/tags/api01-appsinhongpay-*
+      - refs/tags/api01-testsinhongpay-*
     status:
       - success
 
@@ -3402,8 +3402,8 @@ steps:
       - docker-compose -f sinhongpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appsinhongpay*
-      - refs/tags/api02-testsinhongpay*
+      - refs/tags/api02-appsinhongpay-*
+      - refs/tags/api02-testsinhongpay-*
     status:
       - success
 
@@ -3432,8 +3432,8 @@ steps:
       - docker-compose -f laikepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-applaikepay*
-      - refs/tags/api01-testlaikepay*
+      - refs/tags/api01-applaikepay-*
+      - refs/tags/api01-testlaikepay-*
     status:
       - success
 
@@ -3462,8 +3462,8 @@ steps:
       - docker-compose -f laikepay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-applaikepay*
-      - refs/tags/api02-testlaikepay*
+      - refs/tags/api02-applaikepay-*
+      - refs/tags/api02-testlaikepay-*
     status:
       - success
 
@@ -3492,8 +3492,8 @@ steps:
       - docker-compose -f quickpay_va/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appquickpay_va*
-      - refs/tags/api01-testquickpay_va*
+      - refs/tags/api01-appquickpay_va-*
+      - refs/tags/api01-testquickpay_va-*
     status:
       - success
 
@@ -3522,8 +3522,8 @@ steps:
       - docker-compose -f quickpay_va/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appquickpay_va*
-      - refs/tags/api02-testquickpay_va*
+      - refs/tags/api02-appquickpay_va-*
+      - refs/tags/api02-testquickpay_va-*
     status:
       - success
 
@@ -3552,8 +3552,8 @@ steps:
       - docker-compose -f kumopay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appkumopay1881*
-      - refs/tags/api01-testkumopay1881*
+      - refs/tags/api01-appkumopay1881-*
+      - refs/tags/api01-testkumopay1881-*
     status:
       - success
 
@@ -3582,8 +3582,8 @@ steps:
       - docker-compose -f kumopay1881/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appkumopay1881*
-      - refs/tags/api02-testkumopay1881*
+      - refs/tags/api02-appkumopay1881-*
+      - refs/tags/api02-testkumopay1881-*
     status:
       - success
 
@@ -3612,8 +3612,8 @@ steps:
       - docker-compose -f kumopay1/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appkumopay1*
-      - refs/tags/api01-testkumopay1*
+      - refs/tags/api01-appkumopay1-*
+      - refs/tags/api01-testkumopay1-*
     status:
       - success
 
@@ -3642,8 +3642,8 @@ steps:
       - docker-compose -f kumopay1/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appkumopay1*
-      - refs/tags/api02-testkumopay1*
+      - refs/tags/api02-appkumopay1-*
+      - refs/tags/api02-testkumopay1-*
     status:
       - success
 
@@ -3672,8 +3672,8 @@ steps:
       - docker-compose -f budingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appbudingpay*
-      - refs/tags/api01-testbudingpay*
+      - refs/tags/api01-appbudingpay-*
+      - refs/tags/api01-testbudingpay-*
     status:
       - success
 
@@ -3702,8 +3702,8 @@ steps:
       - docker-compose -f budingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appbudingpay*
-      - refs/tags/api02-testbudingpay*
+      - refs/tags/api02-appbudingpay-*
+      - refs/tags/api02-testbudingpay-*
     status:
       - success
 
@@ -3732,8 +3732,8 @@ steps:
       - docker-compose -f zihyunpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appzihyunpay*
-      - refs/tags/api01-testzihyunpay*
+      - refs/tags/api01-appzihyunpay-*
+      - refs/tags/api01-testzihyunpay-*
     status:
       - success
 
@@ -3762,8 +3762,8 @@ steps:
       - docker-compose -f zihyunpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appzihyunpay*
-      - refs/tags/api02-testzihyunpay*
+      - refs/tags/api02-appzihyunpay-*
+      - refs/tags/api02-testzihyunpay-*
     status:
       - success
 
@@ -3792,8 +3792,8 @@ steps:
       - docker-compose -f mlbpay_php/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmlbpay_php*
-      - refs/tags/api01-testmlbpay_php*
+      - refs/tags/api01-appmlbpay_php-*
+      - refs/tags/api01-testmlbpay_php-*
     status:
       - success
 
@@ -3822,8 +3822,8 @@ steps:
       - docker-compose -f mlbpay_php/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmlbpay_php*
-      - refs/tags/api02-testmlbpay_php*
+      - refs/tags/api02-appmlbpay_php-*
+      - refs/tags/api02-testmlbpay_php-*
     status:
       - success
 
@@ -3852,8 +3852,8 @@ steps:
       - docker-compose -f yuehhaopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appyuehhaopay*
-      - refs/tags/api01-testyuehhaopay*
+      - refs/tags/api01-appyuehhaopay-*
+      - refs/tags/api01-testyuehhaopay-*
     status:
       - success
 
@@ -3882,8 +3882,8 @@ steps:
       - docker-compose -f yuehhaopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appyuehhaopay*
-      - refs/tags/api02-testyuehhaopay*
+      - refs/tags/api02-appyuehhaopay-*
+      - refs/tags/api02-testyuehhaopay-*
     status:
       - success
 
@@ -3912,8 +3912,8 @@ steps:
       - docker-compose -f feibaopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appfeibaopay*
-      - refs/tags/api01-testfeibaopay*
+      - refs/tags/api01-appfeibaopay-*
+      - refs/tags/api01-testfeibaopay-*
     status:
       - success
 
@@ -3942,8 +3942,8 @@ steps:
       - docker-compose -f feibaopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appfeibaopay*
-      - refs/tags/api02-testfeibaopay*
+      - refs/tags/api02-appfeibaopay-*
+      - refs/tags/api02-testfeibaopay-*
     status:
       - success
 
@@ -3972,8 +3972,8 @@ steps:
       - docker-compose -f rcpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apprcpay*
-      - refs/tags/api01-testrcpay*
+      - refs/tags/api01-apprcpay-*
+      - refs/tags/api01-testrcpay-*
     status:
       - success
 
@@ -4002,8 +4002,8 @@ steps:
       - docker-compose -f rcpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apprcpay*
-      - refs/tags/api02-testrcpay*
+      - refs/tags/api02-apprcpay-*
+      - refs/tags/api02-testrcpay-*
     status:
       - success
 
@@ -4032,8 +4032,8 @@ steps:
       - docker-compose -f rcpay_ue/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apprcpay_ue*
-      - refs/tags/api01-testrcpay_ue*
+      - refs/tags/api01-apprcpay_ue-*
+      - refs/tags/api01-testrcpay_ue-*
     status:
       - success
 
@@ -4062,8 +4062,8 @@ steps:
       - docker-compose -f rcpay_ue/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apprcpay_ue*
-      - refs/tags/api02-testrcpay_ue*
+      - refs/tags/api02-apprcpay_ue-*
+      - refs/tags/api02-testrcpay_ue-*
     status:
       - success
 
@@ -4092,8 +4092,8 @@ steps:
       - docker-compose -f mashangpay8888/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmashangpay8888*
-      - refs/tags/api01-testmashangpay8888*
+      - refs/tags/api01-appmashangpay8888-*
+      - refs/tags/api01-testmashangpay8888-*
     status:
       - success
 
@@ -4122,8 +4122,8 @@ steps:
       - docker-compose -f mashangpay8888/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmashangpay8888*
-      - refs/tags/api02-testmashangpay8888*
+      - refs/tags/api02-appmashangpay8888-*
+      - refs/tags/api02-testmashangpay8888-*
     status:
       - success
 
@@ -4152,8 +4152,8 @@ steps:
       - docker-compose -f hueiyingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphueiyingpay*
-      - refs/tags/api01-testhueiyingpay*
+      - refs/tags/api01-apphueiyingpay-*
+      - refs/tags/api01-testhueiyingpay-*
     status:
       - success
 
@@ -4182,8 +4182,8 @@ steps:
       - docker-compose -f hueiyingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphueiyingpay*
-      - refs/tags/api02-testhueiyingpay*
+      - refs/tags/api02-apphueiyingpay-*
+      - refs/tags/api02-testhueiyingpay-*
     status:
       - success
 
@@ -4212,8 +4212,8 @@ steps:
       - docker-compose -f duomeipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appduomeipay*
-      - refs/tags/api01-testduomeipay*
+      - refs/tags/api01-appduomeipay-*
+      - refs/tags/api01-testduomeipay-*
     status:
       - success
 
@@ -4242,8 +4242,8 @@ steps:
       - docker-compose -f duomeipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appduomeipay*
-      - refs/tags/api02-testduomeipay*
+      - refs/tags/api02-appduomeipay-*
+      - refs/tags/api02-testduomeipay-*
     status:
       - success
 
@@ -4272,8 +4272,8 @@ steps:
       - docker-compose -f gtpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appgtpay*
-      - refs/tags/api01-testgtpay*
+      - refs/tags/api01-appgtpay-*
+      - refs/tags/api01-testgtpay-*
     status:
       - success
 
@@ -4302,8 +4302,8 @@ steps:
       - docker-compose -f gtpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appgtpay*
-      - refs/tags/api02-testgtpay*
+      - refs/tags/api02-appgtpay-*
+      - refs/tags/api02-testgtpay-*
     status:
       - success
 
@@ -4332,8 +4332,8 @@ steps:
       - docker-compose -f nyypay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appnyypay*
-      - refs/tags/api01-testnyypay*
+      - refs/tags/api01-appnyypay-*
+      - refs/tags/api01-testnyypay-*
     status:
       - success
 
@@ -4362,8 +4362,8 @@ steps:
       - docker-compose -f nyypay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appnyypay*
-      - refs/tags/api02-testnyypay*
+      - refs/tags/api02-appnyypay-*
+      - refs/tags/api02-testnyypay-*
     status:
       - success
 
@@ -4392,8 +4392,8 @@ steps:
       - docker-compose -f u2pay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appu2pay*
-      - refs/tags/api01-testu2pay*
+      - refs/tags/api01-appu2pay-*
+      - refs/tags/api01-testu2pay-*
     status:
       - success
 
@@ -4422,8 +4422,8 @@ steps:
       - docker-compose -f u2pay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appu2pay*
-      - refs/tags/api02-testu2pay*
+      - refs/tags/api02-appu2pay-*
+      - refs/tags/api02-testu2pay-*
     status:
       - success
 
@@ -4452,8 +4452,8 @@ steps:
       - docker-compose -f kumopaymaya/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appkumopaymaya*
-      - refs/tags/api01-testkumopaymaya*
+      - refs/tags/api01-appkumopaymaya-*
+      - refs/tags/api01-testkumopaymaya-*
     status:
       - success
 
@@ -4482,8 +4482,8 @@ steps:
       - docker-compose -f kumopaymaya/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appkumopaymaya*
-      - refs/tags/api02-testkumopaymaya*
+      - refs/tags/api02-appkumopaymaya-*
+      - refs/tags/api02-testkumopaymaya-*
     status:
       - success
 
@@ -4512,8 +4512,8 @@ steps:
       - docker-compose -f kumopay1111/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appkumopay1111*
-      - refs/tags/api01-testkumopay1111*
+      - refs/tags/api01-appkumopay1111-*
+      - refs/tags/api01-testkumopay1111-*
     status:
       - success
 
@@ -4542,8 +4542,8 @@ steps:
       - docker-compose -f kumopay1111/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appkumopay1111*
-      - refs/tags/api02-testkumopay1111*
+      - refs/tags/api02-appkumopay1111-*
+      - refs/tags/api02-testkumopay1111-*
     status:
       - success
 
@@ -4572,8 +4572,8 @@ steps:
       - docker-compose -f easypay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appeasypay*
-      - refs/tags/api01-testeasypay*
+      - refs/tags/api01-appeasypay-*
+      - refs/tags/api01-testeasypay-*
     status:
       - success
 
@@ -4602,8 +4602,8 @@ steps:
       - docker-compose -f easypay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appeasypay*
-      - refs/tags/api02-testeasypay*
+      - refs/tags/api02-appeasypay-*
+      - refs/tags/api02-testeasypay-*
     status:
       - success
 
@@ -4632,8 +4632,8 @@ steps:
       - docker-compose -f htpay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphtpay2*
-      - refs/tags/api01-testhtpay2*
+      - refs/tags/api01-apphtpay2-*
+      - refs/tags/api01-testhtpay2-*
     status:
       - success
 
@@ -4662,8 +4662,8 @@ steps:
       - docker-compose -f htpay2/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphtpay2*
-      - refs/tags/api02-testhtpay2*
+      - refs/tags/api02-apphtpay2-*
+      - refs/tags/api02-testhtpay2-*
     status:
       - success
 
@@ -4692,8 +4692,8 @@ steps:
       - docker-compose -f jindingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appjindingpay*
-      - refs/tags/api01-testjindingpay*
+      - refs/tags/api01-appjindingpay-*
+      - refs/tags/api01-testjindingpay-*
     status:
       - success
 
@@ -4722,8 +4722,8 @@ steps:
       - docker-compose -f jindingpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appjindingpay*
-      - refs/tags/api02-testjindingpay*
+      - refs/tags/api02-appjindingpay-*
+      - refs/tags/api02-testjindingpay-*
     status:
       - success
 
@@ -4752,8 +4752,8 @@ steps:
       - docker-compose -f qipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appqipay*
-      - refs/tags/api01-testqipay*
+      - refs/tags/api01-appqipay-*
+      - refs/tags/api01-testqipay-*
     status:
       - success
 
@@ -4782,8 +4782,8 @@ steps:
       - docker-compose -f qipay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appqipay*
-      - refs/tags/api02-testqipay*
+      - refs/tags/api02-appqipay-*
+      - refs/tags/api02-testqipay-*
     status:
       - success
 
@@ -4812,8 +4812,8 @@ steps:
       - docker-compose -f dbinpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appdbinpay*
-      - refs/tags/api01-testdbinpay*
+      - refs/tags/api01-appdbinpay-*
+      - refs/tags/api01-testdbinpay-*
     status:
       - success
 
@@ -4842,8 +4842,8 @@ steps:
       - docker-compose -f dbinpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appdbinpay*
-      - refs/tags/api02-testdbinpay*
+      - refs/tags/api02-appdbinpay-*
+      - refs/tags/api02-testdbinpay-*
     status:
       - success
 
@@ -4872,8 +4872,8 @@ steps:
       - docker-compose -f miduoduopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmiduoduopay*
-      - refs/tags/api01-testmiduoduopay*
+      - refs/tags/api01-appmiduoduopay-*
+      - refs/tags/api01-testmiduoduopay-*
     status:
       - success
 
@@ -4902,8 +4902,8 @@ steps:
       - docker-compose -f miduoduopay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmiduoduopay*
-      - refs/tags/api02-testmiduoduopay*
+      - refs/tags/api02-appmiduoduopay-*
+      - refs/tags/api02-testmiduoduopay-*
     status:
       - success
 
@@ -4932,8 +4932,8 @@ steps:
       - docker-compose -f globalpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appglobalpay*
-      - refs/tags/api01-testglobalpay*
+      - refs/tags/api01-appglobalpay-*
+      - refs/tags/api01-testglobalpay-*
     status:
       - success
 
@@ -4962,8 +4962,8 @@ steps:
       - docker-compose -f globalpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appglobalpay*
-      - refs/tags/api02-testglobalpay*
+      - refs/tags/api02-appglobalpay-*
+      - refs/tags/api02-testglobalpay-*
     status:
       - success
 
@@ -4992,8 +4992,8 @@ steps:
       - docker-compose -f typay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apptypay*
-      - refs/tags/api01-testtypay*
+      - refs/tags/api01-apptypay-*
+      - refs/tags/api01-testtypay-*
     status:
       - success
 
@@ -5022,8 +5022,8 @@ steps:
       - docker-compose -f typay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apptypay*
-      - refs/tags/api02-testtypay*
+      - refs/tags/api02-apptypay-*
+      - refs/tags/api02-testtypay-*
     status:
       - success
 
@@ -5052,8 +5052,8 @@ steps:
       - docker-compose -f hqpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphqpay*
-      - refs/tags/api01-testhqpay*
+      - refs/tags/api01-apphqpay-*
+      - refs/tags/api01-testhqpay-*
     status:
       - success
 
@@ -5082,8 +5082,8 @@ steps:
       - docker-compose -f hqpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphqpay*
-      - refs/tags/api02-testhqpay*
+      - refs/tags/api02-apphqpay-*
+      - refs/tags/api02-testhqpay-*
     status:
       - success
 
@@ -5112,8 +5112,8 @@ steps:
       - docker-compose -f shtpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appshtpay*
-      - refs/tags/api01-testshtpay*
+      - refs/tags/api01-appshtpay-*
+      - refs/tags/api01-testshtpay-*
     status:
       - success
 
@@ -5142,8 +5142,8 @@ steps:
       - docker-compose -f shtpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appshtpay*
-      - refs/tags/api02-testshtpay*
+      - refs/tags/api02-appshtpay-*
+      - refs/tags/api02-testshtpay-*
     status:
       - success
 
@@ -5172,8 +5172,8 @@ steps:
       - docker-compose -f tiansiapay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apptiansiapay*
-      - refs/tags/api01-testtiansiapay*
+      - refs/tags/api01-apptiansiapay-*
+      - refs/tags/api01-testtiansiapay-*
     status:
       - success
 
@@ -5202,8 +5202,8 @@ steps:
       - docker-compose -f tiansiapay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apptiansiapay*
-      - refs/tags/api02-testtiansiapay*
+      - refs/tags/api02-apptiansiapay-*
+      - refs/tags/api02-testtiansiapay-*
     status:
       - success
 
@@ -5232,8 +5232,8 @@ steps:
       - docker-compose -f txpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apptxpay*
-      - refs/tags/api01-testtxpay*
+      - refs/tags/api01-apptxpay-*
+      - refs/tags/api01-testtxpay-*
     status:
       - success
 
@@ -5262,8 +5262,8 @@ steps:
       - docker-compose -f txpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apptxpay*
-      - refs/tags/api02-testtxpay*
+      - refs/tags/api02-apptxpay-*
+      - refs/tags/api02-testtxpay-*
     status:
       - success
 
@@ -5292,8 +5292,8 @@ steps:
       - docker-compose -f uhpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appuhpay*
-      - refs/tags/api01-testuhpay*
+      - refs/tags/api01-appuhpay-*
+      - refs/tags/api01-testuhpay-*
     status:
       - success
 
@@ -5322,8 +5322,8 @@ steps:
       - docker-compose -f uhpay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appuhpay*
-      - refs/tags/api02-testuhpay*
+      - refs/tags/api02-appuhpay-*
+      - refs/tags/api02-testuhpay-*
     status:
       - success
 
@@ -5352,8 +5352,8 @@ steps:
       - docker-compose -f wgopay7777/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appwgopay7777*
-      - refs/tags/api01-testwgopay7777*
+      - refs/tags/api01-appwgopay7777-*
+      - refs/tags/api01-testwgopay7777-*
     status:
       - success
 
@@ -5382,8 +5382,8 @@ steps:
       - docker-compose -f wgopay7777/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appwgopay7777*
-      - refs/tags/api02-testwgopay7777*
+      - refs/tags/api02-appwgopay7777-*
+      - refs/tags/api02-testwgopay7777-*
     status:
       - success
 
