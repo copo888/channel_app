@@ -38,6 +38,10 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 	}
 }
 
+var (
+	PublicKey = "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCSkT/YDKDo3tOIIN4VA3NccSifoncZcjxVJ1VEXg1iQHZYsglD6rLO6r1nflfpv71ex2/D7R/OxgQytKQQ/pvAcXCwDneuppfItpDv+9FgkLvoWEemZhv7e892qsIBa+9e8fO+w931BJrGZFz1srqvHZtViVqGPF3sTFfEX3A12QIDAQAB"
+)
+
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s,orderNo: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
@@ -89,7 +93,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	m := payutils.CovertToMap(params)
 	newSource := payutils.JoinStringsInASCII(m, "&", false, false, "")
 
-	encryptContent := payutils.GetSign_RSA([]byte(newSource), l.svcCtx.Config.PublicKey)
+	encryptContent := payutils.GetSign_RSA([]byte(newSource), PublicKey)
 	logx.WithContext(l.ctx).Infof("RSA 加密前字串:%+s, 加密后字串:%+s", newSource, encryptContent)
 
 	reqData := url.Values{}

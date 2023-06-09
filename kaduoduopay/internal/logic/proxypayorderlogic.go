@@ -39,7 +39,6 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
-
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s,orderNo: %s, ProxyPayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
@@ -92,7 +91,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	m := payutils.CovertToMap(data)
 	newSource := payutils.JoinStringsInASCII(m, "&", false, false, "")
 
-	encryptContent := payutils.GetSign_RSA([]byte(newSource), l.svcCtx.Config.PublicKey)
+	encryptContent := payutils.GetSign_RSA([]byte(newSource), PublicKey)
 	logx.WithContext(l.ctx).Infof("RSA 加密前字串:%+s, 加密后字串:%+s", newSource, encryptContent)
 
 	reqData := url.Values{}
