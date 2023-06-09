@@ -13,6 +13,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/kaduoduopay/internal/svc"
@@ -82,7 +83,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OrderId,
+		ProxyPayOrderNo:     strings.Replace(req.OrderId, channel.MerId, "", -1),
 		ChannelOrderNo:      req.TradeNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
