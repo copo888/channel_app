@@ -82,7 +82,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankCardholder: req.ReceiptAccountName,
 		BankCode:       channelBankMap.MapCode,
 		NotifyUrl:      l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
-		//NotifyUrl: "http://c4a2-211-75-36-190.ngrok-free.app/api/proxy-pay-call-back",
 	}
 
 	// 加簽

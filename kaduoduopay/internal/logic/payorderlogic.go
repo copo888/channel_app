@@ -57,7 +57,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	//notifyUrl := "http://c4a2-211-75-36-190.ngrok-free.app/api/pay-call-back"
 	timestamp := time.Now().Format("20060102150405")
 
 	params := struct {
