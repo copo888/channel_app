@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: kaduoduopay
+    image: kaduoduopay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/kaduoduopay:/app/logs
