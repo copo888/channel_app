@@ -8,9 +8,8 @@ import (
 type Config struct {
 	rest.RestConf
 	service.ServiceConf
-	Server    string
-	PublicKey string
-	Mysql     struct {
+	Server string
+	Mysql  struct {
 		Host       string
 		Port       int
 		DBName     string
