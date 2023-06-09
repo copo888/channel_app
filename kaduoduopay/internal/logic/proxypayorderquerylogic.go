@@ -48,8 +48,8 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 
 	data := url.Values{}
 	data.Set("appId", channel.MerId)
-	data.Set("appOrderId", req.OrderNo)
-	data.Set("pay", "pay")
+	data.Set("appOrderId", channel.MerId+req.OrderNo)
+	data.Set("type", "wit")
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
@@ -70,24 +70,28 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		OrderId string `json:"orderId"`
-		State   string `json:"orderStatus"` //1处理中；2成功；3失败；4出款中
-		Money   string `json:"amount"`
-		Sign    string `json:"sign"`
-		AppId   string `json:"appId"`
+		Success bool   `json:"success"`
+		Message string `json:"message"`
+		Result  struct {
+			OrderId     string `json:"orderId,optional"`
+			OrderStatus string `json:"orderStatus,optional"`
+			Amount      string `json:"amount,optional"`
+			Sign        string `json:"sign,optional"`
+		} `json:"result,optional"`
+		Code int `json:"code,optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.OrderId == "" {
+	} else if channelQueryResp.Success != true {
 		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %+v", channelQueryResp)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Message)
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.State == "2" {
+	if channelQueryResp.Result.OrderStatus == "2" { //1处理中；2成功；3失败；4出款中
 		orderStatus = "20"
-	} else if channelQueryResp.State == "3" {
+	} else if channelQueryResp.Result.OrderStatus == "3" {
 		orderStatus = "30"
 	}
 

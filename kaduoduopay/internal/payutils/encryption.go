@@ -38,6 +38,7 @@ func GetSign_RSA(data []byte, publicKey string) string {
 	////转换为pem格式的公钥
 	publicKeyPEM := "-----BEGIN PUBLIC KEY-----\n" + publicKey + "\n-----END PUBLIC KEY-----"
 
+	logx.Infof(publicKeyPEM)
 	// 解码 PEM 格式的公钥
 	block, _ := pem.Decode([]byte(publicKeyPEM))
 	// 解析公钥
@@ -62,24 +63,6 @@ func GetSign_RSA(data []byte, publicKey string) string {
 	encryptedData := base64.StdEncoding.EncodeToString(encrypted)
 	return encryptedData
 }
-
-//func GetSignRSA(source string, publicKey string) (encodedValue string, err error) {
-//	privateKey, err := rsa.GenerateKey(rand.Reader, 2048)
-//	if err != nil {
-//		log.Fatalf("Failed to generate RSA key pair: %v", err)
-//	}
-//
-//	// 加密数据
-//	ciphertext, err := rsa.EncryptPKCS1v15(rand.Reader,, plaintext)
-//	if err != nil {
-//		log.Fatalf("Failed to encrypt data: %v", err)
-//	}
-//
-//	// 对加密结果进行 Base64 编码
-//	encodedValue = base64.StdEncoding.EncodeToString([]byte(encryptedValue))
-//
-//	return encodedValue, nil
-//}
 
 /*
 JoinStringsInASCII 按照规则，参数名ASCII码从小到大排序后拼接

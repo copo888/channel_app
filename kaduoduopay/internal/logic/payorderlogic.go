@@ -16,6 +16,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -49,14 +50,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
-	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-	//	return nil, errorx.New(responsex.INVALID_USER_ID)
-	//}
+	if strings.EqualFold(req.PayType, "YL") && len(req.UserId) == 0 {
+		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
+		return nil, errorx.New(responsex.INVALID_USER_ID)
+	}
 
 	// 取值
-	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl := "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
+	//notifyUrl := "http://c4a2-211-75-36-190.ngrok-free.app/api/pay-call-back"
 	timestamp := time.Now().Format("20060102150405")
 
 	params := struct {
@@ -78,13 +79,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PassCode:  req.ChannelPayType,
 		ApplyDate: timestamp,
 	}
-
-	// MD5加簽
-	sign := payutils.SortAndSignFromObj(params, channel.MerKey, l.ctx)
-	params.Sign = sign
 	if req.UserId != "" {
 		params.UserId = req.UserId //会员ID
 	}
+	// MD5加簽
+	sign := payutils.SortAndSignFromObj(params, channel.MerKey, l.ctx)
+	params.Sign = sign
+
 	//RSA 加密前排序
 	m := payutils.CovertToMap(params)
 	newSource := payutils.JoinStringsInASCII(m, "&", false, false, "")
@@ -93,7 +94,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("RSA 加密前字串:%+s, 加密后字串:%+s", newSource, encryptContent)
 
 	reqData := url.Values{}
-	reqData.Set("rsaSign", encryptContent)
+	reqData.Set("cipherText", encryptContent)
 	reqData.Set("userId", channel.MerId)
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{

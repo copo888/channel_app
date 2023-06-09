@@ -63,20 +63,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 
-	//data := url.Values{}
-	//data.Set("partner", channel.MerId)
-	//data.Set("service", "10201")
-	//data.Set("tradeNo", req.OrderNo)
-	//data.Set("amount", transactionAmount)
-	//data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
-	//data.Set("bankCode", channelBankMap.MapCode)
-	//data.Set("subsidiaryBank", req.ReceiptCardBankName)
-	//data.Set("subbranch", req.ReceiptCardBranch)
-	//data.Set("province", req.ReceiptCardProvince)
-	//data.Set("city", req.ReceiptCardCity)
-	//data.Set("bankCardNo", req.ReceiptAccountNumber)
-	//data.Set("bankCardholder", req.ReceiptAccountName)
-
 	data := struct {
 		Partner        string `json:"appid, optional"`
 		TradeNo        string `json:"apporderid, optional"` //appid+orderid
@@ -96,6 +82,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankCardholder: req.ReceiptAccountName,
 		BankCode:       channelBankMap.MapCode,
 		NotifyUrl:      l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		//NotifyUrl: "http://c4a2-211-75-36-190.ngrok-free.app/api/proxy-pay-call-back",
 	}
 
 	// 加簽
@@ -110,7 +97,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("RSA 加密前字串:%+s, 加密后字串:%+s", newSource, encryptContent)
 
 	reqData := url.Values{}
-	reqData.Set("rsaSign", encryptContent)
+	reqData.Set("cipherText", encryptContent)
 	reqData.Set("userId", channel.MerId)
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{

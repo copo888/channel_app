@@ -10,6 +10,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/kaduoduopay/internal/svc"
@@ -67,21 +68,26 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
 		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		Balance string `json:"balance"`
+		Message string `json:"message"`
+		Result  struct {
+			UserId   string  `json:"userId,optional"`
+			UserName string  `json:"userName,optional"`
+			Balance  float64 `json:"balance,optional"`
+			Sign     string  `json:"sign,optional"`
+		} `json:"result,optional"`
+		Code interface{} `json:"code,optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	} else if balanceQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Message)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Message)
 	}
-
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Balance,
+		ProxyPayBalance:    strconv.FormatFloat(balanceQueryResp.Result.Balance, 'f', 2, 64),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 

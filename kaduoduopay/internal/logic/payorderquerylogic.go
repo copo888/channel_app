@@ -11,11 +11,9 @@ import (
 	"github.com/copo888/channel_app/kaduoduopay/internal/svc"
 	"github.com/copo888/channel_app/kaduoduopay/internal/types"
 	"github.com/gioco-play/gozzle"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
-	"strconv"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PayOrderQueryLogic struct {
@@ -48,7 +46,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	data := url.Values{}
 	data.Set("appId", channel.MerId)
 	data.Set("appOrderId", req.OrderNo)
-	data.Set("pay", "pay")
+	data.Set("type", "pay")
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
@@ -59,7 +57,6 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	span := trace.SpanFromContext(l.ctx)
 	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
-	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -69,33 +66,40 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
-	// 渠道回覆處理
 	channelResp := struct {
-		OrderId string `json:"orderId"`
-		State   string `json:"orderStatus"` //充值订单：1处理中；2成功；3失败
-		Money   string `json:"amount"`
-		Sign    string `json:"sign"`
-		AppId   string `json:"appId"`
+		Success bool        `json:"success"`
+		Message string      `json:"message"`
+		Result  interface{} `json:"result"`
+		Code    interface{} `json:"code"`
 	}{}
+
+	// 渠道回覆處理
+	//channelResp2 := struct {
+	//	OrderId string `json:"orderId"`
+	//	State   string `json:"orderStatus"` //充值订单：1处理中；2成功；3失败
+	//	Money   string `json:"amount"`
+	//	Sign    string `json:"sign"`
+	//	AppId   string `json:"appId"`
+	//}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.OrderId == "" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR)
+	} else if channelResp.Success != true {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Money, 64)
-	if errParse != nil {
-		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
-	}
+	//orderAmount, errParse := strconv.ParseFloat(channelResp.Result, 64)
+	//if errParse != nil {
+	//	return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
+	//}
 
 	orderStatus := "0"
-	if channelResp.State == "2" {
+	if channelResp.Result == "2" {
 		orderStatus = "1"
 	}
 
 	resp = &types.PayOrderQueryResponse{
-		OrderAmount: orderAmount,
+		OrderAmount: 0,
 		OrderStatus: orderStatus, //订单状态: 状态 0处理中，1成功，2失败
 	}
 
