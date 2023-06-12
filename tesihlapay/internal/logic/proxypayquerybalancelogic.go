@@ -43,8 +43,8 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	}
 
 	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
+	data.Set("mchid", channel.MerId)
+	//data.Set("service", "10201")
 
 	//JSON 格式
 	//data := struct {
@@ -55,7 +55,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	data.Set("sign", sign)
+	data.Set("pay_md5sign", sign)
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", channel.ProxyPayQueryBalanceUrl, data)
@@ -72,15 +72,15 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		Success bool   `json:"success"`
+		Status  string   `json:"status"`
 		Msg     string `json:"msg"`
-		Balance string `json:"balance"`
+		Balance string `json:"商户余额"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if balanceQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
+	} else if balanceQueryResp.Status != "success" {
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Status, balanceQueryResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
 	}
 
