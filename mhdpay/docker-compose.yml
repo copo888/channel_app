@@ -1,9 +1,9 @@
 version: "2"
 services:
   api:
-    container_name: newglobalpay
-    image: newglobalpay
+    container_name: mhdpay
+    image: mhdpay
     restart: always
     network_mode: host
     volumes:
-      - /root/logs/newglobalpay:/app/logs
+      - /root/logs/mhdpay:/app/logs
