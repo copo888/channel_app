@@ -65,7 +65,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	data.Set("acctype", "bank_card")
 	data.Set("amount", floatAmount)
-	data.Set("currency", "THB")
+	data.Set("currency", "CNY")
 	data.Set("mhtorderno", req.OrderNo)
 	data.Set("notifyurl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
 	data.Set("opmhtid", channel.MerId)
