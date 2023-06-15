@@ -78,7 +78,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("random", randomID2)
 	data.Set("returnurl", req.PageUrl)
 
-	// 加簽
+	// 加簽1
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
 
