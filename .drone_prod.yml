@@ -5868,27 +5868,6 @@ steps:
     status:
       - success
 
-- name: slb-after
-  image: appleboy/drone-ssh
-  settings:
-    host:
-      from_secret: elk-host
-    username:
-      from_secret: elk-user
-    password:
-      from_secret: elk-pwd
-    port:
-      from_secret: elk-port
-    command_timeout: 180m
-    script:
-      - cd /home/aliyun_deploy
-      - ./api-after.sh
-  when:
-    ref:
-      - refs/tags/api01-app*
-      - refs/tags/api02-app*
-      - refs/tags/api-bal*
-
 - name: docker-htpay3-api01
   image: appleboy/drone-ssh
   settings:
@@ -5949,3 +5928,23 @@ steps:
     status:
       - success
 
+- name: slb-after
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: elk-host
+    username:
+      from_secret: elk-user
+    password:
+      from_secret: elk-pwd
+    port:
+      from_secret: elk-port
+    command_timeout: 180m
+    script:
+      - cd /home/aliyun_deploy
+      - ./api-after.sh
+  when:
+    ref:
+      - refs/tags/api01-app*
+      - refs/tags/api02-app*
+      - refs/tags/api-bal*
