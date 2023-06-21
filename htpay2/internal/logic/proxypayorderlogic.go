@@ -71,7 +71,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("opmhtid", channel.MerId)
 	data.Set("random", random)
 	data.Set("accname", req.ReceiptAccountName)
-	data.Set("bankcode", "THANZ")
+	data.Set("bankcode", channelBankMap.MapCode)
 	data.Set("accno", req.ReceiptAccountNumber)
 
 	// 加簽
