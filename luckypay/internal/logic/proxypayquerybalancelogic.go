@@ -6,16 +6,15 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/htpay3/internal/payutils"
+	"github.com/copo888/channel_app/luckypay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
 	"time"
 
-	"github.com/copo888/channel_app/htpay3/internal/svc"
-	"github.com/copo888/channel_app/htpay3/internal/types"
+	"github.com/copo888/channel_app/luckypay/internal/svc"
+	"github.com/copo888/channel_app/luckypay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -45,21 +44,25 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	if err1 != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
-	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
+
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 	data := url.Values{}
-	data.Set("opmhtid", channel.MerId)
-	data.Set("random", randomID)
+	data.Set("clientCode", channel.MerId)
+	data.Set("coinChain", "BANK")
+	data.Set("coinUnit", "THB")
+	data.Set("requestTimestamp", fmt.Sprintf("%d", timestamp))
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
+	keys := []string{"clientCode", "coinChain", "coinUnit", "requestTimestamp"}
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, keys, l.ctx)
 	data.Set("sign", sign)
 
-	queryUrl := channel.ProxyPayQueryBalanceUrl + "?opmhtid=" + channel.MerId + "&random=" + randomID + "&sign=" + sign
+	url := channel.ProxyPayQueryBalanceUrl + "?clientCode=" + channel.MerId + "&coinChain=BANK&coinUnit=THB&requestTimestamp=" + fmt.Sprintf("%d", timestamp) + "&sign=" + sign
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", queryUrl, data)
+	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", url, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Get(queryUrl).Timeout(20).Trace(span).Do()
+	ChannelResp, ChnErr := gozzle.Get(url).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -71,34 +74,39 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		RtCode int    `json:"rtCode"`
-		Msg    string `json:"msg,optional"`
-		Result []struct {
-			Balanceavailable float64 `json:"balanceavailable,optional"`
-			Balancereal      float64 `json:"balancereal,optional"`
-			Currency         string  `json:"currency,optional"`
-		} `json:"result,optional"`
+		Success bool   `json:"success"`
+		Code    int    `json:"code"`
+		Message string `json:"message,optional"`
+		Data    struct {
+			Sign             string `json:"sign,optional"`
+			CheckRequestTime int64  `json:"checkRequestTime,optional"`
+			DfBalance        struct {
+				CoinChain string  `json:"coinChain,optional"`
+				CoinUnit  string  `json:"coinUnit,optional"`
+				Balance   float64 `json:"balance,optional"`
+				Freeze    float64 `json:"freeze,optional"`
+			} `json:"dfBalance,optional"`
+			DsBalance struct {
+				CoinChain string  `json:"coinChain,optional"`
+				CoinUnit  string  `json:"coinUnit,optional"`
+				Balance   float64 `json:"balance,optional"`
+				Freeze    float64 `json:"freeze,optional"`
+			} `json:"dsBalance,optional"`
+		} `json:"data,optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if balanceQueryResp.RtCode != 0 {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %d: %s", balanceQueryResp.RtCode, balanceQueryResp.Msg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
+	} else if balanceQueryResp.Success != true {
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Message)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Message)
 	}
-	var balance float64
-	for _, result := range balanceQueryResp.Result {
-		if result.Currency == "THB" {
-			balance = utils.FloatDivF(balanceQueryResp.Result[15].Balancereal, 100)
-		}
-	}
-
-	amountStr := strconv.FormatFloat(balance, 'f', 3, 64)
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    amountStr,
+		ProxyPayBalance:    strconv.FormatFloat(balanceQueryResp.Data.DfBalance.Balance, 'f', 2, 64),
+		WithdrawBalance:    strconv.FormatFloat(balanceQueryResp.Data.DsBalance.Balance, 'f', 2, 64),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 

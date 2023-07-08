@@ -4104,3 +4104,46 @@ steps:
 trigger:
   branch:
     - htpay3
+
+
+---
+kind: pipeline
+name: luckypay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-luckypay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout luckypay
+        - git checkout -- .
+        - git pull origin luckypay
+        - go mod tidy
+        - docker-compose -f luckypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=luckypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/luckypay luckypay/pay.go
+        - docker build -t luckypay -f luckypay/Dockerfile .
+        - docker-compose -f luckypay/docker-compose.yml up -d
+    when:
+      branch:
+        - luckypay
+      event:
+        - push
+trigger:
+  branch:
+    - luckypay
