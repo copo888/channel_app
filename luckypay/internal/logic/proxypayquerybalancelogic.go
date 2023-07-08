@@ -106,6 +106,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
 		ProxyPayBalance:    strconv.FormatFloat(balanceQueryResp.Data.DfBalance.Balance, 'f', 2, 64),
+		WithdrawBalance:    strconv.FormatFloat(balanceQueryResp.Data.DsBalance.Balance, 'f', 2, 64),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
