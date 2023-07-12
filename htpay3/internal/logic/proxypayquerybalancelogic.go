@@ -88,8 +88,8 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	}
 	var balance float64
 	for _, result := range balanceQueryResp.Result {
-		if result.Currency == "THB" {
-			balance = utils.FloatDivF(balanceQueryResp.Result[15].Balancereal, 100)
+		if result.Currency == "CNY" {
+			balance = utils.FloatDivF(result.Balancereal, 100)
 		}
 	}
 

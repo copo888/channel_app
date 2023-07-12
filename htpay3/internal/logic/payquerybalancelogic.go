@@ -87,7 +87,12 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	}
 
-	balance := utils.FloatDivF(channelResp.Result[15].Balancereal, 100)
+	var balance float64
+	for _, result := range channelResp.Result {
+		if result.Currency == "CNY" {
+			balance = utils.FloatDivF(result.Balancereal, 100)
+		}
+	}
 	amountStr := strconv.FormatFloat(balance, 'f', 3, 64)
 
 	resp = &types.PayQueryInternalBalanceResponse{
