@@ -65,11 +65,11 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		Balance               string  `json:"balance"`
-		Merchant              string  `json:"merchant"`
-		Merchant_display_name string  `json:"merchant_display_name"`
-		Pending_balance       float64 `json:"pending_balance"`
-		Sign                  string  `json:"sign"`
+		Balance               string `json:"balance"`
+		Merchant              string `json:"merchant"`
+		Merchant_display_name string `json:"merchant_display_name"`
+		Pending_balance       string `json:"pending_balance"`
+		Sign                  string `json:"sign"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
