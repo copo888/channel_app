@@ -7,13 +7,17 @@ import (
 	"github.com/copo888/channel_app/capitalpay/internal/payutils"
 	"github.com/copo888/channel_app/capitalpay/internal/svc"
 	"github.com/copo888/channel_app/capitalpay/internal/types"
+	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -35,28 +39,21 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 }
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
-	Params := struct {
-		Product string `json:"product"`
-		MerchantRef string `json:"merchant_ref"`
-		SystemRef string `json:"system_ref"`
-		Amount string `json:"amount"`
-		Fee string `json:"fee"`
-		Status int64 `json:"status"`
-	}{}
+	params := types.Param{}
 
 	// 返回body 轉 struct
-	if err = json.Unmarshal([]byte(req.Params), &Params); err != nil {
+	if err = json.Unmarshal([]byte(req.Params), &params); err != nil {
 		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, Params.MerchantRef, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, params.MerchantRef, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   Params.MerchantRef, //輸入COPO訂單號
+		OrderNo:   params.MerchantRef, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -85,54 +82,51 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if req.Sign != sign {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
-	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+
+	var orderAmount float64
+	if orderAmount, err = strconv.ParseFloat(params.Amount, 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_SIGN)
+	}
+	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
+	if params.Status == 1 {
+		status = "1"
+	}
+
+
+	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
+		ProxyPayOrderNo:     params.MerchantRef,
+		ChannelOrderNo:      "",
+		ChannelResultAt:     time.Now().Format("20060102150405"),
+		ChannelResultStatus: status,
+		ChannelResultNote:   "",
+		Amount:              orderAmount,
+		ChannelCharge:       0,
+		UpdatedBy:           "",
+	}
+
+	// call boadmin callback api
+	span := trace.SpanFromContext(l.ctx)
+	payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
+	if errk != nil {
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+	}
+
+	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
+	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
+
+	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
+	logx.WithContext(l.ctx).Info("回调后资讯: ", res)
+	if errx != nil {
+		logx.WithContext(l.ctx).Error(errx.Error())
+		return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+	} else if res.Status() != 200 {
+		return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
+	}
+	//else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
+	//  return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
+	//} else if BoProxyRespVO.Code != "000"{
+	//	return "fail",errorx.New(BoProxyRespVO.Message)
 	//}
-	//
-	//var orderAmount float64
-	//if orderAmount, err = strconv.ParseFloat(Params.Amount, 64); err != nil {
-	//	return "fail", errorx.New(responsex.INVALID_SIGN)
-	//}
-	//var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	//if Params.Status == 1 {
-	//	status = "1"
-	//}
-	//
-	//
-	//proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-	//	ProxyPayOrderNo:     Params.MerchantRef,
-	//	ChannelOrderNo:      "",
-	//	ChannelResultAt:     time.Now().Format("20060102150405"),
-	//	ChannelResultStatus: status,
-	//	ChannelResultNote:   "",
-	//	Amount:              orderAmount,
-	//	ChannelCharge:       0,
-	//	UpdatedBy:           "",
-	//}
-	//
-	//// call boadmin callback api
-	//span := trace.SpanFromContext(l.ctx)
-	//payKey, errk := utils.MicroServiceEncrypt(l.svcCtx.Config.ApiKey.ProxyKey, l.svcCtx.Config.ApiKey.PublicKey)
-	//if errk != nil {
-	//	return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	//}
-	//
-	////BoProxyRespVO := &vo.BoadminProxyRespVO{}
-	//url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
-	//
-	//res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
-	//logx.WithContext(l.ctx).Info("回调后资讯: ", res)
-	//if errx != nil {
-	//	logx.WithContext(l.ctx).Error(errx.Error())
-	//	return "fail", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	//} else if res.Status() != 200 {
-	//	return "fail", errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("status:%d", res.Status()))
-	//}
-	////else if errDecode:= res.DecodeJSON(BoProxyRespVO); errDecode!=nil {
-	////  return "fail",errorx.New(responsex.DECODE_JSON_ERROR)
-	////} else if BoProxyRespVO.Code != "000"{
-	////	return "fail",errorx.New(BoProxyRespVO.Message)
-	////}
 
 	return "SUCCESS", nil
 }
