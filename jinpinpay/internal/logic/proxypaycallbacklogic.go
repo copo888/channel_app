@@ -15,7 +15,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -82,7 +81,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Status == "1" {
 		status = "1"
-	} else if strings.Index("0", req.Status) > -1 {
+	} else if req.Status == "0" {
 		status = "2"
 	}
 
