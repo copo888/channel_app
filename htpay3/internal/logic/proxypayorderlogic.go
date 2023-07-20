@@ -58,7 +58,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 	// 組請求參數
 	transactionAmount := utils.FloatMul(req.TransactionAmount, "100")
-	floatAmount := strconv.FormatFloat(transactionAmount, 'f', 2, 64)
+	floatAmount := strconv.FormatFloat(transactionAmount, 'f', 0, 64)
 	random := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	data := url.Values{}
