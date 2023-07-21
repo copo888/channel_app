@@ -4317,3 +4317,45 @@ steps:
 trigger:
   branch:
     - jinpinpay
+
+---
+kind: pipeline
+name: jinpinpay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jinpinpay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout jinpinpay2
+        - git checkout -- .
+        - git pull origin jinpinpay2
+        - go mod tidy
+        - docker-compose -f jinpinpay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jinpinpay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jinpinpay2 jinpinpay2/pay.go
+        - docker build -t jinpinpay2 -f jinpinpay2/Dockerfile .
+        - docker-compose -f jinpinpay2/docker-compose.yml up -d
+    when:
+      branch:
+        - jinpinpay2
+      event:
+        - push
+trigger:
+  branch:
+    - jinpinpay2
