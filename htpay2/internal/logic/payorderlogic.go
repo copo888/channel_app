@@ -56,7 +56,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl := "http://d1ea-211-75-36-190.ngrok-free.app/api/pay-call-back"
 	amount := utils.FloatMul(req.TransactionAmount, "100")
-	amountStr := fmt.Sprintf("%v", amount)
+	amountStr := fmt.Sprintf("%.f", amount)
 	//ip := utils.GetRandomIp()
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	randomID2 := utils.GetRandomString(12, utils.ALL, utils.MIX)
