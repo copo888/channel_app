@@ -2681,47 +2681,6 @@ steps:
 
 ---
 kind: pipeline
-name: budingpay
-
-clone:
-  disable: true
-
-steps:
-  - name: docker-budingpay881
-    image: appleboy/drone-ssh:1.6.5-linux-amd64
-    settings:
-      host:
-        from_secret: host
-      username:
-        from_secret: user
-      password:
-        from_secret: pwd
-      port:
-        from_secret: port
-      script:
-        - cd /root/channel_app
-        - git checkout -- .
-        - git fetch
-        - git checkout stage
-        - git checkout -- .
-        - git pull origin stage
-        - go mod tidy
-        - docker-compose -f budingpay/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=budingpay" --quiet)
-        - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/budingpay budingpay/pay.go
-        - docker build -t budingpay -f budingpay/Dockerfile .
-        - docker-compose -f budingpay/docker-compose.yml up -d
-    when:
-      ref:
-        - refs/tags/budingpay_stage_*
-      event:
-        - push
-        - tag
-        - published
-
----
-kind: pipeline
 name: yuehhaopay
 
 clone:
