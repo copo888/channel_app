@@ -2681,47 +2681,6 @@ steps:
 
 ---
 kind: pipeline
-name: budingpay
-
-clone:
-  disable: true
-
-steps:
-  - name: docker-budingpay881
-    image: appleboy/drone-ssh:1.6.5-linux-amd64
-    settings:
-      host:
-        from_secret: host
-      username:
-        from_secret: user
-      password:
-        from_secret: pwd
-      port:
-        from_secret: port
-      script:
-        - cd /root/channel_app
-        - git checkout -- .
-        - git fetch
-        - git checkout stage
-        - git checkout -- .
-        - git pull origin stage
-        - go mod tidy
-        - docker-compose -f budingpay/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=budingpay" --quiet)
-        - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/budingpay budingpay/pay.go
-        - docker build -t budingpay -f budingpay/Dockerfile .
-        - docker-compose -f budingpay/docker-compose.yml up -d
-    when:
-      ref:
-        - refs/tags/budingpay_stage_*
-      event:
-        - push
-        - tag
-        - published
-
----
-kind: pipeline
 name: yuehhaopay
 
 clone:
@@ -2927,7 +2886,7 @@ steps:
 
 ---
 kind: pipeline
-name: rcpay
+name: hueiyingpay
 
 clone:
   disable: true
@@ -3173,6 +3132,47 @@ steps:
 
 ---
 kind: pipeline
+name: kumopay1111
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-kumopay1111
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f kumopay1111/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=kumopay1111" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopay1111 kumopay1111/pay.go
+        - docker build -t kumopay1111 -f kumopay1111/Dockerfile .
+        - docker-compose -f kumopay1111/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/kumopay1111_stage_*
+      event:
+        - push
+        - tag
+        - published
+
+---
+kind: pipeline
 name: easypay
 
 clone:
@@ -3325,7 +3325,7 @@ steps:
         - docker rmi -f $(docker images --filter="reference=jindingpay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
         - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jindingpay jindingpay/pay.go
-        - docker build -t jindingpay -f htpay2/Dockerfile .
+        - docker build -t jindingpay -f jindingpay/Dockerfile .
         - docker-compose -f jindingpay/docker-compose.yml up -d
     when:
       ref:
@@ -3366,7 +3366,7 @@ steps:
         - docker rmi -f $(docker images --filter="reference=qipay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
         - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/qipay qipay/pay.go
-        - docker build -t qipay -f htpay2/Dockerfile .
+        - docker build -t qipay -f qipay/Dockerfile .
         - docker-compose -f qipay/docker-compose.yml up -d
     when:
       ref:
@@ -3407,7 +3407,7 @@ steps:
         - docker rmi -f $(docker images --filter="reference=dbinpay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
         - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/dbinpay dbinpay/pay.go
-        - docker build -t dbinpay -f htpay2/Dockerfile .
+        - docker build -t dbinpay -f dbinpay/Dockerfile .
         - docker-compose -f dbinpay/docker-compose.yml up -d
     when:
       ref:
@@ -3448,7 +3448,7 @@ steps:
         - docker rmi -f $(docker images --filter="reference=miduoduopay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
         - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/miduoduopay miduoduopay/pay.go
-        - docker build -t miduoduopay -f htpay2/Dockerfile .
+        - docker build -t miduoduopay -f miduoduopay/Dockerfile .
         - docker-compose -f miduoduopay/docker-compose.yml up -d
     when:
       ref:
@@ -3460,7 +3460,7 @@ steps:
 
 ---
 kind: pipeline
-name: miduoduopay
+name: globalpay
 
 clone:
   disable: true
@@ -3489,7 +3489,7 @@ steps:
         - docker rmi -f $(docker images --filter="reference=globalpay" --quiet)
         - docker rmi -f $(docker images -qf "dangling=true")
         - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/globalpay globalpay/pay.go
-        - docker build -t globalpay -f htpay2/Dockerfile .
+        - docker build -t globalpay -f globalpay/Dockerfile .
         - docker-compose -f globalpay/docker-compose.yml up -d
     when:
       ref:
@@ -3534,7 +3534,7 @@ steps:
         - docker-compose -f typay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/gtypay_stage_*
+        - refs/tags/typay_stage_*
       event:
         - push
         - tag
