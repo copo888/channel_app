@@ -53,6 +53,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
+	if strings.EqualFold(req.JumpType, "json") && len(req.JumpType) == 0 {
+		logx.WithContext(l.ctx).Errorf("JumpType不可为空 JumpType不可为空:%s", req.JumpType)
+		return nil, errorx.New(responsex.INVALID_PARAMETER)
+	}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
