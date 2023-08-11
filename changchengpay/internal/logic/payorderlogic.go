@@ -56,7 +56,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	amount := utils.FloatMul(req.TransactionAmount, "100") // 單位:分
 	amountInt := int(amount)
 
