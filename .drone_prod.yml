@@ -6413,6 +6413,73 @@ steps:
     status:
       - success
 
+
+- name: docker-changchengpay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f changchengpay/docker-compose.yml down
+      - docker rmi changchengpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/changchengpay changchengpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t sypay -f changchengpay/Dockerfile .
+      - docker-compose -f changchengpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appchangchengpay-*
+      - refs/tags/api01-testchangchengpay-*
+    status:
+      - success
+
+- name: docker-changchengpay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f changchengpay/docker-compose.yml down
+      - docker rmi changchengpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/changchengpay changchengpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t changchengpay -f changchengpay/Dockerfile .
+      - docker-compose -f changchengpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appchangchengpay-*
+      - refs/tags/api02-testchangchengpay-*
+    status:
+      - success
+
+
+
+
+
+
+
 - name: slb-after
   image: appleboy/drone-ssh
   settings:
