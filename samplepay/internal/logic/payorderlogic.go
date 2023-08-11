@@ -180,6 +180,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 若需回傳JSON 請自行更改
 	//if strings.EqualFold(req.JumpType, "json") {
+	//	isCheckOutMer := false // 自組收銀台回傳 true
+	//	if req.MerchantId == "ME00015"{
+	//		isCheckOutMer = true
+	//	}
 	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
 	//	if err2 != nil {
 	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
@@ -201,7 +205,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//		PayPageType:    "json",
 	//		PayPageInfo:    string(receiverInfoJson),
 	//		ChannelOrderNo: "",
-	//		IsCheckOutMer:  false, // 自組收銀台回傳 true
+	//		IsCheckOutMer:  isCheckOutMer, // 自組收銀台回傳 true
 	//	}, nil
 	//}
 
