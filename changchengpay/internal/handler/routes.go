@@ -43,7 +43,7 @@ func RegisterHandlers(server *rest.Server, serverCtx *svc.ServiceContext) {
 				Handler: ProxyPayOrderQueryHandler(serverCtx),
 			},
 			{
-				Method:  http.MethodPost,
+				Method:  http.MethodGet,
 				Path:    "/proxy-pay-call-back",
 				Handler: ProxyPayCallBackHandler(serverCtx),
 			},

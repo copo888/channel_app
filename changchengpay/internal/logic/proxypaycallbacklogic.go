@@ -12,7 +12,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/changchengpay/internal/svc"
@@ -75,7 +74,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0"
 	if req.Status == "2" { //代付状态::0-订单生成,1-转账中,2-转账成功,3-转账失败 5-轉帳中。
 		status = "1"
-	} else if strings.Index("3", req.Status) > -1 {
+	} else if req.Status == "3" {
 		status = "2"
 	}
 
