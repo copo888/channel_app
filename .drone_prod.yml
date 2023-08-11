@@ -6133,7 +6133,7 @@ steps:
       - docker rmi capitalpay:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/capitalpay capitalpay/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t sypay -f capitalpay/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t capitalpay -f capitalpay/Dockerfile .
       - docker-compose -f capitalpay/docker-compose.yml up -d
   when:
     ref:
@@ -6193,7 +6193,7 @@ steps:
       - docker rmi jinpinpay:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jinpinpay jinpinpay/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t sypay -f jinpinpay/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t jinpinpay -f jinpinpay/Dockerfile .
       - docker-compose -f jinpinpay/docker-compose.yml up -d
   when:
     ref:
@@ -6253,7 +6253,7 @@ steps:
       - docker rmi jinpinpay2:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jinpinpay2 jinpinpay2/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t sypay -f jinpinpay2/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t jinpinpay2 -f jinpinpay2/Dockerfile .
       - docker-compose -f jinpinpay2/docker-compose.yml up -d
   when:
     ref:
@@ -6314,7 +6314,7 @@ steps:
       - docker rmi lelifupay2:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/lelifupay2 lelifupay2/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t sypay -f lelifupay2/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t jinpinpay2 -f lelifupay2/Dockerfile .
       - docker-compose -f lelifupay2/docker-compose.yml up -d
   when:
     ref:
@@ -6374,7 +6374,7 @@ steps:
       - docker rmi leimapay:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/leimapay leimapay/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t sypay -f leimapay/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t leimapay -f leimapay/Dockerfile .
       - docker-compose -f leimapay/docker-compose.yml up -d
   when:
     ref:
@@ -6435,7 +6435,7 @@ steps:
       - docker rmi changchengpay:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/changchengpay changchengpay/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t sypay -f changchengpay/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t changchengpay -f changchengpay/Dockerfile .
       - docker-compose -f changchengpay/docker-compose.yml up -d
   when:
     ref:
