@@ -8,7 +8,6 @@ import (
 	"github.com/copo888/channel_app/kypay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/kypay/internal/svc"
@@ -88,7 +87,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		Message         string      `json:"message"`
 		PlatformOrderNo string      `json:"platform_order_no"`
 		Amount          float64     `json:"amount"`
-		RefCode         string      `json:"ref_code"`
+		RefCode         int         `json:"ref_code"`
 		RefMessage      string      `json:"ref_message"`
 		SuccededAt      interface{} `json:"succeded_at"`
 		Sign            string      `json:"sign"`
@@ -108,9 +107,9 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	//交易不存在 6
 
 	var orderStatus = "1" //0:待處理 1:處理中 20:成功 30:失敗 31:凍結
-	if channelQueryResp.RefCode == "1" || channelQueryResp.RefCode == "5" {
+	if channelQueryResp.RefCode == 1 || channelQueryResp.RefCode == 5 {
 		orderStatus = "20"
-	} else if strings.Index("4,6", channelQueryResp.RefCode) > -1 {
+	} else if channelQueryResp.RefCode == 4 || channelQueryResp.RefCode == 6 {
 		orderStatus = "30"
 	}
 

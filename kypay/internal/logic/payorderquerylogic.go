@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
@@ -69,7 +68,17 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
+
+		channelResp2 := struct {
+			Msg string `json:"message,optional"`
+		}{}
+
+		// 返回body 轉 struct
+		if err = res.DecodeJSON(&channelResp2); err != nil {
+			return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		}
+
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp2.Msg)
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
