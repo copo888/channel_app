@@ -115,32 +115,32 @@ type ProxyPayQueryInternalBalanceResponse struct {
 
 type ProxyPayCallBackRequest struct {
 	Ip              string      `json:"ip, optional"`
-	MerchantSerial  string      `json:"merchant_serial"`
-	MerchantOrderNo string      `json:"merchant_order_no"`
-	PlatformOrderNo string      `json:"platform_order_no"`
-	Amount          string      `json:"amount"`
-	ActualAmount    string      `json:"actual_amount"`
-	Fee             string      `json:"fee"`
-	SucceededAt     interface{} `json:"succeeded_at"`
-	Status          string      `json:"status"`
-	Sign            string      `json:"sign"`
+	MerchantSerial  string      `json:"merchant_serial, optional"`
+	MerchantOrderNo string      `json:"merchant_order_no, optional"`
+	PlatformOrderNo string      `json:"platform_order_no, optional"`
+	Amount          string      `json:"amount, optional"`
+	ActualAmount    string      `json:"actual_amount, optional"`
+	Fee             string      `json:"fee, optional"`
+	SucceededAt     interface{} `json:"succeeded_at, optional"`
+	Status          string      `json:"status, optional"`
+	Sign            string      `json:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
 	MyIp            string      `json:"myIp, optional"`
-	MerchantSerial  string      `json:"merchant_serial"`
-	MerchantOrderNo string      `json:"merchant_order_no"`
-	PlatformOrderNo string      `json:"platform_order_no"`
-	Amount          string      `json:"amount"`
-	RealAmount      string      `json:"real_amount"`
-	VerifyAmount    string      `json:"verify_amount"`
-	PayerName       string      `json:"payer_name"`
-	ChannelId       string      `json:"channel_id"`
-	RandomString    string      `json:"random_string"`
-	SucceededAt     interface{} `json:"succeeded_at"`
-	Note            string      `json:"note"`
-	Status          string      `json:"status"`
-	Sign            string      `json:"sign"`
+	MerchantSerial  string      `json:"merchant_serial, optional"`
+	MerchantOrderNo string      `json:"merchant_order_no, optional"`
+	PlatformOrderNo string      `json:"platform_order_no, optional"`
+	Amount          string      `json:"amount, optional"`
+	RealAmount      string      `json:"real_amount, optional"`
+	VerifyAmount    string      `json:"verify_amount, optional"`
+	PayerName       string      `json:"payer_name, optional"`
+	ChannelId       string      `json:"channel_id, optional"`
+	RandomString    string      `json:"random_string, optional"`
+	SucceededAt     interface{} `json:"succeeded_at, optional"`
+	Note            string      `json:"note, optional"`
+	Status          string      `json:"status, optional"`
+	Sign            string      `json:"sign, optional"`
 }
 
 type ReceiverInfoVO struct {
