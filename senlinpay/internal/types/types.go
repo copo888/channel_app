@@ -137,7 +137,7 @@ type PayCallBackRequest struct {
 	Body          string  `json:"body, optional"`
 	ExtParam      string  `json:"extParam, optional"`
 	State         int     `json:"state, optional"`
-	NotifyTime    string  `json:"notifyTime, optional"`
+	NotifyTime    int64   `json:"notifyTime, optional"`
 	Sign          string  `json:"sign, optional"`
 }
 
