@@ -8,13 +8,12 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/senlinpay/internal/payutils"
+	"github.com/copo888/channel_app/senlinpay/internal/svc"
+	"github.com/copo888/channel_app/senlinpay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
-	"strconv"
+	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -45,48 +44,30 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
-	// 組請求參數
-	data := url.Values{}
-	if req.OrderNo != "" {
-		data.Set("trade_no", req.OrderNo)
-	}
-	if req.ChannelOrderNo != "" {
-		data.Set("order_no", req.ChannelOrderNo)
-	}
-	data.Set("appid", channel.MerId)
-	data.Set("nonce_str", randomID)
-
+	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 	// 組請求參數 FOR JSON
-	//data := struct {
-	//	merchId  string
-	//	orderId  string
-	//	time     string
-	//	signType string
-	//	sign     string
-	//}{
-	//	merchId:  channel.MerId,
-	//	orderId:  req.OrderNo,
-	//	time:     timestamp,
-	//	signType: "MD5",
-	//}
-
-	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	data.Set("sign", sign)
+	data := struct {
+		MchId      string `json:"mchId"`
+		OutTradeNo string `json:"outTradeNo"`
+		ReqTime    int64  `json:"reqTime"`
+		Sign       string `json:"sign"`
+	}{
+		MchId:      channel.MerId,
+		OutTradeNo: req.OrderNo,
+		ReqTime:    timestamp,
+	}
 
 	// 加簽 JSON
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
-	//data.sign = sign
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
+	data.Sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
-	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
-	if chnErr != nil {
+	if ChnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
@@ -96,25 +77,39 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code  string `json:"code"`
-		Msg   string `json:"msg"`
-		State string `json:"state"` //状态 1-成功 2-等待付款 7-关闭
-		Money string `json:"money"`
+		Code    int    `json:"code, optional"`
+		Message string `json:"message,optional"`
+		Data    struct {
+			MchId         string `json:"mchId, optional"`
+			WayCode       int    `json:"wayCode, optional"`
+			TradeNo       string `json:"tradeNo, optional"`
+			OutTradeNo    string `json:"outTradeNo, optional"`
+			OriginTradeNo string `json:"originTradeNo, optional"`
+			Amount        string `json:"amount, optional"`
+			Subject       string `json:"subject, optional"`
+			Body          string `json:"body, optional"`
+			ExtParam      string `json:"extParam, optional"`
+			NotifyUrl     string `json:"notifyUrl, optional"`
+			PayUrl        string `json:"payUrl, optional"`
+			ExpiredTime   string `json:"expiredTime, optional"`
+			SuccessTime   string `json:"successTime, optional"`
+			CreateTime    string `json:"createTime, optional"`
+			State         int    `json:"state, optional"`       //订单状态：0=待支付，1=支付成功，2=支付失败，3=未出码，4=异常
+			NotifyState   int    `json:"notifyState, optional"` //通知状态：0=未通知，1=通知成功，2=通知失败
+		} `json:"data, optional"`
+		Sign string `json:"sign, optional"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Code != "0000" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	} else if channelResp.Code != 0 {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Money, 64)
-	if errParse != nil {
-		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
-	}
+	orderAmount := utils.FloatDiv(channelResp.Data.Amount, "100")
 
 	orderStatus := "0"
-	if channelResp.State == "1" {
+	if channelResp.Data.State == 1 {
 		orderStatus = "1"
 	}
 

@@ -6,9 +6,9 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/samplepay/internal/payutils"
-	"github.com/copo888/channel_app/samplepay/internal/svc"
-	"github.com/copo888/channel_app/samplepay/internal/types"
+	"github.com/copo888/channel_app/senlinpay/internal/payutils"
+	"github.com/copo888/channel_app/senlinpay/internal/svc"
+	"github.com/copo888/channel_app/senlinpay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
@@ -62,7 +62,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
+	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
 	//data.Sign = sign
 
 	// 請求渠道
