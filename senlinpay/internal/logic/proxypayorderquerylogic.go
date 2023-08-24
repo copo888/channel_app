@@ -73,7 +73,7 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
-	// 渠道回覆處理 [請依照渠道返回格式 自定義]
+	// 渠道回覆處理 [請依照渠道返回格式 自定義1]
 	channelQueryResp := struct {
 		Code    int    `json:"code, optional"`
 		Message string `json:"message, optional"`
