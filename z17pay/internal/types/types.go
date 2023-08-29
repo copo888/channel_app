@@ -117,43 +117,43 @@ type ProxyPayQueryInternalBalanceResponse struct {
 
 type ProxyPayCallBackRequest struct {
 	Ip             string    `form:"ip, optional"`
-	StoreAccount   string    `json:"store_account, optional"`
-	Status         int       `json:"status, optional"`
-	Tradeno        string    `json:"tradeno, optional"`
-	Money          string    `json:"money, optional"`
-	Storebase      string    `json:"storebase, optional"`
-	Storemoney     string    `json:"storemoney, optional"`
-	Inname         string    `json:"inname, optional"`
-	Inbankname     string    `json:"inbankname, optional"`
-	Inbanknum      string    `json:"inbanknum, optional"`
-	Location       string    `json:"location, optional"`
-	Inbankfullname string    `json:"inbankfullname, optional"`
-	CreatedAt      time.Time `json:"created_at, optional"`
-	NotifyLimited  int       `json:"notify_limited, optional"`
-	FinishTime     string    `json:"finish_time, optional"`
-	Token          string    `json:"token, optional"`
+	StoreAccount   string    `form:"store_account, optional"`
+	Status         int       `form:"status, optional"`
+	Tradeno        string    `form:"tradeno, optional"`
+	Money          string    `form:"money, optional"`
+	Storebase      string    `form:"storebase, optional"`
+	Storemoney     string    `form:"storemoney, optional"`
+	Inname         string    `form:"inname, optional"`
+	Inbankname     string    `form:"inbankname, optional"`
+	Inbanknum      string    `form:"inbanknum, optional"`
+	Location       string    `form:"location, optional"`
+	Inbankfullname string    `form:"inbankfullname, optional"`
+	CreatedAt      time.Time `form:"created_at, optional"`
+	NotifyLimited  int       `form:"notify_limited, optional"`
+	FinishTime     string    `form:"finish_time, optional"`
+	Token          string    `form:"token, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp           string    `json:"myIp, optional"`
-	StoreAccount   string    `json:"store_account,, optional"`
-	Status         int       `json:"status,, optional"`
-	Tradeno        string    `json:"tradeno,, optional"`
-	Money          string    `json:"money,, optional"`
-	Storerate      string    `json:"storerate,, optional"`
-	Storemoney     string    `json:"storemoney,, optional"`
-	Inname         string    `json:"inname,, optional"`
-	Inbankname     string    `json:"inbankname,, optional"`
-	Inbanknum      string    `json:"inbanknum,, optional"`
-	Location       string    `json:"location,, optional"`
-	Inbankfullname string    `json:"inbankfullname,, optional"`
-	TransName      string    `json:"trans_name,, optional"`
-	TransBankname  string    `json:"trans_bankname,, optional"`
-	TransBanknum   string    `json:"trans_banknum,, optional"`
-	CreatedAt      time.Time `json:"created_at,, optional"`
-	NotifyLimited  int       `json:"notify_limited,, optional"`
-	FinishTime     string    `json:"finish_time,, optional"`
-	Token          string    `json:"token,, optional"`
+	MyIp           string    `form:"myIp, optional"`
+	StoreAccount   string    `form:"store_account,, optional"`
+	Status         int       `form:"status,, optional"`
+	Tradeno        string    `form:"tradeno,, optional"`
+	Money          string    `form:"money,, optional"`
+	Storerate      string    `form:"storerate,, optional"`
+	Storemoney     string    `form:"storemoney,, optional"`
+	Inname         string    `form:"inname,, optional"`
+	Inbankname     string    `form:"inbankname,, optional"`
+	Inbanknum      string    `form:"inbanknum,, optional"`
+	Location       string    `form:"location,, optional"`
+	Inbankfullname string    `form:"inbankfullname,, optional"`
+	TransName      string    `form:"trans_name,, optional"`
+	TransBankname  string    `form:"trans_bankname,, optional"`
+	TransBanknum   string    `form:"trans_banknum,, optional"`
+	CreatedAt      time.Time `form:"created_at,, optional"`
+	NotifyLimited  int       `form:"notify_limited,, optional"`
+	FinishTime     string    `form:"finish_time,, optional"`
+	Token          string    `form:"token,, optional"`
 }
 
 type ReceiverInfoVO struct {
