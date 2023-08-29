@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: z17pay
+    image: z17pay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/z17pay:/app/logs
