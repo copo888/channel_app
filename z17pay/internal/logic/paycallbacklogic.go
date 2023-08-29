@@ -78,7 +78,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	orderStatus := "1"
-	if req.Status == 1 { //交易状态: 1:提交成功, 2:处理中, 3: 取消订单, 4:交易成功, 5:交易异常
+	if req.Status == 4 { //交易状态: 1:提交成功, 2:匹配成功等待收款, 3: 取消订单, 4:交易成功
 		orderStatus = "20"
 	}
 

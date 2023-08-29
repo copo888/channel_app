@@ -89,10 +89,6 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	}
-	//else if balanceQueryResp.Success != true {
-	//	logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
-	//	return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
-	//}
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
