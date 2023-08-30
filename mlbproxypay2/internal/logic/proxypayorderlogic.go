@@ -36,10 +36,10 @@ func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) Prox
 func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*types.ProxyPayOrderResponse, error) {
 
 	// 組返回給backOffice 的代付返回物件(測試四)
-	//return &types.ProxyPayOrderResponse{
-	//	ChannelOrderNo: "TESTTRADEID_000011111",
-	//	OrderStatus:    "",
-	//}, nil
+	return &types.ProxyPayOrderResponse{
+		ChannelOrderNo: "TESTTRADEID_000011111",
+		OrderStatus:    "",
+	}, nil
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s, ProxyPayOrderRequest: %v", l.svcCtx.Config.ProjectName, req)
 	APP_SECRET := "tk_eTSdhXkaCAnbfskt6GA"
