@@ -80,7 +80,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		NotifyUrl:       l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 		//BankCode:        channelBankMap.MapCode,
 		BankName:     req.ReceiptCardBankName,
-		BankBranch:   req.ReceiptCardBranch,
+		BankBranch:   req.ReceiptCardBankName,
 		BankProvince: req.ReceiptCardProvince,
 		BankCity:     req.ReceiptCardCity,
 		BankCardNo:   req.ReceiptAccountNumber,
