@@ -77,7 +77,7 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardProvince  string `json:"receiptCardProvince"`
 	ReceiptCardCity      string `json:"receiptCardCity"`
 	ReceiptCardArea      string `json:"receiptCardArea"`
-	ReceiptCardBranch    string `json:"receiptCardBranch"`
+	ReceiptCardBranch    string `json:"receiptCardBranch, optional"`
 	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 	PlayerId             string `json:"playerId, optional"`

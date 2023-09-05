@@ -116,7 +116,7 @@ func SortAndSignSHA256FromObj(data interface{}, screctKey string, ctx context.Co
 }
 
 func SortAndSignSHA256FromMap(newData map[string]string, screctKey string, ctx context.Context) string {
-	newSource := JoinStringsInASCII(newData, "&", false, true, screctKey)
+	newSource := JoinStringsInASCII(newData, "&", false, true, screctKey, "note", "callback_url")
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
 	newSign := GetSign_SHA256(newSource)
 	logx.WithContext(ctx).Info("签名字串: ", newSign)

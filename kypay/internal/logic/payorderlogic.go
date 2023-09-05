@@ -69,10 +69,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PayerName    string `json:"payer_name"`
 		Money        string `json:"amount"`
 		NotifyUrl    string `json:"notify_url"`
-		CallbackUrl  string `json:"callback_url"`
+		CallbackUrl  string `json:"callback_url"` //optional
 		Format       string `json:"format"`
 		RandomString string `json:"random_string"`
-		Note         string `json:"note"`
+		Note         string `json:"note"` //optional
 		Sign         string `json:"sign"`
 	}{
 		MerchId:      channel.MerId,
@@ -89,7 +89,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	} else {
 		data.Format = "PAGE"
 	}
-
 	data.Sign = payutils.SortAndSignSHA256FromObj(data, channel.MerKey, l.ctx)
 	data.CallbackUrl = notifyUrl
 	data.Note = "note"
