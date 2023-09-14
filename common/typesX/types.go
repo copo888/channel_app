@@ -134,29 +134,31 @@ type Order struct {
 }
 
 type TransactionLogData struct {
-	MerchantNo      string      `json:"merchantNo"`
-	MerchantOrderNo string      `json:"merchantOrderNo"`
-	OrderNo         string      `json:"orderNo"`
-	LogType         string      `json:"logType"`
-	LogSource       string      `json:"logSource"`
-	Content         interface{} `json:"content"`
-	ErrCode         string      `json:"errCode"`
-	ErrMsg          string      `json:"errMsg"`
-	TraceId         string      `json:"traceId"`
+	MerchantNo       string      `json:"merchantNo"`
+	MerchantOrderNo  string      `json:"merchantOrderNo"`
+	OrderNo          string      `json:"orderNo"`
+	LogType          string      `json:"logType"`
+	LogSource        string      `json:"logSource"`
+	Content          interface{} `json:"content"`
+	ErrCode          string      `json:"errCode"`
+	ErrMsg           string      `json:"errMsg"`
+	TraceId          string      `json:"traceId"`
+	ChannelErrorCode string      `json:"channelErrorCode"`
 }
 
 type TxLog struct {
-	ID              int64  `json:"id"`
-	MerchantCode    string `json:"merchantCode, optional"`
-	OrderNo         string `json:"orderNo, optional"`
-	MerchantOrderNo string `json:"merchantOrderNo, optional"`
-	ChannelOrderNo  string `json:"channelOrderNo, optional"`
-	LogType         string `json:"logType, optional"`
-	LogSource       string `json:"logSource, optional"`
-	Content         string `json:"content, optional"`
-	Log             string `json:"log, optional"`
-	CreatedAt       string `json:"createdAt, optional"`
-	ErrorCode       string `json:"errorCode, optional"`
-	ErrorMsg        string `json:"errorMsg, optional"`
-	TraceId         string `json:"traceId, optional"`
+	ID               int64  `json:"id"`
+	MerchantCode     string `json:"merchantCode, optional"`
+	OrderNo          string `json:"orderNo, optional"`
+	MerchantOrderNo  string `json:"merchantOrderNo, optional"`
+	ChannelOrderNo   string `json:"channelOrderNo, optional"`
+	LogType          string `json:"logType, optional"`
+	LogSource        string `json:"logSource, optional"`
+	Content          string `json:"content, optional"`
+	Log              string `json:"log, optional"`
+	ChannelErrorCode string `json:"channelErrorCode, optional"`
+	CreatedAt        string `json:"createdAt, optional"`
+	ErrorCode        string `json:"errorCode, optional"`
+	ErrorMsg         string `json:"errorMsg, optional"`
+	TraceId          string `json:"traceId, optional"`
 }
