@@ -108,7 +108,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
+	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
 	//data.Sign = sign
 
 	//寫入交易日志

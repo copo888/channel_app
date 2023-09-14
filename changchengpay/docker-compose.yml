@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: changchengpay
+    image: changchengpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/changchengpay:/app/logs

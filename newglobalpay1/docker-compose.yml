@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: newglobalpay1
+    image: newglobalpay1
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/newglobalpay1:/app/logs

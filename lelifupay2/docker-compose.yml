@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: lelifupay2
+    image: lelifupay2
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/lelifupay2:/app/logs
