@@ -62,11 +62,11 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		Success bool   `json:"success"`
 		Message string `json:"message"`
 		Data    struct {
-			TradeNo       string `json:"trade_no"`
-			OutTradeNo    string `json:"out_trade_no"`
-			Amount        string `json:"amount"`
-			RequestAmount string `json:"request_amount"`
-			State         string `json:"state"`
+			TradeNo       string  `json:"trade_no"`
+			OutTradeNo    string  `json:"out_trade_no"`
+			Amount        string  `json:"amount"`
+			RequestAmount float64 `json:"request_amount"`
+			State         string  `json:"state"`
 		} `json:"data"`
 	}{}
 
