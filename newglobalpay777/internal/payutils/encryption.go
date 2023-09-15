@@ -59,12 +59,12 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	} else {
 		sort.Strings(list)
 	}
-	return strings.Join(list, sep) + "&key="+key
+	return strings.Join(list, sep) + key
 }
 
 // VerifySign 验签
 func VerifySign(reqSign string, data interface{}, screctKey string, ctx context.Context) bool {
-	m := CovertToMap(data, "form")
+	m := CovertToMap(data)
 	source := JoinStringsInASCII(m, "&", false, false, screctKey)
 	sign := GetSign(source)
 	fmt.Sprintf("-------" + source)
@@ -91,8 +91,8 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 }
 
 // SortAndSignFromObj 物件 排序后加签
-func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context, tag string) string {
-	m := CovertToMap(data, tag)
+func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
+	m := CovertToMap(data)
 	newSource := JoinStringsInASCII(m, "&", false, false, screctKey)
 	newSign := GetSign(newSource)
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
@@ -135,12 +135,12 @@ func CovertUrlValuesToMap(values url.Values) map[string]string {
 
 // CovertToMap 物件轉map 檢查請求參數是否有空值
 // CovertToMap 物件轉map 檢查請求參數是否有空值
-func CovertToMap(req interface{}, tag string) map[string]string {
+func CovertToMap(req interface{}) map[string]string {
 	m := make(map[string]string)
 
 	val := reflect.ValueOf(req)
 	for i := 0; i < val.Type().NumField(); i++ {
-		jsonTag := val.Type().Field(i).Tag.Get(tag) // [依据不同请求类型更改] from / json
+		jsonTag := val.Type().Field(i).Tag.Get("json") // [依据不同请求类型更改] from / json
 		parts := strings.Split(jsonTag, ",")
 		name := parts[0]
 		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數

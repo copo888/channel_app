@@ -114,25 +114,25 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip       string `form:"ip, optional"`
-	Merchant string `form:"merchant, optional"`
-	OrderId  string `form:"order_id, optional"`
-	Amount   string `form:"amount, optional"`
-	Status   string `form:"status, optional"`
-	Message  string `form:"message, optional"`
-	Remark   string `form:"remark, optional"`
-	Sign     string `form:"sign, optional"`
+	Ip          string `json:"ip, optional"`
+	TradeNo     string `json:"trade_no, optional"`
+	Amount      string `json:"amount, optional"`
+	OutTradeNo  string `json:"out_trade_no, optional"`
+	State       string `json:"state, optional"`
+	Sign        string `json:"sign, optional"`
+	Errors      string `json:"errors, optional"`
+	CallbackUrl string `json:"callback_url, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp     string `form:"myIp, optional"`
-	Merchant string `form:"merchant, optional"`
-	OrderId  string `form:"order_id, optional"`
-	Amount   string `form:"amount, optional"`
-	Status   string `form:"status, optional"`
-	Message  string `form:"message, optional"`
-	Remark   string `form:"remark, optional"`
-	Sign     string `form:"sign, optional"`
+	MyIp          string  `form:"myIp, optional"`
+	TradeNo       string  `json:"trade_no, optional"`
+	RequestAmount float64 `json:"request_amount, optional"`
+	Amount        string  `json:"amount, optional"`
+	OutTradeNo    string  `json:"out_trade_no, optional"`
+	State         string  `json:"state, optional"`
+	Sign          string  `json:"sign, optional"`
+	CallbackUrl   string  `json:"callback_url, optional"`
 }
 
 type ReceiverInfoVO struct {

@@ -23,8 +23,8 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.PayCallBackRequest
 
-		if err := httpx.ParseForm(r, &req); err != nil {
-			responsex.Json(w, r, responsex.FAIL, nil, err)
+		if err := httpx.ParseJsonBody(r, &req); err != nil {
+			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 			return
 		}
 
