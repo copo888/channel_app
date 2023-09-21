@@ -36,6 +36,24 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
+	// 渠道狀態碼判斷
+	if req.BankCode != "1" {
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          "Failed",
+			TraceId:          l.traceID,
+			ChannelErrorCode: "400",
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, "http: 400, Failed")
+	}
+
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		MerchantNo: req.MerchantId,
@@ -43,10 +61,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		OrderNo:   req.OrderNo,
 		LogType:   constants.DATA_REQUEST_CHANNEL,
 		LogSource: constants.API_ZF,
-		Content:   "TEST",
+		Content:   "Success",
 		TraceId:   l.traceID,
-	},
-	); err != nil {
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 

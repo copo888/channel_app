@@ -16,21 +16,24 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ProxyPayOrderLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayOrderLogic {
 	return ProxyPayOrderLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -62,10 +65,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("mchOrderNo", req.OrderNo)
 	data.Set("amount", transactionAmountS)
 	data.Set("trueName", req.ReceiptAccountName)
-	data.Set("cardNo",  req.ReceiptAccountNumber)
+	data.Set("cardNo", req.ReceiptAccountNumber)
 	data.Set("bankType", channelBankMap.MapCode)
 	data.Set("notifyUrl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
-
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
@@ -96,6 +98,21 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", ChannelResp.Status(), req.OrderNo)
 		service.DoCallLineSendURL(l.ctx, l.svcCtx, msg)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			//MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          string(ChannelResp.Body()),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.Itoa(ChannelResp.Status()),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
@@ -109,6 +126,26 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err.Error())
 	}
 
+	if channelResp.RetCode != "SUCCESS" {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.RetCode, channelResp.RetMsg)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			//MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          fmt.Sprintf("%+v", channelResp),
+			TraceId:          l.traceID,
+			ChannelErrorCode: channelResp.RetCode,
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RetMsg)
+	}
+
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: channel.MerId,
@@ -118,11 +155,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
-
-	if channelResp.RetCode != "SUCCESS"  {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.RetCode, channelResp.RetMsg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RetMsg)
 	}
 
 	//組返回給backOffice 的代付返回物件

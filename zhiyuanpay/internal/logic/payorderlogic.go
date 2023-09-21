@@ -17,19 +17,22 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
+	"strconv"
 )
 
 type PayOrderLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderLogic {
 	return PayOrderLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -100,6 +103,21 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", res.Status(), req.OrderNo)
 		service.DoCallLineSendURL(l.ctx, l.svcCtx, msg)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          string(res.Body()),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.Itoa(res.Status()),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
@@ -118,6 +136,24 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
+	// 渠道狀態碼判斷
+	if channelResp.RetCode != "SUCCESS" {
+		// 寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          fmt.Sprintf("%+v", channelResp),
+			TraceId:          l.traceID,
+			ChannelErrorCode: channelResp.RetCode,
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RetMsg)
+	}
+
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		MerchantNo: req.MerchantId,
@@ -127,11 +163,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		LogSource: constants.API_ZF,
 		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
-
-	// 渠道狀態碼判斷
-	if channelResp.RetCode != "SUCCESS" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RetMsg)
 	}
 
 	resp = &types.PayOrderResponse{

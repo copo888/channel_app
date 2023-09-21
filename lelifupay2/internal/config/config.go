@@ -26,9 +26,15 @@ type Config struct {
 		PublicKey string
 		PayKey    string
 		ProxyKey  string
+		LineKey   string
 	}
 	ProjectName string
 	Merchant    struct {
+		Host string
+		Port int
+	}
+
+	LineSend struct {
 		Host string
 		Port int
 	}
