@@ -10,6 +10,7 @@ import (
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/taotaopay/internal/payutils"
+	"github.com/copo888/channel_app/taotaopay/internal/service"
 	"github.com/copo888/channel_app/taotaopay/internal/svc"
 	"github.com/copo888/channel_app/taotaopay/internal/types"
 	"github.com/gioco-play/gozzle"
@@ -86,8 +87,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
 	if ChnErr != nil {
+		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
+		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
+		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
+		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
+		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo: req.MerchantId,
