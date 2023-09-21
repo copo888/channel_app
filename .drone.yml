@@ -4656,3 +4656,46 @@ steps:
 trigger:
   branch:
     - phptestpay
+
+
+---
+kind: pipeline
+name: goalpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-goalpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout goalpay
+        - git checkout -- .
+        - git pull origin goalpay
+        - go mod tidy
+        - docker-compose -f goalpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=goalpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/goalpay goalpay/pay.go
+        - docker build -t goalpay -f goalpay/Dockerfile .
+        - docker-compose -f goalpay/docker-compose.yml up -d
+    when:
+      branch:
+        - goalpay
+      event:
+        - push
+trigger:
+  branch:
+    - goalpay
