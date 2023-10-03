@@ -248,14 +248,15 @@ func CreateTransactionLog(db *gorm.DB, data *typesX.TransactionLogData) (err err
 	}
 
 	txLog := typesX.TxLog{
-		MerchantCode:    data.MerchantNo,
-		MerchantOrderNo: data.MerchantOrderNo,
-		OrderNo:         data.OrderNo,
-		LogType:         data.LogType,
-		LogSource:       data.LogSource,
-		TraceId:         data.TraceId,
-		Content:         string(jsonContent),
-		CreatedAt:       time.Now().UTC().String(),
+		MerchantCode:     data.MerchantNo,
+		MerchantOrderNo:  data.MerchantOrderNo,
+		OrderNo:          data.OrderNo,
+		LogType:          data.LogType,
+		LogSource:        data.LogSource,
+		TraceId:          data.TraceId,
+		ChannelErrorCode: data.ChannelErrorCode,
+		Content:          string(jsonContent),
+		CreatedAt:        time.Now().UTC().String(),
 	}
 
 	if err = db.Table("tx_log").Create(&txLog).Error; err != nil {
