@@ -4,13 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
-	"github.com/copo888/channel_app/common/utils"
-	"strconv"
-
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
+	"github.com/copo888/channel_app/common/utils"
 	"github.com/copo888/channel_app/lepay/internal/payutils"
 	"github.com/copo888/channel_app/lepay/internal/service"
 	"github.com/copo888/channel_app/lepay/internal/svc"
@@ -18,6 +16,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 )
 
 type PayOrderLogic struct {
@@ -126,28 +125,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if res.Status() != 200 {
-		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
-		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-
-		//寫入交易日志
-		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo:  req.MerchantId,
-			ChannelCode: channel.Code,
-			//MerchantOrderNo: req.OrderNo,
-			OrderNo:          req.OrderNo,
-			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
-			LogSource:        constants.API_ZF,
-			Content:          string(res.Body()),
-			TraceId:          l.traceID,
-			ChannelErrorCode: strconv.Itoa(res.Status()),
-		}); err != nil {
-			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-		}
-
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
+
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
 		RedirectUrl string `json:"redirect_url"`
@@ -173,6 +152,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 渠道狀態碼判斷
 	if len(channelResp.RedirectUrl) == 0 {
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          string(res.Body()),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.Itoa(res.Status()),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
