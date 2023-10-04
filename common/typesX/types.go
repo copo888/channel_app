@@ -135,6 +135,7 @@ type Order struct {
 
 type TransactionLogData struct {
 	MerchantNo       string      `json:"merchantNo"`
+	ChannelCode      string      `json:"channelCode"`
 	MerchantOrderNo  string      `json:"merchantOrderNo"`
 	OrderNo          string      `json:"orderNo"`
 	LogType          string      `json:"logType"`
@@ -149,6 +150,7 @@ type TransactionLogData struct {
 type TxLog struct {
 	ID               int64  `json:"id"`
 	MerchantCode     string `json:"merchantCode, optional"`
+	ChannelCode      string `json:"channelCode, optional"`
 	OrderNo          string `json:"orderNo, optional"`
 	MerchantOrderNo  string `json:"merchantOrderNo, optional"`
 	ChannelOrderNo   string `json:"channelOrderNo, optional"`

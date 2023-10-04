@@ -93,7 +93,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
+		MerchantNo:  channel.MerId,
+		ChannelCode: channel.Code,
 		//MerchantOrderNo: req.OrderNo,
 		OrderNo:   req.OrderNo,
 		LogType:   constants.DATA_REQUEST_CHANNEL,
@@ -121,8 +122,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			//MerchantNo: channel.MerId,
+			MerchantNo: channel.MerId,
 			//MerchantOrderNo: req.OrderNo,
+			ChannelCode:      channel.Code,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_DF,
@@ -166,6 +168,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			//MerchantNo: req.MerchantId,
 			//MerchantOrderNo: req.OrderNo,
+			ChannelCode:      channel.Code,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_DF,
@@ -183,11 +186,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", channelResp),
-		TraceId:   l.traceID,
+		ChannelCode: channel.Code,
+		OrderNo:     req.OrderNo,
+		LogType:     constants.RESPONSE_FROM_CHANNEL,
+		LogSource:   constants.API_DF,
+		Content:     fmt.Sprintf("%+v", channelResp),
+		TraceId:     l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}

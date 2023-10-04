@@ -85,7 +85,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
+		MerchantNo:  req.MerchantId,
+		ChannelCode: channel.Code,
 		//MerchantOrderNo: req.OrderNo,
 		OrderNo:   req.OrderNo,
 		LogType:   constants.DATA_REQUEST_CHANNEL,
@@ -105,7 +106,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
 			//MerchantOrderNo: req.OrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
@@ -125,7 +127,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
 			//MerchantOrderNo: req.OrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
@@ -169,7 +172,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if channelResp.HttpStatusCode != 201 {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
 			//MerchantOrderNo: req.OrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
@@ -186,11 +190,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		OrderNo:    req.OrderNo,
-		LogType:    constants.RESPONSE_FROM_CHANNEL,
-		LogSource:  constants.API_ZF,
-		Content:    fmt.Sprintf("%+v", channelResp)}); err != nil {
+		MerchantNo:  req.MerchantId,
+		ChannelCode: channel.Code,
+		OrderNo:     req.OrderNo,
+		LogType:     constants.RESPONSE_FROM_CHANNEL,
+		LogSource:   constants.API_ZF,
+		Content:     fmt.Sprintf("%+v", channelResp)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 

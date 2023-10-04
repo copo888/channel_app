@@ -104,7 +104,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
+		MerchantNo:  req.MerchantId,
+		ChannelCode: channel.Code,
 		//MerchantOrderNo: req.OrderNo,
 		OrderNo:   req.OrderNo,
 		LogType:   constants.DATA_REQUEST_CHANNEL,
@@ -139,7 +140,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
 			//MerchantOrderNo: req.OrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
@@ -180,7 +182,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if channelResp.Code != "0000" {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
 			//MerchantOrderNo: req.OrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
@@ -197,7 +200,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
+		MerchantNo:  req.MerchantId,
+		ChannelCode: channel.Code,
 		//MerchantOrderNo: req.OrderNo,
 		OrderNo:   req.OrderNo,
 		LogType:   constants.RESPONSE_FROM_CHANNEL,
