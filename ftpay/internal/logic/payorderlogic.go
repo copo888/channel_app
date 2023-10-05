@@ -112,7 +112,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_ZF,
-			Content:          ChnErr,
+			Content:          ChnErr.Error(),
 			TraceId:          l.traceID,
 			ChannelErrorCode: ChnErr.Error(),
 		}); err != nil {
