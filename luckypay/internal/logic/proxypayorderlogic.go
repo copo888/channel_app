@@ -62,9 +62,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 将纳秒级时间戳转换为 13 位的时间戳
 	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 
-	if len(req.Remark) == 0 || req.Remark == "" {
-		return nil, errorx.New("Remark必填，输入IFSC")
-	}
+	//if len(req.Remark) == 0 || req.Remark == "" {
+	//	return nil, errorx.New("Remark必填，输入IFSC")
+	//}
 	// 組請求參數
 	data := url.Values{}
 	data.Set("clientCode", channel.MerId)
