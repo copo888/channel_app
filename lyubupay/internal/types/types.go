@@ -62,6 +62,7 @@ type PayQueryInternalBalanceResponse struct {
 
 type ProxyPayOrderRequest struct {
 	OrderNo              string `json:"orderNo"`
+	MerchantId           string `json:"merchantId"`
 	TransactionType      string `json:"transactionType"`
 	TransactionAmount    string `json:"transactionAmount"`
 	ReceiptAccountNumber string `json:"receiptAccountNumber"`
@@ -115,16 +116,16 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp         string `json:"myIp, optional"`
-	MchId       string `json:"mch_id, optional"`
-	TradeNo     string `json:"trade_no, optional"`
+	MyIp       string `json:"myIp, optional"`
+	MchId      string `json:"mch_id, optional"`
+	TradeNo    string `json:"trade_no, optional"`
 	OutTradeNo string `json:"out_trade_no, optional"`
-	Money        string `json:"money, optional"`
-	NotifyTime  string `json:"notify_time, optional"`
-	State        string `json:"state, optional"`
+	Money      string `json:"money, optional"`
+	NotifyTime string `json:"notify_time, optional"`
+	State      string `json:"state, optional"`
 	PsgTradeNo string `json:"psg_trade_no, optional"`
-	Subject      string `json:"subject, optional"`
-	Sign         string `json:"sign, optional"`
+	Subject    string `json:"subject, optional"`
+	Sign       string `json:"sign, optional"`
 }
 
 // form 格式

@@ -62,6 +62,7 @@ type PayQueryInternalBalanceResponse struct {
 
 type ProxyPayOrderRequest struct {
 	OrderNo              string `json:"orderNo"`
+	MerchantId           string `json:"merchantId"`
 	TransactionType      string `json:"transactionType"`
 	TransactionAmount    string `json:"transactionAmount"`
 	ReceiptAccountNumber string `json:"receiptAccountNumber"`

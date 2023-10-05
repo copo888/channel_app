@@ -84,7 +84,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
+		MerchantNo: req.MerchantId,
 		//MerchantOrderNo: req.OrderNo,
 		ChannelCode: channel.Code,
 		OrderNo:     req.OrderNo,
@@ -106,7 +106,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			//MerchantNo:  req.MerchantId,
+			MerchantNo:  req.MerchantId,
 			ChannelCode: channel.Code,
 			//MerchantOrderNo: req.OrderNo,
 			OrderNo:          req.OrderNo,
@@ -127,7 +127,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			//MerchantNo: req.MerchantId,
+			MerchantNo: req.MerchantId,
 			//MerchantOrderNo: req.OrderNo,
 			ChannelCode:      channel.Code,
 			OrderNo:          req.OrderNo,
@@ -163,7 +163,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			//MerchantNo: req.MerchantId,
+			MerchantNo: req.MerchantId,
 			//MerchantOrderNo: req.OrderNo,
 			ChannelCode:      channel.Code,
 			OrderNo:          req.OrderNo,
@@ -181,7 +181,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
+		MerchantNo: req.MerchantId,
 		//MerchantOrderNo: req.OrderNo,
 		ChannelCode: channel.Code,
 		OrderNo:     req.OrderNo,
