@@ -123,7 +123,7 @@ type ProxyPayCallBackRequest struct {
 	CoinUnit   string `form:"coinUnit"`
 	PayAmount  string `form:"payAmount"`
 	Status     string `form:"status"`
-	Txid       string `form:"txid"`
+	Txid       string `form:"txid, optional"`
 }
 
 type PayCallBackRequest struct {
