@@ -60,7 +60,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "https://afb4-211-75-36-190.ngrok-free.app/api/pay-call-back"
 	timestamp := time.Now().Format("2006-01-02 15:04:05")
-	//ip := utils.GetRandomIp()
+	//ip := utils.GetRandomIp() TET
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	// 組請求參數
@@ -74,10 +74,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("pay_amount", req.TransactionAmount)
 
 	//data.Set("payType", req.ChannelPayType)
-
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	data.Set("reType", "INFO")
-	//}
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
