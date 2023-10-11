@@ -4827,3 +4827,46 @@ steps:
 trigger:
   branch:
     - wanjioupay
+
+
+---
+kind: pipeline
+name: sunnypay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sunnypay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout sunnypay2
+        - git checkout -- .
+        - git pull origin sunnypay2
+        - go mod tidy
+        - docker-compose -f sunnypay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypay2 sunnypay2/pay.go
+        - docker build -t sunnypay2 -f sunnypay2/Dockerfile .
+        - docker-compose -f sunnypay2/docker-compose.yml up -d
+    when:
+      branch:
+        - sunnypay2
+      event:
+        - push
+trigger:
+  branch:
+    - sunnypay2
