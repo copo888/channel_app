@@ -67,7 +67,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("callback_url", notifyUrl)
 	data.Set("return_url", req.PageUrl)
 
-	// 組請求參數 FOR JSON
+	// 組請求參數 FOR JSO
 	//data := struct {
 	//	Merchant    string `json:"merchant"`
 	//	PaymentType string `json:"payment_type"`
