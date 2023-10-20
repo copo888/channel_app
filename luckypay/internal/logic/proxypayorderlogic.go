@@ -62,9 +62,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 将纳秒级时间戳转换为 13 位的时间戳
 	timestamp := time.Now().UnixNano() / int64(time.Millisecond)
 
-	if len(req.Remark) == 0 || req.Remark == "" {
-		return nil, errorx.New("Remark必填，输入IFSC")
-	}
+	//if len(req.Remark) == 0 || req.Remark == "" {
+	//	return nil, errorx.New("Remark必填，输入IFSC")
+	//}
 	// 組請求參數
 	data := url.Values{}
 	data.Set("clientCode", channel.MerId)
@@ -72,7 +72,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("coinUnit", "THB")
 	data.Set("bankCardNum", req.ReceiptAccountNumber)
 	data.Set("bankUserName", req.ReceiptAccountName)
-	data.Set("ifsc", req.Remark)
+	data.Set("ifsc", "IFSC")
 	data.Set("bankName", req.ReceiptCardBankName)
 	data.Set("amount", req.TransactionAmount)
 	data.Set("clientNo", req.OrderNo)
@@ -86,7 +86,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
+		MerchantNo:  req.MerchantId,
+		ChannelCode: channel.Code,
 		//MerchantOrderNo: req.OrderNo,
 		OrderNo:   req.OrderNo,
 		LogType:   constants.DATA_REQUEST_CHANNEL,
@@ -106,11 +107,43 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          ChnErr.Error(),
+			TraceId:          l.traceID,
+			ChannelErrorCode: ChnErr.Error(),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+
+		// 寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          fmt.Sprintf("%s", string(ChannelResp.Body())),
+			TraceId:          l.traceID,
+			ChannelErrorCode: string(ChannelResp.Status()),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
@@ -136,7 +169,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
+		MerchantNo:  req.MerchantId,
+		ChannelCode: channel.Code,
 		//MerchantOrderNo: req.OrderNo,
 		OrderNo:   req.OrderNo,
 		LogType:   constants.RESPONSE_FROM_CHANNEL,

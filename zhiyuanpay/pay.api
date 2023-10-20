@@ -70,6 +70,7 @@ type PayQueryInternalBalanceResponse {
 
 type ProxyPayOrderRequest {
 	OrderNo              string `json:"orderNo"`
+	MerchantId	         string `json:"merchantId"`
 	TransactionType      string `json:"transactionType"`
 	TransactionAmount    string `json:"transactionAmount"`
 	ReceiptAccountNumber string `json:"receiptAccountNumber"`

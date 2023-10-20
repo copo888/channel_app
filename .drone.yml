@@ -4699,3 +4699,218 @@ steps:
 trigger:
   branch:
     - goalpay
+
+
+---
+kind: pipeline
+name: ftpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-ftpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout ftpay
+        - git checkout -- .
+        - git pull origin ftpay
+        - go mod tidy
+        - docker-compose -f ftpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ftpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ftpay ftpay/pay.go
+        - docker build -t ftpay -f ftpay/Dockerfile .
+        - docker-compose -f ftpay/docker-compose.yml up -d
+    when:
+      branch:
+        - ftpay
+      event:
+        - push
+trigger:
+  branch:
+    - ftpay
+
+
+---
+kind: pipeline
+name: sunnypay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sunnypay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout sunnypay
+        - git checkout -- .
+        - git pull origin sunnypay
+        - go mod tidy
+        - docker-compose -f sunnypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypay sunnypay/pay.go
+        - docker build -t sunnypay -f sunnypay/Dockerfile .
+        - docker-compose -f sunnypay/docker-compose.yml up -d
+    when:
+      branch:
+        - sunnypay
+      event:
+        - push
+trigger:
+  branch:
+    - sunnypay
+
+---
+kind: pipeline
+name: wanjioupay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-wanjioupay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout wanjioupay
+        - git checkout -- .
+        - git pull origin wanjioupay
+        - go mod tidy
+        - docker-compose -f wanjioupay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=wanjioupay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/wanjioupay wanjioupay/pay.go
+        - docker build -t wanjioupay -f wanjioupay/Dockerfile .
+        - docker-compose -f wanjioupay/docker-compose.yml up -d
+    when:
+      branch:
+        - wanjioupay
+      event:
+        - push
+trigger:
+  branch:
+    - wanjioupay
+
+
+---
+kind: pipeline
+name: sunnypay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sunnypay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout sunnypay2
+        - git checkout -- .
+        - git pull origin sunnypay2
+        - go mod tidy
+        - docker-compose -f sunnypay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypay2 sunnypay2/pay.go
+        - docker build -t sunnypay2 -f sunnypay2/Dockerfile .
+        - docker-compose -f sunnypay2/docker-compose.yml up -d
+    when:
+      branch:
+        - sunnypay2
+      event:
+        - push
+trigger:
+  branch:
+    - sunnypay2
+
+
+
+---
+kind: pipeline
+name: sunnypaymaya
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sunnypaymaya
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout sunnypaymaya
+        - git checkout -- .
+        - git pull origin sunnypaymaya
+        - go mod tidy
+        - docker-compose -f sunnypaymaya/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypaymaya" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypaymaya sunnypaymaya/pay.go
+        - docker build -t sunnypaymaya -f sunnypaymaya/Dockerfile .
+        - docker-compose -f sunnypaymaya/docker-compose.yml up -d
+    when:
+      branch:
+        - sunnypaymaya
+      event:
+        - push
+trigger:
+  branch:
+    - sunnypaymaya

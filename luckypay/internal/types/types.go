@@ -70,6 +70,7 @@ type PayQueryInternalBalanceResponse struct {
 
 type ProxyPayOrderRequest struct {
 	OrderNo              string `json:"orderNo"`
+	MerchantId           string `json:"merchantId"`
 	TransactionType      string `json:"transactionType"`
 	TransactionAmount    string `json:"transactionAmount"`
 	ReceiptAccountNumber string `json:"receiptAccountNumber"`
@@ -122,7 +123,7 @@ type ProxyPayCallBackRequest struct {
 	CoinUnit   string `form:"coinUnit"`
 	PayAmount  string `form:"payAmount"`
 	Status     string `form:"status"`
-	Txid       string `form:"txid"`
+	Txid       string `form:"txid, optional"`
 }
 
 type PayCallBackRequest struct {

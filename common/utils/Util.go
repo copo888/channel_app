@@ -249,6 +249,7 @@ func CreateTransactionLog(db *gorm.DB, data *typesX.TransactionLogData) (err err
 
 	txLog := typesX.TxLog{
 		MerchantCode:     data.MerchantNo,
+		ChannelCode:      data.ChannelCode,
 		MerchantOrderNo:  data.MerchantOrderNo,
 		OrderNo:          data.OrderNo,
 		LogType:          data.LogType,

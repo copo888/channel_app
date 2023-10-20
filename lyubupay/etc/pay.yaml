@@ -35,11 +35,16 @@ Prometheus:
   Host: ${PROMETHEUS_HOST}
   Port: ${PROMETHEUS_PORT}
   Path: ${PROMETHEUS_PATH}
-  
+
 ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd
   ProxyKey: zrdfSeWd
+  LineKey: GHddFKsa
+
+LineSend:
+  Host: ${LINE_HOST}
+  Port: ${LINE_PORT}
 
 Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
