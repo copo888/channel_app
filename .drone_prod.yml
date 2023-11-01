@@ -7091,6 +7091,68 @@ steps:
       - success
 
 
+- name: docker-kumoproxypay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f kumoproxypay/docker-compose.yml down
+      - docker rmi kumoproxypay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/kumoproxypay kumoproxypay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t kumoproxypay -f kumoproxypay/Dockerfile .
+      - docker-compose -f kumoproxypay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appkumoproxypay-*
+      - refs/tags/api01-testkumoproxypay-*
+    status:
+      - success
+
+
+- name: docker-kumoproxypay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f kumoproxypay/docker-compose.yml down
+      - docker rmi kumoproxypay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/kumoproxypay kumoproxypay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t kumoproxypay -f kumoproxypay/Dockerfile .
+      - docker-compose -f kumoproxypay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appkumoproxypay-*
+      - refs/tags/api02-testkumoproxypay-*
+    status:
+      - success
+
+
 
 - name: slb-after
   image: appleboy/drone-ssh
