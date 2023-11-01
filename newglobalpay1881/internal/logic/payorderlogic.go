@@ -77,13 +77,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		ReturnUrl   string `json:"return_url"`
 		Sign        string `json:"sign"`
 	}{
-		Merchant:   channel.MerId,
-		PaymentType: "3",
-		Amount:     req.TransactionAmount,
-		OrderId:   req.OrderNo,
-		BankCode:   req.ChannelPayType,
+		Merchant:    channel.MerId,
+		PaymentType: "1",
+		Amount:      req.TransactionAmount,
+		OrderId:     req.OrderNo,
+		BankCode:    req.ChannelPayType,
 		CallbackUrl: notifyUrl,
-		ReturnUrl: req.PageUrl,
+		ReturnUrl:   req.PageUrl,
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
