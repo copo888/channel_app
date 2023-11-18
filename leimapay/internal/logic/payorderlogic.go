@@ -53,10 +53,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
-	if len(req.JumpType) == 0 {
-		logx.WithContext(l.ctx).Errorf("JumpType不可为空 JumpType不可为空:%s", req.JumpType)
-		return nil, errorx.New(responsex.INVALID_PARAMETER)
-	}
+	//if len(req.JumpType) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("JumpType不可为空 JumpType不可为空:%s", req.JumpType)
+	//	return nil, errorx.New(responsex.INVALID_PARAMETER)
+	//}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
@@ -192,36 +192,38 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg.ErrorMsg+":"+channelResp.ErrorMsg.Descript)
 	}
 
+	isCheckOutMer := true
 	// 若需回傳JSON 請自行更改
 	if strings.EqualFold(req.JumpType, "json") {
-		isCheckOutMer := false // 自組收銀台回傳 true
-		if req.MerchantId == "ME00015" {
-			isCheckOutMer = true
-		}
-		amount, err2 := strconv.ParseFloat(channelResp.Data.Amount, 64)
-		if err2 != nil {
-			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-		}
-		// 返回json
-		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-			CardName:   channelResp.Data.BankAccountName,
-			CardNumber: channelResp.Data.BankAccountNumber,
-			BankName:   channelResp.Data.BankName,
-			BankBranch: "",
-			Amount:     amount,
-			Link:       "",
-			Remark:     "",
-		})
-		if err3 != nil {
-			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-		}
-		return &types.PayOrderResponse{
-			PayPageType:    "json",
-			PayPageInfo:    string(receiverInfoJson),
-			ChannelOrderNo: "",
-			IsCheckOutMer:  isCheckOutMer,
-		}, nil
+		isCheckOutMer = false
 	}
+	//isCheckOutMer := true // 自組收銀台回傳 true
+	//if req.MerchantId == "ME00015" {
+	//	isCheckOutMer = true
+	//}
+	amount, err2 := strconv.ParseFloat(channelResp.Data.Amount, 64)
+	if err2 != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
+	}
+	// 返回json
+	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+		CardName:   channelResp.Data.BankAccountName,
+		CardNumber: channelResp.Data.BankAccountNumber,
+		BankName:   channelResp.Data.BankName,
+		BankBranch: "",
+		Amount:     amount,
+		Link:       "",
+		Remark:     "",
+	})
+	if err3 != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+	}
+	return &types.PayOrderResponse{
+		PayPageType:    "json",
+		PayPageInfo:    string(receiverInfoJson),
+		ChannelOrderNo: "",
+		IsCheckOutMer:  isCheckOutMer,
+	}, nil
 
 	//resp = &types.PayOrderResponse{
 	//	PayPageType:    "url",
