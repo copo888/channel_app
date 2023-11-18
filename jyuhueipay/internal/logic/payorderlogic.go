@@ -63,6 +63,44 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
+	params := struct {
+		Charset     string `json:"charset"`
+		AccessType  string `json:"access_type"`
+		MerchantId  string `json:"merchant_id"`
+		SignType    string `json:"sign_type"`
+		NotifyUrl   string `json:"notify_url"`
+		PageUrl     string `json:"page_url"`
+		Version     string `json:"version"`
+		Language    string `json:"language"`
+		Timestamp   string `json:"timestamp"`
+		OrderId     string `json:"order_id"`
+		BankAccNo   string `json:"bank_acc_no"`
+		BankAccName string `json:"bank_acc_name"`
+		Amount      string `json:"amount"`
+		AmtType     string `json:"amt_type"`
+		GateId      string `json:"gate_id"`
+		GoodsId     string `json:"goods_id"`
+		Phone       string `json:"phone"`
+	}{
+		Charset:     "1",
+		AccessType:  "1",
+		MerchantId:  channel.MerId,
+		SignType:    "3",
+		NotifyUrl:   notifyUrl,
+		PageUrl:     req.PageUrl,
+		Version:     "v1.0",
+		Language:    "1",
+		Timestamp:   timestamp,
+		OrderId:     req.OrderNo,
+		BankAccNo:   "00000000000000000000",
+		BankAccName: "bankAccountName",
+		Amount:      fmt.Sprintf("%.f", amount),
+		AmtType:     "CNY",
+		GateId:      "1",
+		GoodsId:     "goods_id",
+		Phone:       "00000000000",
+	}
+
 	// 組請求參數
 	data := url.Values{}
 	data.Set("charset", "1")
@@ -73,8 +111,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("pageUrl", req.PageUrl)
 	data.Set("version", "v1.0")
 	data.Set("language", "1")
-	data.Set("timestamp", timestamp)
-
+	data.Set("timestamp", timestamp) //
 	data.Set("order_id", req.OrderNo)
 	data.Set("bankAccNo", "00000000000000000000")
 	data.Set("bankAccName", "bankAccountName")
@@ -85,7 +122,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("phone", "00000000000")
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, l.svcCtx.PrivateKey, l.ctx)
+	sign := payutils.SortAndSignFromObj(params, l.svcCtx.PrivateKey, l.ctx)
 	data.Set("signMsg", sign)
 
 	//寫入交易日志
