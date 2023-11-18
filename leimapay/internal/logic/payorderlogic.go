@@ -80,28 +80,28 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 組請求參數 FOR JSON
 	data := struct {
-		MerchantCode string `json:"merchantCode"`
-		MerchantOrderId string `json:"merchantOrderId"`
-		CurrencyCode string `json:"currencyCode"`
-		PaymentTypeCode string `json:"paymentTypeCode"`
-		Amount float64 `json:"amount"`
-		SuccessUrl string `json:"successUrl"`
-		Mp string `json:"mp"`
-		MerchantMemberId string `json:"merchantMemberId"`
-		MerchantMemberIp string `json:"merchantMemberIp"`
-		PayerName string `json:"payerName"`
-		Sign      string `json:"sign"`
+		MerchantCode     string  `json:"merchantCode"`
+		MerchantOrderId  string  `json:"merchantOrderId"`
+		CurrencyCode     string  `json:"currencyCode"`
+		PaymentTypeCode  string  `json:"paymentTypeCode"`
+		Amount           float64 `json:"amount"`
+		SuccessUrl       string  `json:"successUrl"`
+		Mp               string  `json:"mp"`
+		MerchantMemberId string  `json:"merchantMemberId"`
+		MerchantMemberIp string  `json:"merchantMemberIp"`
+		PayerName        string  `json:"payerName"`
+		Sign             string  `json:"sign"`
 	}{
-		MerchantCode: channel.MerId,
-		MerchantOrderId: req.OrderNo,
-		CurrencyCode: req.Currency,
-		PaymentTypeCode: req.ChannelPayType,
-		Amount: amount,
-		SuccessUrl: notifyUrl,
-		Mp: "deposit",
+		MerchantCode:     channel.MerId,
+		MerchantOrderId:  req.OrderNo,
+		CurrencyCode:     req.Currency,
+		PaymentTypeCode:  req.ChannelPayType,
+		Amount:           amount,
+		SuccessUrl:       notifyUrl,
+		Mp:               "deposit",
 		MerchantMemberId: randomID,
 		MerchantMemberIp: ip,
-		PayerName: req.UserId,
+		PayerName:        req.UserId,
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
@@ -153,19 +153,19 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Result bool `json:"result"`
-		ErrorMsg struct{
-			Code int `json:"code"`
+		Result   bool `json:"result"`
+		ErrorMsg struct {
+			Code     int    `json:"code"`
 			ErrorMsg string `json:"errorMsg"`
 			Descript string `json:"descript"`
 		} `json:"errorMsg, optional"`
-		Data struct{
-			GamerOrderId string `json:"gamerOrderId"`
-			Amount string `json:"amount"`
-			BankName string `json:"bankName"`
+		Data struct {
+			GamerOrderId      string `json:"gamerOrderId"`
+			Amount            string `json:"amount"`
+			BankName          string `json:"bankName"`
 			BankAccountNumber string `json:"bankAccountNumber"`
-			BankAccountName string `json:"bankAccountName"`
-			Sign string `json:"sign"`
+			BankAccountName   string `json:"bankAccountName"`
+			Sign              string `json:"sign"`
 		} `json:"data, optional"`
 	}{}
 
@@ -189,13 +189,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 渠道狀態碼判斷
 	if channelResp.Result != true {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg.ErrorMsg)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg.ErrorMsg+":"+channelResp.ErrorMsg.Descript)
 	}
 
 	// 若需回傳JSON 請自行更改
 	if strings.EqualFold(req.JumpType, "json") {
 		isCheckOutMer := false // 自組收銀台回傳 true
-		if req.MerchantId == "ME00015"{
+		if req.MerchantId == "ME00015" {
 			isCheckOutMer = true
 		}
 		amount, err2 := strconv.ParseFloat(channelResp.Data.Amount, 64)
