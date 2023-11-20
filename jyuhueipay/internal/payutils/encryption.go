@@ -107,6 +107,8 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
 	m := CovertToMap(data)
 	newSource := JoinStringsInASCII(m, "&", false, false, "")
+	_, _ = encryptByPrivateKey([]byte(newSource), screctKey)
+
 	newSign := GetSign3([]byte(newSource), []byte(screctKey))
 	//if err != nil{
 	//	logx.WithContext(ctx).Errorf("%s",err.Error())
@@ -154,16 +156,16 @@ func encryptByPrivateKey(data []byte, privateKeyStr string) ([]byte, error) {
 	}
 
 	// 解析 PEM 编码的私钥
-	privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-	if err != nil {
-		return nil, err
-	}
+	//privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+	//if err != nil {
+	//	return nil, err
+	//}
 
 	// 转换为 RSA 私钥类型
-	_, ok := privateKey.(*rsa.PrivateKey)
-	if !ok {
-		return nil, errors.New("unexpected private key type")
-	}
+	//rsaPrivateKey, ok := privateKey.(*rsa.PrivateKey)
+	//if !ok {
+	//	return nil, errors.New("unexpected private key type")
+	//}
 
 	// 对数据进行分段加密
 	inputLen := len(data)
@@ -176,13 +178,13 @@ func encryptByPrivateKey(data []byte, privateKeyStr string) ([]byte, error) {
 		}
 
 		// 对每个数据块进行加密
-		encryptedBlock, err := rsa.EncryptPKCS1v15(rand.Reader, nil, data[offSet:end])
-		if err != nil {
-			return nil, err
-		}
+		//encryptedBlock, err := rsa.EncryptPKCS1v15(rand.Reader, rsaPrivateKey, data[offSet:end])
+		//if err != nil {
+		//	return nil, err
+		//}
 
 		// 追加到加密结果中
-		encryptedData = append(encryptedData, encryptedBlock...)
+		//encryptedData = append(encryptedData, encryptedBlock...)
 	}
 
 	return encryptedData, nil
