@@ -56,8 +56,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//}
 
 	// 取值
-	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	notifyUrl := "https://c17b-211-75-36-190.ngrok.io/api/pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
+	//notifyUrl := "https://c17b-211-75-36-190.ngrok.io/api/pay-call-back"
 	timestamp := time.Now().Format("20060102150405")
 	amount := utils.FloatMul(req.TransactionAmount, "100") // 單位:分
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
