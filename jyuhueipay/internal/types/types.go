@@ -114,28 +114,44 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
-	Charset    string `form:"charset, optional"`
-	Amount     string `form:"amount, optional"`
-	StatusStr  string `form:"statusStr, optional"`
-	OutTradeNo string `form:"outTradeNo, optional"`
-	Sign       string `form:"sign, optional"`
-	SignType   string `form:"signType, optional"`
-	Status     string `form:"status, optional"`
+	Ip          string `form:"ip, optional"`
+	RspCod      string `form:"rspCod, optional"`
+	RspMsg      string `form:"rspMsg, optional"`
+	MerchantId  string `form:"merchantId, optional"`
+	MerchantNme string `form:"merchantNme, optional"`
+	OrderNo     string `form:"orderNo, optional"`
+	BankNo      string `form:"bankNo, optional"`
+	AcctNo      string `form:"acctNo, optional"`
+	AcctName    string `form:"acctName, optional"`
+	AcctType    string `form:"acctType, optional"`
+	Ccy         string `form:"ccy, optional"`
+	TransAmt    string `form:"transAmt, optional"` //单位：元，保留2位小数
+	TransUsage  string `form:"transUsage, optional"`
+	OrderId     string `form:"orderId, optional"`
+	TransTime   string `form:"transTime, optional"`
+	TransStatus string `form:"transStatus, optional"` //00-交易成功；01-交易失败；03-支付中,待查；
+	PayAmt      string `form:"payAmt, optional"`      //单位：元，保留2位小数
+	PayFee      string `form:"payFee, optional"`      //单位：元，保留2位小数
+	Remark      string `form:"remark, optional"`
+	SignMsg     string `form:"signMsg, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp     string `json:"myIp, optional"`
-	Code     string `json:"code, optional"`
-	Msg      string `json:"msg, optional"`
-	Sign     string `json:"sign, optional"`
-	MerchId  string `json:"merchId, optional"`
-	Money    string `json:"money, optional"`
-	TradeNo  string `json:"tradeNo, optional"`
-	OrderId  string `json:"orderId, optional"`
-	Time     string `json:"time, optional"`
-	SignType string `json:"signType, optional"`
-	PayType  string `json:"payType, optional"`
+	MyIp     string `form:"myIp, optional"`
+	Charset  string `form:"charset, optional"`
+	Language string `form:"language, optional"`
+	Version  string `form:"version, optional"`
+	//
+	OrderId   string `form:"orderNo, optional"`
+	Money     string `form:"orderAmount, optional"`
+	Time      string `form:"orderTime, optional"`
+	PayType   string `form:"payType, optional"`
+	TradeNo   string `form:"payOrderId, optional"`
+	PayAmount string `form:"payAmount, optional"` //以分为单位
+	Fee       string `form:"fee, optional"`       //以分为单位
+	PayResult string `form:"payResult, optional"` //00-成功
+	MerchId   string `form:"merchantId, optional"`
+	Sign      string `form:"signMsg, optional"`
 }
 
 type ReceiverInfoVO struct {

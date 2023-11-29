@@ -11,10 +11,8 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/jyuhueipay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/jyuhueipay/internal/svc"
@@ -69,25 +67,25 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
-
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
-
-	//orderStatus := "1"
-	//if req.TradeStatus == "1" {
-	//	orderStatus = "20"
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
+
+	//var orderAmount float64
+	//if orderAmount, err = strconv.ParseFloat(req.PayAmount, 64); err != nil {
+	//	return "fail", errorx.New(responsex.INVALID_AMOUNT)
+	//}
+
+	orderStatus := "1"
+	if req.PayResult == "00" {
+		orderStatus = "20"
+	}
 
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.OrderId,
 		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    "20",        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderAmount:    utils.FloatDiv(req.PayAmount, "100"),
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

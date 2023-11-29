@@ -6,11 +6,11 @@ import (
 	"crypto/md5"
 	"crypto/rand"
 	"crypto/rsa"
+	"crypto/sha1"
 	"crypto/sha256"
 	"crypto/x509"
 	"encoding/base64"
 	"encoding/pem"
-	"errors"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/url"
@@ -107,12 +107,11 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
 	m := CovertToMap(data)
 	newSource := JoinStringsInASCII(m, "&", false, false, "")
-	_, _ = encryptByPrivateKey([]byte(newSource), screctKey)
 
-	newSign := GetSign3([]byte(newSource), []byte(screctKey))
-	//if err != nil{
-	//	logx.WithContext(ctx).Errorf("%s",err.Error())
-	//}
+	newSign, err := signSHA1([]byte(newSource), screctKey)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("%s", err.Error())
+	}
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
 	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
@@ -121,10 +120,10 @@ func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context)
 // SortAndSignFromMap MAP 排序后加签
 func SortAndSignFromMap(newData map[string]string, privateKey string, ctx context.Context) string {
 	newSource := JoinStringsInASCII(newData, "&", false, false, "")
-	newSign := GetSign3([]byte(newSource), []byte(privateKey))
-	//if err != nil {
-	//	logx.WithContext(ctx).Errorf("加签错误:%s", err.Error())
-	//}
+	newSign, err := signSHA1([]byte(newSource), privateKey)
+	if err != nil {
+		logx.WithContext(ctx).Errorf("加签错误:%s", err.Error())
+	}
 
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
 	logx.WithContext(ctx).Info("签名字串:", newSign)
@@ -148,46 +147,47 @@ func GetSign3(dataJson, privateKey []byte) string {
 	return signature
 }
 
-func encryptByPrivateKey(data []byte, privateKeyStr string) ([]byte, error) {
+func signSHA1(data []byte, privateKeyStr string) (string, error) {
+	privateKeyStr = strings.ReplaceAll(privateKeyStr, "-----BEGIN PRIVATE KEY-----", "")
+	privateKeyStr = strings.ReplaceAll(privateKeyStr, "-----END PRIVATE KEY-----", "")
 	// 解码 Base64 格式的私钥
-	block, _ := pem.Decode([]byte(privateKeyStr))
-	if block == nil {
-		return nil, errors.New("failed to parse PEM block containing the private key")
+	privateKeyBytes, err := base64.StdEncoding.DecodeString(privateKeyStr)
+	if err != nil {
+		return "", err
+	}
+	//block, _ := pem.Decode([]byte(privateKeyStr))
+
+	// 解析私钥
+	privateKey, err := parsePrivateKey(privateKeyBytes)
+	if err != nil {
+		return "", err
 	}
 
-	// 解析 PEM 编码的私钥
-	//privateKey, err := x509.ParsePKCS8PrivateKey(block.Bytes)
-	//if err != nil {
-	//	return nil, err
-	//}
-
-	// 转换为 RSA 私钥类型
-	//rsaPrivateKey, ok := privateKey.(*rsa.PrivateKey)
-	//if !ok {
-	//	return nil, errors.New("unexpected private key type")
-	//}
-
-	// 对数据进行分段加密
-	inputLen := len(data)
-	var encryptedData []byte
-
-	for offSet := 0; offSet < inputLen; offSet += maxEncryptBlock {
-		end := offSet + maxEncryptBlock
-		if end > inputLen {
-			end = inputLen
-		}
-
-		// 对每个数据块进行加密
-		//encryptedBlock, err := rsa.EncryptPKCS1v15(rand.Reader, rsaPrivateKey, data[offSet:end])
-		//if err != nil {
-		//	return nil, err
-		//}
-
-		// 追加到加密结果中
-		//encryptedData = append(encryptedData, encryptedBlock...)
+	hashed := sha1.Sum(data)
+	// 创建 SHA1WithRSA 签名对象
+	signer, err := rsa.SignPKCS1v15(rand.Reader, privateKey, crypto.SHA1, hashed[:])
+	if err != nil {
+		return "", err
 	}
 
-	return encryptedData, nil
+	// 返回 Base64 编码的签名结果
+	return base64.URLEncoding.EncodeToString(signer), nil
+}
+
+func parsePrivateKey(keyBytes []byte) (*rsa.PrivateKey, error) {
+	// 解析 PKCS8 格式的私钥
+	key, err := x509.ParsePKCS8PrivateKey(keyBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	// 断言为 RSA 私钥类型
+	privateKey, ok := key.(*rsa.PrivateKey)
+	if !ok {
+		return nil, fmt.Errorf("unexpected private key type")
+	}
+
+	return privateKey, nil
 }
 
 func GetSign_SHA256(source string) string {

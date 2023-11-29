@@ -43,21 +43,19 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	if err1 != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
-
+	timeStamp := time.Now().Format("20060102150405")
 	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-
-	//JSON 格式
-	//data := struct {
-	//	MerchId   string `json:"partner"`
-	//}{
-	//	MerchId: channel.MerId,
-	//}
+	data.Set("charset", "1")
+	data.Set("language", "1")
+	data.Set("version", "v1.0")
+	data.Set("signType", "3")
+	data.Set("accessType", "1")
+	data.Set("merchantId", channel.MerId)
+	data.Set("timestamp", timeStamp)
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, l.svcCtx.PrivateKey, l.ctx)
-	data.Set("sign", sign)
+	data.Set("signMsg", sign)
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", channel.ProxyPayQueryBalanceUrl, data)
@@ -74,22 +72,27 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		Balance string `json:"balance"`
+		BalAmt     string `json:"balAmt,optional"`
+		Ccy        string `json:"ccy,optional"`
+		AccSts     string `json:"accSts,optional"`
+		SignMsg    string `json:"signMsg,optional"`
+		RspMsg     string `json:"rspMsg,optional"`
+		AccAmt     string `json:"accAmt,optional"`
+		MerchantId string `json:"merchantId,optional"`
+		RspCod     string `json:"rspCod,optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if balanceQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
+	} else if balanceQueryResp.RspCod != "01000000" {
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.RspCod, balanceQueryResp.RspMsg)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.RspMsg)
 	}
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Balance,
+		ProxyPayBalance:    balanceQueryResp.AccAmt,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 

@@ -24,7 +24,7 @@ func PayOrderHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.PayOrderRequest
 
-		if err := httpx.ParseForm(r, &req); err != nil {
+		if err := httpx.ParseJsonBody(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
 			return
 		}

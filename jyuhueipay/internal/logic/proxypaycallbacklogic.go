@@ -10,11 +10,9 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/jyuhueipay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/jyuhueipay/internal/svc"
@@ -41,13 +39,13 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.OutTradeNo, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo:      channel.MerId,
+		MerchantNo: req.MerchantId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OutTradeNo, //輸入COPO訂單號
+		OrderNo:   req.OrderNo, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -68,27 +66,27 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.TransAmt, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+	var status = "0"             //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.TransStatus == "00" { ////00-交易成功；01-交易失败；03-支付中,待查；
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if req.TransStatus == "01" {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.OrderNo,
+		ChannelOrderNo:      req.OrderId,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
+		ChannelResultNote:   "",
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",

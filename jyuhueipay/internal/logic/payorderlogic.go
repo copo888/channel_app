@@ -56,50 +56,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//}
 
 	// 取值
-	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
+	//notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
+	notifyUrl := "https://c17b-211-75-36-190.ngrok.io/api/pay-call-back"
 	timestamp := time.Now().Format("20060102150405")
 	amount := utils.FloatMul(req.TransactionAmount, "100") // 單位:分
-	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
-
-	params := struct {
-		Charset     string `json:"charset"`
-		AccessType  string `json:"access_type"`
-		MerchantId  string `json:"merchant_id"`
-		SignType    string `json:"sign_type"`
-		NotifyUrl   string `json:"notify_url"`
-		PageUrl     string `json:"page_url"`
-		Version     string `json:"version"`
-		Language    string `json:"language"`
-		Timestamp   string `json:"timestamp"`
-		OrderId     string `json:"order_id"`
-		BankAccNo   string `json:"bank_acc_no"`
-		BankAccName string `json:"bank_acc_name"`
-		Amount      string `json:"amount"`
-		AmtType     string `json:"amt_type"`
-		GateId      string `json:"gate_id"`
-		GoodsId     string `json:"goods_id"`
-		Phone       string `json:"phone"`
-	}{
-		Charset:     "1",
-		AccessType:  "1",
-		MerchantId:  channel.MerId,
-		SignType:    "3",
-		NotifyUrl:   notifyUrl,
-		PageUrl:     req.PageUrl,
-		Version:     "v1.0",
-		Language:    "1",
-		Timestamp:   timestamp,
-		OrderId:     req.OrderNo,
-		BankAccNo:   "00000000000000000000",
-		BankAccName: "bankAccountName",
-		Amount:      fmt.Sprintf("%.f", amount),
-		AmtType:     "CNY",
-		GateId:      "1",
-		GoodsId:     "goods_id",
-		Phone:       "00000000000",
-	}
 
 	// 組請求參數
 	data := url.Values{}
@@ -107,22 +68,22 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("accessType", "1")
 	data.Set("merchantId", channel.MerId)
 	data.Set("signType", "3")
-	data.Set("notifyUrl", notifyUrl)
-	data.Set("pageUrl", req.PageUrl)
+	data.Set("notifyUrl", url.QueryEscape(notifyUrl))
+	data.Set("pageUrl", url.QueryEscape(req.PageUrl))
 	data.Set("version", "v1.0")
 	data.Set("language", "1")
 	data.Set("timestamp", timestamp) //
 	data.Set("order_id", req.OrderNo)
 	data.Set("bankAccNo", "00000000000000000000")
-	data.Set("bankAccName", "bankAccountName")
+	data.Set("bankAccName", url.QueryEscape("王大明"))
 	data.Set("amount", fmt.Sprintf("%.f", amount))
 	data.Set("amt_type", "CNY")
 	data.Set("gate_id", "1")
 	data.Set("goods_id", "goods_id")
 	data.Set("phone", "00000000000")
-
 	// 加簽
-	sign := payutils.SortAndSignFromObj(params, l.svcCtx.PrivateKey, l.ctx)
+	sign := payutils.SortAndSignFromUrlValues(data, l.svcCtx.PrivateKey, l.ctx)
+
 	data.Set("signMsg", sign)
 
 	//寫入交易日志
@@ -191,19 +152,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code string `json:"rspCod"`
-		Msg  string `json:"rspMsg, optional"`
-		//Sign    string `json:"sign"`
-		//Money   string `json:"money"`
-		//OrderId string `json:"orderId"`
-		//PayUrl  string `json:"payUrl"`
-		//PayInfo struct {
-		//	Name       string `json:"name"`
-		//	Card       string `json:"card"`
-		//	Bank       string `json:"bank"`
-		//	Subbranch  string `json:"subbranch"`
-		//	ExpiringAt string `json:"expiring_at"`
-		//} `json:"payInfo"`
+		RspData struct {
+			PayParams struct {
+				OrdNo  string `json:"ordNo"`
+				PlanNo string `json:"planNo"`
+				PayUrl string `json:"payUrl"`
+			} `json:"pay_params"`
+		} `json:"rspData, optional"`
+		RspMsg string `json:"rspMsg, optional"`
+		RspCod string `json:"rspCod, optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -211,8 +168,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
+	if channelResp.RspMsg, err = url.QueryUnescape(channelResp.RspMsg); err != nil {
+		logx.Errorf("%s", err.Error())
+	}
+
 	// 渠道狀態碼判斷
-	if channelResp.Code != "0000" {
+	if channelResp.RspCod != "01000000" {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo:  req.MerchantId,
@@ -223,12 +184,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			LogSource:        constants.API_ZF,
 			Content:          fmt.Sprintf("%+v", channelResp),
 			TraceId:          l.traceID,
-			ChannelErrorCode: channelResp.Code,
+			ChannelErrorCode: channelResp.RspCod,
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RspMsg)
 	}
 
 	//寫入交易日志
@@ -278,8 +239,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
-		PayPageInfo:    "",
-		ChannelOrderNo: "",
+		PayPageInfo:    channelResp.RspData.PayParams.PayUrl,
+		ChannelOrderNo: channelResp.RspData.PayParams.PlanNo,
 	}
 
 	return
