@@ -85,7 +85,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	sign := payutils.SortAndSignFromUrlValues(data, l.svcCtx.PrivateKey, l.ctx)
 
 	data.Set("signMsg", sign)
-
+	data.Set("notifyUrl", notifyUrl)
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		MerchantNo:  req.MerchantId,
