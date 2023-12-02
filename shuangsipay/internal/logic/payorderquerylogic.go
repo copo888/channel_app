@@ -90,9 +90,10 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.ReturnCode != "1" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
+	//else if channelResp.ReturnCode != "1" {
+	//	return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	//}
 
 	orderAmount, errParse := strconv.ParseFloat(channelResp.PayMoney, 64)
 	if errParse != nil {
