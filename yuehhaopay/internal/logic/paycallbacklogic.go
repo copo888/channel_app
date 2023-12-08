@@ -87,7 +87,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(Result.RealAmount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(Result.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 	//30901 订单失效
