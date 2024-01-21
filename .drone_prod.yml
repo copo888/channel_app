@@ -6314,7 +6314,7 @@ steps:
       - docker rmi lelifupay2:latest
       - docker image prune -f
       - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/lelifupay2 lelifupay2/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t jinpinpay2 -f lelifupay2/Dockerfile .
+      - DOCKER_BUILDKIT=1 docker build -t lelifupay2 -f lelifupay2/Dockerfile .
       - docker-compose -f lelifupay2/docker-compose.yml up -d
   when:
     ref:
