@@ -157,7 +157,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		}
 
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, string(ChannelResp.Body()))
-	} else if ChannelResp.Status() < 200 && ChannelResp.Status() >= 300 {
+	} else if ChannelResp.Status() < 200 || ChannelResp.Status() >= 300 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
@@ -177,7 +177,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, string(ChannelResp.Body()))
 	}
 
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
