@@ -15,7 +15,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -53,10 +52,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	if strings.EqualFold(req.PayType, "U5") && len(req.UserId) == 0 {
-		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_USER_ID)
-	}
+	//if strings.EqualFold(req.PayType, "U5") && len(req.UserId) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
+	//	return nil, errorx.New(responsex.INVALID_USER_ID)
+	//}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
@@ -83,6 +82,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 	if req.UserId != "" {
 		params.UserId = req.UserId //会员ID
+	} else {
+		params.UserId = channel.MerId
 	}
 	// MD5加簽
 	sign := payutils.SortAndSignFromObj(params, channel.MerKey, l.ctx)
