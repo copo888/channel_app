@@ -13,7 +13,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strconv"
 	"strings"
 	"time"
@@ -50,14 +49,14 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if err1 != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
-	channelBankMap, err2 := model2.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.ReceiptCardBankCode)
-	if err2 != nil { //BankName空: COPO沒有對應銀行(要加bk_banks)，MapCode為空: 渠道沒有對應銀行代碼(要加ch_channel_banks)
-		logx.WithContext(l.ctx).Errorf("銀行代碼抓取資料錯誤:%s", err2.Error())
-		return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
-	} else if channelBankMap.BankName == "" || channelBankMap.MapCode == "" {
-		logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
-		return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
-	}
+	//channelBankMap, err2 := model2.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.ReceiptCardBankCode)
+	//if err2 != nil { //BankName空: COPO沒有對應銀行(要加bk_banks)，MapCode為空: 渠道沒有對應銀行代碼(要加ch_channel_banks)
+	//	logx.WithContext(l.ctx).Errorf("銀行代碼抓取資料錯誤:%s", err2.Error())
+	//	return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
+	//} else if channelBankMap.BankName == "" || channelBankMap.MapCode == "" {
+	//	logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
+	//	return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
+	//}
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
@@ -79,7 +78,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Amount:         transactionAmount,
 		BankCardNo:     req.ReceiptAccountNumber,
 		BankCardholder: req.ReceiptAccountName,
-		BankCode:       channelBankMap.MapCode,
+		BankCode:       req.ReceiptCardBankName,
 		NotifyUrl:      l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
 
@@ -88,15 +87,15 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Sign = sign
 
 	//RSA 加密前排序
-	m := payutils.CovertToMap(data)
-	newSource := payutils.JoinStringsInASCII(m, "&", false, false, "")
+	//m := payutils.CovertToMap(data)
+	//newSource := payutils.JoinStringsInASCII(m, "&", false, false, "")
+	//
+	//encryptContent := payutils.GetSign_RSA([]byte(newSource), PublicKey)
+	//logx.WithContext(l.ctx).Infof("RSA 加密前字串:%+s, 加密后字串:%+s", newSource, encryptContent)
 
-	encryptContent := payutils.GetSign_RSA([]byte(newSource), PublicKey)
-	logx.WithContext(l.ctx).Infof("RSA 加密前字串:%+s, 加密后字串:%+s", newSource, encryptContent)
-
-	reqData := url.Values{}
-	reqData.Set("cipherText", encryptContent)
-	reqData.Set("userId", channel.MerId)
+	//reqData := url.Values{}
+	//reqData.Set("cipherText", encryptContent)
+	//reqData.Set("userId", channel.MerId)
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: channel.MerId,
@@ -111,9 +110,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, reqData)
+	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).Form(reqData)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -129,15 +128,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool   `json:"success"`
-		Message string `json:"message"`
-		Code    int    `json:"code, optional"`
-		Result  struct {
-			Sussess   bool   `json:"sussess, optional"`  //True 成功  false  失败
-			Cod       int    `json:"cod, optional"`      //1 ：成功
-			OpenType  int    `json:"openType, optional"` //1：URL  0 ： HTML
-			ReturnUrl string `json:"returnUrl, optional"`
-		} `json:"result, optional"`
+		Success bool        `json:"success"`
+		Message string      `json:"message"`
+		Code    int         `json:"code, optional"`
+		Result  interface{} `json:"result, optional"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -157,12 +151,32 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	if strings.Index(channelResp.Message, "余额不足") > -1 {
-		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Success, channelResp.Message)
-		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.Message)
-	} else if channelResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Success, channelResp.Message)
+	if channelResp.Success != true {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
+	}
+
+	channelResp2 := struct {
+		Success bool   `json:"success"`
+		Message string `json:"message"`
+		Code    int    `json:"code, optional"`
+		Result  struct {
+			Sussess   bool   `json:"sussess, optional"`  //True 成功  false  失败
+			Cod       int    `json:"cod, optional"`      //1 ：成功
+			OpenType  int    `json:"openType, optional"` //1：URL  0 ： HTML
+			ReturnUrl string `json:"returnUrl, optional"`
+		} `json:"result, optional"`
+	}{}
+	// 返回body 轉 struct
+	if err := ChannelResp.DecodeJSON(&channelResp2); err != nil {
+		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+	}
+
+	if strings.Index(channelResp2.Message, "余额不足") > -1 {
+		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp2.Success, channelResp2.Message)
+		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp2.Message)
+	} else if channelResp2.Success != true {
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp2.Success, channelResp2.Message)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp2.Message)
 	}
 
 	//組返回給backOffice 的代付返回物件

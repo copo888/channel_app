@@ -13,7 +13,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 )
 
 type PayOrderQueryLogic struct {
@@ -43,20 +42,25 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		return
 	}
 	// 組請求參數
-	data := url.Values{}
-	data.Set("appId", channel.MerId)
-	data.Set("appOrderId", req.OrderNo)
-	data.Set("type", "pay")
+	data := struct {
+		UserId  string `json:"userId"`
+		OrderId string `json:"orderId"`
+		Type    string `json:"type"`
+		Sign    string `json:"sign"`
+	}{}
+	data.UserId = channel.MerId
+	data.OrderId = req.OrderNo
+	data.Type = "pay"
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	data.Set("sign", sign)
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
+	data.Sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -67,10 +71,17 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	channelResp := struct {
-		Success bool        `json:"success"`
-		Message string      `json:"message"`
-		Result  interface{} `json:"result"`
-		Code    interface{} `json:"code"`
+		Success bool   `json:"success"`
+		Message string `json:"message"`
+		Code    int    `json:"code"`
+		Result  struct {
+			OrderId     string `json:"orderId"`
+			OrderNo     string `json:"orderNo"`
+			OrderStatus string `json:"orderStatus"`
+			Amount      string `json:"amount"`
+			UserId      string `json:"userId"`
+			Sign        string `json:"sign"`
+		} `json:"result"`
 	}{}
 
 	// 渠道回覆處理
@@ -94,8 +105,10 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	//}
 
 	orderStatus := "0"
-	if channelResp.Result == "2" {
+	if channelResp.Result.OrderStatus == "2" { //4 失败	2 成功 	其他情况	未处理
 		orderStatus = "1"
+	} else if channelResp.Result.OrderStatus == "4" {
+		orderStatus = "2"
 	}
 
 	resp = &types.PayOrderQueryResponse{
