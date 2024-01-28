@@ -62,9 +62,9 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp str
 	//}
 
 	orderStatus := "1"
-	if req.Status == "2" || req.Status == "3" { //支付状态,0-订单生成,1-支付中,2- 支付成功,3-业务处理完成(成功),5-支付失败
+	if req.Status == "2" || req.Status == "3" { //当前订单状态: -2:订单已关闭,0	订单⽣成,1-⽀付中,2-⽀付成功,3-业务处理完成,4-已退款（2和3都表示⽀付成功,3表示⽀付平台回调商户且返回成功后的状态）
 		orderStatus = "20"
-	} else if req.Status == "5" {
+	} else if req.Status == "4" {
 		orderStatus = "30"
 	}
 
