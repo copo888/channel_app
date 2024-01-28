@@ -52,7 +52,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp str
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
-	amount := utils.FloatDiv(req.Amount, "100") // 單位:分
+	amount := utils.FloatDiv(req.Income, "100") // 單位:分
 
 	//var orderAmount float64
 	//orderAmount = utils.FloatDivF(amount, 100)
