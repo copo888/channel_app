@@ -7778,6 +7778,67 @@ steps:
 
 
 
+- name: docker-senlinpay2-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f senlinpay2/docker-compose.yml down
+      - docker rmi senlinpay2:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/senlinpay2 senlinpay2/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t senlinpay2 -f senlinpay2/Dockerfile .
+      - docker-compose -f senlinpay2/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appsenlinpay2-*
+      - refs/tags/api01-testsenlinpay2-*
+    status:
+      - success
+
+
+- name: docker-senlinpay2-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f senlinpay2/docker-compose.yml down
+      - docker rmi senlinpay2:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/senlinpay2 senlinpay2/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t senlinpay2 -f senlinpay2/Dockerfile .
+      - docker-compose -f senlinpay2/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appsenlinpay2-*
+      - refs/tags/api02-testsenlinpay2-*
+    status:
+      - success
+
 
 - name: slb-after
   image: appleboy/drone-ssh

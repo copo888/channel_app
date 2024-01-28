@@ -5429,3 +5429,46 @@ steps:
 trigger:
   branch:
     - chiangshengpay
+
+
+---
+kind: pipeline
+name: senlinpay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-senlinpay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout senlinpay2
+        - git checkout -- .
+        - git pull origin senlinpay2
+        - go mod tidy
+        - docker-compose -f senlinpay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=senlinpay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/senlinpay2 senlinpay2/pay.go
+        - docker build -t senlinpay2 -f senlinpay2/Dockerfile .
+        - docker-compose -f senlinpay2/docker-compose.yml up -d
+    when:
+      branch:
+        - senlinpay2
+      event:
+        - push
+trigger:
+  branch:
+    - senlinpay2
