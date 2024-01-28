@@ -9,7 +9,6 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/senlinpay2/internal/payutils"
 	"github.com/copo888/channel_app/senlinpay2/internal/svc"
 	"github.com/copo888/channel_app/senlinpay2/internal/types"
 	"github.com/gioco-play/gozzle"
@@ -49,9 +48,9 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp str
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	amount := utils.FloatDiv(req.Amount, "100") // 單位:分
 
