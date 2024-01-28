@@ -4,19 +4,20 @@ import "encoding/json"
 
 type PayCallBackRequestX struct {
 	MyIp           string `form:"myIp, optional"`
-	PayOrderId     string `form:"payOrderId"`
-	MchId          string `form:"mchId"`
-	AppId          string `form:"appId"`
-	ProductId      string `form:"productId"`
-	MchOrderNo     string `form:"mchOrderNo"`
-	Amount         string `form:"amount"`
-	Status         string `form:"status"`
+	PayOrderId     string `form:"payOrderId, optional"`
+	MchId          string `form:"mchId, optional"`
+	AppId          string `form:"appId, optional"`
+	ProductId      string `form:"productId, optional"`
+	MchOrderNo     string `form:"mchOrderNo, optional"`
+	Amount         string `form:"amount, optional"`
+	Income         string `form:"income, optional"`
+	Status         string `form:"status, optional"`
 	ChannelOrderNo string `form:"channelOrderNo, optional"`
 	ChannelAttach  string `form:"channelAttach, optional"`
 	Param1         string `form:"param1, optional"`
 	Param2         string `form:"param2, optional"`
-	PaySuccTime    string `form:"paySuccTime"`
-	BackType       string `form:"backType"`
+	PaySuccTime    string `form:"paySuccTime, optional"`
+	BackType       string `form:"backType, optional"`
 	Sign           string `form:"sign"`
 }
 

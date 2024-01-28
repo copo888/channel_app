@@ -39,7 +39,7 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	if err1 != nil {
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
-
+	timestamp := time.Now().Format("20060102150405")
 	// 取值
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
@@ -47,26 +47,18 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 
 	// 組請求參數
 	data := url.Values{}
-	data.Set("merchant_number", channel.MerId)
-
-	// 組請求參數 FOR JSON
-	//data := struct {
-	//	MerchantNumber string `json:"merchantNumber"`
-	//	Sign           string `json:"sign"`
-	//}{
-	//	MerchantNumber: channel.MerId,
-	//}
+	data.Add("mchId", channel.MerId) // 使用 channel.MerId 变量
+	data.Add("reqTime", timestamp)   // 使用 req.OrderNo 变量
+	data.Add("version", "1.0")       // 使用 req.OrderNo 变量
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
-	//data.Sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付餘額请求地址:%s,支付餘額請求參數:%#v", channel.PayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(20).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayQueryBalanceUrl).Timeout(20).Trace(span).Form(data)
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {

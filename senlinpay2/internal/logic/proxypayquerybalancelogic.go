@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
@@ -47,31 +46,13 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	timestamp := time.Now().Format("20060102150405")
 
 	data := url.Values{}
-	//data.Set("partner", channel.MerId)
-	//data.Set("service", "10201")
-
-	//mchId, _ := strconv.Atoi(channel.MerId)
-	//timeStmapInt, _ := strconv.Atoi(timestamp)
-	//JSON 格式
-	dataJs := struct {
-		MchId     string `json:"mchId"`
-		QueryTime string `json:"queryTime"`
-		Sign      string `json:"sign"`
-	}{
-		MchId:     channel.MerId,
-		QueryTime: timestamp,
-	}
+	data.Add("mchId", channel.MerId) // 使用 channel.MerId 变量
+	data.Add("reqTime", timestamp)   // 使用 req.OrderNo 变量
+	data.Add("version", "1.0")       // 使用 req.OrderNo 变量
 
 	// 加簽
-	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
-	//data.Set("sign", sign)
-	sign := payutils.SortAndSignFromObj(dataJs, channel.MerKey)
-	dataJs.Sign = sign
-	b, err := json.Marshal(dataJs)
-	if err != nil {
-		fmt.Println("error:", err)
-	}
-	data.Set("params", string(b))
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	data.Set("sign", sign)
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%#v", channel.ProxyPayQueryBalanceUrl, data)
