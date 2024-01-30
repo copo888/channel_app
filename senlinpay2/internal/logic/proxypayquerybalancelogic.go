@@ -69,25 +69,23 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		RetCode       string `json:"retCode"`
-		RetMsg        string `json:"retMsg, optional"`
-		MchId         string `json:"mchId, optional"`
-		Balance       string `json:"balance, optional"`
-		FreezeAmount  string `json:"freezeAmount, optional"`
-		QuerySuccTime string `json:"querySuccTime, optional"`
+		RetCode                  string `json:"retCode, optional"`
+		Sign                     string `json:"sign, optional"`
+		AgentpayBalance          string `json:"agentpayBalance, optional"`
+		AvailableAgentpayBalance string `json:"availableAgentpayBalance, optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if balanceQueryResp.RetCode != "SUCCESS" {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.RetCode, balanceQueryResp.RetMsg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.RetMsg)
+	} else if balanceQueryResp.RetCode != "0" {
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.RetCode)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.RetCode)
 	}
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    fmt.Sprintf("%f", utils.FloatDiv(balanceQueryResp.Balance, "100")),
+		ProxyPayBalance:    fmt.Sprintf("%f", utils.FloatDiv(balanceQueryResp.AvailableAgentpayBalance, "100")),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
