@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: haojiehpayjpy
+    image: haojiehpayjpy
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/haojiehpayjpy:/app/logs

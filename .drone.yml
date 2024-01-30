@@ -5472,3 +5472,46 @@ steps:
 trigger:
   branch:
     - senlinpay2
+
+
+---
+kind: pipeline
+name: haojiehpayjpy
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-haojiehpayjpy
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout haojiehpayjpy
+        - git checkout -- .
+        - git pull origin haojiehpayjpy
+        - go mod tidy
+        - docker-compose -f haojiehpayjpy/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=haojiehpayjpy" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/haojiehpayjpy haojiehpayjpy/pay.go
+        - docker build -t haojiehpayjpy -f haojiehpayjpy/Dockerfile .
+        - docker-compose -f haojiehpayjpy/docker-compose.yml up -d
+    when:
+      branch:
+        - haojiehpayjpy
+      event:
+        - push
+trigger:
+  branch:
+    - haojiehpayjpy
