@@ -46,16 +46,16 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	timestamp := time.Now().Format("20060102150405")
 
 	data := url.Values{}
-	data.Add("mchId", channel.MerId) // 使用 channel.MerId 变量
-	data.Add("reqTime", timestamp)   // 使用 req.OrderNo 变量
-	data.Add("version", "1.0")       // 使用 req.OrderNo 变量
+	data.Add("mchId", channel.MerId)
+	data.Add("reqTime", timestamp)
+	data.Add("version", "1.0")
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
 	data.Set("sign", sign)
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%#v", channel.ProxyPayQueryBalanceUrl, data)
+	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s, 請求參數:%#v", channel.ProxyPayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(20).Trace(span).Form(data)
 
