@@ -97,7 +97,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("currencyCode", currencyCode)
 	data.Set("accName", req.UserId)
 	data.Set("timeStamp", timestamp)
-
+	if req.ChannelPayType == "48" {
+		var clientIp string
+		if req.SourceIp == "" {
+			clientIp = utils.GetRandomIp()
+		} else {
+			clientIp = req.SourceIp
+		}
+		data.Set("clientIp", clientIp)
+	}
 	// 組請求參數 FOR JSON
 	//data := struct {
 	//	MerchId   string `json:"merchId"`
