@@ -104,14 +104,14 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
-	Charset    string `form:"charset, optional"`
-	Amount     string `form:"amount, optional"`
-	StatusStr  string `form:"statusStr, optional"`
-	OutTradeNo string `form:"outTradeNo, optional"`
-	Sign       string `form:"sign, optional"`
-	SignType   string `form:"signType, optional"`
-	Status     string `form:"status, optional"`
+	Ip              string `form:"ip, optional"`
+	MerchantId      string `form:"merchantno, optional"`
+	OutTradeNo      string `form:"orderno, optional"`
+	PlatformOrderNo string `form:"platformorderno, optional"`
+	Amount          string `form:"amount, optional"`
+	Status          string `form:"status, optional"`
+	Finishdate      string `form:"finishdate, optional"`
+	Sign            string `form:"sign, optional"`
 }
 
 type PayCallBackRequest struct {

@@ -68,10 +68,10 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
 		ProxyPayOrderNo:     req.OutTradeNo,
-		ChannelOrderNo:      "",
+		ChannelOrderNo:      req.PlatformOrderNo,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   req.StatusStr,
+		ChannelResultNote:   req.Status,
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
@@ -87,7 +87,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//BoProxyRespVO := &vo.BoadminProxyRespVO{}
 	url := fmt.Sprintf("%s:%d/dior/merchant-api/proxy-call-back", l.svcCtx.Config.Merchant.Host, l.svcCtx.Config.Merchant.Port)
 
-	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationPaykey", payKey).JSON(proxyPayCallBackBO)
+	res, errx := gozzle.Post(url).Timeout(20).Trace(span).Header("authenticationProxykey", payKey).JSON(proxyPayCallBackBO)
 	logx.Info("回调后资讯: ", res)
 	if errx != nil {
 		logx.WithContext(l.ctx).Error(errx.Error())
