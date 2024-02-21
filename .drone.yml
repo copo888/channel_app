@@ -5515,3 +5515,45 @@ steps:
 trigger:
   branch:
     - haojiehpayjpy
+
+---
+kind: pipeline
+name: jisuproxypay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jisuproxypay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout jisuproxypay
+        - git checkout -- .
+        - git pull origin jisuproxypay
+        - go mod tidy
+        - docker-compose -f jisuproxypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jisuproxypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jisuproxypay jisuproxypay/pay.go
+        - docker build -t jisuproxypay -f jisuproxypay/Dockerfile .
+        - docker-compose -f jisuproxypay/docker-compose.yml up -d
+    when:
+      branch:
+        - jisuproxypay
+      event:
+        - push
+trigger:
+  branch:
+    - jisuproxypay
