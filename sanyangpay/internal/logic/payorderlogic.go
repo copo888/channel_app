@@ -59,7 +59,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("请求金额转换错误:%s", req.TransactionAmount)
 	}
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
+	//notifyUrl := "https://3283-211-75-36-190.ngrok-free.app/api/pay-call-back"
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)

@@ -88,7 +88,6 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
-
 	/** 回調至 merchant service **/
 	span := trace.SpanFromContext(l.ctx)
 	// 組密鑰
@@ -114,5 +113,5 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "success", nil
+	return "ok", nil
 }
