@@ -6,9 +6,9 @@ import (
 	"github.com/joho/godotenv"
 	"log"
 
-	"github.com/copo888/channel_app/htpay3_alipay/internal/config"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/handler"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipay/internal/config"
+	"github.com/copo888/channel_app/htpay3alipay/internal/handler"
+	"github.com/copo888/channel_app/htpay3alipay/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/rest"

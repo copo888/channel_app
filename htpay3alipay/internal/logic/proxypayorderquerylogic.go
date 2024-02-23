@@ -7,14 +7,14 @@ import (
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/payutils"
+	"github.com/copo888/channel_app/htpay3alipay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"time"
 
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/types"
+	"github.com/copo888/channel_app/htpay3alipay/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

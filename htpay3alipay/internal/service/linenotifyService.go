@@ -6,7 +6,7 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipay/internal/svc"
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"

@@ -1,9 +1,0 @@
-version: "2"
-services:
-  api:
-    container_name: htpay3_alipay
-    image: htpay3_alipay
-    restart: always
-    network_mode: host
-    volumes:
-      - /root/logs/htpay3_alipay:/app/logs
