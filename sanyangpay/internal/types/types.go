@@ -125,14 +125,14 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp    string `form:"myIp, optional"`
-	MerchId string `form:"mer_id, optional"`
-	OrderId string `form:"order_id, optional"`
-	Status  string `form:"status, optional"`
-	Amount  string `form:"amount, optional"`
-	Realpay string `form:"realpay, optional"`
-	Remark  string `form:"remark, optional"`
-	Sign    string `form:"sign, optional"`
+	MyIp    string `json:"myIp, optional"`
+	MerchId string `json:"mer_id, optional"`
+	OrderId string `json:"order_id, optional"`
+	Status  string `json:"status, optional"`
+	Amount  string `json:"amount, optional"`
+	Realpay string `json:"realpay, optional"`
+	Remark  string `json:"remark, optional"`
+	Sign    string `json:"sign, optional"`
 }
 
 type ReceiverInfoVO struct {
