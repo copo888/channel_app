@@ -5557,3 +5557,46 @@ steps:
 trigger:
   branch:
     - jisuproxypay
+
+
+---
+kind: pipeline
+name: jxwpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jxwpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout jxwpay
+        - git checkout -- .
+        - git pull origin jxwpay
+        - go mod tidy
+        - docker-compose -f jxwpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jxwpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jxwpay jxwpay/pay.go
+        - docker build -t jxwpay -f jxwpay/Dockerfile .
+        - docker-compose -f jxwpay/docker-compose.yml up -d
+    when:
+      branch:
+        - jxwpay
+      event:
+        - push
+trigger:
+  branch:
+    - jxwpay
