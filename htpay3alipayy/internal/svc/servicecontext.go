@@ -2,7 +2,7 @@ package svc
 
 import (
 	"fmt"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/config"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/config"
 	"github.com/go-redis/redis/v8"
 	"github.com/neccoys/go-driver/mysqlx"
 	"gorm.io/gorm"

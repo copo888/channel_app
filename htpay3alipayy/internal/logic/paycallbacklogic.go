@@ -15,8 +15,8 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"time"
 
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/types"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )

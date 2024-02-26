@@ -4,7 +4,7 @@ import (
 	"context"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/svc"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 

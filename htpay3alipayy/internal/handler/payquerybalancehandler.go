@@ -4,8 +4,8 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"net/http"
 
-	"github.com/copo888/channel_app/htpay3_alipay/internal/logic"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/logic"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/svc"
 	"go.opentelemetry.io/otel/trace"
 )
 

@@ -9,10 +9,10 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/payutils"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/service"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/svc"
-	"github.com/copo888/channel_app/htpay3_alipay/internal/types"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/payutils"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/service"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/svc"
+	"github.com/copo888/channel_app/htpay3alipayy/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
@@ -62,7 +62,6 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	random := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	data := url.Values{}
-
 	data.Set("acctype", "alipay_account")
 	data.Set("amount", floatAmount)
 	data.Set("currency", "CNY")

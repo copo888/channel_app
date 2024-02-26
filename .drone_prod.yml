@@ -8090,7 +8090,7 @@ steps:
       - success
 
 
-- name: docker-htpay3_alipay-api01
+- name: docker-htpay3alipayy-api01
   image: appleboy/drone-ssh
   settings:
     host:
@@ -8107,21 +8107,21 @@ steps:
       - git checkout -- .
       - git pull origin master
       - go mod tidy
-      - docker-compose -f htpay3_alipay/docker-compose.yml down
-      - docker rmi htpay3_alipay:latest
+      - docker-compose -f htpay3alipayy/docker-compose.yml down
+      - docker rmi htpay3alipayy:latest
       - docker image prune -f
-      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpay3_alipay htpay3_alipay/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t htpay3_alipay -f htpay3_alipay/Dockerfile .
-      - docker-compose -f htpay3_alipay/docker-compose.yml up -d
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpay3alipayy htpay3alipayy/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t htpay3alipayy -f htpay3alipayy/Dockerfile .
+      - docker-compose -f htpay3alipayy/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-apphtpay3_alipay-*
-      - refs/tags/api01-testhtpay3_alipay-*
+      - refs/tags/api01-apphtpay3alipayy-*
+      - refs/tags/api01-testhtpay3alipayy-*
     status:
       - success
 
 
-- name: docker-htpay3_alipay-api02
+- name: docker-htpay3alipayy-api02
   image: appleboy/drone-ssh
   settings:
     host:
@@ -8138,16 +8138,16 @@ steps:
       - git checkout -- .
       - git pull origin master
       - go mod tidy
-      - docker-compose -f htpay3_alipay/docker-compose.yml down
-      - docker rmi htpay3_alipay:latest
+      - docker-compose -f htpay3alipayy/docker-compose.yml down
+      - docker rmi htpay3alipayy:latest
       - docker image prune -f
-      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpay3_alipay htpay3_alipay/pay.go
-      - DOCKER_BUILDKIT=1 docker build -t htpay3_alipay -f htpay3_alipay/Dockerfile .
-      - docker-compose -f htpay3_alipay/docker-compose.yml up -d
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpay3alipayy htpay3alipayy/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t htpay3alipayy -f htpay3alipayy/Dockerfile .
+      - docker-compose -f htpay3alipayy/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-apphtpay3_alipay-*
-      - refs/tags/api02-testhtpay3_alipay-*
+      - refs/tags/api02-apphtpay3alipayy-*
+      - refs/tags/api02-testhtpay3alipayy-*
     status:
       - success
 
