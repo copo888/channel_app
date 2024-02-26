@@ -8090,6 +8090,67 @@ steps:
       - success
 
 
+- name: docker-htpay3alipayy-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f htpay3alipayy/docker-compose.yml down
+      - docker rmi htpay3alipayy:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpay3alipayy htpay3alipayy/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t htpay3alipayy -f htpay3alipayy/Dockerfile .
+      - docker-compose -f htpay3alipayy/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-apphtpay3alipayy-*
+      - refs/tags/api01-testhtpay3alipayy-*
+    status:
+      - success
+
+
+- name: docker-htpay3alipayy-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f htpay3alipayy/docker-compose.yml down
+      - docker rmi htpay3alipayy:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpay3alipayy htpay3alipayy/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t htpay3alipayy -f htpay3alipayy/Dockerfile .
+      - docker-compose -f htpay3alipayy/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-apphtpay3alipayy-*
+      - refs/tags/api02-testhtpay3alipayy-*
+    status:
+      - success
+
 
 - name: slb-after
   image: appleboy/drone-ssh
