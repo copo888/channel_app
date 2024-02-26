@@ -63,16 +63,17 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	data := url.Values{}
 
-	data.Set("acctype", "bank_card")
+	//data.Set("acctype", "bank_card")
+	data.Set("acctype", "alipay_account")
 	data.Set("amount", floatAmount)
 	data.Set("currency", "CNY")
 	data.Set("mhtorderno", req.OrderNo)
 	data.Set("notifyurl", l.svcCtx.Config.Server+"/api/proxy-pay-call-back")
 	data.Set("opmhtid", channel.MerId)
 	data.Set("random", random)
-	data.Set("accname", req.ReceiptAccountName)
-	data.Set("bankcode", channelBankMap.MapCode)
-	data.Set("accno", req.ReceiptAccountNumber)
+	data.Set("accname", req.ReceiptAccountName) //支付寶姓氏首字
+	//data.Set("bankcode", channelBankMap.MapCode)
+	data.Set("accno", req.ReceiptAccountNumber) //支付寶帳號
 
 	// 加簽
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
