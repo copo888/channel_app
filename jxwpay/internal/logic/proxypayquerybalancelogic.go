@@ -51,7 +51,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	headMap["sid"] = channel.MerId
 	headMap["timestamp"] = timestamp
 	headMap["nonce"] = randomID
-	headMap["url"] = "/pay/balancequery"
+	headMap["url"] = "/merchant/balance"
 
 	data := url.Values{}
 	//data.Set("partner", channel.MerId)
