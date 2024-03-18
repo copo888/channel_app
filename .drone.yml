@@ -5729,3 +5729,46 @@ steps:
 trigger:
   branch:
     - sinpay
+
+
+---
+kind: pipeline
+name: ezpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-ezpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout ezpay
+        - git checkout -- .
+        - git pull origin ezpay
+        - go mod tidy
+        - docker-compose -f ezpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ezpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ezpay ezpay/pay.go
+        - docker build -t ezpay -f ezpay/Dockerfile .
+        - docker-compose -f ezpay/docker-compose.yml up -d
+    when:
+      branch:
+        - ezpay
+      event:
+        - push
+trigger:
+  branch:
+    - ezpay
