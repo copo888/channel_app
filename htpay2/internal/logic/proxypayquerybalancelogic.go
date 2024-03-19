@@ -86,7 +86,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %d: %s", balanceQueryResp.RtCode, balanceQueryResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
 	}
-	balance := utils.FloatDivF(balanceQueryResp.Result[15].Balancereal, 100)
+	balance := utils.FloatDivF(balanceQueryResp.Result[16].Balancereal, 100)
 	amountStr := strconv.FormatFloat(balance, 'f', 3, 64)
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
