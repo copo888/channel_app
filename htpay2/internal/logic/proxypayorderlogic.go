@@ -74,7 +74,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("bankcode", channelBankMap.MapCode)
 	data.Set("accno", req.ReceiptAccountNumber)
 
-	// 加簽
+	// 加簽@@
 	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
 
