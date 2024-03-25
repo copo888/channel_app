@@ -123,7 +123,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 			//組返回給backOffice 的代付返回物件
 			resp := &types.ProxyPayOrderResponse{
-				ChannelOrderNo: "",
+				ChannelOrderNo: "CHN_" + req.OrderNo,
 				OrderStatus:    "",
 			}
 			return resp, nil
