@@ -1,9 +1,0 @@
-version: "2"
-services:
-  api:
-    container_name: chiangshengpay
-    image: chiangshengpay
-    restart: always
-    network_mode: host
-    volumes:
-      - /root/logs/chiangshengpay:/app/logs

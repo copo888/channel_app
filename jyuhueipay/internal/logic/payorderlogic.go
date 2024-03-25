@@ -154,8 +154,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	channelResp := struct {
 		RspData struct {
 			PayParams struct {
-				PayUrl string `json:"pay_url"`
-				PayWay string `json:"pay_way"`
+				OrdNo  string `json:"ordNo"`
+				PlanNo string `json:"planNo"`
+				PayUrl string `json:"payUrl"`
 			} `json:"pay_params"`
 		} `json:"rspData, optional"`
 		RspMsg string `json:"rspMsg, optional"`
@@ -239,7 +240,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
 		PayPageInfo:    channelResp.RspData.PayParams.PayUrl,
-		ChannelOrderNo: "",
+		ChannelOrderNo: channelResp.RspData.PayParams.PlanNo,
 	}
 
 	return

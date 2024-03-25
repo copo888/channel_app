@@ -1,9 +1,0 @@
-version: "2"
-services:
-  api:
-    container_name: cocopay
-    image: cocopay
-    restart: always
-    network_mode: host
-    volumes:
-      - /root/logs/cocopay:/app/logs

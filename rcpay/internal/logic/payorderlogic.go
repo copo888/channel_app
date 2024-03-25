@@ -78,7 +78,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		OrderNumber string `json:"order_number"`
 		NotifyUrl   string `json:"notify_url"`
 		Currency    string `json:"currency"`
-		Lang        string `json:"lang, optional"`
 		Sign        string `json:"sign"`
 	}{
 		ChannelCode: "USDT-TRC20",
@@ -98,9 +97,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.Set("sign", sign)
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
 	data.Sign = sign
-	if req.MerchantId == "ME00594" {
-		data.Lang = "zh_TW"
-	}
+
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		MerchantNo: req.MerchantId,

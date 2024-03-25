@@ -1,9 +1,0 @@
-version: "2"
-services:
-  api:
-    container_name: senlinpay2
-    image: senlinpay2
-    restart: always
-    network_mode: host
-    volumes:
-      - /root/logs/senlinpay2:/app/logs

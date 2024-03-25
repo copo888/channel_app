@@ -98,31 +98,14 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
-		//if strings.Index(ChnErr.Error(), "connection reset by peer") > -1 || strings.Index(ChnErr.Error(), "context deadline exceeded") > -1{
-		//
-		//	logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
-		//	msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
-		//	service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-		//
-		//	//組返回給backOffice 的代付返回物件
-		//	resp := &types.ProxyPayOrderResponse{
-		//		ChannelOrderNo: "",
-		//		OrderStatus:    "",
-		//	}
-		//	return resp, nil
-		//}
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-		//return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-
-		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
 		resp := &types.ProxyPayOrderResponse{
-			ChannelOrderNo: "",
+			ChannelOrderNo: "CHN_" + req.OrderNo,
 			OrderStatus:    "",
 		}
 		return resp, nil
-
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", ChannelResp.Status(), req.OrderNo)

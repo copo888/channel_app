@@ -78,22 +78,24 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	// 渠道回覆處理
 	channelResp := struct {
 		Code    int    `json:"code, optional"`
-		Message string `json:"message, optional"`
+		Message string `json:"message,optional"`
 		Data    struct {
-			MchId         string  `json:"mchId, optional"`
-			WayCode       string  `json:"wayCode, optional"`
-			TradeNo       string  `json:"tradeNo, optional"`
-			OutTradeNo    string  `json:"outTradeNo, optional"`
-			OriginTradeNo int     `json:"originTradeNo, optional"`
-			Amount        float64 `json:"amount, optional"`
-			Subject       string  `json:"subject, optional"`
-			NotifyUrl     string  `json:"notifyUrl, optional"`
-			PayUrl        string  `json:"payUrl, optional"`
-			ExpiredTime   int     `json:"expiredTime, optional"`
-			CreateTime    string  `json:"createTime, optional"`
-			SuccessTime   int     `json:"successTime, optional"`
-			State         int     `json:"state, optional"`       //订单状态：0=待支付，1=支付成功，2=支付失败，3=未出码，4=异常
-			NotifyState   int     `json:"notifyState, optional"` //通知状态：0=未通知，1=通知成功，2=通知失败
+			MchId         string `json:"mchId, optional"`
+			WayCode       int    `json:"wayCode, optional"`
+			TradeNo       string `json:"tradeNo, optional"`
+			OutTradeNo    string `json:"outTradeNo, optional"`
+			OriginTradeNo string `json:"originTradeNo, optional"`
+			Amount        string `json:"amount, optional"`
+			Subject       string `json:"subject, optional"`
+			Body          string `json:"body, optional"`
+			ExtParam      string `json:"extParam, optional"`
+			NotifyUrl     string `json:"notifyUrl, optional"`
+			PayUrl        string `json:"payUrl, optional"`
+			ExpiredTime   string `json:"expiredTime, optional"`
+			SuccessTime   string `json:"successTime, optional"`
+			CreateTime    string `json:"createTime, optional"`
+			State         int    `json:"state, optional"`       //订单状态：0=待支付，1=支付成功，2=支付失败，3=未出码，4=异常
+			NotifyState   int    `json:"notifyState, optional"` //通知状态：0=未通知，1=通知成功，2=通知失败
 		} `json:"data, optional"`
 		Sign string `json:"sign, optional"`
 	}{}
@@ -104,7 +106,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	orderAmount := utils.FloatDivF(channelResp.Data.Amount, 100)
+	orderAmount := utils.FloatDiv(channelResp.Data.Amount, "100")
 
 	orderStatus := "0"
 	if channelResp.Data.State == 1 {

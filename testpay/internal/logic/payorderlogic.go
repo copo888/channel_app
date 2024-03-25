@@ -74,7 +74,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
 			CardName:   "王小銘",
 			CardNumber: "11111111111111",
-			BankName:   "工商银行1",
+			BankName:   "工商银行",
 			BankBranch: "工商银行XX",
 			Amount:     transactionAmount,
 			Link:       "",

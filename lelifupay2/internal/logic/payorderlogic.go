@@ -51,7 +51,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	if strings.EqualFold(req.PayType, "AS") && len(req.UserId) == 0 {
+	if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
@@ -95,21 +95,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("productTitle", "COPO")
 	data.Set("txnAmt", amountStr)
 	data.Set("currencyCode", currencyCode)
-	data.Set("accName", req.UserId)
 	data.Set("timeStamp", timestamp)
-	if req.ChannelPayType == "48" {
-		var clientIp string
-		if req.SourceIp == "" {
-			clientIp = utils.GetRandomIp()
-		} else {
-			clientIp = req.SourceIp
-		}
-		data.Set("clientIp", clientIp)
-		data.Set("sceneBizType", "WAP")
-		data.Set("wapUrl", "https://www.baidu.com")
-		data.Set("wapName", "COPO")
 
-	}
 	// 組請求參數 FOR JSON
 	//data := struct {
 	//	MerchId   string `json:"merchId"`
@@ -223,7 +210,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		TxnStatusDesc string `json:"txnStatusDesc"`
 		TimeStamp     string `json:"timeStamp"`
 		CodeImgUrl    string `json:"codeImgUrl"`
-		CodePageUrl   string `json:"codePageUrl, optional"`
 		Mac           string `json:"mac"`
 	}{}
 
@@ -289,15 +275,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//		IsCheckOutMer:  false, // 自組收銀台回傳 true
 	//	}, nil
 	//}
-	var payPageInfo string
-	if req.ChannelPayType == "48" {
-		payPageInfo = channelResp.CodePageUrl
-	} else {
-		payPageInfo = channelResp.CodeImgUrl
-	}
+
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
-		PayPageInfo:    payPageInfo,
+		PayPageInfo:    channelResp.CodeImgUrl,
 		ChannelOrderNo: "",
 	}
 

@@ -151,13 +151,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Code    int    `json:"code, optional"`
 		Message string `json:"message, optional"`
 		Data    struct {
-			MchId         string `json:"mchId, optional"`
-			OutTradeNo    string `json:"outTradeNo, optional"`
-			PayUrl        string `json:"payUrl, optional"`
-			TradeNo       string `json:"tradeNo, optional"`
-			OriginTradeNo int    `json:"originTradeNo, optional"`
-			Amount        int    `json:"amount, optional"`
-			ExpiredTime   int    `json:"expiredTime, optional"`
+			MchId         string      `json:"mchId, optional"`
+			TradeNo       string      `json:"tradeNo, optional"`
+			OutTradeNo    string      `json:"outTradeNo, optional"`
+			OriginTradeNo string      `json:"originTradeNo, optional"`
+			Amount        string      `json:"amount, optional"`
+			PayUrl        string      `json:"payUrl, optional"`
+			ExpiredTime   string      `json:"expiredTime, optional"`
+			SdkData       interface{} `json:"sdkData, optional"`
 		} `json:"data, optional"`
 		Sign string `json:"sign, optional"`
 	}{}
