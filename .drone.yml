@@ -5815,3 +5815,46 @@ steps:
 trigger:
   branch:
     - ezpay2
+
+
+---
+kind: pipeline
+name: leimapay2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-leimapay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout leimapay2
+        - git checkout -- .
+        - git pull origin leimapay2
+        - go mod tidy
+        - docker-compose -f leimapay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=leimapay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/leimapay2 leimapay2/pay.go
+        - docker build -t leimapay2 -f leimapay2/Dockerfile .
+        - docker-compose -f leimapay2/docker-compose.yml up -d
+    when:
+      branch:
+        - leimapay2
+      event:
+        - push
+trigger:
+  branch:
+    - leimapay2
