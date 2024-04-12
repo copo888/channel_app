@@ -135,7 +135,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", url, data)
 	span := trace.SpanFromContext(l.ctx)
-	res, ChnErr := gozzle.Post(url).Timeout(20).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(url).Timeout(23).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
