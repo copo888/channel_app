@@ -97,14 +97,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	requset, err := http.NewRequest("POST", channel.PayUrl, bytes.NewBufferString(data.Encode()))
 	res, ChnErr := client.Do(requset)
 
-	payUrl := ""
 	if ChnErr != nil && strings.Index(ChnErr.Error(), "redirects") <= 0 {
 		aaa := ChnErr.Error()
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, aaa)
 	}
 	pageUrl, _ := res.Location()
 
-	logx.WithContext(l.ctx).Infof("Status: %s  payUrl: %s", res.Status, payUrl)
+	logx.WithContext(l.ctx).Infof("Status: %s  payUrl: %s", res.Status, pageUrl.String())
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -113,7 +112,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		OrderNo:   req.OrderNo,
 		LogType:   constants.RESPONSE_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%s\n 支付网址: %s:", res.Body, payUrl),
+		Content:   fmt.Sprintf("支付网址: %s:", pageUrl.String()),
 		TraceId:   l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
@@ -135,9 +134,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_ZF,
-			Content:          ChnErr.Error(),
+			Content:          msg,
 			TraceId:          l.traceID,
-			ChannelErrorCode: ChnErr.Error(),
+			ChannelErrorCode: msg,
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
