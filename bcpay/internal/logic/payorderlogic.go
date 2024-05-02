@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/bcpay/internal/payutils"
 	"github.com/copo888/channel_app/bcpay/internal/service"
@@ -14,13 +15,11 @@ import (
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
+	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
 	"strings"
-	"time"
-
-	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type PayOrderLogic struct {
@@ -59,26 +58,44 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
-	timestamp := time.Now().Format("20060102150405")
+	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
 	// 組請求參數
+	transaction :=
+		struct {
+			Currency    string `json:"currency"`
+			Amount      string `json:"amount"`
+			Token       string `json:"token"`
+			CallbackUrl string `json:"callback_url"`
+			CustomerId  string `json:"customer_id"`
+		}{
+			Currency:    "CNY",                 //占时固定CNY
+			Amount:      req.TransactionAmount, //依法币数额作依据，不是token(BTC)
+			Token:       "BTC",
+			CallbackUrl: notifyUrl,
+			CustomerId:  req.UserId, //请填 客户独特编号
+		}
+	byteTrans, err := json.Marshal(transaction)
+	if err != nil {
+		logx.WithContext(l.ctx).Errorf("序列化错误:+%v", transaction)
+		return nil, errorx.New("序列化错误", err.Error())
+	}
+	encryptedData, AesErr := payutils.AesEcrypt(byteTrans, []byte(channel.MerKey+"000000000"))
+	if AesErr != nil {
+		logx.WithContext(l.ctx).Errorf("加密错误:%s", AesErr.Error())
+		return nil, errorx.New("加密错误", AesErr.Error())
+	}
+
 	data := url.Values{}
-	data.Set("currency", "CNY")               //占时固定CNY
-	data.Set("amount", req.TransactionAmount) //
-	data.Set("token", "BTC")                  //
-	data.Set("callback_url", notifyUrl)
-	data.Set("customer_uid", req.UserId) //请填
-	data.Set("merchId", channel.MerId)
-	data.Set("time", timestamp)
-	data.Set("payType", req.ChannelPayType)
-	data.Set("reType", "LINK")
-	data.Set("signType", "MD5")
+	data.Set("data", string(encryptedData))
+	data.Set("platform", channel.MerId)
+	data.Set("lang", "en")
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	data.Set("sign", sign)
+	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
+	//data.Set("sign", sign)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -95,7 +112,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v,加密前資料:%s", channel.PayUrl, data, string(byteTrans))
 	span := trace.SpanFromContext(l.ctx)
 	// 若有證書問題 請使用
 	//tr := &http.Transport{
