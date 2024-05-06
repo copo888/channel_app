@@ -14,6 +14,7 @@ import (
 	"github.com/copo888/channel_app/jintaipay/internal/svc"
 	"github.com/copo888/channel_app/jintaipay/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
+	"go.opentelemetry.io/otel/trace"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -22,15 +23,17 @@ import (
 
 type PayOrderLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderLogic {
 	return PayOrderLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -94,14 +97,27 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	requset, err := http.NewRequest("POST", channel.PayUrl, bytes.NewBufferString(data.Encode()))
 	res, ChnErr := client.Do(requset)
 
-	payUrl := ""
 	if ChnErr != nil && strings.Index(ChnErr.Error(), "redirects") <= 0 {
 		aaa := ChnErr.Error()
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, aaa)
 	}
 	pageUrl, _ := res.Location()
 
-	logx.WithContext(l.ctx).Infof("Status: %s  payUrl: %s", res.Status, payUrl)
+	logx.WithContext(l.ctx).Infof("Status: %s  payUrl: %s", res.Status, pageUrl.String())
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:   req.OrderNo,
+		LogType:   constants.RESPONSE_FROM_CHANNEL,
+		LogSource: constants.API_ZF,
+		Content:   fmt.Sprintf("支付网址: %s:", pageUrl.String()),
+		TraceId:   l.traceID,
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
 	if pageUrl == nil {
 		defer res.Body.Close()
 		body, _ := ioutil.ReadAll(res.Body)
@@ -109,7 +125,23 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		idx := strings.Index(bodyStr, "orange")
 		msg := bodyStr[idx+7 : idx+67]
 		logx.WithContext(l.ctx).Infof("Status: %s  msg: %s", res.Status, bodyStr)
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, msg)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          msg,
+			TraceId:          l.traceID,
+			ChannelErrorCode: msg,
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
+		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, msg)
 	}
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
