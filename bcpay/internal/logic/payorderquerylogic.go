@@ -10,13 +10,10 @@ import (
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
-	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
-	"go.opentelemetry.io/otel/trace"
-	"net/url"
-	"strconv"
-
 	"github.com/zeromicro/go-zero/core/logx"
+	"go.opentelemetry.io/otel/trace"
+	"strconv"
 )
 
 type PayOrderQueryLogic struct {
@@ -45,46 +42,27 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
-	randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
 	// 組請求參數
-	data := url.Values{}
-	if req.OrderNo != "" {
-		data.Set("trade_no", req.OrderNo)
-	}
-	if req.ChannelOrderNo != "" {
-		data.Set("order_no", req.ChannelOrderNo)
-	}
-	data.Set("appid", channel.MerId)
-	data.Set("nonce_str", randomID)
 
 	// 組請求參數 FOR JSON
-	//data := struct {
-	//	merchId  string
-	//	orderId  string
-	//	time     string
-	//	signType string
-	//	sign     string
-	//}{
-	//	merchId:  channel.MerId,
-	//	orderId:  req.OrderNo,
-	//	time:     timestamp,
-	//	signType: "MD5",
-	//}
-
-	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	data.Set("sign", sign)
-
-	// 加簽 JSON
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
-	//data.sign = sign
+	data := struct {
+		Command  string `json:"command"`
+		HashCode string `json:"hashCode"`
+		TxId     string `json:"txid, optional"`
+	}{
+		Command:  "transaction_status",
+		HashCode: payutils.GetSign("transaction_status" + channel.MerKey),
+		TxId:     req.OrderNo,
+	}
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
-	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
+	res, chnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
+		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjRiNjY2YjJiMjU4OTk2NjYyYjdjMzMzOWNlOTQ2OGI0ZTFmMGJmOWFlM2U0MTk2YjM4YThjNGE5ZGIzODZmNTMyZjkxMTk5YmExNTMwZDJlIn0.eyJhdWQiOiIxIiwianRpIjoiNGI2NjZiMmIyNTg5OTY2NjJiN2MzMzM5Y2U5NDY4YjRlMWYwYmY5YWUzZTQxOTZiMzhhOGM0YTlkYjM4NmY1MzJmOTExOTliYTE1MzBkMmUiLCJpYXQiOjE3MTUwNTMyNDYsIm5iZiI6MTcxNTA1MzI0NiwiZXhwIjoxNzE1NjU4MDQ1LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.F5kXd0iUAxMG5EU9D33gdIGIe58r5OHDfun-xfXZ0L7hoIdWZXsudL9kR637r4b_MRQz8oeUeOuAFFwF0eEHxW-0YtE6tySzJggwwHE2TRnjrleG3WlQUpIudiu_J9QCU03mJMWGqJyyAeRLL0julZYX5U3zpk0Bl5gzOH7BgQgcBRCUq8mKyR-QtO6IJLP6HLlSaRVNoM1_Ze8C7VgX9Fyko95ALTENrlr8DWggGkqoimK8vMmkxcMs06B8f3tIBY0XyMi9WnVaCVhMxjrMFik9DsVAr9QOXcKoxo-tO3k8-5oG75jmRLitVzt4vtLfbSnPShP2cmJPMSj6xSoIoosMW3mg0zPk8N--SaOy2uBf-Qhle3kBg44OJSY0q_7f33WYjgLp-8vpPoaCML2Q_Hd85iza0Yn1EwM1axGfXnDAX80w-y-6wSjrdVCGPO3XyV3tb8wGfSc_Ga5F7UFsKVZTm-Il4_DqPQXIXcCZtKk-i2qQ4Ksdaq_uuf4ZdOUHLiWth3zpvzGRw2n2A5gvRtESfHAS454ntt61c5aCLxkUhy04XYvhZtPsv1vSCOEcXxnmMGc11_wGQeZHodYdTRSBkSay_-jav3yaWzqswpZ3Q5BzFoZKHDFkcRftwICz7624T7fiC5iLnYIL6y8oqf-WMWoLf3JQ71b_5BR9eBU").
+		Header("Content-type", "application/json").
+		JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -96,25 +74,43 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code  string `json:"code"`
-		Msg   string `json:"msg"`
-		State string `json:"state"` //状态 1-成功 2-等待付款 7-关闭
-		Money string `json:"money"`
+		Txid      string `json:"txid, optional"`
+		CreatedAt struct {
+			Date         string `json:"date, optional"`
+			TimezoneType int    `json:"timezone_type, optional"`
+			Timezone     string `json:"timezone, optional"`
+		} `json:"created_at, optional"`
+		LineItems []struct {
+			Name        string `json:"name, optional"`
+			ItemId      string `json:"item_id, optional"`
+			Description string `json:"description, optional"`
+			Amount      string `json:"amount, optional"`
+			Quantity    string `json:"quantity, optional"`
+		} `json:"line_items, optional"`
+		InvoiceAmount     float64     `json:"invoice_amount, optional"`
+		InvoiceCurrency   string      `json:"invoice_currency, optional"`
+		PaymentAmount     string      `json:"payment_amount, optional"`
+		PaymentCurrency   string      `json:"payment_currency, optional"`
+		CustomerUid       string      `json:"customer_uid, optional"`
+		CustomerEmail     interface{} `json:"customer_email, optional"`
+		ClientReferenceId interface{} `json:"client_reference_id, optional"`
+		Status            string      `json:"status, optional"`
+		TxHash            interface{} `json:"tx_hash, optional"`
+		Rates             string      `json:"rates, optional"`
+		EnablePromotion   bool        `json:"enable_promotion, optional"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Code != "0000" {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Money, 64)
+	orderAmount, errParse := strconv.ParseFloat(channelResp.PaymentAmount, 64)
 	if errParse != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"
-	if channelResp.State == "1" {
+	if channelResp.Status == "completed" { //pending, completed, too_little, too_much, expired
 		orderStatus = "1"
 	}
 

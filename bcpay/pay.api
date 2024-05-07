@@ -181,6 +181,15 @@ type ReceiverInfoBTCVO {
 	PaymentAddress  string `json:"payment_address"`
 }
 
+
+type ExchangeInfo  {
+	Url      string `json:"url"`
+	Token    string `json:"token"`    //加密货币
+	Amount   string `json:"amount"`
+	Currency string `json:"currency"` //法币
+}
+
+
 @server(
 	prefix: api/
 )

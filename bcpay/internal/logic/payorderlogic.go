@@ -92,6 +92,16 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.Set("lang", "en")
 
 	//请求渠道API
+	var exchangeAmount float64
+	if exchangeAmount, err = payutils.GetCryptoRate(&types.ExchangeInfo{
+		Url:          channel.PayUrl,
+		Token:        channel.CurrencyCode,
+		CryptoAmount: req.TransactionAmount,
+		Currency:     "CNY",
+	}, &l.ctx); err != nil {
+
+	}
+
 	type item struct {
 		Name        string `json:"name"`
 		ItemId      string `json:"item_id"`
@@ -114,12 +124,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			Name:        "deposit",
 			ItemId:      "BTC",
 			Description: "Deposit CNY via BTC",
-			Amount:      req.TransactionAmount,
+			Amount:      strconv.FormatFloat(exchangeAmount, 'f', -1, 64), //这里要依照法币数额去换crypto
 			Quantity:    "1"}},
 		HashCode:    payutils.GetSign("payment" + channel.MerKey),
 		TxId:        req.OrderNo,
 		Currency:    "CNY",
-		Token:       "BTC",
+		Token:       channel.CurrencyCode,
 		CallbackUrl: notifyUrl,
 		CustomerUid: req.PlayerId,
 	}
@@ -177,7 +187,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if res.Status() > 300 || res.Status() < 200 {
+	} else if res.Status() >= 300 || res.Status() < 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
@@ -206,7 +216,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Message         string `json:"message"`
 		Txid            string `json:"txid"`
 		CustomerUid     string `json:"customer_uid"`
-		InvoiceAmount   int    `json:"invoice_amount"`
+		InvoiceAmount   string `json:"invoice_amount"`
 		InvoiceCurrency string `json:"invoice_currency"`
 		PaymentAmount   string `json:"payment_amount"`
 		PaymentToken    string `json:"payment_token"`
@@ -262,15 +272,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	if req.MerchantId == "ME00015"{
 	//		isCheckOutMer = true
 	//	}
-	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
-	//	if err2 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	//	}
+	amount, err2 := strconv.ParseFloat(channelResp.InvoiceAmount, 64)
+	if err2 != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
+	}
 	//	// 返回json
 	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoBTCVO{
 		OrderNo:         req.OrderNo,
 		CustomerUid:     channelResp.CustomerUid,
-		InvoiceAmount:   channelResp.InvoiceAmount,
+		InvoiceAmount:   amount,
 		InvoiceCurrency: channelResp.InvoiceCurrency, //法币
 		PaymentAmount:   channelResp.PaymentAmount,   //加密货币
 		PaymentToken:    channelResp.PaymentToken,

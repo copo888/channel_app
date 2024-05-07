@@ -149,12 +149,19 @@ type ReceiverInfoVO struct {
 }
 
 type ReceiverInfoBTCVO struct {
-	OrderNo         string `json:"order_no"`
-	CustomerUid     string `json:"customer_uid"`
-	InvoiceAmount   int    `json:"invoice_amount"`
-	InvoiceCurrency string `json:"invoice_currency"`
-	PaymentAmount   string `json:"payment_amount"`
-	PaymentToken    string `json:"payment_token"`
-	Rates           string `json:"rates"`
-	PaymentAddress  string `json:"payment_address"`
+	OrderNo         string  `json:"order_no"`
+	CustomerUid     string  `json:"customer_uid"`
+	InvoiceAmount   float64 `json:"invoice_amount"`
+	InvoiceCurrency string  `json:"invoice_currency"`
+	PaymentAmount   string  `json:"payment_amount"`
+	PaymentToken    string  `json:"payment_token"`
+	Rates           string  `json:"rates"`
+	PaymentAddress  string  `json:"payment_address"`
+}
+
+type ExchangeInfo struct {
+	Url          string `json:"url"`
+	Token        string `json:"token"`         //加密货币
+	CryptoAmount string `json:"crypto_amount"` //加密货币数额
+	Currency     string `json:"currency"`      //法币
 }
