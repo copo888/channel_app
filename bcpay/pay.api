@@ -170,6 +170,17 @@ type ReceiverInfoVO {
 	Remark     string  `json:"remark"`
 }
 
+type ReceiverInfoBTCVO {
+    OrderNo         string `json:"order_no"`
+	CustomerUid     string `json:"customer_uid"`
+	InvoiceAmount   int    `json:"invoice_amount"`
+	InvoiceCurrency string `json:"invoice_currency"`
+	PaymentAmount   string `json:"payment_amount"`
+	PaymentToken    string `json:"payment_token"`
+	Rates           string `json:"rates"`
+	PaymentAddress  string `json:"payment_address"`
+}
+
 @server(
 	prefix: api/
 )
@@ -177,28 +188,28 @@ type ReceiverInfoVO {
 service pay {
 	@handler PayOrderHandler
 	post /pay (PayOrderRequest) returns (PayOrderResponse)
-	
+
 	@handler PayOrderQueryHandler
 	post /pay-query (PayOrderQueryRequest) returns (PayOrderQueryResponse)
-	
+
 	@handler PayCallBackHandler
 	post /pay-call-back (PayCallBackRequest) returns (string)
-	
+
 	@handler PayQueryBalanceHandler
 	post /pay-query-balance-internal returns (PayQueryInternalBalanceResponse)
-	
+
 	@handler ProxyPayOrderHandler
 	post /proxy-pay (ProxyPayOrderRequest) returns (ProxyPayOrderResponse)
-	
+
 	@handler ProxyPayOrderQueryHandler
 	post /proxy-pay-query (ProxyPayOrderQueryRequest) returns (ProxyPayOrderQueryResponse)
-	
+
 	@handler ProxyPayCallBackHandler
 	post /proxy-pay-call-back (ProxyPayCallBackRequest) returns (string)
-	
+
 	@handler ProxyPayQueryBalanceHandler
 	post /proxy-pay-query-balance-internal returns (ProxyPayQueryInternalBalanceResponse)
-	
+
 	@handler HealthTestConnHandler
 	get /test-conn () returns (string)
 }

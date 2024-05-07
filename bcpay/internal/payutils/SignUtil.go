@@ -160,22 +160,43 @@ func PKCS7UnPadding1(origData []byte) ([]byte, error) {
 }
 
 //实现加密
-func AesEcrypt(origData []byte, key []byte) ([]byte, error) {
-	//创建加密算法实例
+func AesEcrypt(data []byte, secret []byte) (string, error) {
+	// 根据秘密识别码生成合适的密钥，如果长度不够16字节，则填充'0'，如果超过，则截取前16字节
+	key := make([]byte, 16)
+	copy(key, []byte(secret))
+	for i := len(secret); i < 16; i++ {
+		key[i] = '0'
+	}
+
+	// IV的值使用和key相同的值
+	iv := make([]byte, aes.BlockSize)
+	copy(iv, key)
+
+	// 创建加密器实例
 	block, err := aes.NewCipher(key)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
-	//获取块的大小
-	blockSize := block.BlockSize()
-	//对数据进行填充，让数据长度满足需求
-	origData = PKCS7Padding(origData, blockSize)
-	//采用AES加密方法中CBC加密模式
-	blocMode := cipher.NewCBCEncrypter(block, key[:blockSize])
-	crypted := make([]byte, len(origData))
-	//执行加密
-	blocMode.CryptBlocks(crypted, origData)
-	return crypted, nil
+
+	// 填充数据以适应块大小
+	data = pkcs7Padding(data, aes.BlockSize)
+
+	// 加密数据
+	ciphertext := make([]byte, len(data))
+	mode := cipher.NewCBCEncrypter(block, iv)
+	mode.CryptBlocks(ciphertext, data)
+
+	// 将加密后的数据编码为Base64
+	encryptedBase64 := base64.StdEncoding.EncodeToString(ciphertext)
+
+	return encryptedBase64, nil
+}
+
+// pkcs7Padding 添加PKCS#7填充
+func pkcs7Padding(ciphertext []byte, blockSize int) []byte {
+	padding := blockSize - len(ciphertext)%blockSize
+	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
+	return append(ciphertext, padtext...)
 }
 
 //实现解密
@@ -207,7 +228,7 @@ func EnPwdCode(pwdStr string, PwdKey string) string {
 	if err != nil {
 		return ""
 	}
-	resultByte := Base64Encode(result)
+	resultByte := Base64Encode([]byte(result))
 	return string(resultByte)
 }
 

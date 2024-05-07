@@ -147,3 +147,14 @@ type ReceiverInfoVO struct {
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
 }
+
+type ReceiverInfoBTCVO struct {
+	OrderNo         string `json:"order_no"`
+	CustomerUid     string `json:"customer_uid"`
+	InvoiceAmount   int    `json:"invoice_amount"`
+	InvoiceCurrency string `json:"invoice_currency"`
+	PaymentAmount   string `json:"payment_amount"`
+	PaymentToken    string `json:"payment_token"`
+	Rates           string `json:"rates"`
+	PaymentAddress  string `json:"payment_address"`
+}
