@@ -74,8 +74,8 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	//1. completed （取款程序成功提交至区块链）
 	//2. rejected （取款在仪表板上被商家或管理员拒绝)
-	if req.Status == "1" {
-		status = "completed"
+	if req.Status == "completed" {
+		status = "1"
 	} else if req.Status == "rejected" {
 		status = "2"
 	}
