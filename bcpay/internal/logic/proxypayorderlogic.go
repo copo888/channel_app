@@ -61,9 +61,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 
 	//请求渠道API
-	var exchangeAmount float64
+	var fiatAmount float64
 	var rateErr error
-	if exchangeAmount, rateErr = payutils.GetCryptoRate(&types.ExchangeInfo{
+	if fiatAmount, rateErr = payutils.GetCryptoRate(&types.ExchangeInfo{
 		Url:          channel.PayUrl,
 		Token:        channel.CurrencyCode,
 		CryptoAmount: req.TransactionAmount,
@@ -78,16 +78,16 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		TxId             string `json:"txid, optional"`
 		Amount           string `json:"amount"`
 		Currency         string `json:"currency"`
-		WithdrawalAmount string `json:"withdrawal_amount"`
-		WithdrawalToken  string `json:"withdrawal_token"`
-		Address          string `json:"address"` //取款的加密货币钱包地址
+		WithdrawalAmount string `json:"withdrawal_amount"` //加密货币金额
+		WithdrawalToken  string `json:"withdrawal_token"`  //加密货币
+		Address          string `json:"address"`           //取款的加密货币钱包地址
 		CallbackUrl      string `json:"callback_url"`
 		CustomerUid      string `json:"customer_uid"` //客户独特编号
 	}{
 		Command:          "partner_withdraw",
 		HashCode:         payutils.GetSign("partner_withdraw" + channel.MerKey),
 		TxId:             req.OrderNo,
-		Amount:           strconv.FormatFloat(exchangeAmount, 'f', -1, 64), //这里要依照法币数额去换crypto, //法币金额
+		Amount:           strconv.FormatFloat(fiatAmount, 'f', -1, 64), //这里要依照法币数额去换crypto, //法币金额
 		Currency:         "CNY",
 		WithdrawalAmount: req.TransactionAmount, //加密金额
 		WithdrawalToken:  channel.CurrencyCode,

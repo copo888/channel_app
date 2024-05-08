@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/copo888/channel_app/bcpay/internal/payutils"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/apimodel/vo"
 	"github.com/copo888/channel_app/common/constants"
@@ -14,7 +13,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/bcpay/internal/svc"
@@ -41,13 +39,13 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.MerchId, l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.TxId, l.svcCtx.Config.ProjectName, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchId,
+		//MerchantNo: req.MerchId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderId, //輸入COPO訂單號
+		OrderNo:   req.ClientReferenceId, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -69,24 +67,29 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
-
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
-
-	//orderStatus := "1"
-	//if req.TradeStatus == "1" {
-	//	orderStatus = "20"
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
+	var orderAmount float64
+	if req.Status == "completed" { // 此时实际充值金额跟账单金额依样
+		orderAmount, _ = req.PaymentAmount.Float64()
+	} else if req.Status == "too_little" || req.Status == "too_much" { //实际充值金额跟账单金额不一漾
+		orderAmount, _ = req.PaidAmount.Float64()
+	}
+
+	//1. completed （金额正确，存款地址正确）
+	//2. expired （付款交易已等待超过2小时）
+	//3. too_little （转账少于订单的金额）
+	//4. too_much （转账多于订单的金额）
+	orderStatus := "1"
+	if req.Status == "completed" || req.Status == "too_little" || req.Status == "too_much" {
+		orderStatus = "20"
+	}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.OrderId,
-		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    "20",        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		PayOrderNo:     req.TxId,
+		ChannelOrderNo: req.ClientReferenceId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus,           // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
@@ -116,5 +119,5 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "success", nil
+	return "true", nil
 }

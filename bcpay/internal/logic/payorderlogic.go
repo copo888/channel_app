@@ -92,8 +92,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.Set("lang", "en")
 
 	//请求渠道API
-	var exchangeAmount float64
-	if exchangeAmount, err = payutils.GetCryptoRate(&types.ExchangeInfo{
+	var fiatAmount float64
+	if fiatAmount, err = payutils.GetCryptoRate(&types.ExchangeInfo{
 		Url:          channel.PayUrl,
 		Token:        channel.CurrencyCode,
 		CryptoAmount: req.TransactionAmount,
@@ -102,29 +102,29 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	}
 
-	type item struct {
-		Name        string `json:"name"`
-		ItemId      string `json:"item_id"`
-		Description string `json:"description"`
-		Amount      string `json:"amount"`
-		Quantity    string `json:"quantity"`
-	}
+	//type item struct {
+	//	Name        string `json:"name"`
+	//	ItemId      string `json:"item_id"`
+	//	Description string `json:"description"`
+	//	Amount      string `json:"amount"`
+	//	Quantity    string `json:"quantity"`
+	//}
 	data := struct {
-		Command     string `json:"command"`
-		LineItems   []item `json:"line_items"`
-		HashCode    string `json:"hashCode"`
-		TxId        string `json:"txid, optional"`
-		Currency    string `json:"currency"`
-		Token       string `json:"token"`
-		CallbackUrl string `json:"callback_url"`
-		CustomerUid string `json:"customer_uid"` //客户独特编号
+		Command     string       `json:"command"`
+		LineItems   []types.Item `json:"line_items"`
+		HashCode    string       `json:"hashCode"`
+		TxId        string       `json:"txid, optional"`
+		Currency    string       `json:"currency"`
+		Token       string       `json:"token"`
+		CallbackUrl string       `json:"callback_url"`
+		CustomerUid string       `json:"customer_uid"` //客户独特编号
 	}{
 		Command: "payment",
-		LineItems: []item{{
+		LineItems: []types.Item{{
 			Name:        "deposit",
 			ItemId:      "BTC",
 			Description: "Deposit CNY via BTC",
-			Amount:      strconv.FormatFloat(exchangeAmount, 'f', -1, 64), //这里要依照法币数额去换crypto
+			Amount:      strconv.FormatFloat(fiatAmount, 'f', -1, 64), //这里要依照法币数额去换crypto
 			Quantity:    "1"}},
 		HashCode:    payutils.GetSign("payment" + channel.MerKey),
 		TxId:        req.OrderNo,
@@ -213,18 +213,18 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Message         string `json:"message"`
-		Txid            string `json:"txid"`
-		CustomerUid     string `json:"customer_uid"`
-		InvoiceAmount   string `json:"invoice_amount"`
-		InvoiceCurrency string `json:"invoice_currency"`
-		PaymentAmount   string `json:"payment_amount"`
-		PaymentToken    string `json:"payment_token"`
-		Rates           string `json:"rates"`
-		PaymentAddress  string `json:"payment_address"`
-		EnablePromotion bool   `json:"enable_promotion"`
-		ExpiredAt       string `json:"expired_at"`
-		WalletType      string `json:"wallet_type"`
+		Message         string      `json:"message"`
+		Txid            string      `json:"txid"`
+		CustomerUid     string      `json:"customer_uid"`
+		InvoiceAmount   json.Number `json:"invoice_amount"`
+		InvoiceCurrency string      `json:"invoice_currency"`
+		PaymentAmount   string      `json:"payment_amount"`
+		PaymentToken    string      `json:"payment_token"`
+		Rates           string      `json:"rates"`
+		PaymentAddress  string      `json:"payment_address"`
+		EnablePromotion bool        `json:"enable_promotion"`
+		ExpiredAt       string      `json:"expired_at"`
+		WalletType      string      `json:"wallet_type"`
 	}{}
 
 	// 返回body 轉 struct
@@ -272,15 +272,15 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	if req.MerchantId == "ME00015"{
 	//		isCheckOutMer = true
 	//	}
-	amount, err2 := strconv.ParseFloat(channelResp.InvoiceAmount, 64)
-	if err2 != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	}
-	//	// 返回json
+	//}
+
+	invoiceAmount, err := channelResp.InvoiceAmount.Float64()
+
+	// 返回json
 	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoBTCVO{
 		OrderNo:         req.OrderNo,
 		CustomerUid:     channelResp.CustomerUid,
-		InvoiceAmount:   amount,
+		InvoiceAmount:   invoiceAmount,
 		InvoiceCurrency: channelResp.InvoiceCurrency, //法币
 		PaymentAmount:   channelResp.PaymentAmount,   //加密货币
 		PaymentToken:    channelResp.PaymentToken,
