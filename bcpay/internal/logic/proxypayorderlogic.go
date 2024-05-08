@@ -159,7 +159,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
+		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d，%s", res.Status(), string(res.Body())))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]

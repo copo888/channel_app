@@ -49,9 +49,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
-		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_USER_ID)
+	if len(req.PlayerId) == 0 {
+		logx.WithContext(l.ctx).Errorf("PlayerId不可为空 PlayerId:%s", req.PlayerId)
+		return nil, errorx.New(responsex.INVALID_PLAYER_ID)
 	}
 
 	// 取值
