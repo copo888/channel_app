@@ -12,6 +12,7 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/bcpay/internal/svc"
@@ -38,13 +39,13 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.TxId, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.Txid, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.TxId, //輸入COPO訂單號
+		OrderNo:   req.Txid, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -68,9 +69,8 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
-
-	orderAmount, _ := req.Amount.Float64()
-	fee, _ := req.Fee.Float64()
+	orderAmount, _ := strconv.ParseFloat(req.Amount, 64)
+	fee, _ := strconv.ParseFloat(req.Fee, 64)
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	//1. completed （取款程序成功提交至区块链）
 	//2. rejected （取款在仪表板上被商家或管理员拒绝)
@@ -81,7 +81,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.TxId,
+		ProxyPayOrderNo:     req.Txid,
 		ChannelOrderNo:      req.ClientReferenceId,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
