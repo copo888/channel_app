@@ -51,6 +51,8 @@ func initEn(tag language.Tag) {
 	message.SetString(tag, "126", "userIp不可为空")
 	message.SetString(tag, "127", "不支援收银台模式")
 	message.SetString(tag, "128", "不支援支付网址模式")
+	message.SetString(tag, "133", "PlayerId不可为空")
+
 	message.SetString(tag, "208", "银行代码错误")
 	message.SetString(tag, "209", "支付类型代码错误")
 	message.SetString(tag, "210", "渠道返回错误")

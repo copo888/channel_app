@@ -50,6 +50,7 @@ var (
 	INVALID_USDT_TYPE                  = "130" // "无效协议"
 	INVALID_USDT_WALLET_ADDRESS        = "131" // "无效钱包地址"
 	INVALID_PAY_TYPE_SUB_NO            = "132" // "多指定模式，PayTypeSubNo為必填"
+	INVALID_PLAYER_ID                  = "133" // "PlayerId 不可为空"
 
 	// for channel test only
 	INVALID_MERCHANT_OR_CHANNEL_PAYTYPE = "160" // "資料庫無此商户号或商户未配置渠道、支付方式等設定错误或关闭或维护"

@@ -8524,6 +8524,131 @@ steps:
     status:
       - success
 
+- name: docker-bcpay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f bcpay/docker-compose.yml down
+      - docker rmi bcpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/bcpay bcpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t bcpay -f bcpay/Dockerfile .
+      - docker-compose -f bcpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appbcpay-*
+      - refs/tags/api01-testbcpay-*
+    status:
+      - success
+
+
+- name: docker-bcpay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f bcpay/docker-compose.yml down
+      - docker rmi bcpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/bcpay bcpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t bcpay -f bcpay/Dockerfile .
+      - docker-compose -f bcpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appbcpay-*
+      - refs/tags/api02-testbcpay-*
+    status:
+      - success
+
+
+
+- name: docker-jstpay3-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f jstpay3/docker-compose.yml down
+      - docker rmi jstpay3:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jstpay3 jstpay3/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t jstpay3 -f jstpay3/Dockerfile .
+      - docker-compose -f jstpay3/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appjstpay3-*
+      - refs/tags/api01-testjstpay3-*
+    status:
+      - success
+
+
+- name: docker-jstpay3-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f jstpay3/docker-compose.yml down
+      - docker rmi jstpay3:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jstpay3 jstpay3/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t jstpay3 -f jstpay3/Dockerfile .
+      - docker-compose -f jstpay3/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appjstpay3-*
+      - refs/tags/api02-testjstpay3-*
+    status:
+      - success
+
+
 
 - name: slb-after
   image: appleboy/drone-ssh
