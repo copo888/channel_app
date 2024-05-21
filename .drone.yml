@@ -5987,3 +5987,46 @@ steps:
 trigger:
   branch:
     - jintaipay
+
+
+---
+kind: pipeline
+name: jstpay3
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-jstpay3
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout jstpay3
+        - git checkout -- .
+        - git pull origin jstpay3
+        - go mod tidy
+        - docker-compose -f jstpay3/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jstpay3" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jstpay3 jstpay3/pay.go
+        - docker build -t jstpay3 -f jstpay3/Dockerfile .
+        - docker-compose -f jstpay3/docker-compose.yml up -d
+    when:
+      branch:
+        - jstpay3
+      event:
+        - push
+trigger:
+  branch:
+    - jstpay3
