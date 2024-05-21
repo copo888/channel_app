@@ -92,47 +92,54 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.Set("lang", "en")
 
 	//请求渠道API
-	var fiatAmount float64
-	if fiatAmount, err = payutils.GetCryptoRate(&types.ExchangeInfo{
-		Url:          channel.PayUrl,
-		Token:        channel.CurrencyCode,
-		CryptoAmount: req.TransactionAmount,
-		Currency:     "CNY",
-	}, &l.ctx); err != nil {
-
-	}
-
-	//type item struct {
-	//	Name        string `json:"name"`
-	//	ItemId      string `json:"item_id"`
-	//	Description string `json:"description"`
-	//	Amount      string `json:"amount"`
-	//	Quantity    string `json:"quantity"`
+	//var fiatAmount float64
+	//if fiatAmount, err = payutils.GetCryptoRate(&types.ExchangeInfo{
+	//	Url:          channel.PayUrl,
+	//	Token:        channel.CurrencyCode,
+	//	CryptoAmount: req.TransactionAmount,
+	//	Currency:     "CNY",
+	//}, &l.ctx); err != nil {
+	//
 	//}
+
 	data := struct {
-		Command     string       `json:"command"`
-		LineItems   []types.Item `json:"line_items"`
-		HashCode    string       `json:"hashCode"`
-		TxId        string       `json:"txid, optional"`
-		Currency    string       `json:"currency"`
-		Token       string       `json:"token"`
-		CallbackUrl string       `json:"callback_url"`
-		CustomerUid string       `json:"customer_uid"` //客户独特编号
+		Command string `json:"command"`
+		//LineItems    []types.Item `json:"line_items, optional"`
+		HashCode     string `json:"hashCode"`
+		TxId         string `json:"txid, optional"`
+		Token        string `json:"token"`
+		CallbackUrl  string `json:"callback_url"`
+		CustomerUid  string `json:"customer_uid"` //客户独特编号
+		CryptoOnly   bool   `json:"crypto_only, optional"`
+		CryptoAmount string `json:"crypto_amount, optional"`
 	}{
-		Command: "payment",
-		LineItems: []types.Item{{
-			Name:        "deposit",
-			ItemId:      "BTC",
-			Description: "Deposit CNY via BTC",
-			Amount:      strconv.FormatFloat(fiatAmount, 'f', -1, 64), //这里要依照法币数额去换crypto
-			Quantity:    "1"}},
-		HashCode:    payutils.GetSign("payment" + channel.MerKey),
-		TxId:        req.OrderNo,
-		Currency:    "CNY",
-		Token:       channel.CurrencyCode,
-		CallbackUrl: notifyUrl,
-		CustomerUid: req.PlayerId,
+		Command:      "payment",
+		HashCode:     payutils.GetSign("payment" + channel.MerKey),
+		Token:        channel.CurrencyCode,
+		CallbackUrl:  notifyUrl,
+		CustomerUid:  req.PlayerId,
+		CryptoOnly:   true,
+		CryptoAmount: req.TransactionAmount,
+		TxId:         req.OrderNo,
 	}
+	// 以下是渠道以法币当做基准提交参数
+	//{
+	//	Command: "payment",
+	//	LineItems: []types.Item{{
+	//		Name:        "deposit",
+	//		ItemId:      "BTC",
+	//		Description: "Deposit CNY via BTC",
+	//		Amount:      strconv.FormatFloat(fiatAmount, 'f', -1, 64), //这里要依照法币数额去换crypto
+	//		Quantity: "1"}},
+	//	HashCode:     payutils.GetSign("payment" + channel.MerKey),
+	//	TxId:         req.OrderNo,
+	//	Currency:     "CNY",
+	//	Token:        channel.CurrencyCode,
+	//	CallbackUrl:  notifyUrl,
+	//	CustomerUid:  req.PlayerId,
+	//	CryptoOnly:   true,
+	//	CryptoAmount: req.TransactionAmount,
+	//}
 
 	// 加簽
 	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
@@ -163,7 +170,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
 
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
-		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjRiNjY2YjJiMjU4OTk2NjYyYjdjMzMzOWNlOTQ2OGI0ZTFmMGJmOWFlM2U0MTk2YjM4YThjNGE5ZGIzODZmNTMyZjkxMTk5YmExNTMwZDJlIn0.eyJhdWQiOiIxIiwianRpIjoiNGI2NjZiMmIyNTg5OTY2NjJiN2MzMzM5Y2U5NDY4YjRlMWYwYmY5YWUzZTQxOTZiMzhhOGM0YTlkYjM4NmY1MzJmOTExOTliYTE1MzBkMmUiLCJpYXQiOjE3MTUwNTMyNDYsIm5iZiI6MTcxNTA1MzI0NiwiZXhwIjoxNzE1NjU4MDQ1LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.F5kXd0iUAxMG5EU9D33gdIGIe58r5OHDfun-xfXZ0L7hoIdWZXsudL9kR637r4b_MRQz8oeUeOuAFFwF0eEHxW-0YtE6tySzJggwwHE2TRnjrleG3WlQUpIudiu_J9QCU03mJMWGqJyyAeRLL0julZYX5U3zpk0Bl5gzOH7BgQgcBRCUq8mKyR-QtO6IJLP6HLlSaRVNoM1_Ze8C7VgX9Fyko95ALTENrlr8DWggGkqoimK8vMmkxcMs06B8f3tIBY0XyMi9WnVaCVhMxjrMFik9DsVAr9QOXcKoxo-tO3k8-5oG75jmRLitVzt4vtLfbSnPShP2cmJPMSj6xSoIoosMW3mg0zPk8N--SaOy2uBf-Qhle3kBg44OJSY0q_7f33WYjgLp-8vpPoaCML2Q_Hd85iza0Yn1EwM1axGfXnDAX80w-y-6wSjrdVCGPO3XyV3tb8wGfSc_Ga5F7UFsKVZTm-Il4_DqPQXIXcCZtKk-i2qQ4Ksdaq_uuf4ZdOUHLiWth3zpvzGRw2n2A5gvRtESfHAS454ntt61c5aCLxkUhy04XYvhZtPsv1vSCOEcXxnmMGc11_wGQeZHodYdTRSBkSay_-jav3yaWzqswpZ3Q5BzFoZKHDFkcRftwICz7624T7fiC5iLnYIL6y8oqf-WMWoLf3JQ71b_5BR9eBU").
+		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImFiODhmNjcwODllNGQ4MTI5MWJlNzRiMDZhZGNkMTA4MGJiNTliYzUwMGZhZDcxOTA4ZjZkODgxOTFmZjVjYTFjMTA0MzJlMzlmN2E3Y2NhIn0.eyJhdWQiOiIxIiwianRpIjoiYWI4OGY2NzA4OWU0ZDgxMjkxYmU3NGIwNmFkY2QxMDgwYmI1OWJjNTAwZmFkNzE5MDhmNmQ4ODE5MWZmNWNhMWMxMDQzMmUzOWY3YTdjY2EiLCJpYXQiOjE3MTU3NTM0NTUsIm5iZiI6MTcxNTc1MzQ1NSwiZXhwIjoxNzE2MzU4MjU1LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.ZD2yWVEAC50hziABbi8oKc-bdKQhPxycOF5DqZEe1-2aKYQVyxTj9EqbAgSuCjF0DTyEi2JM4EnotBmrGVoNo6C7LWQWn0Cx4HAISZ0kWU9pAXkxL2PTs-5svl0MXafXPiM4fjCqEsi6xr5l7YyrFs5ZqN15R_5Hexr--Prygb9Hq5dRhEGtkX4hj8_yWGcNHEs6ibnOKTsJNE2Iev9KJq7a31f1Tmm7_enOWb0ZzeSJUBsV-rWPoyYyECox_goS6CD3wvTwMzh8q9s1teUoGeoxs-JaMUaYKDp2e5SFsyi8GuDC9Bbf0J9e-52ueIAe0hfM6-WfBaBIGkjUlQAqKOxXOS7aleY1t3BAVkBXGUFVOB6sDZxvMqS2t69U6FhoZBVfpgqH4Z3ZKhwhKc_fRCOnGcWUwN96MN4LnpL1AaEPKiv5PEXGREEajtK1sx_jeNBcRgOT154QxQF-_jgws6KtzZ4WPR3bs6peQWY57VTMWZ__toJ7GVpU1QDWHXzKM4-gi8c6Rr7r7IAecLWvDv1MFaVeAq_OZ4tWrsN7bLQhC7YPLjm6Xks4Lrc4w-zMYZJ5ZFFtIq9StsOOM392hwERGaynhAipb1JlCLMY5SN26hM-uvvVi7EyJaBVpy7KsIBBLLras0DiPdqx5H7NAdjdz0q8JZDBoyRi2lYDtuE").
 		Header("Content-type", "application/json").
 		JSON(data)
 	if ChnErr != nil {
