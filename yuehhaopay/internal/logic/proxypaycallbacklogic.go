@@ -92,7 +92,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Code == 10000 {
 		status = "1"
-	} else if req.Code == 3 || req.Code == 4 || req.Code == 5 {
+	} else {
 		status = "2"
 	}
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
