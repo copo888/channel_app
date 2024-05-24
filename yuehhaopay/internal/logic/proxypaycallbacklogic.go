@@ -42,12 +42,12 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
 	Result := struct {
-		TransactionId string `json:"transactionid, optional"`
-		Orderid       string `json:"orderid, optional"`
-		PayUrl        string `json:"payurl, optional"`
-		Amount        string `json:"amount, optional"`
-		RealAmount    string `json:"real_amount, optional"`
-		Custom        string `json:"custom, optional"`
+		TransactionId string  `json:"transactionid, optional"`
+		Orderid       string  `json:"orderid, optional"`
+		PayUrl        string  `json:"payurl, optional"`
+		Amount        string  `json:"amount, optional"`
+		RealAmount    float64 `json:"real_amount, optional"`
+		Custom        string  `json:"custom, optional"`
 	}{}
 
 	if err = json.Unmarshal([]byte(req.Result), &Result); err != nil {
