@@ -208,7 +208,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.RspMsg)
+		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
+		resp := &types.ProxyPayOrderResponse{
+			ChannelOrderNo: "CHN_" + req.OrderNo,
+			OrderStatus:    "",
+		}
+		return resp, nil
 	}
 
 	//寫入交易日志
