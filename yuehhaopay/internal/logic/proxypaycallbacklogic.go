@@ -46,7 +46,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		Orderid       string  `json:"orderid, optional"`
 		PayUrl        string  `json:"payurl, optional"`
 		Amount        string  `json:"amount, optional"`
-		RealAmount    float64 `json:"real_amount, optional"`
+		RealAmount    float64 `json:"real_amount, optional"` //扣除渠道佣金后添加到商户馀额的金额
 		Custom        string  `json:"custom, optional"`
 	}{}
 
