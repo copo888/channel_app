@@ -46,7 +46,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		Orderid       string `json:"orderid, optional"`
 		PayUrl        string `json:"payurl, optional"`
 		Amount        string `json:"amount, optional"`
-		RealAmount    string `json:"real_amount, optional"` //此金额是渠道扣完手续费的金额，不是会员实际打款金额。 若实际打款金额不一至，渠道不会回调
+		RealAmount    string `json:"real_amount, optional"` //此金额是渠道扣完手续费的金额，不是会员实际打款金额。 若实际打款金额不一至，渠道不会回调。
 		Custom        string `json:"custom, optional"`
 	}{}
 
