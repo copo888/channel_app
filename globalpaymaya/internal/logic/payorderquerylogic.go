@@ -7,7 +7,6 @@ import (
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
-	"github.com/copo888/channel_app/globalpaymaya/internal/payutils"
 	"github.com/copo888/channel_app/globalpaymaya/internal/svc"
 	"github.com/copo888/channel_app/globalpaymaya/internal/types"
 	"github.com/gioco-play/gozzle"
@@ -19,17 +18,15 @@ import (
 
 type PayOrderQueryLogic struct {
 	logx.Logger
-	ctx     context.Context
-	svcCtx  *svc.ServiceContext
-	traceID string
+	ctx    context.Context
+	svcCtx *svc.ServiceContext
 }
 
 func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderQueryLogic {
 	return PayOrderQueryLogic{
-		Logger:  logx.WithContext(ctx),
-		ctx:     ctx,
-		svcCtx:  svcCtx,
-		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
+		Logger: logx.WithContext(ctx),
+		ctx:    ctx,
+		svcCtx: svcCtx,
 	}
 }
 
@@ -44,33 +41,13 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 		return
 	}
 
-	// 組請求參數
-	//data := url.Values{}
-	//data.Set("merchant", channel.MerId)
-	//data.Set("order_id", req.OrderNo)
-
-	// 組請求參數 FOR JSON
-	data := struct {
-		Merchant string `json:"merchant"`
-		OrderId  string `json:"order_id"`
-		Sign     string `json:"sign"`
-	}{
-		Merchant: channel.MerId,
-	}
-
-	// 加簽
-	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	//data.Set("sign", sign)
-
-	// 加簽 JSON
-	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx, "json")
-	data.Sign = sign
-
+	url := channel.PayQueryUrl + "/" + req.OrderNo
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s", url)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
+	res, chnErr := gozzle.Get(url).Header("Authorization", "Bearer "+channel.MerKey).
+		Timeout(20).Trace(span).Do()
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -82,25 +59,30 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		OrderId string `json:"order_id"`
-		Amount  string `json:"amount"`
-		Status  int64  `json:"status"`
+		Success bool   `json:"success"`
 		Message string `json:"message"`
+		Data    struct {
+			TradeNo       string `json:"trade_no"`
+			OutTradeNo    string `json:"out_trade_no"`
+			Amount        string `json:"amount"`
+			RequestAmount string `json:"request_amount"`
+			State         string `json:"state"`
+		} `json:"data"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Status == 0 {
+	} else if !channelResp.Success {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	orderAmount, errParse := strconv.ParseFloat(channelResp.Amount, 64)
+	orderAmount, errParse := strconv.ParseFloat(channelResp.Data.Amount, 64)
 	if errParse != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"
-	if channelResp.Status == 5 {
+	if channelResp.Data.State == "completed" {
 		orderStatus = "1"
 	}
 
