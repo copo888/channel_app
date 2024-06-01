@@ -69,7 +69,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Sign          string `json:"sign"`
 	}{
 		OutTradeNo:    req.OrderNo,
-		BankId:        channelBankMap.MapCode,
+		BankId:        "PAYMAYA",
 		BankOwner:     req.ReceiptAccountName,
 		AccountNumber: req.ReceiptAccountNumber,
 		Amount:        transactionAmount,
