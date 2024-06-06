@@ -43,6 +43,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayOrder. channelName: %s,orderNo: %s, ProxyPayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
 
+	if req.Remark == "" {
+		logx.WithContext(l.ctx).Errorf("remark不可为空 remark:%s", req.Remark)
+		return nil, errorx.New(responsex.INVALID_PARAMETER, "IFSC is required")
+	}
+
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -73,7 +78,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("gateway", "1") //1 : 銀行卡 2: UPI
 	data.Set("user", req.ReceiptAccountName)
 	data.Set("account", req.ReceiptAccountNumber)
-	data.Set("bank_code", req.Remark) //channelBankMap.MapCode
+	data.Set("bank_code", req.Remark) //填入IFSC channelBankMap.MapCode
 	data.Set("bank", req.ReceiptCardBankName)
 
 	// 加簽

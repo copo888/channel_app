@@ -13,7 +13,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/indiapay/internal/svc"
@@ -75,10 +74,10 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" {
+	var status = "0"        //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Status == "ok" { //ok: 成功   error : 失败 订单取消
 		status = "1"
-	} else if strings.Index("2,3,5", req.Status) > -1 {
+	} else if req.Status == "error" {
 		status = "2"
 	}
 
