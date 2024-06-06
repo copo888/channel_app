@@ -40,6 +40,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s,orderNo: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
 
+	if req.SourceIp == "" {
+		logx.WithContext(l.ctx).Errorf("SourceIp不可为空 SourceIp:%s", req.SourceIp)
+		return nil, errorx.New(responsex.INVALID_PARAMETER, "UserIp is required")
+	}
+
 	// 取得取道資訊
 	var channel typesX.ChannelData
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
