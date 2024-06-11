@@ -66,7 +66,7 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 	} else {
 		sort.Strings(list)
 	}
-	return strings.Join(list, sep) + "&" + key
+	return strings.Join(list, sep) + key
 }
 
 // VerifySign 验签
@@ -100,11 +100,11 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 // SortAndSignFromObj 物件 排序后加签
 func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
 	m := CovertToMap(data)
-	newSource := JoinStringsInASCII(m, "&", false, false, screctKey)
+	newSource := JoinStringsInASCII(m, "&", false, true, screctKey)
 	newSign := GetSign(newSource)
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
-	logx.WithContext(ctx).Info("签名字串: ", newSign)
-	return newSign
+	logx.WithContext(ctx).Info("签名字串: ", strings.ToUpper(newSign))
+	return strings.ToUpper(newSign)
 }
 
 // SortAndSignFromMap MAP 排序后加签

@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
@@ -10,7 +9,6 @@ import (
 	"github.com/copo888/channel_app/sindingpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/sindingpay/internal/svc"
@@ -47,44 +45,26 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-	//data := url.Values{}
-	//data.Set("partner", channel.MerId)
-	//data.Set("service", "10301")
-	//data.Set("outTradeNo", req.OrderNo)
-
 	// 組請求參數 FOR JSON
 	data := struct {
-		MerchNo string `json:"merchNo"`
-		OrderNo string `json:"orderNo"`
+		MchId   string `json:"mchId"`
+		Service string `json:"service"`
+		OrderId string `json:"orderId"`
+		Sign    string `json:"sign"`
 	}{
-		MerchNo: channel.MerId,
-		OrderNo: req.OrderNo,
+		MchId:   channel.MerId,
+		Service: "Batch.Query",
+		OrderId: req.OrderNo,
 	}
-
-	reqData := struct {
-		Sign        string `json:"sign"`
-		Context     []byte `json:"context"`
-		EncryptType string `json:"encryptType"`
-	}{}
 
 	// 加簽
-	out, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	source := string(out) + channel.MerKey
-	sign := payutils.GetSign(source)
-	logx.WithContext(l.ctx).Info("sign加签参数: ", source)
-	logx.WithContext(l.ctx).Info("context加签参数: ", string(out))
-	reqData.EncryptType = "MD5"
-	reqData.Sign = sign
-	reqData.Context = out
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
+	data.Sign = sign
 
 	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%+v", channel.ProxyPayQueryUrl, data)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).JSON(reqData)
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -96,45 +76,32 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Code int    `json:"code"`
-		Msg  string `json:"msg, optional"`
+		Error  string `json:"Error, optional"`
+		Result struct {
+			MchId   int    `json:"mchId, optional"`
+			OrderId string `json:"orderId, optional"`
+			TradeNo int    `json:"tradeNo, optional"`
+			Amount  string `json:"amount, optional"`
+			Fee     string `json:"fee, optional"`
+			Status  int    `json:"status, optional"`
+			PayTime string `json:"payTime, optional"`
+			Memo    string `json:"memo, optional"`
+			Sign    string `json:"sign, optional"`
+		} `json:"Result, optional"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.Code != 0 {
-		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s: %s", channelQueryResp.Code, channelQueryResp.Msg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Msg)
+	} else if channelQueryResp.Error != "" {
+		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s", channelQueryResp.Error)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Error)
 	}
-
-	channelQueryResp2 := struct {
-		Sign    string `json:"sign,optional"`
-		Context []byte `json:"context,optional"`
-	}{}
-
-	// 返回body 轉 struct
-	if err3 := ChannelResp.DecodeJSON(&channelQueryResp2); err3 != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	}
-
-	respCon := struct {
-		MerchNo    string `json:"merchNo"`
-		OrderNo    string `json:"orderNo"`
-		OutChannel string `json:"outChannel"`
-		BusinessNo string `json:"businessNo"`
-		OrderState string `json:"orderState"`
-		Amount     string `json:"amount"`
-	}{}
-
-	json.Unmarshal(channelQueryResp2.Context, &respCon)
-
-	logx.WithContext(l.ctx).Errorf("代付订单查询渠道返回参数解密: %+v", respCon)
 
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if respCon.OrderState == "1" {
+	if channelQueryResp.Result.Status == 2 { //可选值为0、1、2、-1。0=等待审核，1=处理中，2=成功，-1=失败
 		orderStatus = "20"
-	} else if strings.Index("2,4", respCon.OrderState) > -1 {
+	} else if channelQueryResp.Result.Status == -1 {
 		orderStatus = "30"
 	}
 

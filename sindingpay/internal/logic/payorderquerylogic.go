@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
@@ -58,43 +57,25 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 組請求參數 FOR JSON
 	data := struct {
-		MerchNo string `json:"merchNo"`
-		OrderNo string `json:"orderNo"`
+		MchId   string `json:"mchId"`
+		Service string `json:"service"`
+		OrderId string `json:"orderId"`
+		Sign    string `json:"sign"`
 	}{
-		MerchNo: channel.MerId,
-		OrderNo: req.OrderNo,
+		MchId:   channel.MerId,
+		Service: "Pay.Query",
+		OrderId: req.OrderNo,
 	}
-
-	reqData := struct {
-		Sign        string `json:"sign"`
-		Context     []byte `json:"context"`
-		EncryptType string `json:"encryptType"`
-	}{}
 
 	// 加簽
-	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	//data.Set("sign", sign)
-
-	// 加簽 JSON
-	out, err := json.Marshal(data)
-	if err != nil {
-		return nil, err
-	}
-
-	source := string(out) + channel.MerKey
-	sign := payutils.GetSign(source)
-	logx.WithContext(l.ctx).Info("sign加签参数: ", source)
-	logx.WithContext(l.ctx).Info("context加签参数: ", string(out))
-	reqData.EncryptType = "MD5"
-	reqData.Sign = sign
-	reqData.Context = out
+	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
+	data.Sign = sign
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(reqData)
-	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -106,48 +87,36 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Code int    `json:"code"`
-		Msg  string `json:"msg, optional"`
+		Error  string `json:"Error, optional"`
+		Result struct {
+			MchId     int    `json:"mchId, optional"`
+			OrderId   string `json:"orderId, optional"`
+			TradeNo   string `json:"tradeNo, optional"`
+			Status    int    `json:"status, optional"` //0未支付 1已支付 -1超时关闭
+			Amount    string `json:"amount, optional"`
+			RealMoney string `json:"realMoney, optional"`
+			PayTime   string `json:"payTime, optional"`
+			Utr       string `json:"utr, optional"`
+			Attach    string `json:"attach, optional"`
+			Sign      string `json:"sign, optional"`
+		} `json:"Result, optional"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if channelResp.Code != 0 {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
+	} else if channelResp.Error != "" {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Error)
 	}
 
-	// 渠道回覆處理
-	channelResp2 := struct {
-		Sign    string `json:"sign,optional"`
-		Context []byte `json:"context,optional"`
-	}{}
-
-	if err = res.DecodeJSON(&channelResp2); err != nil {
-		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	}
-
-	respCon := struct {
-		MerchNo    string `json:"merchNo"`
-		OrderNo    string `json:"orderNo"`
-		OutChannel string `json:"outChannel"`
-		BusinessNo string `json:"businessNo"`
-		OrderState string `json:"orderState"`
-		Amount     string `json:"amount"`
-		RealAmount string `json:"realAmount"`
-		Remark     string `json:"remark"`
-	}{}
-
-	json.Unmarshal(channelResp2.Context, &respCon)
-	logx.WithContext(l.ctx).Errorf("支付订单查询渠道返回参数解密: %s", respCon)
-	orderAmount, errParse := strconv.ParseFloat(respCon.RealAmount, 64)
+	orderAmount, errParse := strconv.ParseFloat(channelResp.Result.RealMoney, 64)
 	if errParse != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, errParse.Error())
 	}
 
 	orderStatus := "0"
-	if respCon.OrderState == "1" {
+	if channelResp.Result.Status == 1 {
 		orderStatus = "1"
-	} else if respCon.OrderState == "2" {
+	} else if channelResp.Result.Status == -1 {
 		orderStatus = "2"
 	}
 

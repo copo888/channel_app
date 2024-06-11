@@ -2,7 +2,6 @@ package logic
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/constants"
@@ -16,7 +15,6 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
-	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -39,13 +37,13 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 }
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.Result.OrderId, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo, //輸入COPO訂單號
+		OrderNo:   req.Result.OrderId, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -67,42 +65,27 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 
-	reqCon := struct {
-		MerchNo    string `json:"merchNo"`
-		OrderNo    string `json:"orderNo"`
-		BusinessNo string `json:"businessNo"`
-		OrderState string `json:"orderState"`
-		Amount     string `json:"amount"`
-	}{}
-
-	json.Unmarshal(req.Context, &reqCon)
-	//out, err := json.Marshal(reqCon)
-	//if err != nil {
-	//	return  "fail", errorx.New(err.Error())
-	//}
-
 	// 檢查驗簽
 	//source := string(out) + channel.MerKey
 	//sign := payutils.GetSign(source)
 	//if req.Sign != sign {
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
-	logx.WithContext(l.ctx).Infof("解密参数:%+v", reqCon)
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(reqCon.Amount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.Result.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if reqCon.OrderState == "1" {
+	var status = "0"            //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Result.Status == 2 { //可选值为2或-1。2=成功，-1=失败
 		status = "1"
-	} else if strings.Index("2,4", reqCon.OrderState) > -1 {
+	} else if req.Result.Status == -1 {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     reqCon.OrderNo,
-		ChannelOrderNo:      "",
+		ProxyPayOrderNo:     req.Result.OrderId,
+		ChannelOrderNo:      fmt.Sprintf("%d", req.Result.TradeNo),
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   "",
