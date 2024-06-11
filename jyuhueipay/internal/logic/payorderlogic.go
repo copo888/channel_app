@@ -227,17 +227,17 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		if req.MerchantId == "ME00015" {
 			isCheckOutMer = true
 		}
-		amount, err2 := strconv.ParseFloat(channelResp.RspData.PayParams.OrdAmt, 64)
-		if err2 != nil {
-			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-		}
+		//replyAmount, err2 := strconv.ParseFloat(channelResp.RspData.PayParams.OrdAmt, 64)
+		//if err2 != nil {
+		//	return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
+		//}
 		// 返回json
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
 			CardName:   channelResp.RspData.PayParams.AcctName,
 			CardNumber: channelResp.RspData.PayParams.AcctNo,
 			BankName:   channelResp.RspData.PayParams.BankName,
 			BankBranch: channelResp.RspData.PayParams.BankName,
-			Amount:     amount,
+			Amount:     utils.FloatDiv(channelResp.RspData.PayParams.OrdAmt, "100"), // 單位:分,
 			Link:       "",
 			Remark:     "",
 		})
