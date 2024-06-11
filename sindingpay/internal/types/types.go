@@ -113,7 +113,7 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip        string `form:"ip, optional"`
+	Ip        string `json:"ip, optional"`
 	MchId     int    `json:"mchId, optional"`
 	OrderId   string `json:"orderId, optional"`
 	TradeNo   int    `json:"tradeNo, optional"`
