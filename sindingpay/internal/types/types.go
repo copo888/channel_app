@@ -113,35 +113,29 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip     string `form:"ip, optional"`
-	Error  string `json:"Error, optional"`
-	Result struct {
-		MchId     int    `json:"mchId, optional"`
-		OrderId   string `json:"orderId, optional"`
-		TradeNo   int    `json:"tradeNo, optional"`
-		Amount    string `json:"amount, optional"`
-		Fee       string `json:"fee, optional"`
-		Status    int    `json:"status, optional"`
-		BatchTime string `json:"batchTime, optional"`
-		Memo      string `json:"memo, optional"`
-		Sign      string `json:"sign, optional"`
-	} `json:"Result, optional"`
+	Ip        string `form:"ip, optional"`
+	MchId     int    `json:"mchId, optional"`
+	OrderId   string `json:"orderId, optional"`
+	TradeNo   int    `json:"tradeNo, optional"`
+	Amount    string `json:"amount, optional"`
+	Fee       string `json:"fee, optional"`
+	Status    int    `json:"status, optional"`
+	BatchTime string `json:"batchTime, optional"`
+	Memo      string `json:"memo, optional"`
+	Sign      string `json:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp   string `json:"myIp, optional"`
-	Error  string `json:"Error, optional"`
-	Result struct {
-		MchId     int    `json:"mchId, optional"`
-		OrderId   string `json:"orderId, optional"`
-		Amount    string `json:"amount, optional"`
-		RealMoney string `json:"realMoney, optional"`
-		TradeNo   string `json:"tradeNo, optional"`
-		PayTime   string `json:"payTime, optional"`
-		Attach    string `json:"attach, optional"`
-		Status    int    `json:"status, optional"`
-		Sign      string `json:"sign, optional"`
-	} `json:"Result, optional"`
+	MyIp      string `json:"myIp, optional"`
+	MchId     int    `json:"mchId, optional"`
+	OrderId   string `json:"orderId, optional"`
+	Amount    string `json:"amount, optional"`
+	RealMoney string `json:"realMoney, optional"`
+	TradeNo   string `json:"tradeNo, optional"`
+	PayTime   string `json:"payTime, optional"`
+	Attach    string `json:"attach, optional"`
+	Status    int    `json:"status, optional"`
+	Sign      string `json:"sign, optional"`
 }
 type ReceiverInfoVO struct {
 	CardName   string  `json:"cardName"`
