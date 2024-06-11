@@ -6030,3 +6030,89 @@ steps:
 trigger:
   branch:
     - jstpay3
+
+
+---
+kind: pipeline
+name: indiapay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-indiapay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout indiapay
+        - git checkout -- .
+        - git pull origin indiapay
+        - go mod tidy
+        - docker-compose -f indiapay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=indiapay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/indiapay indiapay/pay.go
+        - docker build -t indiapay -f indiapay/Dockerfile .
+        - docker-compose -f indiapay/docker-compose.yml up -d
+    when:
+      branch:
+        - indiapay
+      event:
+        - push
+trigger:
+  branch:
+    - indiapay
+
+
+---
+kind: pipeline
+name: sindingpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-sindingpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout sindingpay
+        - git checkout -- .
+        - git pull origin sindingpay
+        - go mod tidy
+        - docker-compose -f sindingpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sindingpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sindingpay sindingpay/pay.go
+        - docker build -t sindingpay -f sindingpay/Dockerfile .
+        - docker-compose -f sindingpay/docker-compose.yml up -d
+    when:
+      branch:
+        - sindingpay
+      event:
+        - push
+trigger:
+  branch:
+    - sindingpay

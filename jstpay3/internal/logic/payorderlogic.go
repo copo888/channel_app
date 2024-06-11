@@ -43,6 +43,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s,orderNo: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
 
+	if len(req.UserId) == 0 {
+		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
+		return nil, errorx.New(responsex.INVALID_USER_ID)
+	}
+
 	// 取得取道資訊3
 	var channel typesX.ChannelData
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
