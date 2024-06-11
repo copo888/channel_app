@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/vaildx"
-	"github.com/copo888/channel_app/globalpaymaya/internal/logic"
-	"github.com/copo888/channel_app/globalpaymaya/internal/svc"
-	"github.com/copo888/channel_app/globalpaymaya/internal/types"
+	"github.com/copo888/channel_app/indiapay/internal/logic"
+	"github.com/copo888/channel_app/indiapay/internal/svc"
+	"github.com/copo888/channel_app/indiapay/internal/types"
 	"github.com/thinkeridea/go-extend/exnet"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
@@ -23,16 +23,16 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 
 		var req types.PayCallBackRequest
 
-		if err := httpx.ParseJsonBody(r, &req); err != nil {
-			responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
-			return
-		}
-
-		// Form 格式
-		//if err := httpx.ParseForm(r, &req); err != nil {
-		//	responsex.Json(w, r, responsex.FAIL, nil, err)
+		//if err := httpx.ParseJsonBody(r, &req); err != nil {
+		//	responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 		//	return
 		//}
+
+		// Form 格式
+		if err := httpx.ParseForm(r, &req); err != nil {
+			responsex.Json(w, r, responsex.FAIL, nil, err)
+			return
+		}
 
 		logx.WithContext(r.Context()).Infof("%+v", req)
 

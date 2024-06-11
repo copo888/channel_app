@@ -7,10 +7,12 @@ import (
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
-	"github.com/copo888/channel_app/globalpaymaya/internal/svc"
-	"github.com/copo888/channel_app/globalpaymaya/internal/types"
+	"github.com/copo888/channel_app/indiapay/internal/payutils"
+	"github.com/copo888/channel_app/indiapay/internal/svc"
+	"github.com/copo888/channel_app/indiapay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"net/url"
 	"strconv"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,15 +20,17 @@ import (
 
 type PayOrderQueryLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderQueryLogic {
 	return PayOrderQueryLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -40,14 +44,26 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	if channel, err = channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName); err != nil {
 		return
 	}
+	//randomID := utils.GetRandomString(32, utils.ALL, utils.MIX)
+	// 組請求參數
+	data := url.Values{}
+	data.Set("mer_id", channel.MerId)
+	data.Set("order_id", req.OrderNo)
 
-	url := channel.PayQueryUrl + "/" + req.OrderNo
+	// 加簽
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
+	data.Set("sign", sign)
+
+	// 加簽 JSON
+	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
+	//data.sign = sign
+
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s", url)
+	logx.WithContext(l.ctx).Infof("支付查詢请求地址:%s,支付請求參數:%v", channel.PayQueryUrl, data)
 
 	span := trace.SpanFromContext(l.ctx)
-	res, chnErr := gozzle.Get(url).Header("Authorization", "Bearer "+channel.MerKey).
-		Timeout(20).Trace(span).Do()
+	res, chnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).Form(data)
+	//res, ChnErr := gozzle.Post(channel.PayQueryUrl).Timeout(20).Trace(span).JSON(data)
 
 	if chnErr != nil {
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_DATA_ERROR, err.Error())
@@ -59,20 +75,22 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 
 	// 渠道回覆處理
 	channelResp := struct {
-		Success bool   `json:"success"`
-		Message string `json:"message"`
-		Data    struct {
-			TradeNo       string `json:"trade_no"`
-			OutTradeNo    string `json:"out_trade_no"`
-			Amount        string `json:"amount"`
-			RequestAmount string `json:"request_amount"`
-			State         string `json:"state"`
-		} `json:"data"`
+		Code int `json:"code"`
+		Data struct {
+			OrderId    string `json:"order_id, optional"`
+			OrderCode  string `json:"order_code, optional"`
+			Amount     string `json:"amount, optional"`
+			Realpay    string `json:"realpay, optional"`
+			TimeCreate string `json:"time_create, optional"`
+			TimeFinish string `json:"time_finish, optional"`
+			Status     int    `json:"status, optional"` //0: 成功 1: 處理中 2: 失敗
+		} `json:"data, optional"`
+		Message string `json:"message, optional"`
 	}{}
 
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	} else if !channelResp.Success {
+	} else if channelResp.Code != 0 {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
@@ -82,7 +100,7 @@ func (l *PayOrderQueryLogic) PayOrderQuery(req *types.PayOrderQueryRequest) (res
 	}
 
 	orderStatus := "0"
-	if channelResp.Data.State == "completed" {
+	if channelResp.Data.Status == 0 { ////0: 成功 1: 處理中 2: 失敗
 		orderStatus = "1"
 	}
 

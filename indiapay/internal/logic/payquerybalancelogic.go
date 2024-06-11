@@ -6,9 +6,9 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
-	"github.com/copo888/channel_app/globalpaymaya/internal/payutils"
-	"github.com/copo888/channel_app/globalpaymaya/internal/svc"
-	"github.com/copo888/channel_app/globalpaymaya/internal/types"
+	"github.com/copo888/channel_app/indiapay/internal/payutils"
+	"github.com/copo888/channel_app/indiapay/internal/svc"
+	"github.com/copo888/channel_app/indiapay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
@@ -18,15 +18,17 @@ import (
 
 type PayQueryBalanceLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewPayQueryBalanceLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayQueryBalanceLogic {
 	return PayQueryBalanceLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -58,9 +60,9 @@ func (l *PayQueryBalanceLogic) PayQueryBalance() (resp *types.PayQueryInternalBa
 	//}
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey)
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
 	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey)
+	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
 	//data.Sign = sign
 
 	// 請求渠道

@@ -15,6 +15,13 @@ type PayOrderRequest struct {
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
 	PlayerId          string `json:"playerId, optional"`
+	Address           string `json:"address, optionial"`
+	City              string `json:"city, optionial"`
+	ZipCode           string `json:"zipCode, optionial"`
+	Country           string `json:"country, optionial"`
+	Phone             string `json:"phone, optionial"`
+	Email             string `json:"email, optionial"`
+	PageFailedUrl     string `json:"pageFailedUrl, optional"`
 }
 
 type PayOrderResponse struct {
@@ -63,6 +70,7 @@ type PayQueryInternalBalanceResponse struct {
 
 type ProxyPayOrderRequest struct {
 	OrderNo              string `json:"orderNo"`
+	MerchantId           string `json:"merchantId"`
 	TransactionType      string `json:"transactionType"`
 	TransactionAmount    string `json:"transactionAmount"`
 	ReceiptAccountNumber string `json:"receiptAccountNumber"`
@@ -74,6 +82,7 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 	PlayerId             string `json:"playerId, optional"`
+	Remark               string `json:"remark, optional"` //印度渠道需要填IFSC
 }
 
 type ProxyPayOrderResponse struct {
@@ -106,25 +115,25 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip          string `form:"ip, optional"`
-	TradeNo     string `json:"trade_no, optional"`
-	Amount      string `json:"amount, optional"`
-	OutTradeNo  string `json:"out_trade_no, optional"`
-	State       string `json:"state, optional"`
-	Sign        string `json:"sign, optional"`
-	Errors      string `json:"errors, optional"`
-	CallbackUrl string `json:"callback_url, optional"`
+	Ip      string `form:"ip, optional"`
+	MerId   string `form:"mer_id, optional"`
+	OrderId string `form:"order_id, optional"`
+	Status  string `form:"status, optional"`
+	Amount  string `form:"amount, optional"`
+	Realpay string `form:"realpay, optional"`
+	Reason  string `form:"reason, optional"`
+	Sign    string `form:"sign, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp          string  `json:"myIp, optional"`
-	TradeNo       string  `json:"trade_no, optional"`
-	RequestAmount float64 `json:"request_amount, optional"`
-	Amount        string  `json:"amount, optional"`
-	OutTradeNo    string  `json:"out_trade_no, optional"`
-	State         string  `json:"state, optional"`
-	Sign          string  `json:"sign, optional"`
-	CallbackUrl   string  `json:"callback_url, optional"`
+	MyIp    string `form:"myIp, optional"`
+	MerId   string `form:"mer_id, optional"`
+	OrderId string `form:"order_id, optional"`
+	Status  string `form:"status, optional"`
+	Amount  string `form:"amount, optional"`
+	Realpay string `form:"realpay, optional"`
+	Remark  string `form:"remark, optional"`
+	Sign    string `form:"sign, optional"`
 }
 
 type ReceiverInfoVO struct {

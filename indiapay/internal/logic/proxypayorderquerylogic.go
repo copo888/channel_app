@@ -6,28 +6,31 @@ import (
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/indiapay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
+	"net/url"
 	"time"
 
-	"github.com/copo888/channel_app/globalpaymaya/internal/svc"
-	"github.com/copo888/channel_app/globalpaymaya/internal/types"
+	"github.com/copo888/channel_app/indiapay/internal/svc"
+	"github.com/copo888/channel_app/indiapay/internal/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
 type ProxyPayOrderQueryLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewProxyPayOrderQueryLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayOrderQueryLogic {
 	return ProxyPayOrderQueryLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -43,13 +46,18 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-	url := channel.ProxyPayQueryUrl + "/" + req.OrderNo
+	data := url.Values{}
+	data.Set("mer_id", channel.MerId)
+	data.Set("order_id", req.OrderNo)
 
-	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s", url)
+	// 加簽
+	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
+	data.Set("sign", sign)
+
+	logx.WithContext(l.ctx).Infof("代付查单请求地址:%s,代付請求參數:%+v", channel.ProxyPayQueryUrl, data)
 	// 請求渠道
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Get(url).Header("Authorization", "Bearer "+channel.MerKey).
-		Timeout(20).Trace(span).Do()
+	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryUrl).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -61,29 +69,34 @@ func (l *ProxyPayOrderQueryLogic) ProxyPayOrderQuery(req *types.ProxyPayOrderQue
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelQueryResp := struct {
-		Success bool   `json:"success"`
-		Message string `json:"message"`
-		Data    struct {
-			TradeNo       string  `json:"trade_no"`
-			OutTradeNo    string  `json:"out_trade_no"`
-			Amount        float64 `json:"amount"`
-			AccountNumber string  `json:"account_number"`
-			BankOwner     string  `json:"bank_owner"`
-			State         string  `json:"state"`
+		Code int `json:"code"`
+		Data struct {
+			OrderId    string `json:"order_id"`
+			OrderCode  string `json:"order_code"`
+			Amount     string `json:"amount"`
+			Realpay    string `json:"realpay"`
+			User       string `json:"user"`
+			Account    string `json:"account"`
+			Bank       string `json:"bank"`
+			TimeCreate string `json:"time_create"`
+			TimeFinish string `json:"time_finish"`
+			Reason     string `json:"reason"`
+			Status     int    `json:"status"` //0: 成功 1: 處理中 2: 失敗
 		} `json:"data"`
+		Message string `json:"message"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&channelQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if channelQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %s: %s", channelQueryResp.Success, channelQueryResp.Message)
+	} else if channelQueryResp.Code != 0 {
+		logx.WithContext(l.ctx).Errorf("代付查询渠道返回错误: %d: %s", channelQueryResp.Code, channelQueryResp.Message)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelQueryResp.Message)
 	}
 	//0:待處理 1:處理中 20:成功 30:失敗 31:凍結
 	var orderStatus = "1"
-	if channelQueryResp.Data.State == "completed" {
+	if channelQueryResp.Data.Status == 0 { //0: 成功 1: 處理中 2: 失敗
 		orderStatus = "20"
-	} else if strings.Index("reject,failed,refund", channelQueryResp.Data.State) > -1 {
+	} else if channelQueryResp.Data.Status == 2 {
 		orderStatus = "30"
 	}
 
