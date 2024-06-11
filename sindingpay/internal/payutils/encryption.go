@@ -1,8 +1,13 @@
 package payutils
 
 import (
+	"context"
 	"crypto/md5"
+	"crypto/rand"
+	"crypto/rsa"
 	"crypto/sha256"
+	"crypto/x509"
+	"encoding/hex"
 	"fmt"
 	"github.com/zeromicro/go-zero/core/logx"
 	"net/url"
@@ -14,8 +19,10 @@ import (
 
 func GetSign(source string) string {
 	data := []byte(source)
-	result := fmt.Sprintf("%x", md5.Sum(data))
-	result = strings.ToUpper(result)
+	//result := fmt.Sprintf("%x", md5.Sum(data))
+	hash := md5.Sum(data)
+	//生成MD5哈希
+	result := hex.EncodeToString(hash[:])
 	return result
 }
 
@@ -63,14 +70,14 @@ func JoinStringsInASCII(data map[string]string, sep string, onlyValues, includeE
 }
 
 // VerifySign 验签
-func VerifySign(reqSign string, data interface{}, screctKey string) bool {
-	m := CovertToMapForm(data)
+func VerifySign(reqSign string, data interface{}, screctKey string, ctx context.Context) bool {
+	m := CovertToMap(data)
 	source := JoinStringsInASCII(m, "&", false, false, screctKey)
 	sign := GetSign(source)
 	fmt.Sprintf("-------" + source)
-	logx.Info("verifySource: ", source)
-	logx.Info("verifySign: ", sign)
-	logx.Info("reqSign: ", reqSign)
+	logx.WithContext(ctx).Info("verifySource: ", source)
+	logx.WithContext(ctx).Info("verifySign: ", sign)
+	logx.WithContext(ctx).Info("reqSign: ", reqSign)
 
 	if reqSign == sign {
 		return true
@@ -80,9 +87,9 @@ func VerifySign(reqSign string, data interface{}, screctKey string) bool {
 }
 
 // SortAndSignFromUrlValues map 排序后加签
-func SortAndSignFromUrlValues(values url.Values, screctKey string) string {
+func SortAndSignFromUrlValues(values url.Values, screctKey string, ctx context.Context) string {
 	m := CovertUrlValuesToMap(values)
-	return SortAndSignFromMap(m, screctKey)
+	return SortAndSignFromMap(m, screctKey, ctx)
 }
 
 func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string {
@@ -91,21 +98,21 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 }
 
 // SortAndSignFromObj 物件 排序后加签
-func SortAndSignFromObj(data interface{}, screctKey string) string {
+func SortAndSignFromObj(data interface{}, screctKey string, ctx context.Context) string {
 	m := CovertToMap(data)
 	newSource := JoinStringsInASCII(m, "&", false, true, screctKey)
 	newSign := GetSign(newSource)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
-	return newSign
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", strings.ToUpper(newSign))
+	return strings.ToUpper(newSign)
 }
 
 // SortAndSignFromMap MAP 排序后加签
-func SortAndSignFromMap(newData map[string]string, screctKey string) string {
+func SortAndSignFromMap(newData map[string]string, screctKey string, ctx context.Context) string {
 	newSource := JoinStringsInASCII(newData, "&", false, false, screctKey)
 	newSign := GetSign(newSource)
-	logx.Info("加签参数: ", newSource)
-	logx.Info("签名字串: ", newSign)
+	logx.WithContext(ctx).Info("加签参数: ", newSource)
+	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
 }
 
@@ -160,36 +167,18 @@ func CovertToMap(req interface{}) map[string]string {
 	return m
 }
 
-func CovertToMapForm(req interface{}) map[string]string {
-	m := make(map[string]string)
-
-	val := reflect.ValueOf(req)
-	for i := 0; i < val.Type().NumField(); i++ {
-		jsonTag := val.Type().Field(i).Tag.Get("form") // [依据不同请求类型更改] from / json
-		parts := strings.Split(jsonTag, ",")
-		name := parts[0]
-		if name != "sign" && name != "myIp" && name != "ip" { // 過濾不需加簽參數
-			if val.Field(i).Type().Name() == "float64" {
-				precise := GetDecimalPlaces(val.Field(i).Float())
-				valTrans := strconv.FormatFloat(val.Field(i).Float(), 'f', precise, 64)
-				m[name] = valTrans
-			} else if val.Field(i).Type().Name() == "string" {
-				m[name] = val.Field(i).String()
-			} else if val.Field(i).Type().Name() == "int64" {
-
-				m[name] = strconv.FormatInt(val.Field(i).Int(), 10)
-			}
-		}
-	}
-
-	return m
-}
-
 func GetDecimalPlaces(f float64) int {
 	numstr := fmt.Sprint(f)
 	tmp := strings.Split(numstr, ".")
 	if len(tmp) <= 1 {
 		return 0
+
 	}
 	return len(tmp[1])
+}
+
+func DecodingRSA(src []byte, key string) string {
+	privateKey, _ := x509.ParsePKCS1PrivateKey([]byte(key))
+	res, _ := rsa.DecryptPKCS1v15(rand.Reader, privateKey, src)
+	return string(res)
 }
