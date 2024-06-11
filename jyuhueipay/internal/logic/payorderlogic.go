@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
@@ -17,6 +18,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/zeromicro/go-zero/core/logx"
@@ -50,10 +52,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
-	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-	//	return nil, errorx.New(responsex.INVALID_USER_ID)
-	//}
+	if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
+		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
+		return nil, errorx.New(responsex.INVALID_USER_ID)
+	}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
@@ -75,7 +77,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("timestamp", timestamp) //
 	data.Set("order_id", req.OrderNo)
 	data.Set("bankAccNo", "00000000000000000000")
-	data.Set("bankAccName", url.QueryEscape("王大明"))
+	data.Set("bankAccName", url.QueryEscape(req.UserId))
 	data.Set("amount", fmt.Sprintf("%.f", amount))
 	data.Set("amt_type", "CNY")
 	data.Set("gate_id", "1")
@@ -154,13 +156,26 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	channelResp := struct {
 		RspData struct {
 			PayParams struct {
-				OrdNo  string `json:"ordNo"`
-				PlanNo string `json:"planNo"`
-				PayUrl string `json:"payUrl"`
-			} `json:"pay_params"`
+				OrdNo    string `json:"ordNo, optional"`
+				AcctNo   string `json:"acctNo, optional"`
+				AcctName string `json:"acctName, optional"`
+				PlanNo   string `json:"planNo, optional"`
+				BankName string `json:"bankName, optional"`
+				PayUrl   string `json:"payUrl, optional"`
+				OrdAmt   string `json:"ordAmt, optional"`
+			} `json:"pay_params, optional"`
 		} `json:"rspData, optional"`
-		RspMsg string `json:"rspMsg, optional"`
-		RspCod string `json:"rspCod, optional"`
+		RspMsg string `json:"rspMsg"`
+		RspCod string `json:"rspCod"`
+		//RspData struct {
+		//	PayParams struct {
+		//		OrdNo  string `json:"ordNo"`
+		//		PlanNo string `json:"planNo"`
+		//		PayUrl string `json:"payUrl"`
+		//	} `json:"pay_params"`
+		//} `json:"rspData, optional"`
+		//RspMsg string `json:"rspMsg, optional"`
+		//RspCod string `json:"rspCod, optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -207,35 +222,35 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 若需回傳JSON 請自行更改
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	isCheckOutMer := false // 自組收銀台回傳 true
-	//	if req.MerchantId == "ME00015"{
-	//		isCheckOutMer = true
-	//	}
-	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
-	//	if err2 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	//	}
-	//	// 返回json
-	//	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-	//		CardName:   channelResp.PayInfo.Name,
-	//		CardNumber: channelResp.PayInfo.Card,
-	//		BankName:   channelResp.PayInfo.Bank,
-	//		BankBranch: channelResp.PayInfo.Subbranch,
-	//		Amount:     amount,
-	//		Link:       "",
-	//		Remark:     "",
-	//	})
-	//	if err3 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	//	}
-	//	return &types.PayOrderResponse{
-	//		PayPageType:    "json",
-	//		PayPageInfo:    string(receiverInfoJson),
-	//		ChannelOrderNo: "",
-	//		IsCheckOutMer:  isCheckOutMer, // 自組收銀台回傳 true
-	//	}, nil
-	//}
+	if strings.EqualFold(req.JumpType, "json") {
+		isCheckOutMer := false // 自組收銀台回傳 true
+		if req.MerchantId == "ME00015" {
+			isCheckOutMer = true
+		}
+		amount, err2 := strconv.ParseFloat(channelResp.RspData.PayParams.OrdAmt, 64)
+		if err2 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
+		}
+		// 返回json
+		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+			CardName:   channelResp.RspData.PayParams.AcctName,
+			CardNumber: channelResp.RspData.PayParams.AcctNo,
+			BankName:   channelResp.RspData.PayParams.BankName,
+			BankBranch: channelResp.RspData.PayParams.BankName,
+			Amount:     amount,
+			Link:       "",
+			Remark:     "",
+		})
+		if err3 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		}
+		return &types.PayOrderResponse{
+			PayPageType:    "json",
+			PayPageInfo:    string(receiverInfoJson),
+			ChannelOrderNo: "",
+			IsCheckOutMer:  isCheckOutMer, // 自組收銀台回傳 true
+		}, nil
+	}
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
