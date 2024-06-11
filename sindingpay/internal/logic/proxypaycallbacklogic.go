@@ -37,13 +37,13 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 }
 
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
-	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.Result.OrderId, req)
+	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderId, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.Result.OrderId, //輸入COPO訂單號
+		OrderNo:   req.OrderId, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_DF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -73,19 +73,19 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Result.Amount, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
-	var status = "0"            //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Result.Status == 2 { //可选值为2或-1。2=成功，-1=失败
+	var status = "0"     //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Status == 2 { //可选值为2或-1。2=成功，-1=失败
 		status = "1"
-	} else if req.Result.Status == -1 {
+	} else if req.Status == -1 {
 		status = "2"
 	}
 
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{
-		ProxyPayOrderNo:     req.Result.OrderId,
-		ChannelOrderNo:      fmt.Sprintf("%d", req.Result.TradeNo),
+		ProxyPayOrderNo:     req.OrderId,
+		ChannelOrderNo:      fmt.Sprintf("%d", req.TradeNo),
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   "",

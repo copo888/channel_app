@@ -39,13 +39,13 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.Result.OrderId, l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.OrderId, l.svcCtx.Config.ProjectName, req)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: fmt.Sprintf("%d", req.Result.MchId),
+		MerchantNo: fmt.Sprintf("%d", req.MchId),
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.Result.OrderId, //輸入COPO訂單號
+		OrderNo:   req.OrderId, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
 		Content:   fmt.Sprintf("%+v", req),
@@ -74,19 +74,19 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//}
 
 	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Result.RealMoney, 64); err != nil {
+	if orderAmount, err = strconv.ParseFloat(req.RealMoney, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
 	orderStatus := "1"
-	if req.Result.Status == 1 { //1已支付 -1超时关闭
+	if req.Status == 1 { //1已支付 -1超时关闭
 		orderStatus = "20"
 	}
 
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.Result.OrderId,
-		ChannelOrderNo: req.Result.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		PayOrderNo:     req.OrderId,
+		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
