@@ -13,6 +13,7 @@ import (
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/jyuhueipay/internal/svc"
@@ -70,9 +71,9 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.TransAmt, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+	var orderAmount float64 //req.TransAmt，单位：元，保留2位小数，有千分号要去除
+	if orderAmount, err = strconv.ParseFloat(strings.ReplaceAll(req.TransAmt, ",", ""), 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 	var status = "0"             //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.TransStatus == "00" { ////00-交易成功；01-交易失败；03-支付中,待查；

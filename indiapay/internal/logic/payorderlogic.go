@@ -105,7 +105,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	// 若有證書問題 請使用
-	//tr := &http.Transport{
+	//tr := &http.Transport{222
 	//	TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	//}
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(20).Trace(span).Form(data)

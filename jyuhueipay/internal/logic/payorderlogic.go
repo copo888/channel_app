@@ -78,7 +78,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("order_id", req.OrderNo)
 	data.Set("bankAccNo", "00000000000000000000")
 	data.Set("bankAccName", url.QueryEscape(req.UserId))
-	data.Set("amount", fmt.Sprintf("%.f", amount))
+	data.Set("amount", fmt.Sprintf("%.f", amount)) //如果是人民币，则以分为单位
 	data.Set("amt_type", "CNY")
 	data.Set("gate_id", "1")
 	data.Set("goods_id", "goods_id")
