@@ -81,7 +81,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data.Set("acctType", "0")
 	data.Set("acctPhone", "00000000000")
 	data.Set("ccy", "CNY")
-	data.Set("transAmt", transactionAmount)
+	data.Set("transAmt", transactionAmount) //分
 	data.Set("transUsage", "proxyPay")
 	data.Set("notifyUrl", url.QueryEscape(l.svcCtx.Config.Server+"/api/proxy-pay-call-back"))
 
