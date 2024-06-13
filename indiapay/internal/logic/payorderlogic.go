@@ -207,7 +207,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	// 若需回傳JSON 請自行更改
+	// 若需回傳JSON 請自行更改22
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	isCheckOutMer := false // 自組收銀台回傳 true
 	//	if req.MerchantId == "ME00015"{
