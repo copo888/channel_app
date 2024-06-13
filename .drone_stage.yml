@@ -17,7 +17,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -50,7 +49,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -83,7 +81,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -116,7 +113,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -149,7 +145,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -182,7 +177,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -215,7 +209,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -248,7 +241,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -281,7 +273,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -314,7 +305,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -347,7 +337,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -381,7 +370,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -415,7 +403,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -449,7 +436,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -483,7 +469,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -517,7 +502,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -551,7 +535,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -585,7 +568,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -619,7 +601,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -653,7 +634,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -686,7 +666,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -719,7 +698,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -752,7 +730,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -785,7 +762,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -818,7 +794,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -853,7 +828,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -886,7 +860,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -920,7 +893,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -953,7 +925,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -987,7 +958,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1022,7 +992,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1056,7 +1025,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1089,7 +1057,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1122,7 +1089,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1155,7 +1121,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1189,7 +1154,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1223,7 +1187,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1257,7 +1220,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1290,7 +1252,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1323,7 +1284,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1356,7 +1316,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1389,7 +1348,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1423,7 +1381,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1457,7 +1414,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1491,7 +1447,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1525,7 +1480,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1559,7 +1513,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1593,7 +1546,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1627,7 +1579,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1661,7 +1612,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1695,7 +1645,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1729,7 +1678,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1763,7 +1711,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1797,7 +1744,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1831,7 +1777,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1865,7 +1810,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1899,7 +1843,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1933,7 +1876,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1967,7 +1909,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2001,7 +1942,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2035,7 +1975,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2069,7 +2008,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2102,7 +2040,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2135,7 +2072,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2168,7 +2104,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2202,7 +2137,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2236,7 +2170,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2270,7 +2203,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2304,7 +2236,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2338,7 +2269,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2372,7 +2302,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2406,7 +2335,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2440,7 +2368,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2474,7 +2401,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2508,7 +2434,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2542,7 +2467,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2576,7 +2500,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2610,7 +2533,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2644,7 +2566,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2678,7 +2599,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2712,7 +2632,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2746,7 +2665,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2780,7 +2698,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2814,7 +2731,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2848,7 +2764,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2882,7 +2797,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2916,7 +2830,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2950,7 +2863,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2984,7 +2896,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3018,7 +2929,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3052,7 +2962,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3086,7 +2995,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3121,7 +3029,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3156,7 +3063,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3190,7 +3096,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3224,7 +3129,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3258,7 +3162,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3292,7 +3195,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3326,7 +3228,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3360,7 +3261,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3393,7 +3293,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3428,7 +3327,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3462,7 +3360,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3496,7 +3393,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3531,7 +3427,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3566,7 +3461,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3600,7 +3494,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3635,7 +3528,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3669,7 +3561,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3703,7 +3594,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3738,7 +3628,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3772,7 +3661,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3806,7 +3694,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3841,7 +3728,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3876,7 +3762,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3910,7 +3795,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3945,7 +3829,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -3980,7 +3863,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4015,7 +3897,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4050,7 +3931,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4085,7 +3965,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4120,7 +3999,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4156,7 +4034,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4191,7 +4068,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4226,7 +4102,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4261,7 +4136,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4296,7 +4170,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4331,7 +4204,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4366,7 +4238,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4401,7 +4272,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4436,7 +4306,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4471,7 +4340,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4506,7 +4374,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4541,7 +4408,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4576,7 +4442,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4611,7 +4476,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4646,7 +4510,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -4681,7 +4544,6 @@ steps:
       port:
         from_secret: port
       script:
-        - echo "Current ref: $DRONE_COMMIT_REF"
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
