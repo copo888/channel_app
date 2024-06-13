@@ -1,5 +1,5 @@
 kind: pipeline
-name: testpay
+name: channelapp
 
 clone:
   disable: true
@@ -39,15 +39,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: channel_app
 
-clone:
-  disable: true
 
-steps:
   - name: docker-zhongshoupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -82,15 +75,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: lepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -125,15 +111,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: taotaopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-taotaopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -168,15 +147,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: wanlisinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wanlisinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -211,15 +183,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: wangjhepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -254,15 +219,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: shenfutongpay6
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shenfutongpay6
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -297,15 +255,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: stpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-stpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -340,15 +291,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: ailefupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ailefupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -383,15 +327,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: huanyupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-huanyupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -426,15 +363,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: lyubupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lyubupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -469,16 +399,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: liepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-liepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -513,16 +436,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: vcpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-vcpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -557,16 +473,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: mlbproxypay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mlbproxypay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -601,16 +510,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: sinshangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sinshangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -645,16 +547,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: baisiangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-baisiangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -689,16 +584,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: vp8pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-vp8pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -733,16 +621,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: jstpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jstpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -777,16 +658,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: mlbpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mlbpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -821,16 +695,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: jindepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jindepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -865,15 +732,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: sandianlingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sandianlingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -908,15 +768,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: wtpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wtpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -951,15 +804,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: shahepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shahepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -994,15 +840,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: shandianpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shandianpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1037,15 +876,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: lelifupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lelifupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1080,17 +912,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: yunshengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-yunshengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1125,15 +950,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: htpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1168,16 +986,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: haojiehpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-haojiehpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1212,15 +1023,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: tiansiapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-tiansiapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1255,16 +1059,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: mashangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mashangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1299,17 +1096,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: yibipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-yibipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1344,16 +1134,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: uzpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uzpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1388,15 +1171,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: shenfutongpay7
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shenfutongpay7
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1431,15 +1207,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: wangjhepay86
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay86
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1474,15 +1243,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: wangjhepay87
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay87
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1517,16 +1279,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: duotsaipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-duotsaipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1561,16 +1316,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: uzpay7777
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uzpay7777
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1605,16 +1353,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: uzpay1881
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uzpay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1649,15 +1390,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: lyubupay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lyubupay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1692,15 +1426,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: zhiyuanpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-zhiyuanpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1735,15 +1462,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: wangjhepay116
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay116
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1778,15 +1498,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: jstpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jstpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1821,16 +1534,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: vp8pay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-vp8pay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1865,16 +1571,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: ipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1909,16 +1608,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: wulinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wulinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1953,16 +1645,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: changshengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-changshengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1997,16 +1682,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: wanmahuipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wanmahuipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2041,16 +1719,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: powerpay1881
 
-clone:
-  disable: true
 
-steps:
   - name: docker-powerpay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2085,16 +1756,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: dpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-dpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2129,16 +1793,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kumopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2173,16 +1830,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: alogatewaypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-alogatewaypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2217,16 +1867,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: hueifutongpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-hueifutongpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2261,16 +1904,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: quickpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-quickpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2305,16 +1941,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: jioufupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jioufupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2349,16 +1978,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: wgopay88
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wgopay88
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2393,16 +2015,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: lanyunpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lanyunpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2437,16 +2052,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: limafupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-limafupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2481,16 +2089,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: koreapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-koreapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2525,16 +2126,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: sinhongpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sinhongpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2569,16 +2163,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: laikepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-laikepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2613,16 +2200,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: quickpay_va
 
-clone:
-  disable: true
 
-steps:
   - name: docker-quickpay_va
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2657,16 +2237,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kumopay1881
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2701,16 +2274,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kumopay1
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2745,16 +2311,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: budingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-budingpay881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2789,15 +2348,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: zihyunpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-zihyunpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2832,15 +2384,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: mlbpay_php
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mlbpay_php
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2875,16 +2420,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: yuehhaopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-yuehhaopay881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2919,16 +2457,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: feibaopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-feibaopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2963,16 +2494,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: rcpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-rcpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3007,16 +2531,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: rcpay_ue
 
-clone:
-  disable: true
 
-steps:
   - name: docker-rcpay_ue
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3051,16 +2568,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: mashangpay8888
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mashangpay8888
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3095,16 +2605,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: hueiyingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-hueiyingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3139,16 +2642,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: duomeipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-duomeipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3183,16 +2679,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: gtpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-gtpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3227,16 +2716,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: nyypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-nyypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3271,16 +2753,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: u2pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-u2pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3315,16 +2790,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kumopaymaya
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopaymaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3359,16 +2827,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kumopay1111
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay1111
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3403,16 +2864,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: easypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-easypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3447,16 +2901,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: uhpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uhpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3491,16 +2938,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: htpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3535,16 +2975,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: jindingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jindingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3579,16 +3012,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: qipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-qipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3623,16 +3049,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: dbinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-dbinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3667,16 +3086,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: miduoduopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-miduoduopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3711,16 +3123,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: globalpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-globalpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3755,16 +3160,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: typay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-typay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3799,16 +3197,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: hqpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-hqpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3843,16 +3234,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kaduoduopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kaduoduopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3887,16 +3271,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: tesihlapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-tesihlapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3931,16 +3308,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: mhdpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mhdpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3975,16 +3345,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: htpay3
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay3
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4019,16 +3382,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: luckypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-luckypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4063,17 +3419,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: sypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4108,17 +3457,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: sypaygcash
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sypaygcash
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4153,16 +3495,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: capitalpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-capitalpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4197,16 +3532,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: jinpinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jinpinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4241,16 +3569,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: jinpinpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jinpinpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4285,16 +3606,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: lelifupay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lelifupay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4329,16 +3643,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: leimapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-leimapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4373,16 +3680,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: changchengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-changchengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4417,15 +3717,8 @@ steps:
         - tag
       status:
         - success
-        
----
-kind: pipeline
-name: kypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4460,17 +3753,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: senlinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-senlinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4505,16 +3791,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: z17pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-z17pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4549,16 +3828,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: phptestpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-phptestpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4593,17 +3865,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: goalpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-goalpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4638,17 +3903,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: ftpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ftpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4683,16 +3941,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: sunnypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sunnypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4727,17 +3978,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: wanjioupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wanjioupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4772,16 +4016,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: sunnypay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sunnypay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4816,16 +4053,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: sunnypaymaya
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sunnypaymaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4860,17 +4090,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: phptestpaymaya
 
-clone:
-  disable: true
 
-steps:
   - name: docker-phptestpaymaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4905,16 +4128,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: kumoproxypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumoproxypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4949,16 +4165,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: globalproxypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-globalproxypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4993,17 +4202,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: youchengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-youchengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5038,17 +4240,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: jyuhueipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jyuhueipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5083,16 +4278,9 @@ steps:
         - tag
       status:
         - success
-        
 
----
-kind: pipeline
-name: shuangsipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shuangsipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5127,17 +4315,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: mpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5172,17 +4353,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: globalpaymaya
 
-clone:
-  disable: true
 
-steps:
   - name: docker-globalpaymaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5217,17 +4391,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: cocopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-cocopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5262,17 +4429,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: z365pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-z365pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5307,17 +4467,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: drwaterpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-drwaterpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5352,17 +4505,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: chiangshengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-chiangshengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5397,18 +4543,11 @@ steps:
         - tag
       status:
         - success
-        
 
 
 
----
-kind: pipeline
-name: senlinpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-senlinpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5443,17 +4582,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: haojiehpayjpy
 
-clone:
-  disable: true
 
-steps:
   - name: docker-haojiehpayjpy
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5488,17 +4620,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: jisuproxypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jisuproxypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5533,17 +4658,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: jxwpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jxwpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5578,17 +4696,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: sanyangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sanyangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5623,17 +4734,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: htpay3alipayy
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay3alipayy
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5668,17 +4772,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: sinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5713,17 +4810,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: ezpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ezpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5758,17 +4848,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: ezpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ezpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5803,17 +4886,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: leimapay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-leimapay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5848,17 +4924,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: ddpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ddpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5893,17 +4962,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: jintaipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jintaipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5938,17 +5000,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: bcpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-bcpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -5983,17 +5038,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: jstpay3
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jstpay3
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -6028,17 +5076,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: indiapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-indiapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -6073,17 +5114,10 @@ steps:
         - tag
       status:
         - success
-        
 
 
----
-kind: pipeline
-name: sindingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sindingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
