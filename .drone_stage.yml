@@ -36,7 +36,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: channel_app
@@ -76,7 +76,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: lepay
@@ -116,7 +116,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: taotaopay
@@ -156,7 +156,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: wanlisinpay
@@ -196,7 +196,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: wangjhepay
@@ -236,7 +236,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: shenfutongpay6
@@ -276,7 +276,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: stpay
@@ -316,7 +316,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: ailefupay
@@ -356,7 +356,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: huanyupay
@@ -396,7 +396,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: lyubupay
@@ -436,7 +436,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -477,7 +477,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -518,7 +518,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -559,7 +559,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -600,7 +600,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -641,7 +641,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -682,7 +682,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -723,7 +723,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -764,7 +764,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -805,7 +805,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: sandianlingpay
@@ -845,7 +845,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: wtpay
@@ -885,7 +885,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: shahepay
@@ -925,7 +925,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: shandianpay
@@ -965,7 +965,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: lelifupay
@@ -1005,7 +1005,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -1047,7 +1047,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: htpay
@@ -1087,7 +1087,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1128,7 +1128,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: tiansiapay
@@ -1168,7 +1168,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1209,7 +1209,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -1251,7 +1251,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1292,7 +1292,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: shenfutongpay7
@@ -1332,7 +1332,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: wangjhepay86
@@ -1372,7 +1372,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: wangjhepay87
@@ -1412,7 +1412,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1453,7 +1453,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1494,7 +1494,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1535,7 +1535,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: lyubupay2
@@ -1575,7 +1575,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: zhiyuanpay
@@ -1615,7 +1615,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: wangjhepay116
@@ -1655,7 +1655,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: jstpay2
@@ -1695,7 +1695,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1736,7 +1736,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1777,7 +1777,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1818,7 +1818,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1859,7 +1859,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1900,7 +1900,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1941,7 +1941,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -1982,7 +1982,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2023,7 +2023,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2064,7 +2064,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2105,7 +2105,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2146,7 +2146,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2187,7 +2187,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2228,7 +2228,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2269,7 +2269,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2310,7 +2310,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2351,7 +2351,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2392,7 +2392,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2433,7 +2433,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2474,7 +2474,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2515,7 +2515,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2556,7 +2556,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2597,7 +2597,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: zihyunpay
@@ -2637,7 +2637,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: mlbpay_php
@@ -2677,7 +2677,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2718,7 +2718,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2759,7 +2759,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2800,7 +2800,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2841,7 +2841,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2882,7 +2882,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2923,7 +2923,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -2964,7 +2964,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3005,7 +3005,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3046,7 +3046,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3087,7 +3087,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3128,7 +3128,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3169,7 +3169,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3210,7 +3210,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3251,7 +3251,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3292,7 +3292,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3333,7 +3333,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3374,7 +3374,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3415,7 +3415,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3456,7 +3456,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3497,7 +3497,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3538,7 +3538,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3579,7 +3579,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3620,7 +3620,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3661,7 +3661,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3702,7 +3702,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3743,7 +3743,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3784,7 +3784,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -3826,7 +3826,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -3868,7 +3868,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3909,7 +3909,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3950,7 +3950,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -3991,7 +3991,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4032,7 +4032,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4073,7 +4073,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4114,7 +4114,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 ---
 kind: pipeline
 name: kypay
@@ -4154,7 +4154,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4196,7 +4196,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4237,7 +4237,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4278,7 +4278,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4320,7 +4320,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4362,7 +4362,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4403,7 +4403,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4445,7 +4445,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4486,7 +4486,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4527,7 +4527,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4569,7 +4569,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4610,7 +4610,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4651,7 +4651,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4693,7 +4693,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4735,7 +4735,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 ---
 kind: pipeline
@@ -4776,7 +4776,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4818,7 +4818,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4860,7 +4860,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4902,7 +4902,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4944,7 +4944,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -4986,7 +4986,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5028,7 +5028,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 
@@ -5071,7 +5071,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5113,7 +5113,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5155,7 +5155,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5197,7 +5197,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5239,7 +5239,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5281,7 +5281,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5323,7 +5323,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5365,7 +5365,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5407,7 +5407,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5449,7 +5449,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5491,7 +5491,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5533,7 +5533,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5575,7 +5575,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5617,7 +5617,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5659,7 +5659,7 @@ steps:
       event:
         - push
         - tag
-        - published
+        
 
 
 ---
@@ -5701,4 +5701,4 @@ steps:
       event:
         - push
         - tag
-        - published
+        
