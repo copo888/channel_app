@@ -37,6 +37,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -78,6 +80,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -119,6 +123,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -160,6 +166,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -201,6 +209,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -242,6 +252,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -283,6 +295,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -324,6 +338,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -365,6 +381,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -406,6 +424,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -447,6 +467,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -489,6 +511,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -531,6 +555,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -573,6 +599,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -615,6 +643,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -657,6 +687,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -699,6 +731,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -741,6 +775,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -783,6 +819,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -825,6 +863,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -866,6 +906,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -907,6 +949,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -948,6 +992,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -989,6 +1035,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1030,6 +1078,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -1073,6 +1123,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1114,6 +1166,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1156,6 +1210,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1197,6 +1253,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1239,6 +1297,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -1282,6 +1342,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1324,6 +1386,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1365,6 +1429,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1406,6 +1472,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1447,6 +1515,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1489,6 +1559,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1531,6 +1603,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1573,6 +1647,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1614,6 +1690,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1655,6 +1733,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1696,6 +1776,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -1737,6 +1819,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1779,6 +1863,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1821,6 +1907,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1863,6 +1951,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1905,6 +1995,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1947,6 +2039,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -1989,6 +2083,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2031,6 +2127,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2073,6 +2171,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2115,6 +2215,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2157,6 +2259,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2199,6 +2303,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2241,6 +2347,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2283,6 +2391,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2325,6 +2435,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2367,6 +2479,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2409,6 +2523,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2451,6 +2567,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2493,6 +2611,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2535,6 +2655,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2577,6 +2699,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2619,6 +2743,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2661,6 +2787,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -2702,6 +2830,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -2743,6 +2873,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2785,6 +2917,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2827,6 +2961,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2869,6 +3005,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2911,6 +3049,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2953,6 +3093,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -2995,6 +3137,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3037,6 +3181,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3079,6 +3225,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3121,6 +3269,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3163,6 +3313,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3205,6 +3357,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3247,6 +3401,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3289,6 +3445,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3331,6 +3489,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3373,6 +3533,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3415,6 +3577,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3457,6 +3621,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3499,6 +3665,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3541,6 +3709,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3583,6 +3753,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3625,6 +3797,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3667,6 +3841,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3709,6 +3885,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3751,6 +3929,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3793,6 +3973,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3835,6 +4017,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -3877,6 +4061,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -3920,6 +4106,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -3963,6 +4151,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4005,6 +4195,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4047,6 +4239,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4089,6 +4283,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4131,6 +4327,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4173,6 +4371,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4215,6 +4415,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 ---
 kind: pipeline
@@ -4256,6 +4458,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4299,6 +4503,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4341,6 +4547,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4383,6 +4591,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4426,6 +4636,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4469,6 +4681,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4511,6 +4725,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4554,6 +4770,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4596,6 +4814,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4638,6 +4858,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4681,6 +4903,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4723,6 +4947,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4765,6 +4991,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4808,6 +5036,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4851,6 +5081,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 ---
@@ -4893,6 +5125,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4936,6 +5170,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -4979,6 +5215,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5022,6 +5260,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5065,6 +5305,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5108,6 +5350,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5151,6 +5395,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5195,6 +5441,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5238,6 +5486,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5281,6 +5531,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5324,6 +5576,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5367,6 +5621,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5410,6 +5666,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5453,6 +5711,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5496,6 +5756,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5539,6 +5801,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5582,6 +5846,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5625,6 +5891,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5668,6 +5936,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5711,6 +5981,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5754,6 +6026,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5797,6 +6071,8 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
 
 
@@ -5840,4 +6116,6 @@ steps:
       event:
         - push
         - tag
+      status:
+        - success
         
