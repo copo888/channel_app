@@ -67,15 +67,21 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
 
 	//请求渠道API
-	var fiatAmount float64
-	var rateErr error
-	if fiatAmount, rateErr = payutils.GetCryptoRate(&types.ExchangeInfo{
-		Url:          channel.PayUrl,
-		Token:        channel.CurrencyCode,
-		CryptoAmount: req.TransactionAmount,
-		Currency:     "CNY",
-	}, &l.ctx); rateErr != nil {
-		return nil, errorx.New(responsex.INVALID_PARAMETER, rateErr.Error())
+	var fiatAmount string
+	if req.Currency == "USDT" {
+		fiatAmount = req.TransactionAmount
+	} else {
+		var fiatAmountF float64
+		var rateErr error
+		if fiatAmountF, rateErr = payutils.GetCryptoRate(&types.ExchangeInfo{
+			Url:          channel.PayUrl,
+			Currency:     "USDT",       //
+			Token:        req.Currency, //商户
+			CryptoAmount: req.TransactionAmount,
+		}, &l.ctx); rateErr != nil {
+			return nil, errorx.New(responsex.INVALID_PARAMETER, rateErr.Error())
+		}
+		fiatAmount = strconv.FormatFloat(fiatAmountF, 'f', -1, 64)
 	}
 
 	data := struct {
@@ -93,8 +99,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Command:          "partner_withdraw",
 		HashCode:         payutils.GetSign("partner_withdraw" + channel.MerKey),
 		TxId:             req.OrderNo,
-		Amount:           strconv.FormatFloat(fiatAmount, 'f', -1, 64), //这里要依照法币数额去换crypto, //法币金额
-		Currency:         "CNY",
+		Amount:           fiatAmount, //这里要依照法币数额去换crypto, //法币金额
+		Currency:         "TRC20-USDT",
 		WithdrawalAmount: req.TransactionAmount, //加密金额
 		WithdrawalToken:  channel.CurrencyCode,
 		Address:          req.ReceiptAccountNumber,
@@ -120,7 +126,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
-		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjRiNjY2YjJiMjU4OTk2NjYyYjdjMzMzOWNlOTQ2OGI0ZTFmMGJmOWFlM2U0MTk2YjM4YThjNGE5ZGIzODZmNTMyZjkxMTk5YmExNTMwZDJlIn0.eyJhdWQiOiIxIiwianRpIjoiNGI2NjZiMmIyNTg5OTY2NjJiN2MzMzM5Y2U5NDY4YjRlMWYwYmY5YWUzZTQxOTZiMzhhOGM0YTlkYjM4NmY1MzJmOTExOTliYTE1MzBkMmUiLCJpYXQiOjE3MTUwNTMyNDYsIm5iZiI6MTcxNTA1MzI0NiwiZXhwIjoxNzE1NjU4MDQ1LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.F5kXd0iUAxMG5EU9D33gdIGIe58r5OHDfun-xfXZ0L7hoIdWZXsudL9kR637r4b_MRQz8oeUeOuAFFwF0eEHxW-0YtE6tySzJggwwHE2TRnjrleG3WlQUpIudiu_J9QCU03mJMWGqJyyAeRLL0julZYX5U3zpk0Bl5gzOH7BgQgcBRCUq8mKyR-QtO6IJLP6HLlSaRVNoM1_Ze8C7VgX9Fyko95ALTENrlr8DWggGkqoimK8vMmkxcMs06B8f3tIBY0XyMi9WnVaCVhMxjrMFik9DsVAr9QOXcKoxo-tO3k8-5oG75jmRLitVzt4vtLfbSnPShP2cmJPMSj6xSoIoosMW3mg0zPk8N--SaOy2uBf-Qhle3kBg44OJSY0q_7f33WYjgLp-8vpPoaCML2Q_Hd85iza0Yn1EwM1axGfXnDAX80w-y-6wSjrdVCGPO3XyV3tb8wGfSc_Ga5F7UFsKVZTm-Il4_DqPQXIXcCZtKk-i2qQ4Ksdaq_uuf4ZdOUHLiWth3zpvzGRw2n2A5gvRtESfHAS454ntt61c5aCLxkUhy04XYvhZtPsv1vSCOEcXxnmMGc11_wGQeZHodYdTRSBkSay_-jav3yaWzqswpZ3Q5BzFoZKHDFkcRftwICz7624T7fiC5iLnYIL6y8oqf-WMWoLf3JQ71b_5BR9eBU").
+		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjZlNDRlMGU0YTE3NmY5OGMwYjUwZDNjNmJkMjQ0YWQzMzc5YzM3OWY0YjAwY2E3N2ZlYTQ1NjJmMWUxZjkxMGIyMGNjZDRjZTRkN2U1NzEyIn0.eyJhdWQiOiIxIiwianRpIjoiNmU0NGUwZTRhMTc2Zjk4YzBiNTBkM2M2YmQyNDRhZDMzNzljMzc5ZjRiMDBjYTc3ZmVhNDU2MmYxZTFmOTEwYjIwY2NkNGNlNGQ3ZTU3MTIiLCJpYXQiOjE3MTgzNDQxMzYsIm5iZiI6MTcxODM0NDEzNiwiZXhwIjoxNzE4OTQ4OTM2LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.s11tFT2Ia9gL770mbKV8Y01PUlTPassDOXjPNhZIZ6CbUGFN_QQXAqSEdgeGfrucClN95HUNNNNYb9uQCDLvTaYmxBV0K9WfSrc_recZlHgmVJRHLk0ziTSPIQCavKK7kQKIBTDBcZuEzGU3XRJrql9m5uf9DPd4SchhsWAL4ZL3_pqgUiqGlPel8H9xxp2NsGcc1GwaxmD6O30qbdL5EDQsD3PmmD-c-VQjSkhmXVuZIcTW6HjkBgX7G9rexDejxR678V5WPJcmFVzBZISPXCO7GsW1tneUlBBYvgdsNX9W_IRv1g9CAEDHhugkoqHpLih6XgWvkG9wRLL4_51zSCZ4QbMAc_dP-ShNQm8lR-uqJsDbjmS-C9WplPzr3NzfD2H-sfZkwVeIAiIYgglzn8750f9G_qn1kQuQPCIOJaVgQzyUNnMHvfCupEdi0F48gi0wbKVohIM3jNbrJyknnfyWDh9a4jXNVao_GTQDlxuO56GpEO9Iwo9P8PWCUXllvBWIwaaoCMtqSG4Qrx4he2aExak4K-d-7C6Hghk4-bGU7WBt2TlgidGYpOV8q3XZOp4tKdpQ86MO7au_KCa3gXlY-nXVUGe79HhUukuGxC-UzK-ZinmxwSs6-GYaOEuuK9zvmkASknr4zo2TkVgsUaZE7fmfEDbB0i9bKbCcB4Q").
 		Header("Content-type", "application/json").
 		JSON(data)
 
