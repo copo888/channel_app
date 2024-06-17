@@ -134,21 +134,21 @@ type ProxyPayCallBackRequest struct {
 
 type PayCallBackRequest struct {
 	MyIp              string      `json:"myIp, optional, optional"`
-	ClientReferenceId interface{} `json:"client_reference_id, optional"`
+	ClientReferenceId interface{} `json:"client_reference_id"`
 	Customer          string      `json:"customer"`
-	CustomerEmail     interface{} `json:"customer_email, optional"`
+	CustomerEmail     interface{} `json:"customer_email"`
 	DirepayId         int         `json:"direpay_id"`
 	EnablePromotion   bool        `json:"enable_promotion"`
 	HashCode          string      `json:"hash_code"`
 	InvoiceAmount     float64     `json:"invoice_amount"`   //账单数额
 	InvoiceCurrency   string      `json:"invoice_currency"` //账单货币
 	LineItems         []struct {
-		Name        string `json:"name"`
-		ItemId      string `json:"item_id"`
-		Description string `json:"description"`
-		Amount      string `json:"amount"`
-		Quantity    string `json:"quantity"`
-	} `json:"line_items, optional"`
+		Name        string  `json:"name"`
+		ItemId      string  `json:"item_id"`
+		Description string  `json:"description"`
+		Amount      float64 `json:"amount"`
+		Quantity    int     `json:"quantity"`
+	} `json:"line_items"`
 	PaymentAmount string `json:"payment_amount"`        //付款数额。    若充值USDT，这边预设为USD
 	PaymentToken  string `json:"payment_token"`         //付款加密货币  若充值USDT，这边预设为USD
 	PaidAmount    string `json:"paid_amount, optional"` // BigCatPay收到的金额。此项目只有在状态是“too_little”或“too_much”时会出现
