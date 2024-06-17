@@ -68,7 +68,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//请求渠道API
 	var fiatAmount string
-	if req.Currency == "USDT" {
+	if req.Currency == "USDT" { //当商户请求出款币别 = USDT 则不需要换汇
 		fiatAmount = req.TransactionAmount
 	} else {
 		var fiatAmountF float64
