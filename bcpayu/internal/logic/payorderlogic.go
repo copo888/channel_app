@@ -2,22 +2,23 @@ package logic
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"github.com/copo888/channel_app/bcpayu/internal/payutils"
+	"github.com/copo888/channel_app/bcpayu/internal/service"
+	"github.com/copo888/channel_app/bcpayu/internal/svc"
+	"github.com/copo888/channel_app/bcpayu/internal/types"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/indiapay/internal/payutils"
-	"github.com/copo888/channel_app/indiapay/internal/service"
-	"github.com/copo888/channel_app/indiapay/internal/svc"
-	"github.com/copo888/channel_app/indiapay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"github.com/zeromicro/go-zero/core/logx"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"strconv"
+	"strings"
 )
 
 type PayOrderLogic struct {
@@ -40,11 +41,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s,orderNo: %s, PayOrderRequest: %+v", l.svcCtx.Config.ProjectName, req.OrderNo, req)
 
-	if req.SourceIp == "" {
-		logx.WithContext(l.ctx).Errorf("SourceIp不可为空 SourceIp:%s", req.SourceIp)
-		return nil, errorx.New(responsex.INVALID_PARAMETER, "UserIp is required")
-	}
-
 	// 取得取道資訊
 	var channel typesX.ChannelData
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
@@ -53,39 +49,60 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
-	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-	//	return nil, errorx.New(responsex.INVALID_USER_ID)
-	//}
+	if len(req.PlayerId) == 0 {
+		logx.WithContext(l.ctx).Errorf("PlayerId不可为空 PlayerId:%s", req.PlayerId)
+		return nil, errorx.New(responsex.INVALID_PLAYER_ID)
+	}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
-	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	//timestamp := time.Now().Format("20060102150405")
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
-	floatNum, err := strconv.ParseFloat(req.TransactionAmount, 64)
-	if err != nil {
-		fmt.Println("Error converting string to float:", err)
-		return
-	}
-
 	// 組請求參數
-	data := url.Values{}
-	data.Set("mer_id", channel.MerId)
-	data.Set("order_id", req.OrderNo)
-	data.Set("gateway", req.ChannelPayType)
-	data.Set("amount", fmt.Sprintf("%.0f", floatNum)) //整數，不要小數
-	data.Set("callback", req.PageUrl)
-	data.Set("notify", notifyUrl)
+	data := struct {
+		Command string `json:"command"`
+		//LineItems    []types.Item `json:"line_items, optional"`
+		HashCode     string `json:"hashCode"`
+		TxId         string `json:"txid, optional"`
+		Token        string `json:"token"`
+		CallbackUrl  string `json:"callback_url"`
+		CustomerUid  string `json:"customer_uid"` //客户独特编号
+		CryptoOnly   bool   `json:"crypto_only, optional"`
+		CryptoAmount string `json:"crypto_amount, optional"`
+	}{
+		Command:      "payment",
+		HashCode:     payutils.GetSign("payment" + channel.MerKey),
+		Token:        req.ChannelPayType,
+		CallbackUrl:  notifyUrl,
+		CustomerUid:  req.PlayerId,
+		CryptoOnly:   true,
+		CryptoAmount: req.TransactionAmount, //（虚拟币金额）
+		TxId:         req.OrderNo,
+	}
+	// 以下是渠道以法币当做基准提交参数
+	//{
+	//	Command: "payment",
+	//	LineItems: []types.Item{{
+	//		Name:        "deposit",
+	//		ItemId:      "BTC",
+	//		Description: "Deposit CNY via BTC",
+	//		Amount:      strconv.FormatFloat(fiatAmount, 'f', -1, 64), //这里要依照法币数额去换crypto
+	//		Quantity: "1"}},
+	//	HashCode:     payutils.GetSign("payment" + channel.MerKey),
+	//	TxId:         req.OrderNo,
+	//	Currency:     "CNY",
+	//	Token:        channel.CurrencyCode,
+	//	CallbackUrl:  notifyUrl,
+	//	CustomerUid:  req.PlayerId,
+	//	CryptoOnly:   true,
+	//	CryptoAmount: req.TransactionAmount,
+	//}
 
 	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	data.Set("player_ip", req.SourceIp)
-	data.Set("sign", sign)
-	//sign := payutils.SortAndSignFromObj(data, channel.MerKey,l.ctx)
-	//data.sign = sign
+	//sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
+	//data.Set("sign", sign)
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -102,17 +119,19 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 請求渠道
+	//logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v,加密前資料:%s", channel.PayUrl, data, string(byteTrans))
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	// 若有證書問題 請使用
-	//tr := &http.Transport{222
+	//tr := &http.Transport{
 	//	TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	//}
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
 
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
-
+	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
+		Header("Authorization", "Bearer "+l.svcCtx.Config.AccessToken).
+		Header("Content-type", "application/json").
+		JSON(data)
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
@@ -134,7 +153,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if res.Status() != 200 {
+	} else if res.Status() >= 300 || res.Status() < 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
@@ -157,15 +176,21 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
+
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code      int    `json:"code"`
-		Data      string `json:"data"`
-		Message   string `json:"message"`
-		Upi       string `json:"upi"`
-		Amount    string `json:"amount"`
-		Token     string `json:"token"`
-		OrderCode string `json:"order_code"`
+		Message         string      `json:"message"`
+		Txid            string      `json:"txid"`
+		CustomerUid     string      `json:"customer_uid"`
+		InvoiceAmount   json.Number `json:"invoice_amount"`
+		InvoiceCurrency string      `json:"invoice_currency"`
+		PaymentAmount   string      `json:"payment_amount"`
+		PaymentToken    string      `json:"payment_token"`
+		Rates           string      `json:"rates"`
+		PaymentAddress  string      `json:"payment_address"`
+		EnablePromotion bool        `json:"enable_promotion"`
+		ExpiredAt       string      `json:"expired_at"`
+		WalletType      string      `json:"wallet_type"`
 	}{}
 
 	// 返回body 轉 struct
@@ -174,7 +199,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 渠道狀態碼判斷
-	if channelResp.Code != 0 {
+	if strings.Index(channelResp.Message, "Successfully") <= -1 {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo:  req.MerchantId,
@@ -185,7 +210,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			LogSource:        constants.API_ZF,
 			Content:          fmt.Sprintf("%+v", channelResp),
 			TraceId:          l.traceID,
-			ChannelErrorCode: fmt.Sprintf("%d", channelResp.Code),
+			ChannelErrorCode: channelResp.Message,
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
@@ -207,42 +232,38 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	// 若需回傳JSON 請自行更改22
+	// 若需回傳JSON 請自行更改
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	isCheckOutMer := false // 自組收銀台回傳 true
 	//	if req.MerchantId == "ME00015"{
 	//		isCheckOutMer = true
 	//	}
-	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
-	//	if err2 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-	//	}
-	//	// 返回json
-	//	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-	//		CardName:   channelResp.PayInfo.Name,
-	//		CardNumber: channelResp.PayInfo.Card,
-	//		BankName:   channelResp.PayInfo.Bank,
-	//		BankBranch: channelResp.PayInfo.Subbranch,
-	//		Amount:     amount,
-	//		Link:       "",
-	//		Remark:     "",
-	//	})
-	//	if err3 != nil {
-	//		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	//	}
-	//	return &types.PayOrderResponse{
-	//		PayPageType:    "json",
-	//		PayPageInfo:    string(receiverInfoJson),
-	//		ChannelOrderNo: "",
-	//		IsCheckOutMer:  isCheckOutMer, // 自組收銀台回傳 true
-	//	}, nil
 	//}
 
-	resp = &types.PayOrderResponse{
-		PayPageType:    "url",
-		PayPageInfo:    channelResp.Data,
-		ChannelOrderNo: "",
+	invoiceAmount, err := channelResp.InvoiceAmount.Float64()
+
+	// 返回json
+	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoBTCVO{
+		OrderNo:         req.OrderNo,
+		CustomerUid:     channelResp.CustomerUid,
+		InvoiceAmount:   invoiceAmount,
+		InvoiceCurrency: channelResp.InvoiceCurrency, //法币
+		PaymentAmount:   channelResp.PaymentAmount,   //加密货币
+		PaymentToken:    channelResp.PaymentToken,
+		Rates:           channelResp.Rates,
+		PaymentAddress:  channelResp.PaymentAddress,
+	})
+
+	if err3 != nil {
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
 	}
+
+	return &types.PayOrderResponse{
+		PayPageType:    "json",
+		PayPageInfo:    string(receiverInfoJson),
+		ChannelOrderNo: "CHN_" + req.OrderNo,
+		IsCheckOutMer:  true, // 自組收銀台回傳 true
+	}, nil
 
 	return
 }

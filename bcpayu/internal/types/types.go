@@ -134,29 +134,29 @@ type ProxyPayCallBackRequest struct {
 
 type PayCallBackRequest struct {
 	MyIp              string      `json:"myIp, optional, optional"`
-	ClientReferenceId interface{} `json:"client_reference_id, optional"`
-	Customer          string      `json:"customer, optional"`
-	CustomerEmail     interface{} `json:"customer_email, optional"`
-	DirepayId         int         `json:"direpay_id, optional"`
-	EnablePromotion   bool        `json:"enable_promotion, optional"`
-	HashCode          string      `json:"hash_code, optional"`
-	InvoiceAmount     float64     `json:"invoice_amount, optional"`
-	InvoiceCurrency   string      `json:"invoice_currency, optional"`
-	PaidAmount        string      `json:"paid_amount, optional"` //BigCatPay实际收到的加密金额
-	PaidFiat          string      `json:"paid_fiat, optional"`   //BigCatPay实际收到的法币金额
+	ClientReferenceId interface{} `json:"client_reference_id"`
+	Customer          string      `json:"customer"`
+	CustomerEmail     interface{} `json:"customer_email"`
+	DirepayId         int         `json:"direpay_id"`
+	EnablePromotion   bool        `json:"enable_promotion"`
+	HashCode          string      `json:"hash_code"`
+	InvoiceAmount     float64     `json:"invoice_amount"`   //账单数额
+	InvoiceCurrency   string      `json:"invoice_currency"` //账单货币
 	LineItems         []struct {
-		Name        string `json:"name, optional"`
-		ItemId      string `json:"item_id, optional"`
-		Description string `json:"description, optional"`
-		Amount      string `json:"amount, optional"`
-		Quantity    string `json:"quantity, optional"`
-	} `json:"line_items, optional"`
-	PaymentAmount string `json:"payment_amount, optional"`
-	PaymentToken  string `json:"payment_token, optional"`
-	Rates         string `json:"rates, optional"`
-	Status        string `json:"status, optional"`
-	TxHash        string `json:"tx_hash, optional"`
-	Txid          string `json:"txid, optional"`
+		Name        string  `json:"name"`
+		ItemId      string  `json:"item_id"`
+		Description string  `json:"description"`
+		Amount      float64 `json:"amount"`
+		Quantity    int     `json:"quantity"`
+	} `json:"line_items"`
+	PaymentAmount string `json:"payment_amount"`        //付款数额。    若充值USDT，这边预设为USD
+	PaymentToken  string `json:"payment_token"`         //付款加密货币  若充值USDT，这边预设为USD
+	PaidAmount    string `json:"paid_amount, optional"` // BigCatPay收到的金额。此项目只有在状态是“too_little”或“too_much”时会出现
+	PaidFiat      string `json:"paid_fiat, optional"`   // BigCatPay兑换的法定货币金额。此项目只有在状态是“too_little”或“too_much”时会出现。
+	Rates         string `json:"rates"`
+	Status        string `json:"status"`
+	TxHash        string `json:"tx_hash"`
+	Txid          string `json:"txid"`
 }
 
 type ReceiverInfoVO struct {

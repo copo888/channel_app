@@ -2,7 +2,7 @@ package payutils
 
 import (
 	"context"
-	"github.com/copo888/channel_app/bcpay/internal/types"
+	"github.com/copo888/channel_app/bcpayu/internal/types"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strconv"

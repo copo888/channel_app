@@ -3,10 +3,10 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/copo888/channel_app/bcpay/internal/payutils"
-	"github.com/copo888/channel_app/bcpay/internal/service"
-	"github.com/copo888/channel_app/bcpay/internal/svc"
-	"github.com/copo888/channel_app/bcpay/internal/types"
+	"github.com/copo888/channel_app/bcpayu/internal/payutils"
+	"github.com/copo888/channel_app/bcpayu/internal/service"
+	"github.com/copo888/channel_app/bcpayu/internal/svc"
+	"github.com/copo888/channel_app/bcpayu/internal/types"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
@@ -68,7 +68,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//请求渠道API
 	var fiatAmount string
-	if req.Currency == "USDT" {
+	if req.Currency == "USDT" { //当商户请求出款币别 = USDT 则不需要换汇
 		fiatAmount = req.TransactionAmount
 	} else {
 		var fiatAmountF float64
@@ -100,9 +100,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		HashCode:         payutils.GetSign("partner_withdraw" + channel.MerKey),
 		TxId:             req.OrderNo,
 		Amount:           fiatAmount, //这里要依照法币数额去换crypto, //法币金额
-		Currency:         "TRC20-USDT",
+		Currency:         "USD",
 		WithdrawalAmount: req.TransactionAmount, //加密金额
-		WithdrawalToken:  channel.CurrencyCode,
+		WithdrawalToken:  "TRC20-USDT",
 		Address:          req.ReceiptAccountNumber,
 		CallbackUrl:      l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 		CustomerUid:      req.PlayerId,
@@ -126,7 +126,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("代付下单请求地址:%s,請求參數:%+v", channel.ProxyPayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
-		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjZlNDRlMGU0YTE3NmY5OGMwYjUwZDNjNmJkMjQ0YWQzMzc5YzM3OWY0YjAwY2E3N2ZlYTQ1NjJmMWUxZjkxMGIyMGNjZDRjZTRkN2U1NzEyIn0.eyJhdWQiOiIxIiwianRpIjoiNmU0NGUwZTRhMTc2Zjk4YzBiNTBkM2M2YmQyNDRhZDMzNzljMzc5ZjRiMDBjYTc3ZmVhNDU2MmYxZTFmOTEwYjIwY2NkNGNlNGQ3ZTU3MTIiLCJpYXQiOjE3MTgzNDQxMzYsIm5iZiI6MTcxODM0NDEzNiwiZXhwIjoxNzE4OTQ4OTM2LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.s11tFT2Ia9gL770mbKV8Y01PUlTPassDOXjPNhZIZ6CbUGFN_QQXAqSEdgeGfrucClN95HUNNNNYb9uQCDLvTaYmxBV0K9WfSrc_recZlHgmVJRHLk0ziTSPIQCavKK7kQKIBTDBcZuEzGU3XRJrql9m5uf9DPd4SchhsWAL4ZL3_pqgUiqGlPel8H9xxp2NsGcc1GwaxmD6O30qbdL5EDQsD3PmmD-c-VQjSkhmXVuZIcTW6HjkBgX7G9rexDejxR678V5WPJcmFVzBZISPXCO7GsW1tneUlBBYvgdsNX9W_IRv1g9CAEDHhugkoqHpLih6XgWvkG9wRLL4_51zSCZ4QbMAc_dP-ShNQm8lR-uqJsDbjmS-C9WplPzr3NzfD2H-sfZkwVeIAiIYgglzn8750f9G_qn1kQuQPCIOJaVgQzyUNnMHvfCupEdi0F48gi0wbKVohIM3jNbrJyknnfyWDh9a4jXNVao_GTQDlxuO56GpEO9Iwo9P8PWCUXllvBWIwaaoCMtqSG4Qrx4he2aExak4K-d-7C6Hghk4-bGU7WBt2TlgidGYpOV8q3XZOp4tKdpQ86MO7au_KCa3gXlY-nXVUGe79HhUukuGxC-UzK-ZinmxwSs6-GYaOEuuK9zvmkASknr4zo2TkVgsUaZE7fmfEDbB0i9bKbCcB4Q").
+		Header("Authorization", "Bearer "+l.svcCtx.Config.AccessToken).
 		Header("Content-type", "application/json").
 		JSON(data)
 
@@ -150,7 +150,12 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
+		resp := &types.ProxyPayOrderResponse{
+			ChannelOrderNo: "CHN_" + req.OrderNo,
+			OrderStatus:    "",
+		}
+		return resp, nil
 	} else if res.Status() > 300 || res.Status() < 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
