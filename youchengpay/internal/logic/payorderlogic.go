@@ -176,19 +176,31 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	} else if channelResp.Code == 0 {
 		channelResp2 := struct {
-			Code    int    `json:"code, optional"`
-			Message string `json:"message, optional"`
+			Code    int    `json:"code"`
+			Message string `json:"message"`
 			Data    struct {
-				MchId         string      `json:"mchId, optional"`
-				TradeNo       string      `json:"tradeNo, optional"`
-				OutTradeNo    string      `json:"outTradeNo, optional"`
-				OriginTradeNo string      `json:"originTradeNo, optional"`
-				Amount        string      `json:"amount, optional"`
-				PayUrl        string      `json:"payUrl, optional"`
-				ExpiredTime   string      `json:"expiredTime, optional"`
-				SdkData       interface{} `json:"sdkData, optional"`
-			} `json:"data, optional"`
-			Sign string `json:"sign, optional"`
+				MchId         string `json:"mchId"`
+				OutTradeNo    string `json:"outTradeNo"`
+				PayUrl        string `json:"payUrl"`
+				TradeNo       string `json:"tradeNo"`
+				OriginTradeNo int    `json:"originTradeNo"`
+				Amount        int64  `json:"amount"`
+				ExpiredTime   int64  `json:"expiredTime"`
+			} `json:"data"`
+			Sign string `json:"sign"`
+			//Code    int    `json:"code, optional"`
+			//Message string `json:"message, optional"`
+			//Data    struct {
+			//	MchId         string      `json:"mchId, optional"`
+			//	TradeNo       string      `json:"tradeNo, optional"`
+			//	OutTradeNo    string      `json:"outTradeNo, optional"`
+			//	OriginTradeNo int         `json:"originTradeNo, optional"`
+			//	Amount        string      `json:"amount, optional"`
+			//	PayUrl        string      `json:"payUrl, optional"`
+			//	ExpiredTime   string      `json:"expiredTime, optional"`
+			//	SdkData       interface{} `json:"sdkData, optional"`
+			//} `json:"data, optional"`
+			//Sign string `json:"sign, optional"`
 		}{}
 
 		// 返回body 轉 struct
