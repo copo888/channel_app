@@ -73,21 +73,21 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	params := struct {
 		MerchantRef string `json:"merchant_ref"`
-		Product string `json:"product"`
-		Amount string `json:"amount"`
-		Extra struct{
+		Product     string `json:"product"`
+		Amount      string `json:"amount"`
+		Extra       struct {
 			FiatCurrency string `json:"fiat_currency"`
 		} `json:"extra"`
 	}{
 		MerchantRef: req.OrderNo,
-		Product: req.ChannelPayType,
-		Amount: req.TransactionAmount,
+		Product:     req.ChannelPayType,
+		Amount:      req.TransactionAmount,
 	}
 	params.Extra.FiatCurrency = "PHP"
 
 	paramsJs, err := json.Marshal(params)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	data.Set("params", string(paramsJs))
@@ -165,10 +165,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    int `json:"code"`
-		Timestamp int64 `json:"timestamp"`
-		Message string `json:"message"`
-		Params string `json:"params, optional"`
+		Code      int    `json:"code"`
+		Timestamp int64  `json:"timestamp, optional"`
+		Message   string `json:"message"`
+		Params    string `json:"params, optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -189,43 +189,54 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-
-
 	// 渠道狀態碼判斷
 	if channelResp.Code != 200 {
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:   req.OrderNo,
+			LogType:   constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource: constants.API_ZF,
+			Content:   fmt.Sprintf("%+v", channelResp),
+			TraceId:   l.traceID,
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
 	}
 
-	Params := struct{
+	Params := struct {
 		MerchantRef string `json:"merchant_ref"`
-		SystemRef string `json:"system_ref"`
-		Amount string `json:"amount"`
-		Fee string `json:"fee"`
-		Status int64 `json:"status"`
-		PayUrl string `json:"payurl"`
+		SystemRef   string `json:"system_ref"`
+		Amount      string `json:"amount"`
+		Fee         string `json:"fee"`
+		Status      int64  `json:"status"`
+		PayUrl      string `json:"payurl"`
 	}{}
 
 	if len(channelResp.Params) > 0 {
 		err4 := json.Unmarshal([]byte(channelResp.Params), &Params)
-		if err4  != nil {
+		if err4 != nil {
 			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err4.Error())
 		}
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo: req.MerchantId,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:   req.OrderNo,
+			LogType:   constants.RESPONSE_FROM_CHANNEL,
+			LogSource: constants.API_ZF,
+			Content:   fmt.Sprintf("%+v", Params),
+			TraceId:   l.traceID,
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 	}
-
-	//寫入交易日志
-	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", Params),
-		TraceId:   l.traceID,
-	}); err != nil {
-		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
-
-
 	// 若需回傳JSON 請自行更改
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	amount, err2 := strconv.ParseFloat(channelResp.Money, 64)
@@ -252,7 +263,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//		IsCheckOutMer:  false, // 自組收銀台回傳 true
 	//	}, nil
 	//}
-
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
 		PayPageInfo:    Params.PayUrl,
