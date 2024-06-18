@@ -196,6 +196,18 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 		}
 
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:  req.MerchantId,
+			ChannelCode: channel.Code,
+			//MerchantOrderNo: req.OrderNo,
+			OrderNo:   req.OrderNo,
+			LogType:   constants.RESPONSE_FROM_CHANNEL,
+			LogSource: constants.API_ZF,
+			Content:   fmt.Sprintf("%+v", channelResp2)}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		resp = &types.PayOrderResponse{
 			PayPageType:    "url",
 			PayPageInfo:    channelResp2.Data.PayUrl,
