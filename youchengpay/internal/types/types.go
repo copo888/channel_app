@@ -132,7 +132,7 @@ type PayCallBackRequest struct {
 	MchId         string  `json:"mchId, optional"`
 	TradeNo       string  `json:"tradeNo, optional"`
 	OutTradeNo    string  `json:"outTradeNo, optional"`
-	OriginTradeNo string  `json:"originTradeNo, optional"`
+	OriginTradeNo int     `json:"originTradeNo, optional"`
 	Amount        float64 `json:"amount, optional"`
 	Subject       string  `json:"subject, optional"`
 	Body          string  `json:"body, optional"`
