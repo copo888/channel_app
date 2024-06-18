@@ -116,6 +116,8 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	payCallBackVO := vo.BoadminRespVO{}
 	if err = res.DecodeJSON(&payCallBackVO); err != nil {
 		return "err", err
+	} else if payCallBackVO.Code != "0" && (payCallBackVO.Code == "510" || payCallBackVO.Message == "Merchant order amount and callback amount is not match") {
+		return "true", nil //此时渠道收到充值金额跟订单金额不符，须占时返回true给渠道，否则渠道会一直callback。
 	} else if payCallBackVO.Code != "0" {
 		return "err", errorx.New(payCallBackVO.Code)
 	}

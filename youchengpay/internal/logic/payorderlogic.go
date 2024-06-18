@@ -147,29 +147,17 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
-	channelResp := struct {
-		Code    int    `json:"code, optional"`
-		Message string `json:"message, optional"`
-		Data    struct {
-			MchId         string      `json:"mchId, optional"`
-			TradeNo       string      `json:"tradeNo, optional"`
-			OutTradeNo    string      `json:"outTradeNo, optional"`
-			OriginTradeNo string      `json:"originTradeNo, optional"`
-			Amount        string      `json:"amount, optional"`
-			PayUrl        string      `json:"payUrl, optional"`
-			ExpiredTime   string      `json:"expiredTime, optional"`
-			SdkData       interface{} `json:"sdkData, optional"`
-		} `json:"data, optional"`
-		Sign string `json:"sign, optional"`
-	}{}
 
+	channelResp := struct {
+		Code    int         `json:"code"`
+		Message string      `json:"message"`
+		Data    interface{} `json:"data ,optional"`
+		Sign    string      `json:"sign"`
+	}{}
 	// 返回body 轉 struct
 	if err = res.DecodeJSON(&channelResp); err != nil {
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	}
-
-	// 渠道狀態碼判斷
-	if channelResp.Code != 0 {
+	} else if channelResp.Code != 0 {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo:  req.MerchantId,
@@ -186,26 +174,33 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		}
 
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
-	}
+	} else if channelResp.Code == 0 {
+		channelResp2 := struct {
+			Code    int    `json:"code, optional"`
+			Message string `json:"message, optional"`
+			Data    struct {
+				MchId         string      `json:"mchId, optional"`
+				TradeNo       string      `json:"tradeNo, optional"`
+				OutTradeNo    string      `json:"outTradeNo, optional"`
+				OriginTradeNo string      `json:"originTradeNo, optional"`
+				Amount        string      `json:"amount, optional"`
+				PayUrl        string      `json:"payUrl, optional"`
+				ExpiredTime   string      `json:"expiredTime, optional"`
+				SdkData       interface{} `json:"sdkData, optional"`
+			} `json:"data, optional"`
+			Sign string `json:"sign, optional"`
+		}{}
 
-	//寫入交易日志
-	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo:  req.MerchantId,
-		ChannelCode: channel.Code,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", channelResp),
-		TraceId:   l.traceID,
-	}); err != nil {
-		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
+		// 返回body 轉 struct
+		if err = res.DecodeJSON(&channelResp2); err != nil {
+			return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		}
 
-	resp = &types.PayOrderResponse{
-		PayPageType:    "url",
-		PayPageInfo:    channelResp.Data.PayUrl,
-		ChannelOrderNo: "",
+		resp = &types.PayOrderResponse{
+			PayPageType:    "url",
+			PayPageInfo:    channelResp2.Data.PayUrl,
+			ChannelOrderNo: "",
+		}
 	}
 
 	return
