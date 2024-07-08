@@ -6159,3 +6159,46 @@ steps:
 trigger:
   branch:
     - bcpayu
+
+
+---
+kind: pipeline
+name: btcpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-btcpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout btcpay
+        - git checkout -- .
+        - git pull origin btcpay
+        - go mod tidy
+        - docker-compose -f btcpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=btcpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/btcpay btcpay/pay.go
+        - docker build -t btcpay -f btcpay/Dockerfile .
+        - docker-compose -f btcpay/docker-compose.yml up -d
+    when:
+      branch:
+        - btcpay
+      event:
+        - push
+trigger:
+  branch:
+    - btcpay
