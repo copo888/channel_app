@@ -4442,6 +4442,7 @@ steps:
       port:
         from_secret: port
       script:
+        - source /etc/profile
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
