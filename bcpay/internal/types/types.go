@@ -149,7 +149,7 @@ type PayCallBackRequest struct {
 		ItemId      string  `json:"item_id, optional"`
 		Description string  `json:"description, optional"`
 		Amount      float64 `json:"amount, optional"`
-		Quantity    string  `json:"quantity, optional"`
+		Quantity    int     `json:"quantity, optional"`
 	} `json:"line_items, optional"`
 	PaymentAmount string `json:"payment_amount, optional"`
 	PaymentToken  string `json:"payment_token, optional"`
