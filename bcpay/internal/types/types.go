@@ -145,11 +145,11 @@ type PayCallBackRequest struct {
 	PaidAmount        string      `json:"paid_amount, optional"` //BigCatPay实际收到的加密金额
 	PaidFiat          string      `json:"paid_fiat, optional"`   //BigCatPay实际收到的法币金额
 	LineItems         []struct {
-		Name        string  `json:"name, optional"`
-		ItemId      string  `json:"item_id, optional"`
-		Description string  `json:"description, optional"`
-		Amount      float64 `json:"amount, optional"`
-		Quantity    int     `json:"quantity, optional"`
+		Name        string      `json:"name, optional"`
+		ItemId      string      `json:"item_id, optional"`
+		Description string      `json:"description, optional"`
+		Amount      float64     `json:"amount, optional"`
+		Quantity    interface{} `json:"quantity, optional"`
 	} `json:"line_items, optional"`
 	PaymentAmount string `json:"payment_amount, optional"`
 	PaymentToken  string `json:"payment_token, optional"`
