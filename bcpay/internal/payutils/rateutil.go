@@ -23,9 +23,8 @@ func GetCryptoRate(exchangeInfo *types.ExchangeInfo, ctx *context.Context) (fiat
 		ToCurrency:   exchangeInfo.Token,
 		Type:         "BUY",
 	}
-
 	res, ChnErr := gozzle.Post(exchangeInfo.Url).Timeout(20).Trace(span).
-		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjZlNDRlMGU0YTE3NmY5OGMwYjUwZDNjNmJkMjQ0YWQzMzc5YzM3OWY0YjAwY2E3N2ZlYTQ1NjJmMWUxZjkxMGIyMGNjZDRjZTRkN2U1NzEyIn0.eyJhdWQiOiIxIiwianRpIjoiNmU0NGUwZTRhMTc2Zjk4YzBiNTBkM2M2YmQyNDRhZDMzNzljMzc5ZjRiMDBjYTc3ZmVhNDU2MmYxZTFmOTEwYjIwY2NkNGNlNGQ3ZTU3MTIiLCJpYXQiOjE3MTgzNDQxMzYsIm5iZiI6MTcxODM0NDEzNiwiZXhwIjoxNzE4OTQ4OTM2LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.s11tFT2Ia9gL770mbKV8Y01PUlTPassDOXjPNhZIZ6CbUGFN_QQXAqSEdgeGfrucClN95HUNNNNYb9uQCDLvTaYmxBV0K9WfSrc_recZlHgmVJRHLk0ziTSPIQCavKK7kQKIBTDBcZuEzGU3XRJrql9m5uf9DPd4SchhsWAL4ZL3_pqgUiqGlPel8H9xxp2NsGcc1GwaxmD6O30qbdL5EDQsD3PmmD-c-VQjSkhmXVuZIcTW6HjkBgX7G9rexDejxR678V5WPJcmFVzBZISPXCO7GsW1tneUlBBYvgdsNX9W_IRv1g9CAEDHhugkoqHpLih6XgWvkG9wRLL4_51zSCZ4QbMAc_dP-ShNQm8lR-uqJsDbjmS-C9WplPzr3NzfD2H-sfZkwVeIAiIYgglzn8750f9G_qn1kQuQPCIOJaVgQzyUNnMHvfCupEdi0F48gi0wbKVohIM3jNbrJyknnfyWDh9a4jXNVao_GTQDlxuO56GpEO9Iwo9P8PWCUXllvBWIwaaoCMtqSG4Qrx4he2aExak4K-d-7C6Hghk4-bGU7WBt2TlgidGYpOV8q3XZOp4tKdpQ86MO7au_KCa3gXlY-nXVUGe79HhUukuGxC-UzK-ZinmxwSs6-GYaOEuuK9zvmkASknr4zo2TkVgsUaZE7fmfEDbB0i9bKbCcB4Q").
+		Header("Authorization", "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjYxYWRhNzM3ZWNmMzIwMjE3ZmVlYzUyZDIzNDgyNTkwOTI1YjAyNjI2YzY1MjAwMDk4ODc1ZmY2NzI2N2FkMjdkNGY3MmQ5NmVkYzgzNDY4In0.eyJhdWQiOiIxIiwianRpIjoiNjFhZGE3MzdlY2YzMjAyMTdmZWVjNTJkMjM0ODI1OTA5MjViMDI2MjZjNjUyMDAwOTg4NzVmZjY3MjY3YWQyN2Q0ZjcyZDk2ZWRjODM0NjgiLCJpYXQiOjE3MjA2ODcxMjQsIm5iZiI6MTcyMDY4NzEyNCwiZXhwIjoxNzIxMjkxOTI0LCJzdWIiOiI0NDkiLCJzY29wZXMiOltdfQ.loWg5juLro4FtuwOY-5ui_D1CQ_IcCZjOo3pYE-3cEcZSTbuQ9WCoQfJvL7daofBsBh8CkiHeVtQRx3S9QEUD_edVv5J83uHpyCJaMN3wvIE8K1DbBbhbWEK6WHl46bLHr4Akj-wZzUd8cx10OXBZFq6v5uZiQ73V-GJqP3NhufcXU1p10KbCSwsYiyqNd8F6-4p6Bmg5YucriQ5jM7KXxkTwBb09RNf4B7f2p2_QCw8YpbcwM6IDhdslUHwgRmHwf1fxESvw4im6Vjd6yfVcyjnex9jlItv_dkibvVd5Z-iTDz4_DzM8y1OlXiqRJD55dj0Y6gl5mCDb7RrZIpDC9NHuzdcL0GfetYLEM0hWazBAULPypRsJ79a2RhEvfopoPgkntv10mQmQ1U3X9vo3wRDZoUqfWdiQ2Xy-1kW0Cdg7CM2bSQExmKvdGxj1CVB8fSqFZqBVP4vrXzdQ40hS29rPoEZTg2VqDRK8AKgQjSFr4USaiq-bMq680Ok_y3kaadmEII86o8JtuBeDVKIdYImBsN8QNfIUezoAPgEmFvTGU9fDw4J69CaFWp9anTDCSCKNuRmcs7cZPK7Kz3WVjN35eMTInP2GTDCX-H8tYuzXESKIIrliONkYqGGU4JJ9Lhb11WMg3NJUpTQ3HPFm3tyCgrgMA8--QI0XkLfp50").
 		Header("Content-type", "application/json").
 		JSON(rateInfo)
 
@@ -34,8 +33,9 @@ func GetCryptoRate(exchangeInfo *types.ExchangeInfo, ctx *context.Context) (fiat
 	}
 
 	resp := struct {
-		Rate     string `json:"amount"`
-		Currency string `json:"currency"`
+		Amount   string `json:"amount, optional"`
+		Currency string `json:"currency, optional"`
+		message  string `json:"message, optional"`
 	}{}
 
 	if decodeErr := res.DecodeJSON(&resp); decodeErr != nil {
@@ -46,7 +46,7 @@ func GetCryptoRate(exchangeInfo *types.ExchangeInfo, ctx *context.Context) (fiat
 	if errParse != nil {
 		return 0, errParse
 	}
-	rate, errParse := strconv.ParseFloat(resp.Rate, 64)
+	rate, errParse := strconv.ParseFloat(resp.Amount, 64)
 	if errParse != nil {
 		return 0, errParse
 	}
