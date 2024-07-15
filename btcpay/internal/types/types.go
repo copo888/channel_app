@@ -15,13 +15,6 @@ type PayOrderRequest struct {
 	UserId            string `json:"userId, optional"`
 	JumpType          string `json:"jumpType, optional"`
 	PlayerId          string `json:"playerId, optional"`
-	Address           string `json:"address, optionial"`
-	City              string `json:"city, optionial"`
-	ZipCode           string `json:"zipCode, optionial"`
-	Country           string `json:"country, optionial"`
-	Phone             string `json:"phone, optionial"`
-	Email             string `json:"email, optionial"`
-	PageFailedUrl     string `json:"pageFailedUrl, optional"`
 }
 
 type PayOrderResponse struct {
@@ -81,8 +74,6 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBankCode  string `json:"receiptCardBankCode"`
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 	PlayerId             string `json:"playerId, optional"`
-	Currency             string `json:"currency, optional"`
-	Remark               string `json:"remark, optional"` //印度渠道需要填IFSC
 }
 
 type ProxyPayOrderResponse struct {
@@ -115,48 +106,17 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip                string `json:"ip, optional"`
-	Address           string `json:"address, optional"`
-	Amount            string `json:"amount, optional"`
-	ClientReferenceId string `json:"client_reference_id, optional"`
-	Currency          string `json:"currency, optional"`
-	CustomerEmail     string `json:"customer_email, optional"`
-	Fee               string `json:"fee, optional"`
-	FeeUsd            string `json:"fee_usd, optional"`
-	FiatAmount        string `json:"fiat_amount, optional"`
-	HashCode          string `json:"hash_code, optional"`
-	Rates             string `json:"rates, optional"`
-	Status            string `json:"status, optional"`
-	Token             string `json:"token, optional"`
-	TxHash            string `json:"tx_hash, optional"`
-	Txid              string `json:"txid, optional"`
+	Ip      string `json:"ip, optional"`
+	OrderNo string `json:"orderNo, optional"`
+	Amount  string `json:"amount, optional"`
+	Status  string `json:"status, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp              string      `json:"myIp, optional, optional"`
-	ClientReferenceId interface{} `json:"client_reference_id, optional"`
-	Customer          string      `json:"customer, optional"`
-	CustomerEmail     interface{} `json:"customer_email, optional"`
-	DirepayId         int         `json:"direpay_id, optional"`
-	EnablePromotion   bool        `json:"enable_promotion, optional"`
-	HashCode          string      `json:"hash_code, optional"`
-	InvoiceAmount     float64     `json:"invoice_amount, optional"`
-	InvoiceCurrency   string      `json:"invoice_currency, optional"`
-	PaidAmount        string      `json:"paid_amount, optional"` //BigCatPay实际收到的加密金额
-	PaidFiat          string      `json:"paid_fiat, optional"`   //BigCatPay实际收到的法币金额
-	//LineItems         []struct {
-	//	Name        string      `json:"name, optional"`
-	//	ItemId      string      `json:"item_id, optional"`
-	//	Description string      `json:"description, optional"`
-	//	Amount      float64     `json:"amount, optional"`
-	//	Quantity    interface{} `json:"quantity, optional"`
-	//} `json:"line_items, optional"`
-	PaymentAmount string `json:"payment_amount, optional"`
-	PaymentToken  string `json:"payment_token, optional"`
-	Rates         string `json:"rates, optional"`
-	Status        string `json:"status, optional"`
-	TxHash        string `json:"tx_hash, optional"`
-	Txid          string `json:"txid, optional"`
+	MyIp    string `json:"myIp, optional"`
+	OrderNo string `json:"orderNo, optional"`
+	Amount  string `json:"amount, optional"`
+	Status  string `json:"status, optional"`
 }
 
 type ReceiverInfoVO struct {
@@ -167,30 +127,4 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
-}
-
-type ReceiverInfoBTCVO struct {
-	OrderNo         string  `json:"order_no"`
-	CustomerUid     string  `json:"customer_uid"`
-	InvoiceAmount   float64 `json:"invoice_amount"`
-	InvoiceCurrency string  `json:"invoice_currency"`
-	PaymentAmount   string  `json:"payment_amount"`
-	PaymentToken    string  `json:"payment_token"`
-	Rates           string  `json:"rates"`
-	PaymentAddress  string  `json:"payment_address"`
-}
-
-type ExchangeInfo struct {
-	Url          string `json:"url"`
-	Token        string `json:"token"`         //加密货币
-	CryptoAmount string `json:"crypto_amount"` //加密货币数额
-	Currency     string `json:"currency"`      //法币
-}
-
-type Item struct {
-	Name        string `json:"name"`
-	ItemId      string `json:"item_id"`
-	Description string `json:"description"`
-	Amount      string `json:"amount"`
-	Quantity    string `json:"quantity"`
 }
