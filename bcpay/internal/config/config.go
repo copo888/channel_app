@@ -38,4 +38,6 @@ type Config struct {
 		Host string
 		Port int
 	}
+
+	AccessToken string
 }
