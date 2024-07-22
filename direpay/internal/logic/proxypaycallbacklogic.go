@@ -85,7 +85,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		ChannelOrderNo:      "CHN_" + req.Txid,
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
-		ChannelResultNote:   status,
+		ChannelResultNote:   req.Status,
 		Amount:              orderAmount,
 		ChannelCharge:       0,
 		UpdatedBy:           "",
