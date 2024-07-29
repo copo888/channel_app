@@ -291,7 +291,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		PayPageType:    "url",
 		PayPageInfo:    channelResp.PayUrl,
 		ChannelOrderNo: "CHN_" + req.OrderNo,
-		IsCheckOutMer:  true, // 自組收銀台回傳 true
+		IsCheckOutMer:  false, // 自組收銀台回傳 true
 	}, nil
 
 	return
