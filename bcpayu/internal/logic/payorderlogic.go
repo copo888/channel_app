@@ -60,7 +60,38 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//ip := utils.GetRandomIp()
 	//randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 
-	// 組請求參數
+	//串接渠道结账API
+	//transaction :=
+	//	struct {
+	//		Currency    string `json:"currency"`
+	//		Amount      string `json:"amount"`
+	//		Token       string `json:"token"`
+	//		CallbackUrl string `json:"callback_url"`
+	//		CustomerUid string `json:"customer_uid"`
+	//	}{
+	//		Currency:    "USD",                 //占时固定CNY
+	//		Amount:      req.TransactionAmount, //依法币数额作依据，不是token(BTC)
+	//		Token:       req.ChannelPayType,
+	//		CallbackUrl: notifyUrl,
+	//		CustomerUid:  req.UserId, //请填 客户独特编号
+	//	}
+	//byteTrans, err := json.Marshal(transaction)
+	//if err != nil {
+	//	logx.WithContext(l.ctx).Errorf("序列化错误:+%v", transaction)
+	//	return nil, errorx.New("序列化错误", err.Error())
+	//}
+	//encryptedData, AesErr := payutils.AesEcrypt(byteTrans, []byte(channel.MerKey))
+	//if AesErr != nil {
+	//	logx.WithContext(l.ctx).Errorf("加密错误:%s", AesErr.Error())
+	//	return nil, errorx.New("加密错误", AesErr.Error())
+	//}
+	//
+	//data := url.Values{}
+	//data.Set("data", string(encryptedData))
+	//data.Set("platform", channel.MerId)
+	//data.Set("lang", "en")
+
+	// 串接渠道付款API
 	data := struct {
 		Command string `json:"command"`
 		//LineItems    []types.Item `json:"line_items, optional"`
@@ -70,6 +101,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		CallbackUrl  string `json:"callback_url"`
 		CustomerUid  string `json:"customer_uid"` //客户独特编号
 		CryptoOnly   bool   `json:"crypto_only, optional"`
+		PaymentUrl   bool   `json:"payment_url, optional"`
 		CryptoAmount string `json:"crypto_amount, optional"`
 	}{
 		Command:      "payment",
@@ -78,6 +110,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		CallbackUrl:  notifyUrl,
 		CustomerUid:  req.PlayerId,
 		CryptoOnly:   true,
+		PaymentUrl:   true,
 		CryptoAmount: req.TransactionAmount, //（虚拟币金额）
 		TxId:         req.OrderNo,
 	}
@@ -122,11 +155,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v,加密前資料:%s", channel.PayUrl, data, string(byteTrans))
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	// 若有證書問題 請使用
-	//tr := &http.Transport{
-	//	TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-	//}
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
 
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
 		Header("Authorization", "Bearer "+l.svcCtx.Config.AccessToken).
@@ -191,6 +219,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		EnablePromotion bool        `json:"enable_promotion"`
 		ExpiredAt       string      `json:"expired_at"`
 		WalletType      string      `json:"wallet_type"`
+		PayUrl          string      `json:"pay_url, optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -240,27 +269,27 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	}
 	//}
 
-	invoiceAmount, err := channelResp.InvoiceAmount.Float64()
+	//invoiceAmount, err := channelResp.InvoiceAmount.Float64()
 
 	// 返回json
-	receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoBTCVO{
-		OrderNo:         req.OrderNo,
-		CustomerUid:     channelResp.CustomerUid,
-		InvoiceAmount:   invoiceAmount,
-		InvoiceCurrency: channelResp.InvoiceCurrency, //法币
-		PaymentAmount:   channelResp.PaymentAmount,   //加密货币
-		PaymentToken:    channelResp.PaymentToken,
-		Rates:           channelResp.Rates,
-		PaymentAddress:  channelResp.PaymentAddress,
-	})
+	//receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoBTCVO{
+	//	OrderNo:         req.OrderNo,
+	//	CustomerUid:     channelResp.CustomerUid,
+	//	InvoiceAmount:   invoiceAmount,
+	//	InvoiceCurrency: channelResp.InvoiceCurrency, //法币
+	//	PaymentAmount:   channelResp.PaymentAmount,   //加密货币
+	//	PaymentToken:    channelResp.PaymentToken,
+	//	Rates:           channelResp.Rates,
+	//	PaymentAddress:  channelResp.PaymentAddress,
+	//})
 
-	if err3 != nil {
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	}
+	//if err3 != nil {
+	//	return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+	//}
 
 	return &types.PayOrderResponse{
-		PayPageType:    "json",
-		PayPageInfo:    string(receiverInfoJson),
+		PayPageType:    "url",
+		PayPageInfo:    channelResp.PayUrl,
 		ChannelOrderNo: "CHN_" + req.OrderNo,
 		IsCheckOutMer:  true, // 自組收銀台回傳 true
 	}, nil
