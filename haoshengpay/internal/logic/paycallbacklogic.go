@@ -41,7 +41,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequestX) (resp str
 
 	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.MchOrderNo, l.svcCtx.Config.ProjectName, req)
 
-	//寫入交易日志
+	//寫入交易日志2
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		MerchantNo: "",
 		//MerchantOrderNo: req.OrderNo,
