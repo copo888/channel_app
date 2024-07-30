@@ -91,7 +91,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//data.Set("platform", channel.MerId)
 	//data.Set("lang", "en")
 
-	//请求渠道API
+	//请求渠道APIXX
 	//var fiatAmount float64
 	//if fiatAmount, err = payutils.GetCryptoRate(&types.ExchangeInfo{
 	//	Url:          channel.PayUrl,
