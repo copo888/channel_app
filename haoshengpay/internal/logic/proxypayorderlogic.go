@@ -65,39 +65,38 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data := url.Values{}
 	// 組請求參數 FOR JSON
 	dataJs := struct {
-		MchId           string `json:"mchId"`
-		AppId           string `json:"appId"`
-		MchTransOrderNo string `json:"mchTransOrderNo"`
-		Currency        string `json:"currency"`
-		Amount          string `json:"amount"`
-		NotifyUrl       string `json:"notifyUrl"`
 		BankCode        string `json:"bankCode"`
-		BankName        string `json:"bankName"`
-		AccountType     string `json:"accountType"`
+		Amount          string `json:"amount"`
+		MchId           string `json:"mchId"`
 		AccountName     string `json:"accountName"`
-		AccountNo       string `json:"accountNo"`
-		Province        string `json:"province"`
 		City            string `json:"city"`
-		TransVerifyCode string `json:"transVerifyCode"`
+		AccountType     string `json:"accountType"`
 		Sign            string `json:"sign"`
+		BankName        string `json:"bankName"`
+		MchTransOrderNo string `json:"mchTransOrderNo"`
+		TransVerifyCode string `json:"transVerifyCode"`
+		Province        string `json:"province"`
+		AppId           string `json:"appId"`
+		ClientIp        string `json:"clientIp, optional"`
+		AccountNo       string `json:"accountNo"`
+		NotifyUrl       string `json:"notifyUrl"`
+		Currency        string `json:"currency"`
 	}{
-		MchId:           channel.MerId,
-		AppId:           "4672565e345b483583eaee7e0b51ffa2",
-		MchTransOrderNo: req.OrderNo,
-		Currency:        "cny",
+		BankCode:        channelBankMap.MapCode,
 		Amount:          fmt.Sprintf("%d", amountInt),
-		NotifyUrl:       l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
-		//NotifyUrl:       "http://19218-host-header=localhost:19218/api/proxy-pay-call-back",
-		BankCode: channelBankMap.MapCode,
-		//BankCode:        "HPT00001",
-		BankName: req.ReceiptCardBankName,
-		//BankName:        "中国银行",
-		AccountType:     "1",
+		MchId:           channel.MerId,
 		AccountName:     req.ReceiptAccountName,
-		AccountNo:       req.ReceiptAccountNumber,
-		Province:        req.ReceiptCardProvince,
 		City:            req.ReceiptCardCity,
+		AccountType:     "1",
+		BankName:        req.ReceiptCardBankName,
+		MchTransOrderNo: req.OrderNo,
 		TransVerifyCode: "r7HxdVrXJ7Rc",
+		Province:        req.ReceiptCardProvince,
+		AppId:           "4672565e345b483583eaee7e0b51ffa2",
+		ClientIp:        utils.GetRandomIp(),
+		AccountNo:       req.ReceiptAccountNumber,
+		NotifyUrl:       l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		Currency:        "cny",
 	}
 
 	// 加簽
