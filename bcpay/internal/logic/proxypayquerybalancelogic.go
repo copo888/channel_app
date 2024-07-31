@@ -54,6 +54,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", channel.ProxyPayQueryBalanceUrl, data)
+	logx.WithContext(l.ctx).Infof("AccessToken: %s", l.svcCtx.Config.AccessToken)
 	span := trace.SpanFromContext(l.ctx)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).
 		Header("Authorization", "Bearer "+l.svcCtx.Config.AccessToken).
