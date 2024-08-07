@@ -8958,7 +8958,66 @@ steps:
     status:
       - success
 
+- name: docker-onepay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f onepay/docker-compose.yml down
+      - docker rmi onepay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/onepay onepay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t onepay -f onepay/Dockerfile .
+      - docker-compose -f onepay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-apponepay-*
+      - refs/tags/api01-testonepay-*
+    status:
+      - success
 
+
+- name: docker-onepay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f onepay/docker-compose.yml down
+      - docker rmi onepay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/onepay onepay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t onepay -f onepay/Dockerfile .
+      - docker-compose -f onepay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-apponepay-*
+      - refs/tags/api02-testonepay-*
+    status:
+      - success
 
 - name: slb-after
   image: appleboy/drone-ssh
