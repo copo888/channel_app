@@ -222,7 +222,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 若需回傳JSON 請自行更改
-	if strings.EqualFold(req.JumpType, "json") {
+	if strings.EqualFold(req.JumpType, "json") && strings.EqualFold(req.PayType, "YK") {
 		isCheckOutMer := false // 自組收銀台回傳 true
 		if req.MerchantId == "ME00015" {
 			isCheckOutMer = true
