@@ -85,7 +85,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		MerchantNo:      req.MerchantId,
-		MerchantOrderNo: req.OrderNo,
+		MerchantOrderNo: req.MerchantOrderNo,
 		OrderNo:         req.OrderNo,
 		ChannelCode:     channel.Code,
 		LogType:         constants.DATA_REQUEST_CHANNEL,
