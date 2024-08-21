@@ -71,8 +71,8 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 	// 檢查驗簽
-	precise := payutils.GetDecimalPlaces(req.RequestAmount)
-	requestAmount := strconv.FormatFloat(req.RequestAmount, 'f', precise, 64)
+	precise := payutils.GetDecimalPlaces(float64(req.RequestAmount))
+	requestAmount := strconv.FormatFloat(float64(req.RequestAmount), 'f', precise, 64)
 
 	source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
 		req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
@@ -98,7 +98,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		PayOrderNo:     req.OutTradeNo,
 		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    req.Amount,
+		OrderAmount:    float64(req.Amount),
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

@@ -13,7 +13,6 @@ import (
 	"github.com/copo888/channel_app/glpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"strings"
 	"time"
 
@@ -81,10 +80,10 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//var orderAmount float64
+	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.State == "completed" {
 		status = "1"
@@ -98,7 +97,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		ChannelResultAt:     time.Now().Format("20060102150405"),
 		ChannelResultStatus: status,
 		ChannelResultNote:   req.Errors,
-		Amount:              orderAmount,
+		Amount:              float64(req.Amount),
 		ChannelCharge:       0,
 		UpdatedBy:           "",
 	}

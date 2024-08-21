@@ -106,25 +106,25 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip          string  `json:"ip, optional"`
-	TradeNo     string  `json:"trade_no, optional"`
-	Amount      float64 `json:"amount, optional"`
-	OutTradeNo  string  `json:"out_trade_no, optional"`
-	State       string  `json:"state, optional"`
-	Sign        string  `json:"sign, optional"`
-	Errors      string  `json:"errors, optional"`
-	CallbackUrl string  `json:"callback_url, optional"`
+	Ip          string `json:"ip, optional"`
+	TradeNo     string `json:"trade_no, optional"`
+	Amount      int64  `json:"amount, optional"`
+	OutTradeNo  string `json:"out_trade_no, optional"`
+	State       string `json:"state, optional"`
+	Sign        string `json:"sign, optional"`
+	Errors      string `json:"errors, optional"`
+	CallbackUrl string `json:"callback_url, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp          string  `json:"myIp, optional"`
-	TradeNo       string  `json:"trade_no, optional"`
-	RequestAmount float64 `json:"request_amount, optional"`
-	Amount        float64 `json:"amount, optional"` //real deposit amount
-	OutTradeNo    string  `json:"out_trade_no, optional"`
-	State         string  `json:"state, optional"`
-	Sign          string  `json:"sign, optional"`
-	CallbackUrl   string  `json:"callback_url, optional"`
+	MyIp          string `json:"myIp, optional"`
+	TradeNo       string `json:"trade_no, optional"`
+	RequestAmount int64  `json:"request_amount, optional"`
+	Amount        int64  `json:"amount, optional"` //real deposit amount
+	OutTradeNo    string `json:"out_trade_no, optional"`
+	State         string `json:"state, optional"`
+	Sign          string `json:"sign, optional"`
+	CallbackUrl   string `json:"callback_url, optional"`
 }
 
 type ReceiverInfoVO struct {
