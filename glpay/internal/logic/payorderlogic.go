@@ -139,12 +139,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			Qrcode      string  `json:"qrcode, optional"`
 			BankAccount string  `json:"bank_account, optional"`
 		} `json:"data, optional"`
-		Success    bool   `json:"success"`
-		StatusCode int    `json:"status_code, optional"`
-		Message    string `json:"message, optional"`
-		Errors     struct {
-			OutTradeNo []string `json:"out_trade_no"`
-		} `json:"errors, optional"`
+		Success    bool        `json:"success"`
+		StatusCode int         `json:"status_code, optional"`
+		Message    string      `json:"message, optional"`
+		Errors     interface{} `json:"errors, optional"`
 	}{}
 
 	// 返回body 轉 struct
@@ -166,7 +164,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 渠道狀態碼判斷
 	if !channelResp.Success {
-		logx.WithContext(l.ctx).Errorf("支付渠道返回错误: %t: %s", channelResp.Success, channelResp.Errors.OutTradeNo[0])
+		logx.WithContext(l.ctx).Errorf("支付渠道返回错误: %t: %+v", channelResp.Success, channelResp.Errors)
 
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -176,14 +174,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_ZF,
-			Content:          fmt.Sprintf("%+v", channelResp),
+			Content:          fmt.Sprintf("%+v", channelResp.Errors),
 			TraceId:          l.traceID,
-			ChannelErrorCode: fmt.Sprintf("%t", channelResp.Success),
+			ChannelErrorCode: fmt.Sprintf("%d", channelResp.StatusCode),
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Errors.OutTradeNo[0])
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, fmt.Sprintf("%+v", channelResp.Errors))
 	}
 
 	resp = &types.PayOrderResponse{

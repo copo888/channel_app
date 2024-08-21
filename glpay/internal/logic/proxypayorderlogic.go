@@ -155,10 +155,11 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool        `json:"success"`
-		Message string      `json:"message"`
-		Errors  interface{} `json:"errors"`
-		Data    struct {
+		Success    bool        `json:"success"`
+		Message    string      `json:"message, optional"`
+		StatusCode int         `json:"status_code, optional"`
+		Errors     interface{} `json:"errors, optional"`
+		Data       struct {
 			TradeNo       string  `json:"trade_no"`
 			OutTradeNo    string  `json:"out_trade_no"`
 			Amount        float64 `json:"amount"`
@@ -167,7 +168,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			BankOwner     string  `json:"bank_owner"`
 			CallbackUrl   string  `json:"callback_url"`
 			State         string  `json:"state"`
-		} `json:"data"`
+		} `json:"data, optional"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -189,10 +190,10 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	}
 
 	if channelResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %t: %s", channelResp.Success, channelResp.Message)
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %t: %+v", channelResp.Success, channelResp.Errors)
 		message := channelResp.Message
 		if channelResp.Errors != nil {
-			message += fmt.Sprintf(": %s", channelResp.Errors)
+			message += fmt.Sprintf(": %+v", channelResp.Errors)
 		}
 
 		//寫入交易日志
@@ -203,9 +204,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_DF,
-			Content:          fmt.Sprintf("%+v", channelResp),
+			Content:          fmt.Sprintf("%+v", channelResp.Errors),
 			TraceId:          l.traceID,
-			ChannelErrorCode: strconv.FormatBool(channelResp.Success),
+			ChannelErrorCode: fmt.Sprintf("%d", channelResp.StatusCode),
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}

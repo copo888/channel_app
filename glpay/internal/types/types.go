@@ -2,7 +2,7 @@
 package types
 
 type PayOrderRequest struct {
-	MerchantOrderNo   string `json:"MerchantOrderNo, optional"`
+	MerchantOrderNo   string `json:"merchantOrderNo, optional"`
 	OrderNo           string `json:"orderNo"`
 	PayType           string `json:"payType, optional"`
 	ChannelPayType    string `json:"channelPayType, optional"`
