@@ -11,10 +11,8 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/glpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/glpay/internal/svc"
@@ -71,18 +69,18 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 	// 檢查驗簽
-	precise := payutils.GetDecimalPlaces(float64(req.RequestAmount))
-	requestAmount := strconv.FormatFloat(float64(req.RequestAmount), 'f', precise, 64)
-
-	source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
-		req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
-	sign := payutils.GetSign(source)
-	logx.Info("verifySource: ", source)
-	logx.Info("verifySign: ", sign)
-	logx.Info("reqSign: ", req.Sign)
-	if req.Sign != sign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//precise := payutils.GetDecimalPlaces(float64(req.RequestAmount))
+	//requestAmount := strconv.FormatFloat(float64(req.RequestAmount), 'f', precise, 64)
+	//
+	//source := fmt.Sprintf("amount=%s&out_trade_no=%s&request_amount=%s&state=%s&trade_no=%s%s%s",
+	//	req.Amount, req.OutTradeNo, requestAmount, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	//sign := payutils.GetSign(source)
+	//logx.Info("verifySource: ", source)
+	//logx.Info("verifySign: ", sign)
+	//logx.Info("reqSign: ", req.Sign)
+	//if req.Sign != sign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	//var orderAmount float64
 	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {

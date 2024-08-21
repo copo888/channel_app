@@ -10,7 +10,6 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
-	"github.com/copo888/channel_app/glpay/internal/payutils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
 	"strings"
@@ -63,22 +62,22 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.IP_DENIED, "IP: "+req.Ip)
 	}
 	// 檢查驗簽
-	source := ""
-	if len(req.Errors) > 0 {
-		source = fmt.Sprintf("amount=%s&errors=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
-			req.Amount, req.Errors, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
-	} else {
-		source = fmt.Sprintf("amount=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
-			req.Amount, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
-	}
-
-	sign := payutils.GetSign(source)
-	logx.Info("verifySource: ", source)
-	logx.Info("verifySign: ", sign)
-	logx.Info("reqSign: ", req.Sign)
-	if req.Sign != sign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
+	//source := ""
+	//if len(req.Errors) > 0 {
+	//	source = fmt.Sprintf("amount=%s&errors=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+	//		req.Amount, req.Errors, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	//} else {
+	//	source = fmt.Sprintf("amount=%s&out_trade_no=%s&state=%s&trade_no=%s%s%s",
+	//		req.Amount, req.OutTradeNo, req.State, req.TradeNo, channel.MerKey, channel.MerId)
+	//}
+	//
+	//sign := payutils.GetSign(source)
+	//logx.Info("verifySource: ", source)
+	//logx.Info("verifySign: ", sign)
+	//logx.Info("reqSign: ", req.Sign)
+	//if req.Sign != sign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
+	//}
 
 	//var orderAmount float64
 	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
