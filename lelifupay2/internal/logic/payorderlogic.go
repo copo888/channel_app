@@ -127,25 +127,21 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.DATA_REQUEST_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", data)}); err != nil {
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.DATA_REQUEST_CHANNEL,
+		LogSource:       constants.API_ZF,
+		Content:         fmt.Sprintf("%+v", data),
+		TraceId:         l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%#v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
-	// 若有證書問題 請使用
-	//tr := &http.Transport{
-	//	TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-	//}
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
-
-	//res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
 	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).Form(data)
 
 	if ChnErr != nil {
@@ -155,9 +151,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo:  req.MerchantId,
-			ChannelCode: channel.Code,
-			//MerchantOrderNo: req.OrderNo,
+			MerchantNo:       req.MerchantId,
+			ChannelCode:      channel.Code,
+			MerchantOrderNo:  req.MerchantOrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_ZF,
@@ -176,9 +172,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
-			//MerchantOrderNo: req.OrderNo,
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
 			OrderNo:          req.OrderNo,
+			ChannelCode:      channel.Code,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_ZF,
 			Content:          string(res.Body()),
@@ -222,9 +219,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if channelResp.RespCode != "0000" {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
-			//MerchantOrderNo: req.OrderNo,
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
 			OrderNo:          req.OrderNo,
+			ChannelCode:      channel.Code,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_ZF,
 			Content:          fmt.Sprintf("%+v", channelResp),
@@ -239,13 +237,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		TraceId:   l.traceID,
-		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.RESPONSE_FROM_CHANNEL,
+		LogSource:       constants.API_ZF,
+		TraceId:         l.traceID,
+		Content:         fmt.Sprintf("%+v", channelResp)}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 

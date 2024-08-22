@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
+	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
@@ -21,15 +23,17 @@ import (
 
 type ProxyPayCallBackLogic struct {
 	logx.Logger
-	ctx    context.Context
-	svcCtx *svc.ServiceContext
+	ctx     context.Context
+	svcCtx  *svc.ServiceContext
+	traceID string
 }
 
 func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayCallBackLogic {
 	return ProxyPayCallBackLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
@@ -43,6 +47,21 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if err != nil {
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		//MerchantNo: req.MerchantId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:     req.OrderAmount, //輸入COPO訂單號
+		ChannelCode: channel.Code,
+		LogType:     constants.CALLBACK_FROM_CHANNEL,
+		LogSource:   constants.API_DF,
+		Content:     fmt.Sprintf("%+v", req),
+		TraceId:     l.traceID,
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
 	//檢查白名單
 	if isWhite := utils.IPChecker(req.Ip, channel.WhiteList); !isWhite {
 		logx.WithContext(l.ctx).Errorf("IP: " + req.Ip)

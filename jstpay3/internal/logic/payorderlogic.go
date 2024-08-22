@@ -90,13 +90,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.DATA_REQUEST_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   data,
-		TraceId:   l.traceID,
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.DATA_REQUEST_CHANNEL,
+		LogSource:       constants.API_ZF,
+		Content:         data,
+		TraceId:         l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
@@ -110,11 +111,43 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:       req.MerchantId,
+			ChannelCode:      channel.Code,
+			MerchantOrderNo:  req.MerchantOrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          ChnErr.Error(),
+			TraceId:          l.traceID,
+			ChannelErrorCode: ChnErr.Error(),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
+			OrderNo:          req.OrderNo,
+			ChannelCode:      channel.Code,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          string(res.Body()),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.Itoa(res.Status()),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
@@ -144,19 +177,36 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", channelResp),
-		TraceId:   l.traceID,
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.RESPONSE_FROM_CHANNEL,
+		LogSource:       constants.API_ZF,
+		Content:         fmt.Sprintf("%+v", channelResp),
+		TraceId:         l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
 	// 渠道狀態碼判斷
 	if channelResp.Code != 0 {
+
+		// 寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:       req.MerchantId,
+			ChannelCode:      channel.Code,
+			MerchantOrderNo:  req.MerchantOrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_ZF,
+			Content:          fmt.Sprintf("%+v", channelResp),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.FormatInt(channelResp.Code, 10),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 

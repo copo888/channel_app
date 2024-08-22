@@ -42,24 +42,25 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.MerchantOrderId, l.svcCtx.Config.ProjectName, req)
 
-	//寫入交易日志
-	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: req.MerchId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.MerchantOrderId, //輸入COPO訂單號
-		LogType:   constants.CALLBACK_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", req),
-		TraceId:   l.traceID,
-	}); err != nil {
-		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
-
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
+	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		//MerchantNo: req.MerchId,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:     req.MerchantOrderId, //輸入COPO訂單號
+		ChannelCode: channel.Code,
+		LogType:     constants.CALLBACK_FROM_CHANNEL,
+		LogSource:   constants.API_ZF,
+		Content:     fmt.Sprintf("%+v", req),
+		TraceId:     l.traceID,
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
 	// 檢查白名單
@@ -85,7 +86,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	payCallBackBO := bo.PayCallBackBO{
 		PayOrderNo:     req.MerchantOrderId,
 		ChannelOrderNo: req.GamerOrderId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderStatus:    orderStatus,      // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
 		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
