@@ -2,6 +2,7 @@
 package types
 
 type PayOrderRequest struct {
+	MerchantOrderNo   string `json:"merchantOrderNo, optional"`
 	OrderNo           string `json:"orderNo"`
 	PayType           string `json:"payType, optional"`
 	ChannelPayType    string `json:"channelPayType, optional"`
@@ -61,6 +62,7 @@ type PayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayOrderRequest struct {
+	MerchantOrderNo      string `json:"merchantOrderNo, optional"`
 	OrderNo              string `json:"orderNo"`
 	MerchantId           string `json:"merchantId"`
 	TransactionType      string `json:"transactionType"`

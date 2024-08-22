@@ -43,22 +43,24 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 
 	logx.WithContext(l.ctx).Infof("Enter ProxyPayCallBack. channelName: %s, orderNo: %s, ProxyPayCallBackRequest: %+v", l.svcCtx.Config.ProjectName, req.OutTradeNo, req)
 
+	// 取得取道資訊
+	channelModel := model2.NewChannel(l.svcCtx.MyDB)
+	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
+
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo:      channel.MerId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OutTradeNo, //輸入COPO訂單號
-		LogType:   constants.CALLBACK_FROM_CHANNEL,
-		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", req),
-		TraceId:   l.traceID,
+		OrderNo:     req.OutTradeNo, //輸入COPO訂單號
+		ChannelCode: channel.Code,
+		LogType:     constants.CALLBACK_FROM_CHANNEL,
+		LogSource:   constants.API_DF,
+		Content:     fmt.Sprintf("%+v", req),
+		TraceId:     l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	// 取得取道資訊
-	channelModel := model2.NewChannel(l.svcCtx.MyDB)
-	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
 	}

@@ -81,13 +81,15 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		ChannelCode: channel.Code,
-		OrderNo:     req.OrderNo,
-		LogType:     constants.DATA_REQUEST_CHANNEL,
-		LogSource:   constants.API_DF,
-		Content:     fmt.Sprintf("%+v", data)}); err != nil {
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		ChannelCode:     channel.Code,
+		OrderNo:         req.OrderNo,
+		LogType:         constants.DATA_REQUEST_CHANNEL,
+		LogSource:       constants.API_DF,
+		Content:         fmt.Sprintf("%+v", data),
+		TraceId:         l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
@@ -103,9 +105,9 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo:  req.MerchantId,
-			ChannelCode: channel.Code,
-			//MerchantOrderNo: req.OrderNo,
+			MerchantNo:       req.MerchantId,
+			ChannelCode:      channel.Code,
+			MerchantOrderNo:  req.MerchantOrderNo,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_DF,
@@ -115,7 +117,13 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+
+		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
+		resp := &types.ProxyPayOrderResponse{
+			ChannelOrderNo: "CHN_" + req.OrderNo,
+			OrderStatus:    "",
+		}
+		return resp, nil
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
@@ -123,8 +131,8 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
-			//MerchantOrderNo: req.OrderNo,
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
 			ChannelCode:      channel.Code,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
@@ -153,13 +161,13 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if channelResp.Success != true {
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo: req.MerchantId,
-			//MerchantOrderNo: req.OrderNo,
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
 			ChannelCode:      channel.Code,
 			OrderNo:          req.OrderNo,
 			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
 			LogSource:        constants.API_DF,
-			Content:          fmt.Sprintf("%+v", channelResp),
+			Content:          channelResp.Msg,
 			TraceId:          l.traceID,
 			ChannelErrorCode: strconv.FormatBool(channelResp.Success),
 		}); err != nil {
@@ -171,13 +179,15 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		ChannelCode: channel.Code,
-		OrderNo:     req.OrderNo,
-		LogType:     constants.RESPONSE_FROM_CHANNEL,
-		LogSource:   constants.API_DF,
-		Content:     fmt.Sprintf("%+v", channelResp)}); err != nil {
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		ChannelCode:     channel.Code,
+		OrderNo:         req.OrderNo,
+		LogType:         constants.RESPONSE_FROM_CHANNEL,
+		LogSource:       constants.API_DF,
+		Content:         fmt.Sprintf("%+v", channelResp),
+		TraceId:         l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
