@@ -144,17 +144,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
 	}
 
-	//寫入交易日志
-	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   fmt.Sprintf("%+v", channelResp)}); err != nil {
-		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-	}
-
 	// 渠道狀態碼判斷
 	if !channelResp.Success {
 		logx.WithContext(l.ctx).Errorf("支付渠道返回错误: %s: %s", channelResp.Success, channelResp.Message)
@@ -175,6 +164,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		}
 
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Message)
+	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.RESPONSE_FROM_CHANNEL,
+		LogSource:       constants.API_ZF,
+		Content:         fmt.Sprintf("%+v", channelResp),
+		TraceId:         l.traceID,
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
 	resp = &types.PayOrderResponse{
