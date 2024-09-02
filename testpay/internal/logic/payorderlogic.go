@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
+	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
@@ -36,6 +37,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
 
+	// 取得取道資訊
+	channelModel := model.NewChannel(l.svcCtx.MyDB)
+	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
+	if err1 != nil {
+		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
+	}
+
 	//// 渠道狀態碼判斷
 	//if req.BankCode != "1" {
 	//	//寫入交易日志
@@ -56,13 +64,14 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchantId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.DATA_REQUEST_CHANNEL,
-		LogSource: constants.API_ZF,
-		Content:   "Success",
-		TraceId:   l.traceID,
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.DATA_REQUEST_CHANNEL,
+		LogSource:       constants.API_ZF,
+		Content:         "Success",
+		TraceId:         l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
@@ -74,7 +83,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
 			CardName:   "王小銘",
 			CardNumber: "11111111111111",
-			BankName:   "工商银行",
+			BankName:   "工商银行AX",
 			BankBranch: "工商银行XX",
 			Amount:     transactionAmount,
 			Link:       "",
