@@ -5,8 +5,11 @@ import (
 	"fmt"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/apimodel/vo"
+	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
+	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
+	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
@@ -28,15 +31,37 @@ type PayCallBackLogic struct {
 
 func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCallBackLogic {
 	return PayCallBackLogic{
-		Logger: logx.WithContext(ctx),
-		ctx:    ctx,
-		svcCtx: svcCtx,
+		Logger:  logx.WithContext(ctx),
+		ctx:     ctx,
+		svcCtx:  svcCtx,
+		traceID: trace.SpanContextFromContext(ctx).TraceID().String(),
 	}
 }
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter PayCallBack. channelName: %s, PayCallBackRequest: %#v", l.svcCtx.Config.ProjectName, req)
+
+	// 取得取道資訊
+	channelModel := model.NewChannel(l.svcCtx.MyDB)
+	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
+	if err != nil {
+		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
+	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		//MerchantOrderNo: req.MerchantOrderNo,
+		//MerchantNo:      req.MerchantId,
+		OrderNo:     req.OrderNo,
+		ChannelCode: channel.Code,
+		LogType:     constants.DATA_REQUEST_CHANNEL,
+		LogSource:   constants.API_ZF,
+		Content:     fmt.Sprintf("%+v", req),
+		TraceId:     l.traceID,
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
 
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
