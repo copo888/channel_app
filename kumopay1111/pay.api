@@ -9,6 +9,7 @@ info(
 )
 
 type PayOrderRequest {
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
     OrderNo string `json:"orderNo"`
     PayType string `json:"payType, optional"`
     ChannelPayType string `json:"channelPayType, optional"`
@@ -69,6 +70,8 @@ type PayQueryInternalBalanceResponse {
 }
 
 type ProxyPayOrderRequest {
+    MerchantOrderNo string `json:"merchantOrderNo, optional"`
+    MerchantId string `json:"merchantId, optional"`
     OrderNo string `json:"orderNo"`
     TransactionType string `json:"transactionType"`
     TransactionAmount string `json:"transactionAmount"`
@@ -113,25 +116,25 @@ type ProxyPayQueryInternalBalanceResponse {
 }
 
 type ProxyPayCallBackRequest {
-    Ip          string `form:"ip, optional"`
-    TradeNo     string `json:"trade_no, optional"`
-    Amount      string `json:"amount, optional"`
-    OutTradeNo  string `json:"out_trade_no, optional"`
-    State       string `json:"state, optional"`
-    Sign        string `json:"sign, optional"`
-    Errors      string `json:"errors, optional"`
+    Ip string `form:"ip, optional"`
+    TradeNo string `json:"trade_no, optional"`
+    Amount string `json:"amount, optional"`
+    OutTradeNo string `json:"out_trade_no, optional"`
+    State string `json:"state, optional"`
+    Sign string `json:"sign, optional"`
+    Errors string `json:"errors, optional"`
     CallbackUrl string `json:"callback_url, optional"`
 }
 
 type PayCallBackRequest {
-    MyIp          string `json:"myIp, optional"`
-    TradeNo       string `json:"trade_no, optional"`
+    MyIp string `json:"myIp, optional"`
+    TradeNo string `json:"trade_no, optional"`
     RequestAmount float64 `json:"request_amount, optional"`
-    Amount        string `json:"amount, optional"`
-    OutTradeNo    string `json:"out_trade_no, optional"`
-    State         string `json:"state, optional"`
-    Sign          string `json:"sign, optional"`
-    CallbackUrl   string `json:"callback_url, optional"`
+    Amount string `json:"amount, optional"`
+    OutTradeNo string `json:"out_trade_no, optional"`
+    State string `json:"state, optional"`
+    Sign string `json:"sign, optional"`
+    CallbackUrl string `json:"callback_url, optional"`
 }
 
 // form 格式

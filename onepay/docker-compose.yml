@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: onepay
+    image: onepay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/onepay:/app/logs

@@ -7,7 +7,7 @@ import (
 	"github.com/copo888/channel_app/common/apimodel/vo"
 	"github.com/copo888/channel_app/common/constants"
 	"github.com/copo888/channel_app/common/errorx"
-	model2 "github.com/copo888/channel_app/common/model"
+	"github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
@@ -56,7 +56,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 取得取道資訊
-	channelModel := model2.NewChannel(l.svcCtx.MyDB)
+	channelModel := model.NewChannel(l.svcCtx.MyDB)
 	channel, err := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
 	if err != nil {
 		return "fail", errorx.New(responsex.INVALID_PARAMETER, err.Error())
