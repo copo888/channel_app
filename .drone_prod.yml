@@ -9020,7 +9020,7 @@ steps:
       - success
 
 
-- name: docker-bcpayue-api01
+- name: docker-glpay-api01
   image: appleboy/drone-ssh
   settings:
     host:
