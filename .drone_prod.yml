@@ -9020,7 +9020,7 @@ steps:
       - success
 
 
-- name: docker-glpay-api01
+- name: docker-bcpayue-api01
   image: appleboy/drone-ssh
   settings:
     host:
@@ -9107,8 +9107,8 @@ steps:
       - docker-compose -f bcpayue/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appglpay-*
-      - refs/tags/api01-testglpay-*
+      - refs/tags/api01-appbcpayue-*
+      - refs/tags/api01-testbcpayue-*
     status:
       - success
 
@@ -9138,8 +9138,8 @@ steps:
       - docker-compose -f bcpayue/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appglpay-*
-      - refs/tags/api02-testglpay-*
+      - refs/tags/api02-appbcpayue-*
+      - refs/tags/api02-testbcpayue-*
     status:
       - success
 
