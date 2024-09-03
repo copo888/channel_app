@@ -111,7 +111,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Crypto.TRC20USDT,
+		ProxyPayBalance:    balanceQueryResp.Crypto.ERC20USDT,
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
