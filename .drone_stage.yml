@@ -4745,6 +4745,6 @@ steps:
         - docker-compose -f bcpayue/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/glpay_stage_*
+        - refs/tags/bcpayue_stage_*
       status:
         - success
