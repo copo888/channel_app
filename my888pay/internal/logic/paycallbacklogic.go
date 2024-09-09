@@ -78,7 +78,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//}
 
 	orderStatus := "1"
-	if req.Status == "2" { //1:未完成 2:完成 3:警示 4:退款 5:取消
+	if req.Status == 2 { //1:未完成 2:完成 3:警示 4:退款 5:取消
 		orderStatus = "20"
 	}
 
