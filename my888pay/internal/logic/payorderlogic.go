@@ -57,10 +57,20 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	//if strings.EqualFold(req.PayType, "YK") && len(req.UserId) == 0 {
-	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-	//	return nil, errorx.New(responsex.INVALID_USER_ID)
-	//}
+	if len(req.UserId) == 0 {
+		logx.WithContext(l.ctx).Errorf("UserId不可为空 userId:%s", req.UserId)
+		return nil, errorx.New(responsex.INVALID_USER_ID)
+	}
+
+	if len(req.PlayerId) == 0 {
+		logx.WithContext(l.ctx).Errorf("PlayerId不可为空 playerId:%s", req.PlayerId)
+		return nil, errorx.New(responsex.INVALID_PLAYER_ID)
+	}
+
+	if len(req.BankAccount) == 0 {
+		logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.BankAccount)
+		return nil, errorx.New(responsex.INVALID_BANK_ID)
+	}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
@@ -85,7 +95,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Account:             req.PlayerId,           //会员平台的帳號
 		Username:            req.UserId,             //真实姓名
 		RemittanceBank:      channelBankMap.MapCode, //User Withdrawal Bank Code
-		RemittanceAccount:   "123123123123",         //req.BankAccount, //会员银行账号
+		RemittanceAccount:   req.BankAccount,        //会员银行账号
 		Amount:              amount,
 		ApiKey:              channel.MerKey,
 		CallbackUrl:         notifyUrl,

@@ -57,6 +57,22 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.ReceiptCardBankCode, req.ReceiptCardBankName, channelBankMap.MapCode)
 		return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.ReceiptCardBankCode, "银行名称: "+req.ReceiptCardBankName, "渠道Map名称: "+channelBankMap.MapCode)
 	}
+
+	if len(req.ReceiptAccountName) == 0 {
+		logx.WithContext(l.ctx).Errorf("UserId不可为空 userId:%s", req.ReceiptAccountName)
+		return nil, errorx.New(responsex.INVALID_USER_ID)
+	}
+
+	if len(req.PlayerId) == 0 {
+		logx.WithContext(l.ctx).Errorf("PlayerId不可为空 playerId:%s", req.PlayerId)
+		return nil, errorx.New(responsex.INVALID_PLAYER_ID)
+	}
+
+	if len(req.ReceiptAccountNumber) == 0 {
+		logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.ReceiptAccountNumber)
+		return nil, errorx.New(responsex.INVALID_BANK_NO)
+	}
+
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	//transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
