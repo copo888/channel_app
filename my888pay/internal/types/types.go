@@ -128,7 +128,7 @@ type ProxyPayCallBackRequest struct {
 	AmountPaid          float64 `json:"amount_paid"` //付金額
 	AmountPayable       float64 `json:"amount_payable"`
 	Fee                 float64 `json:"fee"`
-	Status              string  `json:"status"`
+	Status              int     `json:"status"`
 	CreatedAt           string  `json:"created_at"`
 	UpdatedAt           string  `json:"updated_at"`
 }
@@ -142,7 +142,7 @@ type PayCallBackRequest struct {
 	AmountReceivable    float64   `json:"amount_receivable, optional"` //應收金額
 	AmountReceive       float64   `json:"amount_receive, optional"`    //已收金額
 	Fee                 float64   `json:"fee, optional"`
-	Status              string    `json:"status, optional"`
+	Status              int       `json:"status, optional"`
 	CreatedAt           time.Time `json:"created_at, optional"`
 	UpdatedAt           time.Time `json:"updated_at, optional"`
 }
