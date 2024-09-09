@@ -12,7 +12,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/my888pay/internal/svc"
@@ -76,10 +75,10 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
-	var status = "0"       //渠道回調狀態(0:處理中1:成功2:失敗)
-	if req.Status == "1" { //1: Incomplete 2: Completed 3: Alert 4: Refund 5: Cancel
+	var status = "0"     //渠道回調狀態(0:處理中1:成功2:失敗)
+	if req.Status == 2 { //1: Incomplete 2: Completed 3: Alert 4: Refund 5: Cancel
 		status = "1"
-	} else if strings.Index("3,4,5", req.Status) > -1 {
+	} else if req.Status == 3 || req.Status == 4 || req.Status == 5 {
 		status = "2"
 	}
 
