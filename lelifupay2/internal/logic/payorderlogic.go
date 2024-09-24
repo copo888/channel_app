@@ -55,7 +55,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
-
+	if req.ChannelPayType == "48" && len(req.SourceIp) == 0 {
+		logx.WithContext(l.ctx).Errorf("userIp不可为空 userIp:%s", req.SourceIp)
+		return nil, errorx.New(responsex.INVALID_USER_IP)
+	}
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "https://eff4-211-75-36-190.ngrok-free.app/api/pay-call-back"
@@ -97,6 +100,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("currencyCode", currencyCode)
 	data.Set("timeStamp", timestamp)
 	data.Set("accName", req.UserId)
+	if req.ChannelPayType == "48" {
+		data.Set("clientIp", req.SourceIp)
+	}
 
 	// 組請求參數 FOR JSON
 	//data := struct {
