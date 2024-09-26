@@ -216,7 +216,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		TxnStatus     string `json:"txnStatus"`
 		TxnStatusDesc string `json:"txnStatusDesc"`
 		TimeStamp     string `json:"timeStamp"`
-		CodeImgUrl    string `json:"codeImgUrl"`
+		CodeImgUrl    string `json:"codeImgUrl, optional"`
+		CodePageUrl   string `json:"codePageUrl, optional"`
 		Mac           string `json:"mac"`
 	}{}
 
@@ -285,10 +286,18 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	}, nil
 	//}
 
-	resp = &types.PayOrderResponse{
-		PayPageType:    "url",
-		PayPageInfo:    channelResp.CodeImgUrl,
-		ChannelOrderNo: "",
+	if req.ChannelPayType == "48" {
+		resp = &types.PayOrderResponse{
+			PayPageType:    "url",
+			PayPageInfo:    channelResp.CodePageUrl,
+			ChannelOrderNo: "",
+		}
+	}else{
+		resp = &types.PayOrderResponse{
+			PayPageType:    "url",
+			PayPageInfo:    channelResp.CodeImgUrl,
+			ChannelOrderNo: "",
+		}
 	}
 
 	return
