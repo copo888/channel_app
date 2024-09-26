@@ -102,6 +102,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("accName", req.UserId)
 	if req.ChannelPayType == "48" {
 		data.Set("clientIp", req.SourceIp)
+		data.Set("sceneBizType", "IOS_APP")
+		data.Set("sceneBizType", "COPO")
+		data.Set("sceneBizType", "COPO")
 	}
 
 	// 組請求參數 FOR JSON
