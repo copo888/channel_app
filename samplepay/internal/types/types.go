@@ -10,6 +10,7 @@ type PayOrderRequest struct {
 	BankCode          string `json:"bankCode, optional"`
 	PageUrl           string `json:"pageUrl, optional"`
 	OrderName         string `json:"orderName, optional"`
+	BankAccount       string `json:"bankAccount, optional"`
 	MerchantId        string `json:"merchantId, optional"`
 	Currency          string `json:"currency, optional"`
 	SourceIp          string `json:"sourceIp, optional"`
