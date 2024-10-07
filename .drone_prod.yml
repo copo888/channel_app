@@ -9230,8 +9230,8 @@ steps:
       - docker-compose -f papayapay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api01-appmy888pay-*
-      - refs/tags/api01-testmy888pay-*
+      - refs/tags/api01-apppapayapay-*
+      - refs/tags/api01-testpapayapay-*
     status:
       - success
 
@@ -9261,8 +9261,8 @@ steps:
       - docker-compose -f papayapay/docker-compose.yml up -d
   when:
     ref:
-      - refs/tags/api02-appmy888pay-*
-      - refs/tags/api02-testmy888pay-*
+      - refs/tags/api02-apppapayapay-*
+      - refs/tags/api02-testpapayapay-*
     status:
       - success
 

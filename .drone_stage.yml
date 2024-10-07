@@ -4808,6 +4808,6 @@ steps:
         - docker-compose -f papayapay/docker-compose.yml up -d
     when:
       ref:
-        - refs/tags/my888pay_stage_*
+        - refs/tags/papayapay_stage_*
       status:
         - success
