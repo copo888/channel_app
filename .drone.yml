@@ -6462,9 +6462,6 @@ trigger:
     - my888pay
 
 
-  bcpayue
-
-
 ---
 kind: pipeline
 name: papayapay
