@@ -178,11 +178,11 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		StatusCode int    `json:"statusCode"`
-		Payurl     string `json:"payurl, optional"`
-		//Message    string   `json:"message, optional"`
-		MsgErr []string `json:"message, optional"`
-		Error  string   `json:"error, optional"`
+		StatusCode int      `json:"statusCode"`
+		Payurl     string   `json:"payurl, optional"`
+		Message    string   `json:"message, optional"`
+		MsgErr     []string `json:"message, optional"`
+		Error      string   `json:"error, optional"`
 	}{}
 
 	// 返回body 轉 struct
