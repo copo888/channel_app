@@ -125,28 +125,29 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		}
 
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
-	} else if ChannelResp.Status() != 200 {
-		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
-		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-
-		//寫入交易日志
-		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-			MerchantNo:       req.MerchantId,
-			MerchantOrderNo:  req.MerchantOrderNo,
-			ChannelCode:      channel.Code,
-			OrderNo:          req.OrderNo,
-			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
-			LogSource:        constants.API_DF,
-			Content:          string(ChannelResp.Body()),
-			TraceId:          l.traceID,
-			ChannelErrorCode: strconv.Itoa(ChannelResp.Status()),
-		}); err != nil {
-			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
-		}
-
-		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d\n", ChannelResp.Status()))
 	}
+	//else if ChannelResp.Status() != 200 {
+	//	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
+	//	msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
+	//	service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+	//
+	//	//寫入交易日志
+	//	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+	//		MerchantNo:       req.MerchantId,
+	//		MerchantOrderNo:  req.MerchantOrderNo,
+	//		ChannelCode:      channel.Code,
+	//		OrderNo:          req.OrderNo,
+	//		LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+	//		LogSource:        constants.API_DF,
+	//		Content:          string(ChannelResp.Body()),
+	//		TraceId:          l.traceID,
+	//		ChannelErrorCode: strconv.Itoa(ChannelResp.Status()),
+	//	}); err != nil {
+	//		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	//	}
+	//
+	//	return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d\n", ChannelResp.Status()))
+	//}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
