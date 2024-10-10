@@ -52,8 +52,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	if len(req.BankCode) == 0 {
-		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_BANK_ID, "INVALID BANK CODE")
+		logx.WithContext(l.ctx).Errorf("BankCode不可为空 BankCode:%s", req.BankCode)
+		return nil, errorx.New(responsex.INVALID_BANK_ID, "INVALID BANK ID")
 	}
 
 	if len(req.BankAccount) == 0 {
