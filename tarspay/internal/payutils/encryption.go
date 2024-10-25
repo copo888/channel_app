@@ -3,28 +3,21 @@ package payutils
 import (
 	"context"
 	"crypto/ecdsa"
+	"crypto/elliptic"
 	"crypto/md5"
+	"crypto/rand"
 	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/zeromicro/go-zero/core/logx"
+	"math/big"
 	"net/url"
 	"reflect"
 	"sort"
 	"strconv"
 	"strings"
 )
-
-// LocalSigner 实现了 ApiSigner 接口
-type LocalSigner struct {
-	SecretKey *ecdsa.PrivateKey
-}
-
-// NewLocalSigner 构造函数
-func NewLocalSigner(secretKey *ecdsa.PrivateKey) *LocalSigner {
-	return &LocalSigner{
-		SecretKey: secretKey,
-	}
-}
 
 func GetSign(source string) string {
 	data := []byte(source)
@@ -104,15 +97,29 @@ func SortAndSignFromUrlValues_SHA256(values url.Values, screctKey string) string
 }
 
 // SortAndSignFromObj 物件 排序后加签
-func SortAndSignFromObj(data interface{}, screctKey string, path string, timeStamp string, ctx context.Context) string {
+func (signer LocalSigner) SortAndSignFromObj(data interface{}, secretKeyHex string, path string, timeStamp string, ctx context.Context) string {
 	m := CovertToMap(data)
-	content := JoinStringsInASCII(m, "&", false, false, screctKey)
+	content := JoinStringsInASCII(m, "&", false, false, secretKeyHex)
 	newSource := "POST|" + path + "|" + timeStamp + "|" + content
-	//NewLocalSigner(screctKey)
-	newSign := GetSign(newSource)
+	//ecdPrivateKey := genPrivateKey(secretKeyHex)
+
+	newSign, err := signer.Sign(newSource)
+	if err != "" {
+		logx.WithContext(ctx).Infof("加簽失敗: %s", err)
+	}
 	logx.WithContext(ctx).Info("加签参数: ", newSource)
 	logx.WithContext(ctx).Info("签名字串: ", newSign)
 	return newSign
+}
+
+func genPrivateKey(secretKeyHex string) *ecdsa.PrivateKey {
+	secretKeyBytes, _ := hex.DecodeString(secretKeyHex)
+	privateKey := new(ecdsa.PrivateKey)
+	privateKey.PublicKey.Curve = elliptic.P256()
+	privateKey.D = new(big.Int).SetBytes(secretKeyBytes)
+	privateKey.PublicKey.X, privateKey.PublicKey.Y = privateKey.PublicKey.Curve.ScalarBaseMult(secretKeyBytes)
+
+	return privateKey
 }
 
 // SortAndSignFromMap MAP 排序后加签
@@ -182,4 +189,42 @@ func GetDecimalPlaces(f float64) int {
 		return 0
 	}
 	return len(tmp[1])
+}
+
+type LocalSigner struct {
+	PrivateKey string
+}
+
+func GenerateKeyPair() (string, string) {
+	apiSecret := make([]byte, 32)
+	if _, err := rand.Read(apiSecret); err != nil {
+		return "", ""
+	}
+	privKey, _ := btcec.PrivKeyFromBytes(btcec.S256(), apiSecret)
+	apiKey := fmt.Sprintf("%x", privKey.PubKey().SerializeCompressed())
+	apiSecretStr := fmt.Sprintf("%x", apiSecret)
+	return apiSecretStr, apiKey
+}
+
+func (signer LocalSigner) GetPublicKey() string {
+	apiSecret, _ := hex.DecodeString(signer.PrivateKey)
+	key, _ := btcec.PrivKeyFromBytes(btcec.S256(), apiSecret)
+	return fmt.Sprintf("%x", key.PubKey().SerializeCompressed())
+}
+
+func (signer LocalSigner) Sign(message string) (string, string) {
+	apiSecret, _ := hex.DecodeString(signer.PrivateKey)
+	key, _ := btcec.PrivKeyFromBytes(btcec.S256(), apiSecret)
+	sig, _ := key.Sign([]byte(Hash256x2(message)))
+	return fmt.Sprintf("%x", sig.Serialize()), ""
+}
+
+func Hash256x2(s string) string {
+	return Hash256(Hash256(s))
+}
+
+func Hash256(s string) string {
+	hashResult := sha256.Sum256([]byte(s))
+	hashString := string(hashResult[:])
+	return hashString
 }

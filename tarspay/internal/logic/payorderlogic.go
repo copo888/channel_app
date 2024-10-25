@@ -119,6 +119,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		"X-API-KEY":       "03d55987df330247ebe2ea0cd6f149ce2adfafb43eb732238ff7817b222646619a", //公钥
 		"X-API-NONCE":     strconv.FormatInt(unixTimestampMillis, 10),
 		"X-API-SIGNATURE": sign,
+		"Content-Type":    "application/json",
 	}).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
@@ -167,19 +168,36 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    string `json:"code"`
-		Msg     string `json:"msg, optional"`
-		Sign    string `json:"sign"`
-		Money   string `json:"money"`
-		OrderId string `json:"orderId"`
-		PayUrl  string `json:"payUrl"`
-		PayInfo struct {
-			Name       string `json:"name"`
-			Card       string `json:"card"`
-			Bank       string `json:"bank"`
-			Subbranch  string `json:"subbranch"`
-			ExpiringAt string `json:"expiring_at"`
-		} `json:"payInfo"`
+		Code int `json:"code"`
+		Data struct {
+			Amount          string `json:"amount"`
+			Body            string `json:"body"`
+			CountryCode     string `json:"countryCode"`
+			Currency        string `json:"currency"`
+			CustomerContact string `json:"customerContact"`
+			MchOrderNo      string `json:"mchOrderNo"`
+			OrderState      int    `json:"orderState"`
+			PayDataType     string `json:"payDataType"`
+			PayOrderId      string `json:"payOrderId"`
+			PayUrl          string `json:"payUrl"`
+			PayWays         struct {
+				Ewallet []struct {
+					CountryCode string `json:"countryCode"`
+					CreatedAt   int    `json:"createdAt"`
+					Id          int    `json:"id"`
+					PayWay      string `json:"payWay"`
+					PayWayLogo  string `json:"payWayLogo"`
+					PayWayType  string `json:"payWayType"`
+					SkipMode    int    `json:"skipMode"`
+					State       int    `json:"state"`
+					UpdatedAt   int    `json:"updatedAt"`
+				} `json:"ewallet"`
+			} `json:"payWays"`
+			RequestUrl string `json:"requestUrl"`
+			Subject    string `json:"subject"`
+		} `json:"data"`
+		Msg  string `json:"msg"`
+		Sign string `json:"sign"`
 	}{}
 
 	// 返回body 轉 struct
@@ -188,7 +206,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	// 渠道狀態碼判斷
-	if channelResp.Code != "0000" {
+	if channelResp.Code != 0 {
 		// 寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo:       req.MerchantId,
@@ -199,11 +217,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			LogSource:        constants.API_ZF,
 			Content:          fmt.Sprintf("%+v", channelResp),
 			TraceId:          l.traceID,
-			ChannelErrorCode: channelResp.Code,
+			ChannelErrorCode: channelResp.Msg,
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
-
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 	}
 
@@ -254,7 +271,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
-		PayPageInfo:    channelResp.PayUrl,
+		PayPageInfo:    channelResp.Data.PayUrl,
 		ChannelOrderNo: "",
 	}
 
