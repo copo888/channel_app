@@ -261,32 +261,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
-	// 若需回傳JSON 請自行更改
-	//if strings.EqualFold(req.JumpType, "json") {
-	//	isCheckOutMer := false // 自組收銀台回傳 true
-	//	if req.MerchantId == "ME00015"{
-	//		isCheckOutMer = true
-	//	}
-	//}
-
-	//invoiceAmount, err := channelResp.InvoiceAmount.Float64()
-
-	// 返回json
-	//receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoBTCVO{
-	//	OrderNo:         req.OrderNo,
-	//	CustomerUid:     channelResp.CustomerUid,
-	//	InvoiceAmount:   invoiceAmount,
-	//	InvoiceCurrency: channelResp.InvoiceCurrency, //法币
-	//	PaymentAmount:   channelResp.PaymentAmount,   //加密货币
-	//	PaymentToken:    channelResp.PaymentToken,
-	//	Rates:           channelResp.Rates,
-	//	PaymentAddress:  channelResp.PaymentAddress,
-	//})
-
-	//if err3 != nil {
-	//	return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	//}
-
 	return &types.PayOrderResponse{
 		PayPageType:    "url",
 		PayPageInfo:    channelResp.PayUrl,
