@@ -87,6 +87,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	if errDecode != nil {
 		return "fail", errDecode
 	}
+	logx.WithContext(l.ctx).Infof("desString:%s", desString)
 
 	dd := strings.ReplaceAll(desString, "\x0f", "")
 	dby := []byte(dd)
@@ -95,7 +96,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		logx.WithContext(l.ctx).Errorf("支付回调解析json失败, error : " + errj.Error())
 		return "fail", errj
 	}
-
+	logx.WithContext(l.ctx).Infof("desOrder:%+v", desOrder)
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: req.Merchant,
