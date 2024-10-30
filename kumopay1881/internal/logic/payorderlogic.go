@@ -69,7 +69,9 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		ChannelCode:     channel.Code,
 		LogType:         constants.DATA_REQUEST_CHANNEL,
 		LogSource:       constants.API_ZF,
-		Content:         data}); err != nil {
+		Content:         data,
+		TraceId:         l.traceID,
+	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
