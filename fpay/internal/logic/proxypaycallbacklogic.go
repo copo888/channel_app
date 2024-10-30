@@ -88,7 +88,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	if errDecode != nil {
 		return "fail", errDecode
 	}
-
+	logx.WithContext(l.ctx).Infof("desString:%s", desString)
 	dd := strings.ReplaceAll(desString, "\x05", "")
 	dd = strings.ReplaceAll(dd, "\b", "")
 	dby := []byte(dd)
@@ -97,6 +97,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		logx.WithContext(l.ctx).Errorf("代付回调解析json失败, error : " + errj.Error())
 		return "fail", errj
 	}
+	logx.WithContext(l.ctx).Infof("desOrder:%+v", desOrder)
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(desOrder.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_SIGN)
