@@ -102,7 +102,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		return "fail", errorx.New(responsex.INVALID_SIGN)
 	}
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
-	if desOrder.Status == "success" {
+	if desOrder.Status == "success" || desOrder.Status == "success_done" {
 		status = "1"
 	} else if strings.Index("fail,fail_done,reverted", desOrder.Status) > -1 {
 		status = "2"

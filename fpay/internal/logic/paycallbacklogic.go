@@ -117,7 +117,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	orderStatus := "1"
-	if desOrder.Status == "success" {
+	if desOrder.Status == "success" || desOrder.Status == "success_done" {
 		orderStatus = "20"
 	}
 
