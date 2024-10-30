@@ -95,6 +95,21 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		logx.WithContext(l.ctx).Errorf("支付回调解析json失败, error : " + errj.Error())
 		return "fail", errj
 	}
+
+	//寫入交易日志
+	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+		//MerchantNo: req.Merchant,
+		//MerchantOrderNo: req.OrderNo,
+		OrderNo:     req.MerchantOrderNum, //輸入COPO訂單號
+		ChannelCode: channel.Code,
+		LogType:     constants.CALLBACK_FROM_CHANNEL,
+		LogSource:   constants.API_ZF,
+		Content:     fmt.Sprintf("解密后:%+v", desOrder),
+		TraceId:     l.traceID,
+	}); err != nil {
+		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+	}
+
 	var orderAmount float64
 	if orderAmount, err = strconv.ParseFloat(desOrder.Amount, 64); err != nil {
 		return "fail", errorx.New(responsex.INVALID_AMOUNT)
