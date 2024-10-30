@@ -83,7 +83,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 		MerchantOrderRemark string `json:"merchant_order_remark"`
 	}{}
 
-	desString, errDecode := payutils.AES256Decode(req.Order, channel.MerKey, l.svcCtx.Config.HashIv)
+	desString, errDecode := payutils.AES256Decode(strings.ReplaceAll(req.Order, "\\n", ""), channel.MerKey, l.svcCtx.Config.HashIv)
 
 	if errDecode != nil {
 		return "fail", errDecode

@@ -41,7 +41,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.Merchant, l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.MerchantOrderNum, l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model2.NewChannel(l.svcCtx.MyDB)
@@ -82,7 +82,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		MerchantOrderRemark string `json:"merchant_order_remark"`
 	}{}
 
-	desString, errDecode := payutils.AES256Decode(req.Order, channel.MerKey, l.svcCtx.Config.HashIv)
+	desString, errDecode := payutils.AES256Decode(strings.ReplaceAll(req.Order, "\\n", ""), channel.MerKey, l.svcCtx.Config.HashIv)
 
 	if errDecode != nil {
 		return "fail", errDecode

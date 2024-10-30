@@ -24,15 +24,14 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		var req types.PayCallBackRequest
 
 		//bodyBytes, err := io.ReadAll(r.Body)
-		//
 		//if err != nil {
 		//	responsex.Json(w, r, responsex.FAIL, nil, err)
 		//	return
 		//}
-		//
 		//logx.WithContext(r.Context()).Infof("PayOrder enter: %s", string(bodyBytes))
 		//
 		//if err := json.Unmarshal(bodyBytes, &req); err != nil {
+		//	logx.Errorf("%s", err.Error())
 		//	responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 		//	return
 		//}
@@ -41,7 +40,7 @@ func PayCallBackHandler(ctx *svc.ServiceContext) http.HandlerFunc {
 		//	responsex.Json(w, r, responsex.DECODE_JSON_ERROR, nil, err)
 		//	return
 		//}
-		//logx.WithContext(r.Context()).Infof("%+v", req)
+
 		// Form 格式
 		if err := httpx.ParseForm(r, &req); err != nil {
 			responsex.Json(w, r, responsex.FAIL, nil, err)
