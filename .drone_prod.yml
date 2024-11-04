@@ -9391,6 +9391,69 @@ steps:
       - success
 
 
+- name: docker-ezpay3-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f ezpay3/docker-compose.yml down
+      - docker rmi ezpay3:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/ezpay3 ezpay3/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t ezpay3 -f ezpay3/Dockerfile .
+      - docker-compose -f ezpay3/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appezpay3-*
+      - refs/tags/api01-testezpay3-*
+    status:
+      - success
+
+
+- name: docker-ezpay3-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f ezpay3/docker-compose.yml down
+      - docker rmi ezpay3:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/ezpay3 ezpay3/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t ezpay3 -f ezpay3/Dockerfile .
+      - docker-compose -f ezpay3/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appezpay3-*
+      - refs/tags/api02-testezpay3-*
+    status:
+      - success
+
+
+
 - name: slb-after
   image: appleboy/drone-ssh
   settings:
