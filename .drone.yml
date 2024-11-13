@@ -6632,3 +6632,46 @@ steps:
 trigger:
   branch:
     - ezpay3
+
+
+---
+kind: pipeline
+name: tsunpay
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-tsunpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout tsunpay
+        - git checkout -- .
+        - git pull origin tsunpay
+        - go mod tidy
+        - docker-compose -f tsunpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=tsunpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/tsunpay tsunpay/pay.go
+        - docker build -t tsunpay -f tsunpay/Dockerfile .
+        - docker-compose -f tsunpay/docker-compose.yml up -d
+    when:
+      branch:
+        - tsunpay
+      event:
+        - push
+trigger:
+  branch:
+    - tsunpay
