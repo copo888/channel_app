@@ -126,8 +126,15 @@ type PayCallBackRequest struct {
 	Amount        string `json:"amount, optional"`
 	OutTradeNo    string `json:"out_trade_no, optional"`
 	State         string `json:"state, optional"`
-	Sign          string `json:"sign, optional"`
 	CallbackUrl   string `json:"callback_url, optional"`
+	Sign          string `json:"sign, optional"`
+	//TradeNo       string `json:"trade_no, optional"`
+	//RequestAmount string `json:"request_amount, optional"`
+	//Amount        string `json:"amount, optional"`
+	//OutTradeNo    string `json:"out_trade_no, optional"`
+	//State         string `json:"state, optional"`
+	//Sign          string `json:"sign, optional"`
+	//CallbackUrl   string `json:"callback_url, optional"`
 }
 
 type ReceiverInfoVO struct {
