@@ -157,14 +157,14 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Errors     interface{} `json:"errors"`
 		StatusCode int         `json:"status_code, optional"`
 		Data       struct {
-			TradeNo       string  `json:"trade_no"`
-			OutTradeNo    string  `json:"out_trade_no"`
-			Amount        float64 `json:"amount"`
-			BankId        string  `json:"bank_id"`
-			AccountNumber string  `json:"account_number"`
-			BankOwner     string  `json:"bank_owner"`
-			CallbackUrl   string  `json:"callback_url"`
-			State         string  `json:"state"`
+			TradeNo       string `json:"trade_no"`
+			OutTradeNo    string `json:"out_trade_no"`
+			Amount        string `json:"amount"`
+			BankId        string `json:"bank_id"`
+			AccountNumber string `json:"account_number"`
+			BankOwner     string `json:"bank_owner"`
+			CallbackUrl   string `json:"callback_url"`
+			State         string `json:"state"`
 		} `json:"data"`
 	}{}
 
