@@ -46,10 +46,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	if len(req.SourceIp) == 0 {
-		logx.WithContext(l.ctx).Errorf("SourceIp不可为空 SourceIp:%s", req.SourceIp)
-		return nil, errorx.New(responsex.INVALID_USER_IP)
-	}
+	//if len(req.SourceIp) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("SourceIp不可为空 SourceIp:%s", req.SourceIp)
+	//	return nil, errorx.New(responsex.INVALID_USER_IP)
+	//}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
