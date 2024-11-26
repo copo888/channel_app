@@ -54,7 +54,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
-	//ip := utils.GetRandomIp()
+	var ip string
+	if len(req.SourceIp) > 0 {
+		ip = req.SourceIp
+	} else {
+		ip = utils.GetRandomIp()
+	}
 
 	// 組請求參數 FOR JSON
 	data := struct {
@@ -75,7 +80,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		NotifyUrl:   notifyUrl,
 		ReturnUrl:   req.PageUrl,
 		//RealName:       req.UserId,
-		ClientIp: req.SourceIp, // 渠道返回JSON 必填参数
+		ClientIp: ip, // 渠道返回JSON 必填参数
 	}
 
 	// 加簽
