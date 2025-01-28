@@ -100,6 +100,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("currencyCode", currencyCode)
 	data.Set("timeStamp", timestamp)
 	data.Set("accName", req.UserId)
+	data.Set("sthtml", "1")
+	data.Set("bankNum", "01050000")
 	if req.ChannelPayType == "48" {
 		data.Set("clientIp", req.SourceIp)
 		data.Set("sceneBizType", "IOS_APP")
@@ -292,7 +294,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			PayPageInfo:    channelResp.CodePageUrl,
 			ChannelOrderNo: "",
 		}
-	}else{
+	} else if req.ChannelPayType == "21" {
+		resp = &types.PayOrderResponse{
+			PayPageType:    "url",
+			PayPageInfo:    channelResp.ExtInfo,
+			ChannelOrderNo: "",
+		}
+	} else {
 		resp = &types.PayOrderResponse{
 			PayPageType:    "url",
 			PayPageInfo:    channelResp.CodeImgUrl,
