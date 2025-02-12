@@ -58,6 +58,16 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
 
+	if len(req.BankCode) == 0 {
+		logx.WithContext(l.ctx).Errorf("BankCode不可为空 BankCode:%s", req.BankCode)
+		return nil, errorx.New(responsex.BANK_CODE_EMPTY)
+	}
+
+	if len(req.BankAccount) == 0 {
+		logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.BankAccount)
+		return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY)
+	}
+
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//timestamp := time.Now().Format("20060102150405")

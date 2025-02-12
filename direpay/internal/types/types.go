@@ -8,6 +8,7 @@ type PayOrderRequest struct {
 	ChannelPayType    string `json:"channelPayType, optional"`
 	TransactionAmount string `json:"transactionAmount"`
 	BankCode          string `json:"bankCode, optional"`
+	BankAccount       string `json:"bank_account, optional"`
 	PageUrl           string `json:"pageUrl, optional"`
 	OrderName         string `json:"orderName, optional"`
 	MerchantId        string `json:"merchantId, optional"`
