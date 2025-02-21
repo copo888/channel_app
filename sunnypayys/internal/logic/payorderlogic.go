@@ -52,7 +52,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	return nil, errorx.New(responsex.INVALID_USER_ID)
 	//}
 
-	// 取值
+	// 取值s
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 	//ip := utils.GetRandomIp()
