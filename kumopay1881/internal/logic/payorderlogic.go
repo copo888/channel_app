@@ -161,7 +161,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 渠道狀態碼判斷
 	if !channelResp.Success {
 		logx.WithContext(l.ctx).Errorf("支付渠道返回错误: %d: %+v", channelResp.StatusCode, channelResp.Errors)
-		// 寫入交易日志
+		// 寫入交易日志s
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo:       req.MerchantId,
 			ChannelCode:      channel.Code,
