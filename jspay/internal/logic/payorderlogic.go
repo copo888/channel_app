@@ -49,10 +49,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//notifyUrl = "http://b2d4-211-75-36-190.ngrok.io/api/pay-call-back"
 
-	if len(req.UserId) == 0 {
-		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_USER_ID)
-	}
+	//if len(req.UserId) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
+	//	return nil, errorx.New(responsex.INVALID_USER_ID)
+	//}
 
 	// 組請求參數 FOR JSON
 	data := struct {
@@ -64,7 +64,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount:      req.TransactionAmount,
 		CallbackUrl: notifyUrl,
 		OutTradeNo:  req.OrderNo,
-		PaidName:    req.UserId,
+		//PaidName:    req.UserId,
 	}
 
 	//寫入交易日志
