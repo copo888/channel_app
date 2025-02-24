@@ -8,6 +8,7 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strings"
 	"time"
 
 	"github.com/copo888/channel_app/jspay/internal/svc"
@@ -73,7 +74,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Data.Balance,
+		ProxyPayBalance:    strings.ReplaceAll(balanceQueryResp.Data.Balance, ",", ""),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
