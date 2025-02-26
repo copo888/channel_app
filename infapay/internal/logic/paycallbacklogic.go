@@ -130,5 +130,5 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		return "err", errorx.New(payCallBackVO.Code)
 	}
 
-	return "ok", nil
+	return "SUCCESS", nil
 }

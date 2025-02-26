@@ -138,5 +138,5 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	//	return "fail",errorx.New(BoProxyRespVO.Message)
 	//}
 
-	return "ok", nil
+	return "SUCCESS", nil
 }
