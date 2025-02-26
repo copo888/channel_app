@@ -5031,3 +5031,34 @@ steps:
         - refs/tags/sunnypayys_stage_*
       status:
         - success
+
+  - name: docker-infapay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f infapay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=infapay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/infapay infapay/pay.go
+        - docker build -t infapay -f infapay/Dockerfile .
+        - docker-compose -f infapay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/infapay_stage_*
+      status:
+        - success
