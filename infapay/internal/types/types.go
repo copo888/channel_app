@@ -123,15 +123,15 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp         string  `json:"myIp, optional"`
-	ReturnCode   string  `json:"returnCode, optional"`
-	Message      string  `json:"message, optional"`
-	ReferenceNo  string  `json:"referenceNo, optional"`
-	OrderNo      string  `json:"orderNo, optional"`
-	Amount       float64 `json:"amount, optional"`
-	Currency     string  `json:"currency, optional"`
-	Status       string  `json:"status, optional"`
-	CompleteTime string  `json:"completeTime, optional"`
+	MyIp         string `json:"myIp, optional"`
+	ReturnCode   string `json:"returnCode, optional"`
+	Message      string `json:"message, optional"`
+	ReferenceNo  string `json:"referenceNo, optional"`
+	OrderNo      string `json:"orderNo, optional"`
+	Amount       string `json:"amount, optional"`
+	Currency     string `json:"currency, optional"`
+	Status       string `json:"status, optional"`
+	CompleteTime string `json:"completeTime, optional"`
 }
 
 type ReceiverInfoVO struct {
