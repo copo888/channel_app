@@ -40,8 +40,15 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
+	// 組請求參數 FOR JSON
+	data := struct {
+		ReferenceNo string `json:"referenceNo"`
+	}{
+		ReferenceNo: channel.MerId,
+	}
+
 	// 請求渠道s
-	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s", channel.ProxyPayQueryBalanceUrl)
+	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", channel.ProxyPayQueryBalanceUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 
 	credentials := []byte("copo:" + channel.MerKey)
@@ -52,7 +59,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		Header("Authorization", "Basic "+token).
 		Header("Content-Type", "application/json").
 		Header("Merchant-No", channel.MerId).
-		Timeout(20).Trace(span).JSON(nil)
+		Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
