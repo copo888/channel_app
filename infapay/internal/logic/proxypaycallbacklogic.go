@@ -89,11 +89,11 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var orderAmount float64
 	var fee float64
 	if orderAmount, err = strconv.ParseFloat(req.RealAmount, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
 	if fee, err = strconv.ParseFloat(req.Fee, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
+		return "fail", errorx.New(responsex.INVALID_AMOUNT)
 	}
 
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)

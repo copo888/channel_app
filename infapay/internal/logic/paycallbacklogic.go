@@ -13,6 +13,7 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
+	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/infapay/internal/svc"
@@ -87,10 +88,10 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
-	//var orderAmount float64
-	//if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
-	//	return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	//}
+	var orderAmount float64
+	if orderAmount, err = strconv.ParseFloat(req.Amount, 64); err != nil {
+		return "fail", errorx.New(responsex.INVALID_AMOUNT)
+	}
 
 	orderStatus := "1"
 	if req.Status == "SUCCESS" {
@@ -101,7 +102,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		PayOrderNo:     req.ReferenceNo,
 		ChannelOrderNo: req.OrderNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    req.Amount,
+		OrderAmount:    orderAmount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 
