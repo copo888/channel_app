@@ -133,3 +133,8 @@ type ReceiverInfoVO struct {
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
 }
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
+}
