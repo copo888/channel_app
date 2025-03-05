@@ -42,9 +42,9 @@ ApiKey:
   ProxyKey: zrdfSeWd
   LineKey: GHddFKsa
 
-LineSend:
-  Host: ${LINE_HOST}
-  Port: ${LINE_PORT}
+TelegramSend:
+  Host: ${TG_HOST}
+  Port: ${TG_HOST}
 
 Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
