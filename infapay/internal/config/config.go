@@ -26,20 +26,16 @@ type Config struct {
 		PublicKey string
 		PayKey    string
 		ProxyKey  string
+		LineKey   string
 	}
 	ProjectName string
 	Merchant    struct {
 		Host string
 		Port int
 	}
-	TelegramSend struct {
-		Host   string
-		Port   int
-		ChatId int
-	}
-	//LineSend struct {
-	//	Host string
-	//	Port string
-	//}
 
+	LineSend struct {
+		Host string
+		Port int
+	}
 }
