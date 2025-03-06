@@ -80,18 +80,18 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫渠道返回錯誤: '%s'，订单号： '%s'", ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫渠道返回Http状态码錯誤: '%d'，订单号： '%s'", res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Success bool `json:"success"`
+		Success bool   `json:"success"`
 		Message string `json:"message"`
 		Data    struct {
 			TradeNo    string `json:"trade_no"`

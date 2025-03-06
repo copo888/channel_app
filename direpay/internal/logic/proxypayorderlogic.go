@@ -118,7 +118,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -139,7 +139,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	} else if (res.Status() < 400 && res.Status() >= 300) || res.Status() < 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{

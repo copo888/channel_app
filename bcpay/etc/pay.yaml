@@ -46,6 +46,11 @@ LineSend:
   Host: ${LINE_HOST}
   Port: ${LINE_PORT}
 
+TelegramSend:
+  Host: ${TG_HOST}
+  Port: ${TG_PORT}
+  ChatId: ${TG_CHAT_ID}
+
 Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
   Port: ${MERCHANT_SERVICE_PORT}

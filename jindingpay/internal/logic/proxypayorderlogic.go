@@ -78,25 +78,25 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//data.Set("bankCardholder", req.ReceiptAccountName)
 
 	data := struct {
-		Version string `json:"version"`
-		Cid string `json:"cid"`
-		TradeNo string `json:"tradeNo"`
-		Amount string `json:"amount"`
-		PayType string `json:"payType"`
-		AcctName string `json:"acctName"`
-		AcctNo string `json:"acctNo"`
-		BankCode string `json:"bankCode"`
+		Version   string `json:"version"`
+		Cid       string `json:"cid"`
+		TradeNo   string `json:"tradeNo"`
+		Amount    string `json:"amount"`
+		PayType   string `json:"payType"`
+		AcctName  string `json:"acctName"`
+		AcctNo    string `json:"acctNo"`
+		BankCode  string `json:"bankCode"`
 		NotifyUrl string `json:"notifyUrl"`
-		Sign string `json:"sign"`
+		Sign      string `json:"sign"`
 	}{
-		Version: "1.0",
-		Cid: channel.MerId,
-		TradeNo: req.OrderNo,
-		Amount: transactionAmount,
-		PayType: "1",
-		AcctName: req.ReceiptAccountName,
-		AcctNo: req.ReceiptAccountNumber,
-		BankCode: channelBankMap.MapCode,
+		Version:   "1.0",
+		Cid:       channel.MerId,
+		TradeNo:   req.OrderNo,
+		Amount:    transactionAmount,
+		PayType:   "1",
+		AcctName:  req.ReceiptAccountName,
+		AcctNo:    req.ReceiptAccountNumber,
+		BankCode:  channelBankMap.MapCode,
 		NotifyUrl: notifyUrl,
 	}
 
@@ -127,23 +127,23 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Retcode string `json:"retcode"`
-		Retmsg string `json:"retmsg"`
-		Status string `json:"status"` //1：代付成功；2：处理中；3：失败;4：取消订单
+		Retcode     string `json:"retcode"`
+		Retmsg      string `json:"retmsg"`
+		Status      string `json:"status"` //1：代付成功；2：处理中；3：失败;4：取消订单
 		RockTradeNo string `json:"rockTradeNo"`
-		TradeNo string `json:"tradeNo"`
-		Amount string `json:"amount"`
+		TradeNo     string `json:"tradeNo"`
+		Amount      string `json:"amount"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {

@@ -154,7 +154,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		}); err != nil {
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
 		resp := &types.ProxyPayOrderResponse{
@@ -165,7 +165,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 			MerchantNo:       req.MerchantId,

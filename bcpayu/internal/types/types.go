@@ -172,6 +172,11 @@ type ReceiverInfoVO struct {
 	Remark     string  `json:"remark"`
 }
 
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
+}
+
 type ReceiverInfoBTCVO struct {
 	OrderNo         string  `json:"order_no"`
 	CustomerUid     string  `json:"customer_uid"`

@@ -42,4 +42,9 @@ type Config struct {
 		Port   int
 		ChatId int
 	}
+	TelegramSend struct {
+		Host   string
+		Port   int
+		ChatId int
+	}
 }

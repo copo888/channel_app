@@ -154,7 +154,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		resp := &types.ProxyPayOrderResponse{
 			ChannelOrderNo: "CHN_" + req.OrderNo,
@@ -180,7 +180,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))

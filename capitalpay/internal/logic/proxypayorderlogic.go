@@ -70,29 +70,28 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	data := url.Values{}
 	data.Set("merchant_no", channel.MerId)
 	data.Set("timestamp", t)
-	data.Set("sign_type","MD5")
+	data.Set("sign_type", "MD5")
 
 	params := struct {
 		MerchantRef string `json:"merchant_ref"`
-		Product string `json:"product"`
-		Amount string `json:"amount"`
-		Extra struct{
+		Product     string `json:"product"`
+		Amount      string `json:"amount"`
+		Extra       struct {
 			Address string `json:"address"`
 		} `json:"extra"`
 	}{
 		MerchantRef: req.OrderNo,
-		Product: "USDT-TRC20Payout",
-		Amount: req.TransactionAmount,
+		Product:     "USDT-TRC20Payout",
+		Amount:      req.TransactionAmount,
 	}
 
 	params.Extra.Address = req.ReceiptAccountNumber
 	paramsJs, err := json.Marshal(params)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 
 	data.Set("params", string(paramsJs))
-
 
 	//data := struct {
 	//	Partner string `json:"partner"`
@@ -153,21 +152,21 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() > 201 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code int `json:"code"`
-		Message string `json:"message"`
-		Timestamp int64 `json:"timestamp"`
-		Params string `json:"params, optional"`
+		Code      int    `json:"code"`
+		Message   string `json:"message"`
+		Timestamp int64  `json:"timestamp"`
+		Params    string `json:"params, optional"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {
@@ -197,15 +196,15 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	Params := struct {
 		MerchantRef string `json:"merchant_ref"`
-		SystemRef string `json:"system_ref"`
-		Amount string `json:"amount"`
-		Fee string `json:"fee"`
-		Status int `json:"status"`
+		SystemRef   string `json:"system_ref"`
+		Amount      string `json:"amount"`
+		Fee         string `json:"fee"`
+		Status      int    `json:"status"`
 	}{}
 
 	if len(channelResp.Params) > 0 {
 		err4 := json.Unmarshal([]byte(channelResp.Params), &Params)
-		if err4  != nil {
+		if err4 != nil {
 			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err4.Error())
 		}
 	}

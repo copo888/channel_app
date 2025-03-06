@@ -76,7 +76,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("acname", req.UserId)
 	data.Set("notifystyle", "2")
 	data.Set("attach", "CNY")
-	data.Set("userip","192.168.1.1")
+	data.Set("userip", "192.168.1.1")
 	data.Set("currency", "CNY")
 
 	// 組請求參數 FOR JSON
@@ -100,7 +100,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	data.Set("reType", "INFO")
 	//}
-
 
 	// 加簽
 	signString := channel.MerId + req.OrderNo + req.TransactionAmount + notifyUrl + channel.MerKey
@@ -141,29 +140,28 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
-
 
 	// 若需回傳JSON 請自行更改
 	if strings.EqualFold(req.JumpType, "json") {
 		// 渠道回覆處理 [請依照渠道返回格式 自定義]
 		channelResp := struct {
-			Status int `json:"status"`
-			Error string `json:"error, optional"`
-			Data struct{
-				Name string `json:"name, optional"`
-				Bank string `json:"bank, optional"`
-				Subbank string `json:"subbank, optional"`
-				Bankaccount string `json:"bankaccount, optional"`
-				Amount float64 `json:"amount, optional"`
+			Status int    `json:"status"`
+			Error  string `json:"error, optional"`
+			Data   struct {
+				Name        string  `json:"name, optional"`
+				Bank        string  `json:"bank, optional"`
+				Subbank     string  `json:"subbank, optional"`
+				Bankaccount string  `json:"bankaccount, optional"`
+				Amount      float64 `json:"amount, optional"`
 			} `json:"data, optional"`
 		}{}
 
@@ -212,12 +210,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			ChannelOrderNo: "",
 			IsCheckOutMer:  false, // 自組收銀台回傳 true
 		}, nil
-	}else {
+	} else {
 		// 渠道回覆處理 [請依照渠道返回格式 自定義]
 		channelResp := struct {
-			Status int `json:"status"`
+			Status int    `json:"status"`
 			PayUrl string `json:"payurl"`
-			Error string `json:"error"`
+			Error  string `json:"error"`
 		}{}
 
 		// 返回body 轉 struct
@@ -248,8 +246,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			ChannelOrderNo: "",
 		}
 	}
-
-
 
 	return
 }

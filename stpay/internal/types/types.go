@@ -115,20 +115,20 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp     string `form:"myIp, optional"`
-	Income string `form:"income, optional"`
-	PayOrderId string `form:"payOrderId, optional"`
-	Amount string `form:"amount, optional"`
-	MchId string `form:"mchId, optional"`
-	ProductId string `form:"productId, optional"`
-	MchOrderNo string `form:"mchOrderNo, optional"`
+	MyIp        string `form:"myIp, optional"`
+	Income      string `form:"income, optional"`
+	PayOrderId  string `form:"payOrderId, optional"`
+	Amount      string `form:"amount, optional"`
+	MchId       string `form:"mchId, optional"`
+	ProductId   string `form:"productId, optional"`
+	MchOrderNo  string `form:"mchOrderNo, optional"`
 	PaySuccTime string `form:"paySuccTime, optional"`
-	Sign string `form:"sign, optional"`
-	BackType string `form:"backType, optional"`
-	Param1 string `form:"param1, optional"`
-	Param2 string `form:"param2, optional"`
-	AppId string `form:"appId, optional"`
-	Status string `form:"status, optional"`
+	Sign        string `form:"sign, optional"`
+	BackType    string `form:"backType, optional"`
+	Param1      string `form:"param1, optional"`
+	Param2      string `form:"param2, optional"`
+	AppId       string `form:"appId, optional"`
+	Status      string `form:"status, optional"`
 }
 
 // form 格式
@@ -152,4 +152,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

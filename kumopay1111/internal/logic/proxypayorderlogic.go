@@ -121,7 +121,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		//return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
 		resp := &types.ProxyPayOrderResponse{
@@ -148,7 +148,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
