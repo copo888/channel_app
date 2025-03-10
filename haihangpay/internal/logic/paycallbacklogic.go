@@ -72,8 +72,6 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
-	var orderAmount float64
-	orderAmount = utils.FloatDiv(fmt.Sprintf("%d", req.RealAmount), "100")
 	/*
 		PROCESSING：待支付
 		SUCCESS：支付成功
@@ -92,7 +90,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		PayOrderNo:     req.MchOrderNo,
 		ChannelOrderNo: req.SerialOrderNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
 		OrderStatus:    orderStatus,       // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		OrderAmount:    utils.FloatDivF(req.RealAmount, 100),
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

@@ -129,20 +129,20 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp          string `json:"myIp, optional"`
-	MchKey        string `json:"mchKey, optional"`
-	MchOrderNo    string `json:"mchOrderNo, optional"`
-	SerialOrderNo string `json:"serialOrderNo, optional"`
-	Nonce         string `json:"nonce, optional"`
-	PayStatus     string `json:"payStatus, optional"`
-	Amount        int64  `json:"amount, optional"`
-	RealAmount    int64  `json:"realAmount, optional"`
-	PayTime       string `json:"payTime, optional"`
-	MchUserId     string `json:"mchUserId, optional"`
-	AttachMsg     string `json:"attachMsg, optional"`
-	ErrorMsg      string `json:"errorMsg, optional"`
-	Timestamp     string `json:"timestamp, optional"`
-	Sign          string `json:"sign, optional"`
+	MyIp          string  `json:"myIp, optional"`
+	MchKey        string  `json:"mchKey, optional"`
+	MchOrderNo    string  `json:"mchOrderNo, optional"`
+	SerialOrderNo string  `json:"serialOrderNo, optional"`
+	Nonce         string  `json:"nonce, optional"`
+	PayStatus     string  `json:"payStatus, optional"`
+	Amount        float64 `json:"amount, optional"`
+	RealAmount    float64 `json:"realAmount, optional"`
+	PayTime       string  `json:"payTime, optional"`
+	MchUserId     string  `json:"mchUserId, optional"`
+	AttachMsg     string  `json:"attachMsg, optional"`
+	ErrorMsg      string  `json:"errorMsg, optional"`
+	Timestamp     string  `json:"timestamp, optional"`
+	Sign          string  `json:"sign, optional"`
 }
 
 type ReceiverInfoVO struct {
