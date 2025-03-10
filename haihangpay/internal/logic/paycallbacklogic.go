@@ -73,7 +73,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//}
 
 	var orderAmount float64
-	orderAmount = utils.FloatMul(fmt.Sprintf("%d", req.RealAmount), "100")
+	orderAmount = utils.FloatDiv(fmt.Sprintf("%d", req.RealAmount), "100")
 	/*
 		PROCESSING：待支付
 		SUCCESS：支付成功
