@@ -46,7 +46,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	//// 渠道狀態碼判斷
-	//if req.BankCode != "1" {
+	//if req.BankCode != "1" {s
 	//	//寫入交易日志
 	//	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 	//		MerchantNo: req.MerchantId,
