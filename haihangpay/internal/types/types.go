@@ -135,13 +135,13 @@ type PayCallBackRequest struct {
 	SerialOrderNo string `json:"serialOrderNo, optional"`
 	Nonce         string `json:"nonce, optional"`
 	PayStatus     string `json:"payStatus, optional"`
-	Amount        int    `json:"amount, optional"`
-	RealAmount    int    `json:"realAmount, optional"`
+	Amount        int64  `json:"amount, optional"`
+	RealAmount    int64  `json:"realAmount, optional"`
 	PayTime       string `json:"payTime, optional"`
 	MchUserId     string `json:"mchUserId, optional"`
 	AttachMsg     string `json:"attachMsg, optional"`
 	ErrorMsg      string `json:"errorMsg, optional"`
-	Timestamp     int64  `json:"timestamp, optional"`
+	Timestamp     string `json:"timestamp, optional"`
 	Sign          string `json:"sign, optional"`
 }
 
