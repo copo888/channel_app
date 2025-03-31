@@ -111,9 +111,21 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp string `json:"myIp, optional"`
-	Id   string `json:"id"`
-	Data string `json:"data"`
+	MyIp                string      `json:"myIp, optional"`
+	Id                  string      `json:"id, optional"`
+	Data                string      `json:"data, optional"`
+	Status              int         `json:"status, optional"`
+	Description         string      `json:"description, optional"`
+	PlaceOrderAmount    float64     `json:"placeOrderAmount, optional"` //彩商下单金额，数字，两位小数
+	Amount              float64     `json:"amount, optional"`           //实收金额
+	Fee                 float64     `json:"fee, optional"`
+	ReceivingAccountNo  interface{} `json:"receivingAccountNo, optional"`
+	ActualDepositorName interface{} `json:"actualDepositorName, optional"`
+	Nonce               string      `json:"nonce, optional"`
+	Timestamp           string      `json:"timestamp, optional"`
+	MerchantId          string      `json:"merchantId, optional"`
+	OrderId             string      `json:"orderId, optional"`
+	TransId             string      `json:"transId, optional"`
 }
 
 type ReceiverInfoVO struct {

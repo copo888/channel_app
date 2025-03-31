@@ -66,24 +66,41 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 		Status  int     `json:"status, optional"`
 	}{}
 
-	response := utils.DePwdCode(req.Data, channel.MerKey)
-	logx.WithContext(l.ctx).Infof("返回解密: %s", response)
-
-	if err = json.Unmarshal([]byte(response), &channelResp); err != nil {
-		return "", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
-	}
-
 	orderStatus := "1"
-	if channelResp.Status == 0 { //0:为订单完成成功；11:取消
-		orderStatus = "20"
-	}
+	var payCallBackBO bo.PayCallBackBO
+	if req.Data != "" {
+		response := utils.DePwdCode(req.Data, channel.MerKey)
+		logx.WithContext(l.ctx).Infof("返回解密: %s", response)
+		if err = json.Unmarshal([]byte(response), &channelResp); err != nil {
+			return "", errorx.New(responsex.GENERAL_EXCEPTION, err.Error())
+		}
 
-	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     channelResp.OrderNo,
-		ChannelOrderNo: channelResp.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    orderStatus,         // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功)
-		OrderAmount:    channelResp.Money,
-		CallbackTime:   time.Now().Format("20060102150405"),
+		orderStatus = "1"
+		if channelResp.Status == 0 { //0:为订单完成成功；11:取消
+			orderStatus = "20"
+		}
+
+		payCallBackBO = bo.PayCallBackBO{
+			PayOrderNo:     channelResp.OrderNo,
+			ChannelOrderNo: channelResp.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+			OrderStatus:    orderStatus,         // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功)
+			OrderAmount:    channelResp.Money,
+			CallbackTime:   time.Now().Format("20060102150405"),
+		}
+
+	} else {
+
+		if req.Status == 0 {
+			orderStatus = "20"
+		}
+		payCallBackBO = bo.PayCallBackBO{
+			PayOrderNo:     req.OrderId,
+			ChannelOrderNo: req.TransId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+			OrderStatus:    orderStatus, // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功)
+			OrderAmount:    req.Amount,
+			CallbackTime:   time.Now().Format("20060102150405"),
+		}
+
 	}
 
 	/** 回調至 merchant service **/
