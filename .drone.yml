@@ -17,6 +17,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -58,6 +59,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -99,6 +101,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -140,6 +143,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -181,6 +185,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -222,6 +227,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -263,6 +269,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -304,6 +311,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -345,6 +353,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -386,6 +395,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -427,6 +437,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -469,6 +480,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -511,6 +523,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -553,6 +566,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -595,6 +609,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -636,6 +651,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -677,6 +693,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -718,6 +735,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -760,6 +778,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -802,6 +821,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -843,6 +863,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -884,6 +905,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -925,6 +947,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -966,6 +989,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1007,6 +1031,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1050,6 +1075,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1092,6 +1118,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1134,6 +1161,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1176,6 +1204,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1219,6 +1248,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1262,6 +1292,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1304,6 +1335,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1346,6 +1378,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1388,6 +1421,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1430,6 +1464,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1472,6 +1507,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1513,6 +1549,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1554,6 +1591,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1596,6 +1634,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1638,6 +1677,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1679,6 +1719,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1720,6 +1761,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1763,6 +1805,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1805,6 +1848,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1848,6 +1892,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1890,6 +1935,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1932,6 +1978,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -1974,6 +2021,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2016,6 +2064,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2058,6 +2107,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2100,6 +2150,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2143,6 +2194,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2185,6 +2237,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2227,6 +2280,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2269,6 +2323,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
@@ -2312,6 +2367,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git fetch
