@@ -17,6 +17,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout zhongshoupay
@@ -56,6 +57,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout lepay
@@ -95,6 +97,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout taotaopay
@@ -133,6 +136,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout wanlisinpay
@@ -171,6 +175,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout wangjhepay
@@ -209,6 +214,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout shenfutongpay6
@@ -247,6 +253,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git checkout -- .
         - git checkout stpay
