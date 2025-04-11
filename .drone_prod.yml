@@ -9949,6 +9949,67 @@ steps:
     status:
       - success
 
+- name: docker-ui2pay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f ui2pay/docker-compose.yml down
+      - docker rmi ui2pay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/ui2pay ui2pay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t ui2pay -f ui2pay/Dockerfile .
+      - docker-compose -f ui2pay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appui2pay-*
+      - refs/tags/api01-testui2pay-*
+    status:
+      - success
+
+
+- name: docker-ui2pay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f ui2pay/docker-compose.yml down
+      - docker rmi ui2pay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/ui2pay ui2pay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t ui2pay -f ui2pay/Dockerfile .
+      - docker-compose -f ui2pay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appui2pay-*
+      - refs/tags/api02-testui2pay-*
+    status:
+      - success
+
 
 - name: slb-after
   image: appleboy/drone-ssh
