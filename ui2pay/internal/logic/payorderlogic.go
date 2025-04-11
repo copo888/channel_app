@@ -77,7 +77,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		MerchantUplineNo string `json:"merchantUplineNo"` //商户上线号码
 		OrderId          string `json:"orderNo"`
 		Amt              string `json:"amt"`
-		Username         string `json:"username"`
 		BankCode         string `json:"bankCode"`
 		AccName          string `json:"accName"`
 		AccNumber        string `json:"accNumber"`
@@ -88,7 +87,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		MerchantUplineNo: channel.MerId,
 		OrderId:          req.OrderNo,
 		Amt:              req.TransactionAmount,
-		Username:         req.UserId,
 		BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
 		AccName:          req.UserId,
 		AccNumber:        req.BankAccount,
