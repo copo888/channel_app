@@ -67,7 +67,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankCode         string `json:"bankCode"`
 		AccName          string `json:"accName"`
 		AccNumber        string `json:"accNumber"`
-		NotifyUrl        string `json:"notifyUrl"`
+		NotifyUrl        string `json:"noticeUrl"`
 		Sign             string `json:"sign"`
 	}{
 		MerchantNo:       channel.MerId,
