@@ -17,6 +17,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stage
@@ -56,6 +57,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stage
@@ -94,6 +96,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull 
         - git checkout stage
@@ -132,6 +135,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stage 
@@ -169,6 +173,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stage
@@ -206,6 +211,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stage
@@ -243,6 +249,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stpay
@@ -280,6 +287,7 @@ steps:
       port:
         from_secret: port
       script:
+        - export PATH=$PATH:/usr/local/go/bin
         - cd /root/channel_app
         - git pull
         - git checkout stage
