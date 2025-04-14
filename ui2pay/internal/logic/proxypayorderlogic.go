@@ -67,7 +67,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankCode         string `json:"bankCode"`
 		AccName          string `json:"accName"`
 		AccNumber        string `json:"accNumber"`
-		NotifyUrl        string `json:"noticeUrl"`
+		NoticeUrl        string `json:"noticeUrl"`
 		Sign             string `json:"sign"`
 	}{
 		MerchantNo:       channel.MerId,
@@ -77,7 +77,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
 		AccName:          req.ReceiptAccountName,
 		AccNumber:        req.ReceiptAccountNumber,
-		NotifyUrl:        l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
+		NoticeUrl:        l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
 
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
