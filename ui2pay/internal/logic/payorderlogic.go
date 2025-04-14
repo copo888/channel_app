@@ -78,6 +78,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		OrderId          string `json:"orderNo"`
 		Amt              string `json:"amt"`
 		BankCode         string `json:"bankCode"`
+		Username         string `json:"username"`
 		AccName          string `json:"accName"`
 		AccNumber        string `json:"accNumber"`
 		NotifyUrl        string `json:"noticeUrl"`
@@ -89,6 +90,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amt:              req.TransactionAmount,
 		BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
 		AccName:          req.UserId,
+		Username:         req.UserId,
 		AccNumber:        req.BankAccount,
 		NotifyUrl:        notifyUrl,
 	}
