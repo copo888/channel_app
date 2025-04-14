@@ -35,7 +35,7 @@ Prometheus:
   Host: ${PROMETHEUS_HOST}
   Port: ${PROMETHEUS_PORT}
   Path: ${PROMETHEUS_PATH}
-
+  
 ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd

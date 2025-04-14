@@ -26,7 +26,6 @@ type Config struct {
 		PublicKey string
 		PayKey    string
 		ProxyKey  string
-		LineKey   string
 	}
 	ProjectName string
 	Merchant    struct {

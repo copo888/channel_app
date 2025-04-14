@@ -40,7 +40,6 @@ ApiKey:
   PublicKey: SFS47G6U
   PayKey: FGHGasFd
   ProxyKey: zrdfSeWd
-  LineKey: GHddFKsa
 
 TelegramSend:
   Host: ${TG_HOST}
@@ -51,4 +50,4 @@ Merchant:
   Host: ${MERCHANT_SERVICE_HOST}
   Port: ${MERCHANT_SERVICE_PORT}
 
-Timeout: 25000
+Timeout: 30000

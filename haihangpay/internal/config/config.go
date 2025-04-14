@@ -33,6 +33,10 @@ type Config struct {
 		Host string
 		Port int
 	}
+	//LineSend struct {
+	//	Host string
+	//	Port int
+	//}
 	TelegramSend struct {
 		Host   string
 		Port   int
