@@ -121,7 +121,7 @@ type ProxyPayCallBackRequest struct {
 	Ip          string `json:"ip, optional"`
 	OrderNo     string `json:"orderNo, optional"`
 	Amt         string `json:"amt, optional"`
-	Status      int    `json:"status, optional"`
+	Status      string `json:"status, optional"`
 	UpdatedDate string `json:"updated_date, optional"`
 	PayoutDate  string `json:"payout_date, optional"`
 	Sign        string `json:"sign, optional"`
