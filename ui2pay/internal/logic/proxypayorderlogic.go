@@ -66,6 +66,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Amt              string `json:"amt"`
 		BankCode         string `json:"bankCode"`
 		AccName          string `json:"accName"`
+		AccNameTh        string `json:"accNameTH"`
 		AccNumber        string `json:"accNumber"`
 		NoticeUrl        string `json:"noticeUrl"`
 		Sign             string `json:"sign"`
@@ -76,6 +77,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Amt:              req.TransactionAmount,
 		BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
 		AccName:          req.ReceiptAccountName,
+		AccNameTh:        req.ReceiptAccountName,
 		AccNumber:        req.ReceiptAccountNumber,
 		NoticeUrl:        l.svcCtx.Config.Server + "/api/proxy-pay-call-back",
 	}
