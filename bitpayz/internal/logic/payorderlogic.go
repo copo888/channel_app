@@ -101,7 +101,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Timestamp:         timestamp,
 	}
 	// 加簽
-	sign, err := payutils.GetSign_HMAC_SHA256(channel.MerId, "nHUxQbHgEu", channel.MerKey)
+	sign, err := payutils.GetSign_HMAC_SHA256(channel.MerId, "nHUxQbHgEu", channel.MerKey, timestamp)
 	if err != nil {
 		logx.WithContext(l.ctx).Errorf("签名错误: %s", err.Error())
 	}

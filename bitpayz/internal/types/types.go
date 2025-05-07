@@ -129,17 +129,22 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp     string `json:"myIp, optional"`
-	Code     string `json:"code, optional"`
-	Msg      string `json:"msg, optional"`
-	Sign     string `json:"sign, optional"`
-	MerchId  string `json:"merchId, optional"`
-	Money    string `json:"money, optional"`
-	TradeNo  string `json:"tradeNo, optional"`
-	OrderId  string `json:"orderId, optional"`
-	Time     string `json:"time, optional"`
-	SignType string `json:"signType, optional"`
-	PayType  string `json:"payType, optional"`
+	MyIp              string  `json:"myIp, optional"`
+	ReferenceId       string  `json:"referenceId, optional"`
+	TransactionId     string  `json:"transactionId, optional"`
+	ClientId          string  `json:"clientId, optional"`
+	MerchantId        string  `json:"merchantId, optional"`
+	WalletId          string  `json:"walletId, optional"`
+	BankCode          string  `json:"bankCode, optional"`
+	BankName          string  `json:"bankName, optional"`
+	BankAccountNumber string  `json:"bankAccountNumber, optional"`
+	BankAccountName   string  `json:"bankAccountName, optional"`
+	Amount            float64 `json:"amount, optional"`
+	Status            string  `json:"status, optional"`
+	Timestamp         int     `json:"timestamp, optional"`
+	MatchTimestamp    int64   `json:"matchTimestamp, optional"`
+	Type              string  `json:"type, optional"`
+	Hash              string  `json:"hash, optional"`
 }
 
 type ReceiverInfoVO struct {

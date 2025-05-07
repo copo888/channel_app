@@ -12,7 +12,6 @@ import (
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 )
 
 func GetSign(source string) string {
@@ -127,11 +126,11 @@ func GetSign_SHA256(source string) string {
 	return strings.ToUpper(result)
 }
 
-func GetSign_HMAC_SHA256(merchantId, clientId, secretKey string) (string, error) {
+func GetSign_HMAC_SHA256(merchantId string, clientId string, secretKey string, timestamp int64) (string, error) {
 	claims := jwt.MapClaims{
 		"merchantId": merchantId,
 		"clientId":   clientId,
-		"iat":        time.Now().UnixMilli(),
+		"iat":        timestamp,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)

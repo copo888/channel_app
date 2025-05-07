@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/copo888/channel_app/bitpayz/internal/payutils"
 	"github.com/copo888/channel_app/common/apimodel/bo"
 	"github.com/copo888/channel_app/common/apimodel/vo"
 	"github.com/copo888/channel_app/common/constants"
@@ -14,7 +13,6 @@ import (
 	"github.com/copo888/channel_app/common/utils"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"strconv"
 	"time"
 
 	"github.com/copo888/channel_app/bitpayz/internal/svc"
@@ -41,7 +39,7 @@ func NewPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayCal
 
 func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp string, err error) {
 
-	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.MerchId, l.svcCtx.Config.ProjectName, req)
+	logx.WithContext(l.ctx).Infof("Enter PayCallBack. orderNo:%s, channelName: %s, PayCallBackRequest: %+v", req.TransactionId, l.svcCtx.Config.ProjectName, req)
 
 	// 取得取道資訊
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
@@ -52,9 +50,9 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		MerchantNo: req.MerchId,
+		//MerchantNo: req.MerchId,
 		//MerchantOrderNo: req.OrderNo,
-		OrderNo:     req.OrderId, //輸入COPO訂單號
+		OrderNo:     req.TransactionId, //輸入COPO訂單號
 		ChannelCode: channel.Code,
 		LogType:     constants.CALLBACK_FROM_CHANNEL,
 		LogSource:   constants.API_ZF,
@@ -70,25 +68,20 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	}
 
 	// 檢查驗簽
-	if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
-		return "fail", errorx.New(responsex.INVALID_SIGN)
-	}
-
-	var orderAmount float64
-	if orderAmount, err = strconv.ParseFloat(req.Money, 64); err != nil {
-		return "fail", errorx.New(responsex.INVALID_AMOUNT)
-	}
-
-	//orderStatus := "1"
-	//if req.TradeStatus == "1" {
-	//	orderStatus = "20"
+	//if isSameSign := payutils.VerifySign(req.Sign, *req, channel.MerKey, l.ctx); !isSameSign {
+	//	return "fail", errorx.New(responsex.INVALID_SIGN)
 	//}
 
+	orderStatus := "1"
+	if req.Status == "completed" {
+		orderStatus = "20"
+	}
+
 	payCallBackBO := bo.PayCallBackBO{
-		PayOrderNo:     req.OrderId,
-		ChannelOrderNo: req.TradeNo, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
-		OrderStatus:    "20",        // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
-		OrderAmount:    orderAmount,
+		PayOrderNo:     req.TransactionId,
+		ChannelOrderNo: req.ReferenceId, // 渠道訂單號 (若无则填入->"CHN_" + orderNo)
+		OrderStatus:    orderStatus,     // 若渠道只有成功会回调 固定 20:成功; 訂單狀態(1:处理中 20:成功 )
+		OrderAmount:    req.Amount,
 		CallbackTime:   time.Now().Format("20060102150405"),
 	}
 

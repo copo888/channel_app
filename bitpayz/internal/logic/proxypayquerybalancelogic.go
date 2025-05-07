@@ -3,13 +3,11 @@ package logic
 import (
 	"context"
 	"fmt"
-	"github.com/copo888/channel_app/bitpayz/internal/payutils"
 	"github.com/copo888/channel_app/common/errorx"
 	model2 "github.com/copo888/channel_app/common/model"
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/gioco-play/gozzle"
 	"go.opentelemetry.io/otel/trace"
-	"net/url"
 	"time"
 
 	"github.com/copo888/channel_app/bitpayz/internal/svc"
@@ -44,10 +42,6 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		return nil, errorx.New(responsex.INVALID_PARAMETER, err1.Error())
 	}
 
-	data := url.Values{}
-	data.Set("partner", channel.MerId)
-	data.Set("service", "10201")
-
 	//JSON 格式
 	//data := struct {
 	//	MerchId   string `json:"partner"`
@@ -55,14 +49,11 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	//	MerchId: channel.MerId,
 	//}
 
-	// 加簽
-	sign := payutils.SortAndSignFromUrlValues(data, channel.MerKey, l.ctx)
-	data.Set("sign", sign)
-
+	url := channel.ProxyPayQueryBalanceUrl + "?merchantId=" + channel.MerId
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", channel.ProxyPayQueryBalanceUrl, data)
+	logx.WithContext(l.ctx).Infof("代付余额查询请求地址:%s,請求參數:%+v", url)
 	span := trace.SpanFromContext(l.ctx)
-	ChannelResp, ChnErr := gozzle.Post(channel.ProxyPayQueryBalanceUrl).Timeout(20).Trace(span).Form(data)
+	ChannelResp, ChnErr := gozzle.Get(url).Header("x-api-key", "825c850d-cc4b-410e-b3a4-b1fc3d898d79").Timeout(20).Trace(span).Do()
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
@@ -74,22 +65,29 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	balanceQueryResp := struct {
-		Success bool   `json:"success"`
-		Msg     string `json:"msg"`
-		Balance string `json:"balance"`
+		Status string `json:"status"`
+		Data   struct {
+			MerchantId     string    `json:"merchantId"`
+			Name           string    `json:"name"`
+			Balance        float64   `json:"balance"`
+			OperateBalance float64   `json:"operateBalance"`
+			ParkingBalance int       `json:"parkingBalance"`
+			FreezeBalance  float64   `json:"freezeBalance"`
+			UpdatedAt      time.Time `json:"updatedAt"`
+		} `json:"data"`
 	}{}
 
 	if err3 := ChannelResp.DecodeJSON(&balanceQueryResp); err3 != nil {
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-	} else if balanceQueryResp.Success != true {
-		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s: %s", balanceQueryResp.Success, balanceQueryResp.Msg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
+	} else if balanceQueryResp.Status != "success" {
+		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %s", balanceQueryResp.Status)
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Status)
 	}
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{
 		ChannelNametring:   channel.Name,
 		ChannelCodingtring: channel.Code,
-		ProxyPayBalance:    balanceQueryResp.Balance,
+		ProxyPayBalance:    fmt.Sprintf("%f", balanceQueryResp.Data.Balance-balanceQueryResp.Data.FreezeBalance),
 		UpdateTimetring:    time.Now().Format("2006-01-02 15:04:05"),
 	}
 
