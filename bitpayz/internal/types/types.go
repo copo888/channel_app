@@ -119,12 +119,12 @@ type ProxyPayQueryInternalBalanceResponse struct {
 
 type ProxyPayCallBackRequest struct {
 	Ip            string `json:"ip, optional"`
-	ReferenceId   string `json:"referenceId, optionial"`
-	TransactionId string `json:"transactionId, optionial"`
-	Status        string `json:"status, optionial"`
-	Message       string `json:"message, optionial"`
-	Qrcode        string `json:"qrcode, optionial"`
-	Hash          string `json:"hash, optionial"`
+	ReferenceId   string `json:"referenceId, optional"`
+	TransactionId string `json:"transactionId, optional"`
+	Status        string `json:"status, optional"`
+	Message       string `json:"message, optional"`
+	Qrcode        string `json:"qrcode, optional"`
+	Hash          string `json:"hash, optional"`
 }
 
 type PayCallBackRequest struct {
