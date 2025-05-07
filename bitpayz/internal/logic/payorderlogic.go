@@ -253,6 +253,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount:     channelResp.Data.DepositAmount,
 		Link:       "",
 		QrCode:     channelResp.Data.Qrcode,
+		Currency:   req.Currency,
 		Remark:     "",
 	})
 

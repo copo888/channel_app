@@ -154,6 +154,7 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	QrCode     string  `json:"qrCode"`
+	Currency   string  `json:"currency"`
 	Remark     string  `json:"remark"`
 }
 
