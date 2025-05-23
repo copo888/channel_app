@@ -53,10 +53,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	/** UserId 必填時使用 **/
 	if len(req.UserId) == 0 {
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_USER_ID)
+		return nil, errorx.New(responsex.INVALID_USER_ID, "INVALID_USER_ID")
 	} else if len(req.BankAccount) == 0 {
 		logx.WithContext(l.ctx).Errorf("bankAccount不可为空 userId:%s", req.BankAccount)
-		return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY)
+		return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY, "INVALID BANK ACCOUNT")
 	}
 
 	channelBankMap, err2 := model.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.BankCode)
