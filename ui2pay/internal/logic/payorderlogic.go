@@ -51,10 +51,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if strings.EqualFold(req.PayType, "PP") && len(req.UserId) == 0 {
 		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
 		return nil, errorx.New(responsex.INVALID_USER_ID)
-	} else if strings.EqualFold(req.PayType, "PP") && len(req.BankCode) == 0 {
+	} else if (strings.EqualFold(req.PayType, "PP") || strings.EqualFold(req.PayType, "YK")) && len(req.BankCode) == 0 {
 		logx.WithContext(l.ctx).Errorf("BankCode不可为空 BankCode:%s", req.UserId)
 		return nil, errorx.New(responsex.BANK_CODE_EMPTY)
-	} else if strings.EqualFold(req.PayType, "PP") && len(req.BankAccount) == 0 {
+	} else if (strings.EqualFold(req.PayType, "PP") || strings.EqualFold(req.PayType, "YK")) && len(req.BankAccount) == 0 {
 		logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.BankAccount)
 		return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY)
 	}
@@ -85,7 +85,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Sign             string `json:"sign"`
 	}{
 		MerchantNo:       channel.MerId,
-		MerchantUplineNo: channel.MerId,
+		MerchantUplineNo: "uipay",
 		OrderId:          req.OrderNo,
 		Amt:              req.TransactionAmount,
 		BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
@@ -112,16 +112,23 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
 
+	var url string
+	if strings.EqualFold(req.PayType, "PP") {
+		url = channel.PayUrl
+	} else if req.PayType == "YK" {
+		url = channel.PayQueryBalanceUrl
+	}
 	// 請求渠道
-	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
+	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", url, data)
 	span := trace.SpanFromContext(l.ctx)
 	// 若有證書問題 請使用
 	//tr := &http.Transport{
 	//	TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
 	//}
 	//res, ChnErr := gozzle.Post(channel.PayUrl).Transport(tr).Timeout(20).Trace(span).Form(data)
-
-	res, ChnErr := gozzle.Post(channel.PayUrl).Timeout(20).Trace(span).JSON(data)
+	var ChnErr error
+	var res *gozzle.Response
+	res, ChnErr = gozzle.Post(url).Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())

@@ -12,6 +12,7 @@ require (
 	github.com/neccohuang/easy-i18n v0.0.0-20211230162636-3d19efe53f14
 	github.com/neccoys/go-driver v0.0.0-20220211062338-505f7fd8fc0c
 	github.com/shopspring/decimal v1.3.1
+	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e
 	github.com/thinkeridea/go-extend v1.3.2
 	github.com/zeromicro/go-zero v1.3.1
 	go.opentelemetry.io/otel v1.3.0
