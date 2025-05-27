@@ -7362,3 +7362,47 @@ steps:
 trigger:
   branch:
     - komopay
+
+
+---
+kind: pipeline
+name: kumopay1881_2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-kumopay1881_2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout kumopay1881_2
+        - git checkout -- .
+        - git pull origin kumopay1881_2
+        - go mod tidy
+        - docker-compose -f kumopay1881_2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=kumopay1881_2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopay1881_2 kumopay1881_2/pay.go
+        - docker build -t kumopay1881_2 -f kumopay1881_2/Dockerfile .
+        - docker-compose -f kumopay1881_2/docker-compose.yml up -d
+    when:
+      branch:
+        - kumopay1881_2
+      event:
+        - push
+trigger:
+  branch:
+    - kumopay1881_2
