@@ -97,7 +97,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Amount:            amountF,
 		CallbackUrl:       notifyUrl,
 		Type:              "QR",
-		Timeout:           30, //Minutes
+		Timeout:           5, //Minutes
 		Timestamp:         timestamp,
 	}
 	// 加簽
