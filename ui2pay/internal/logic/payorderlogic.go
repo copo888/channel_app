@@ -48,25 +48,25 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	}
 
 	/** UserId 必填時使用 **/
-	if strings.EqualFold(req.PayType, "PP") && len(req.UserId) == 0 {
-		logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
-		return nil, errorx.New(responsex.INVALID_USER_ID)
-	} else if (strings.EqualFold(req.PayType, "PP") || strings.EqualFold(req.PayType, "YK")) && len(req.BankCode) == 0 {
-		logx.WithContext(l.ctx).Errorf("BankCode不可为空 BankCode:%s", req.UserId)
-		return nil, errorx.New(responsex.BANK_CODE_EMPTY)
-	} else if (strings.EqualFold(req.PayType, "PP") || strings.EqualFold(req.PayType, "YK")) && len(req.BankAccount) == 0 {
-		logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.BankAccount)
-		return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY)
-	}
+	//if strings.EqualFold(req.PayType, "PP") && len(req.UserId) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("userId不可为空 userId:%s", req.UserId)
+	//	return nil, errorx.New(responsex.INVALID_USER_ID)
+	//} else if (strings.EqualFold(req.PayType, "PP") || strings.EqualFold(req.PayType, "YK")) && len(req.BankCode) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("BankCode不可为空 BankCode:%s", req.UserId)
+	//	return nil, errorx.New(responsex.BANK_CODE_EMPTY)
+	//} else if (strings.EqualFold(req.PayType, "PP") || strings.EqualFold(req.PayType, "YK")) && len(req.BankAccount) == 0 {
+	//	logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.BankAccount)
+	//	return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY)
+	//}
 
-	channelBankMap, err2 := model.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.BankCode)
-	if err2 != nil { //BankName空: COPO沒有對應銀行(要加bk_banks)，MapCode為空: 渠道沒有對應銀行代碼(要加ch_channel_banks)
-		logx.WithContext(l.ctx).Errorf("銀行代碼抓取資料錯誤:%s", err2.Error())
-		return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.BankCode, "银行名称: "+req.BankAccount, "渠道Map名称: "+channelBankMap.MapCode)
-	} else if channelBankMap.BankName == "" || channelBankMap.MapCode == "" {
-		logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.BankCode, req.BankAccount, channelBankMap.MapCode)
-		return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.BankCode, "银行名称: "+req.BankAccount, "渠道Map名称: "+channelBankMap.MapCode)
-	}
+	//channelBankMap, err2 := model.NewChannelBank(l.svcCtx.MyDB).GetChannelBankCode(l.svcCtx.MyDB, channel.Code, req.BankCode)
+	//if err2 != nil { //BankName空: COPO沒有對應銀行(要加bk_banks)，MapCode為空: 渠道沒有對應銀行代碼(要加ch_channel_banks)
+	//	logx.WithContext(l.ctx).Errorf("銀行代碼抓取資料錯誤:%s", err2.Error())
+	//	return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.BankCode, "银行名称: "+req.BankAccount, "渠道Map名称: "+channelBankMap.MapCode)
+	//} else if channelBankMap.BankName == "" || channelBankMap.MapCode == "" {
+	//	logx.WithContext(l.ctx).Errorf("银行代码: %s,银行名称: %s,渠道银行代码: %s", req.BankCode, req.BankAccount, channelBankMap.MapCode)
+	//	return nil, errorx.New(responsex.BANK_CODE_INVALID, "银行代码: "+req.BankCode, "银行名称: "+req.BankAccount, "渠道Map名称: "+channelBankMap.MapCode)
+	//}
 
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
