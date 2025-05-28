@@ -77,22 +77,22 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		MerchantUplineNo string `json:"merchantUplineNo"` //商户上线号码
 		OrderId          string `json:"orderNo"`
 		Amt              string `json:"amt"`
+		NotifyUrl        string `json:"noticeUrl"`
+		Username         string `json:"username"`
+		Sign             string `json:"sign"`
 		//BankCode         string `json:"bankCode"`
-		Username string `json:"username"`
 		//AccName          string `json:"accName"`
 		//AccNumber        string `json:"accNumber"`
-		NotifyUrl string `json:"noticeUrl"`
-		Sign      string `json:"sign"`
 	}{
 		MerchantNo:       channel.MerId,
 		MerchantUplineNo: "uipay",
 		OrderId:          req.OrderNo,
 		Amt:              req.TransactionAmount,
+		NotifyUrl:        notifyUrl,
+		Username:         "Copo",
 		//BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
 		//AccName:          req.UserId,
-		Username: "Copo",
 		//AccNumber:        req.BankAccount,
-		NotifyUrl: notifyUrl,
 	}
 
 	sign := payutils.SortAndSignFromObj(data, channel.MerKey, l.ctx)
