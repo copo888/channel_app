@@ -50,7 +50,7 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		Sign             string `json:"sign"`
 	}{
 		MerchantNo:       channel.MerId,
-		MerchantUplineNo: channel.MerId,
+		MerchantUplineNo: "uipay",
 	}
 
 	// 加簽

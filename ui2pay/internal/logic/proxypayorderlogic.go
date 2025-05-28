@@ -72,7 +72,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		Sign             string `json:"sign"`
 	}{
 		MerchantNo:       channel.MerId,
-		MerchantUplineNo: channel.MerId,
+		MerchantUplineNo: "uipay",
 		OrderId:          req.OrderNo,
 		Amt:              req.TransactionAmount,
 		BankCode:         channelBankMap.MapCode, //channelBankMap.MapCode,
