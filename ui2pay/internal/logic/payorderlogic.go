@@ -116,7 +116,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if strings.EqualFold(req.PayType, "PP") {
 		url = channel.PayUrl
 	} else if req.PayType == "YK" {
-		url = channel.PayQueryBalanceUrl
+		url = channel.PayQueryUrl
 	}
 	// 請求渠道
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", url, data)
