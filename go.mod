@@ -8,7 +8,7 @@ require (
 	github.com/go-playground/validator/v10 v10.10.1
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/golang-jwt/jwt/v4 v4.2.0
-	github.com/joho/godotenv v1.4.0
+	github.com/joho/godotenv v1.5.1
 	github.com/mitchellh/mapstructure v1.1.2
 	github.com/neccohuang/easy-i18n v0.0.0-20211230162636-3d19efe53f14
 	github.com/neccoys/go-driver v0.0.0-20220211062338-505f7fd8fc0c
@@ -43,7 +43,6 @@ require (
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.26.0 // indirect
 	github.com/prometheus/procfs v0.6.0 // indirect
-	github.com/skip2/go-qrcode v0.0.0-20200617195104-da1b6568686e // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
 	go.opentelemetry.io/otel/exporters/jaeger v1.3.0 // indirect

@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: global882
+    image: global882
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/global882:/app/logs
