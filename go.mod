@@ -1,6 +1,6 @@
 module github.com/copo888/channel_app
 
-go 1.20
+go 1.21
 
 require (
 	github.com/gioco-play/gozzle v0.0.0-20220214095646-81ab484dee5d
