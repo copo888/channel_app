@@ -7495,7 +7495,7 @@ trigger:
     - global882
 ---
 kind: pipeline
-name: global882
+name: htpayu
 
 clone:
   disable: true
