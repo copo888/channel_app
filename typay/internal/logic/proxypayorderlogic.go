@@ -62,7 +62,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
-	notifyUrl := l.svcCtx.Config.Server+"/api/proxy-pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
 	//notifyUrl = "https://c6d5-211-75-36-190.ngrok-free.app/api/proxy-pay-call-back"
 	randomID := utils.GetRandomString(12, utils.ALL, utils.MIX)
 	timestamp := time.Now().Unix()
@@ -136,25 +136,25 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code int   `json:"code"`
-		Msg     string `json:"msg"`
-		Data struct{
-			Appid string `json:"appid"`
+		Code int    `json:"code"`
+		Msg  string `json:"msg"`
+		Data struct {
+			Appid           string `json:"appid"`
 			Merchanttradebo string `json:"merchanttradebo"`
-			Tradebo string `json:"tradebo"`
-			Payurl string `json:"payurl"`
-			Sign string `json:"sign"`
+			Tradebo         string `json:"tradebo"`
+			Payurl          string `json:"payurl"`
+			Sign            string `json:"sign"`
 		}
 	}{}
 

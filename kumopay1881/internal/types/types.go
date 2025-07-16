@@ -2,6 +2,7 @@
 package types
 
 type PayOrderRequest struct {
+	MerchantOrderNo   string `json:"merchantOrderNo, optional"`
 	OrderNo           string `json:"orderNo"`
 	PayType           string `json:"payType, optional"`
 	ChannelPayType    string `json:"channelPayType, optional"`
@@ -62,6 +63,8 @@ type PayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayOrderRequest struct {
+	MerchantOrderNo      string `json:"merchantOrderNo, optional"`
+	MerchantId           string `json:"merchantId, optional"`
 	OrderNo              string `json:"orderNo"`
 	TransactionType      string `json:"transactionType"`
 	TransactionAmount    string `json:"transactionAmount"`
@@ -135,4 +138,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: direpay
+    image: direpay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/direpay:/app/logs

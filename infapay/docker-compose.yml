@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: infapay
+    image: infapay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/infapay:/app/logs

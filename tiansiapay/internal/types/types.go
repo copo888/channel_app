@@ -106,23 +106,23 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip             string  `json:"ip, optional"`
-	Params         string  `json:"params, optional"`
-	Signature      string  `json:"signature, optional"`
+	Ip              string `json:"ip, optional"`
+	Params          string `json:"params, optional"`
+	Signature       string `json:"signature, optional"`
 	MerchantOrderId string `json:"merchantOrderId, optional"`
 }
 
 type ProxyPayConfirmRequest struct {
-	Ip             string  `json:"ip, optional"`
-	Params         string  `json:"params, optional"`
-	Signature      string  `json:"signature, optional"`
+	Ip              string `json:"ip, optional"`
+	Params          string `json:"params, optional"`
+	Signature       string `json:"signature, optional"`
 	MerchantOrderId string `json:"merchantOrderId, optional"`
 }
 
 type PayCallBackRequest struct {
-	MyIp           string  `json:"myIp, optional"`
-	Params         string  `json:"params, optional"`
-	Signature      string  `json:"signature, optional"`
+	MyIp            string `json:"myIp, optional"`
+	Params          string `json:"params, optional"`
+	Signature       string `json:"signature, optional"`
 	MerchantOrderId string `json:"merchantOrderId, optional"`
 }
 
@@ -134,4 +134,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

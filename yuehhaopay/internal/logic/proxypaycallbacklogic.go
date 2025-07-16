@@ -42,12 +42,12 @@ func NewProxyPayCallBackLogic(ctx context.Context, svcCtx *svc.ServiceContext) P
 func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequest) (resp string, err error) {
 
 	Result := struct {
-		TransactionId string `json:"transactionid, optional"`
-		Orderid       string `json:"orderid, optional"`
-		PayUrl        string `json:"payurl, optional"`
-		Amount        string `json:"amount, optional"`
-		RealAmount    string `json:"real_amount, optional"`
-		Custom        string `json:"custom, optional"`
+		TransactionId string  `json:"transactionid, optional"`
+		Orderid       string  `json:"orderid, optional"`
+		PayUrl        string  `json:"payurl, optional"`
+		Amount        string  `json:"amount, optional"`
+		RealAmount    float64 `json:"real_amount, optional"` //扣除渠道佣金后添加到商户馀额的金额
+		Custom        string  `json:"custom, optional"`
 	}{}
 
 	if err = json.Unmarshal([]byte(req.Result), &Result); err != nil {
@@ -92,7 +92,7 @@ func (l *ProxyPayCallBackLogic) ProxyPayCallBack(req *types.ProxyPayCallBackRequ
 	var status = "0" //渠道回調狀態(0:處理中1:成功2:失敗)
 	if req.Code == 10000 {
 		status = "1"
-	} else if req.Code == 3 || req.Code == 4 || req.Code == 5 {
+	} else {
 		status = "2"
 	}
 	proxyPayCallBackBO := &bo.ProxyPayCallBackBO{

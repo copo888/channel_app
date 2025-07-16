@@ -50,6 +50,7 @@ var (
 	INVALID_USDT_TYPE                  = "130" // "无效协议"
 	INVALID_USDT_WALLET_ADDRESS        = "131" // "无效钱包地址"
 	INVALID_PAY_TYPE_SUB_NO            = "132" // "多指定模式，PayTypeSubNo為必填"
+	INVALID_PLAYER_ID                  = "133" // "PlayerId 不可为空"
 
 	// for channel test only
 	INVALID_MERCHANT_OR_CHANNEL_PAYTYPE = "160" // "資料庫無此商户号或商户未配置渠道、支付方式等設定错误或关闭或维护"
@@ -70,6 +71,7 @@ var (
 	INVALID_CHANNEL_ORDER_NO        = "212" // "渠道未回传渠道订单号"
 	TRANSACTION_PROCESSING          = "213" // "訂單處理中，請稍後"
 	TIMEOUT_CHANNEL                 = "214" // "渠道请求超时"
+	BANK_ACCOUNT_EMPTY              = "215" // "銀行帳號不得為空值"
 
 	// 内部错误
 	INTERNAL_SIGN_ERROR = "301" // "系统验签错误"

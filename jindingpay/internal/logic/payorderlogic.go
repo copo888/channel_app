@@ -65,7 +65,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	amount := utils.FloatMul(req.TransactionAmount, "100")
 	transactionAmount := strconv.FormatFloat(amount, 'f', 0, 64)
 
-
 	// 組請求參數
 	//data := url.Values{}
 	//data.Set("merchId", channel.MerId)
@@ -80,26 +79,26 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	// 組請求參數 FOR JSON
 	data := struct {
-		Version string `json:"version"`
-		Cid string `json:"cid"`
-		TradeNo string `json:"tradeNo"`
-		Amount string `json:"amount"`
-		AcctName string `json:"acctName"`
-		PayType string `json:"payType"`
+		Version     string `json:"version"`
+		Cid         string `json:"cid"`
+		TradeNo     string `json:"tradeNo"`
+		Amount      string `json:"amount"`
+		AcctName    string `json:"acctName"`
+		PayType     string `json:"payType"`
 		RequestTime string `json:"requestTime"`
-		NotifyUrl string `json:"notifyUrl"`
-		ReturnType string `json:"returnType"`
-		Sign string `json:"sign"`
+		NotifyUrl   string `json:"notifyUrl"`
+		ReturnType  string `json:"returnType"`
+		Sign        string `json:"sign"`
 	}{
-		Version: "1.6",
-		Cid: channel.MerId,
-		TradeNo: req.OrderNo,
-		Amount: transactionAmount,
-		PayType: req.ChannelPayType,
+		Version:     "1.6",
+		Cid:         channel.MerId,
+		TradeNo:     req.OrderNo,
+		Amount:      transactionAmount,
+		PayType:     req.ChannelPayType,
 		RequestTime: timestamp,
-		NotifyUrl: notifyUrl,
-		ReturnType: "0",
-		AcctName: req.UserId,
+		NotifyUrl:   notifyUrl,
+		ReturnType:  "0",
+		AcctName:    req.UserId,
 	}
 
 	//if strings.EqualFold(req.JumpType, "json") {
@@ -140,28 +139,28 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Retcode string `json:"retcode"`
-		RetMsg string `json:"retmsg"`
-		Status string `json:"status"`
-		PayeeName string `json:"payeeName"`
+		Retcode       string `json:"retcode"`
+		RetMsg        string `json:"retmsg"`
+		Status        string `json:"status"`
+		PayeeName     string `json:"payeeName"`
 		PayeeBankName string `json:"payeeBankName"`
-		BranchName string `json:"branchName"`
-		PayeeAcctNo string `json:"payeeAcctNo"`
-		PostScript string `json:"postScript"`
-		RockTradeNo string `json:"rockTradeNo"`
-		TradeNo string `json:"tradeNo"`
-		Amount string `json:"amount"`
+		BranchName    string `json:"branchName"`
+		PayeeAcctNo   string `json:"payeeAcctNo"`
+		PostScript    string `json:"postScript"`
+		RockTradeNo   string `json:"rockTradeNo"`
+		TradeNo       string `json:"tradeNo"`
+		Amount        string `json:"amount"`
 	}{}
 
 	// 返回body 轉 struct

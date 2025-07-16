@@ -144,6 +144,11 @@ type ReceiverInfoVO struct {
 	Remark     string  `json:"remark"`
 }
 
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
+}
+
 type ProxyPayCheckRequest struct {
 	Ip      string `json:"ip, optional"`
 	OrderId string `json:"order_id"`

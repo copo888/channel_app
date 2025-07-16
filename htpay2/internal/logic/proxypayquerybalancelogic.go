@@ -86,7 +86,17 @@ func (l *ProxyPayQueryBalanceLogic) ProxyPayQueryBalance() (resp *types.ProxyPay
 		logx.WithContext(l.ctx).Errorf("代付余额查询渠道返回错误: %d: %s", balanceQueryResp.RtCode, balanceQueryResp.Msg)
 		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, balanceQueryResp.Msg)
 	}
-	balance := utils.FloatDivF(balanceQueryResp.Result[15].Balancereal, 100)
+
+	// 查找并打印currency为THB的balancereal值
+	var realBalance float64
+	for _, account := range balanceQueryResp.Result {
+		if account.Currency == "THB" {
+			realBalance = account.Balancereal
+			break
+		}
+	}
+
+	balance := utils.FloatDivF(realBalance, 100)
 	amountStr := strconv.FormatFloat(balance, 'f', 3, 64)
 
 	resp = &types.ProxyPayQueryInternalBalanceResponse{

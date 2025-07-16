@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: my888pay
+    image: my888pay
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/my888pay:/app/logs

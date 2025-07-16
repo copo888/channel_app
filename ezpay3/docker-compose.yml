@@ -1,0 +1,9 @@
+version: "2"
+services:
+  api:
+    container_name: ezpay3
+    image: ezpay3
+    restart: always
+    network_mode: host
+    volumes:
+      - /root/logs/ezpay3:/app/logs

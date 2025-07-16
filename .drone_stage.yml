@@ -1,5 +1,5 @@
 kind: pipeline
-name: testpay
+name: channelapp
 
 clone:
   disable: true
@@ -34,18 +34,10 @@ steps:
     when:
       ref:
         - refs/tags/testpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: channel_app
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-zhongshoupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -75,18 +67,10 @@ steps:
     when:
       ref:
         - refs/tags/zhongshoupay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: lepay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -116,18 +100,10 @@ steps:
     when:
       ref:
         - refs/tags/lepay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: taotaopay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-taotaopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -157,18 +133,10 @@ steps:
     when:
       ref:
         - refs/tags/taotaopay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: wanlisinpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wanlisinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -198,18 +166,10 @@ steps:
     when:
       ref:
         - refs/tags/wanlisinpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: wangjhepay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -239,18 +199,10 @@ steps:
     when:
       ref:
         - refs/tags/wangjhepay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: shenfutongpay6
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shenfutongpay6
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -280,18 +232,10 @@ steps:
     when:
       ref:
         - refs/tags/shenfutongpay6_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: stpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-stpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -321,18 +265,10 @@ steps:
     when:
       ref:
         - refs/tags/stpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: ailefupay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ailefupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -362,18 +298,10 @@ steps:
     when:
       ref:
         - refs/tags/ailefupay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: huanyupay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-huanyupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -403,18 +331,10 @@ steps:
     when:
       ref:
         - refs/tags/huanyupay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: lyubupay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lyubupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -444,19 +364,11 @@ steps:
     when:
       ref:
         - refs/tags/lyubupay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: liepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-liepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -486,19 +398,11 @@ steps:
     when:
       ref:
         - refs/tags/liepay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: vcpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-vcpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -528,19 +432,11 @@ steps:
     when:
       ref:
         - refs/tags/vcpay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: mlbproxypay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mlbproxypay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -570,19 +466,11 @@ steps:
     when:
       ref:
         - refs/tags/mlbproxypay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: sinshangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sinshangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -612,19 +500,11 @@ steps:
     when:
       ref:
         - refs/tags/sinshangpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: baisiangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-baisiangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -654,19 +534,11 @@ steps:
     when:
       ref:
         - refs/tags/baisiangpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: vp8pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-vp8pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -696,19 +568,11 @@ steps:
     when:
       ref:
         - refs/tags/vp8pay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: jstpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jstpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -738,19 +602,11 @@ steps:
     when:
       ref:
         - refs/tags/jstpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: mlbpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mlbpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -780,19 +636,11 @@ steps:
     when:
       ref:
         - refs/tags/mlbpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: jindepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jindepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -822,18 +670,10 @@ steps:
     when:
       ref:
         - refs/tags/jindepay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: sandianlingpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sandianlingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -863,18 +703,10 @@ steps:
     when:
       ref:
         - refs/tags/sandianlingpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: wtpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wtpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -904,18 +736,10 @@ steps:
     when:
       ref:
         - refs/tags/wtpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: shahepay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shahepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -945,18 +769,10 @@ steps:
     when:
       ref:
         - refs/tags/shahepay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: shandianpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shandianpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -986,18 +802,10 @@ steps:
     when:
       ref:
         - refs/tags/shandianpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: lelifupay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lelifupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1027,20 +835,12 @@ steps:
     when:
       ref:
         - refs/tags/lelifupay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: yunshengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-yunshengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1070,18 +870,10 @@ steps:
     when:
       ref:
         - refs/tags/yunshengpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: htpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1111,19 +903,11 @@ steps:
     when:
       ref:
         - refs/tags/htpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: haojiehpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-haojiehpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1153,18 +937,10 @@ steps:
     when:
       ref:
         - refs/tags/haojiehpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: tiansiapay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-tiansiapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1194,19 +970,11 @@ steps:
     when:
       ref:
         - refs/tags/tiansiapay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: mashangpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mashangpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1236,20 +1004,12 @@ steps:
     when:
       ref:
         - refs/tags/mashangpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: yibipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-yibipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1279,19 +1039,11 @@ steps:
     when:
       ref:
         - refs/tags/yibipay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: uzpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uzpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1321,18 +1073,10 @@ steps:
     when:
       ref:
         - refs/tags/uzpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: shenfutongpay7
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-shenfutongpay7
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1362,18 +1106,10 @@ steps:
     when:
       ref:
         - refs/tags/shenfutongpay7_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: wangjhepay86
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay86
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1403,18 +1139,10 @@ steps:
     when:
       ref:
         - refs/tags/wangjhepay86_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: wangjhepay87
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay87
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1444,19 +1172,11 @@ steps:
     when:
       ref:
         - refs/tags/wangjhepay87_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: duotsaipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-duotsaipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1486,19 +1206,11 @@ steps:
     when:
       ref:
         - refs/tags/duotsaipay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: uzpay7777
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uzpay7777
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1528,19 +1240,11 @@ steps:
     when:
       ref:
         - refs/tags/uzpay7777_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: uzpay1881
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uzpay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1570,18 +1274,10 @@ steps:
     when:
       ref:
         - refs/tags/uzpay1881_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: lyubupay2
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lyubupay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1611,18 +1307,10 @@ steps:
     when:
       ref:
         - refs/tags/lyubupay2_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: zhiyuanpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-zhiyuanpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1652,18 +1340,10 @@ steps:
     when:
       ref:
         - refs/tags/zhiyuanpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: wangjhepay116
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wangjhepay116
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1693,18 +1373,10 @@ steps:
     when:
       ref:
         - refs/tags/wangjhepay116_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: jstpay2
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jstpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1734,19 +1406,11 @@ steps:
     when:
       ref:
         - refs/tags/jstpay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: vp8pay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-vp8pay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1776,19 +1440,11 @@ steps:
     when:
       ref:
         - refs/tags/vp8pay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: ipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1818,19 +1474,11 @@ steps:
     when:
       ref:
         - refs/tags/ipay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: wulinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wulinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1860,19 +1508,11 @@ steps:
     when:
       ref:
         - refs/tags/wulinpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: changshengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-changshengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1902,19 +1542,11 @@ steps:
     when:
       ref:
         - refs/tags/changshengpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: wanmahuipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wanmahuipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1944,19 +1576,11 @@ steps:
     when:
       ref:
         - refs/tags/wanmahuipay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: powerpay1881
 
-clone:
-  disable: true
 
-steps:
   - name: docker-powerpay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -1986,19 +1610,11 @@ steps:
     when:
       ref:
         - refs/tags/powerpay1881_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: dpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-dpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2028,19 +1644,11 @@ steps:
     when:
       ref:
         - refs/tags/dpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: kumopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2070,19 +1678,11 @@ steps:
     when:
       ref:
         - refs/tags/kumopay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: alogatewaypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-alogatewaypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2112,19 +1712,11 @@ steps:
     when:
       ref:
         - refs/tags/alogatewaypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: hueifutongpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-hueifutongpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2154,19 +1746,11 @@ steps:
     when:
       ref:
         - refs/tags/hueifutongpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: quickpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-quickpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2196,19 +1780,11 @@ steps:
     when:
       ref:
         - refs/tags/quickpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: jioufupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jioufupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2238,19 +1814,11 @@ steps:
     when:
       ref:
         - refs/tags/jioufupay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: wgopay88
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wgopay88
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2280,19 +1848,11 @@ steps:
     when:
       ref:
         - refs/tags/wgopay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: lanyunpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lanyunpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2322,19 +1882,11 @@ steps:
     when:
       ref:
         - refs/tags/lanyunpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: limafupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-limafupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2364,19 +1916,11 @@ steps:
     when:
       ref:
         - refs/tags/limafupay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: koreapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-koreapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2406,19 +1950,11 @@ steps:
     when:
       ref:
         - refs/tags/koreapay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: sinhongpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sinhongpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2448,19 +1984,11 @@ steps:
     when:
       ref:
         - refs/tags/sinhongpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: laikepay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-laikepay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2490,19 +2018,11 @@ steps:
     when:
       ref:
         - refs/tags/laikepay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: quickpay_va
 
-clone:
-  disable: true
 
-steps:
   - name: docker-quickpay_va
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2532,19 +2052,11 @@ steps:
     when:
       ref:
         - refs/tags/quickpay_va_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: kumopay1881
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay1881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2574,61 +2086,10 @@ steps:
     when:
       ref:
         - refs/tags/kumopay1881_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: kumopay1
 
-clone:
-  disable: true
-
-steps:
-  - name: docker-kumopay1881
-    image: appleboy/drone-ssh:1.6.5-linux-amd64
-    settings:
-      host:
-        from_secret: host
-      username:
-        from_secret: user
-      password:
-        from_secret: pwd
-      port:
-        from_secret: port
-      script:
-        - export PATH=$PATH:/usr/local/go/bin
-        - cd /root/channel_app
-        - git checkout -- .
-        - git fetch
-        - git checkout stage
-        - git checkout -- .
-        - git pull origin stage
-        - go mod tidy
-        - docker-compose -f kumopay1/docker-compose.yml down
-        - docker rmi -f $(docker images --filter="reference=kumopay1" --quiet)
-        - docker rmi -f $(docker images -qf "dangling=true")
-        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopay1 kumopay1/pay.go
-        - docker build -t kumopay1 -f kumopay1/Dockerfile .
-        - docker-compose -f kumopay1/docker-compose.yml up -d
-    when:
-      ref:
-        - refs/tags/kumopay1_stage_*
-      event:
-        - push
-        - tag
-        - published
-
----
-kind: pipeline
-name: budingpay
-
-clone:
-  disable: true
-
-steps:
   - name: docker-budingpay881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2658,18 +2119,10 @@ steps:
     when:
       ref:
         - refs/tags/budingpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: zihyunpay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-zihyunpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2699,18 +2152,10 @@ steps:
     when:
       ref:
         - refs/tags/zihyunpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: mlbpay_php
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mlbpay_php
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2740,19 +2185,11 @@ steps:
     when:
       ref:
         - refs/tags/mlbpay_php_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: yuehhaopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-yuehhaopay881
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2782,19 +2219,11 @@ steps:
     when:
       ref:
         - refs/tags/yuehhaopay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: feibaopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-feibaopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2824,19 +2253,11 @@ steps:
     when:
       ref:
         - refs/tags/feibaopay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: rcpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-rcpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2866,19 +2287,11 @@ steps:
     when:
       ref:
         - refs/tags/rcpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: rcpay_ue
 
-clone:
-  disable: true
 
-steps:
   - name: docker-rcpay_ue
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2908,19 +2321,11 @@ steps:
     when:
       ref:
         - refs/tags/rcpay_ue_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: mashangpay8888
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mashangpay8888
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2950,19 +2355,11 @@ steps:
     when:
       ref:
         - refs/tags/mashanpay8888_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: hueiyingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-hueiyingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -2992,19 +2389,11 @@ steps:
     when:
       ref:
         - refs/tags/hueiyingpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: duomeipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-duomeipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3034,19 +2423,11 @@ steps:
     when:
       ref:
         - refs/tags/duomeipay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: gtpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-gtpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3076,19 +2457,11 @@ steps:
     when:
       ref:
         - refs/tags/gtpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: nyypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-nyypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3118,19 +2491,11 @@ steps:
     when:
       ref:
         - refs/tags/nyypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: u2pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-u2pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3160,19 +2525,11 @@ steps:
     when:
       ref:
         - refs/tags/u2pay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: kumopaymaya
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopaymaya
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3202,19 +2559,11 @@ steps:
     when:
       ref:
         - refs/tags/kumopaymaya_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: kumopay1111
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kumopay1111
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3244,19 +2593,11 @@ steps:
     when:
       ref:
         - refs/tags/kumopay1111_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: easypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-easypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3286,19 +2627,11 @@ steps:
     when:
       ref:
         - refs/tags/easypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: uhpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-uhpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3328,19 +2661,11 @@ steps:
     when:
       ref:
         - refs/tags/uhpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: htpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3370,19 +2695,11 @@ steps:
     when:
       ref:
         - refs/tags/htpay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: jindingpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jindingpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3412,19 +2729,11 @@ steps:
     when:
       ref:
         - refs/tags/jindingpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: qipay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-qipay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3454,19 +2763,11 @@ steps:
     when:
       ref:
         - refs/tags/qipay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: dbinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-dbinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3496,19 +2797,11 @@ steps:
     when:
       ref:
         - refs/tags/dbinpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: miduoduopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-miduoduopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3538,19 +2831,11 @@ steps:
     when:
       ref:
         - refs/tags/miduoduopay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: globalpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-globalpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3580,19 +2865,11 @@ steps:
     when:
       ref:
         - refs/tags/globalpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: typay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-typay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3622,19 +2899,11 @@ steps:
     when:
       ref:
         - refs/tags/typay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: hqpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-hqpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3664,19 +2933,11 @@ steps:
     when:
       ref:
         - refs/tags/hqpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: kaduoduopay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kaduoduopay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3706,19 +2967,11 @@ steps:
     when:
       ref:
         - refs/tags/kaduoduopay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: tesihlapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-tesihlapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3748,19 +3001,11 @@ steps:
     when:
       ref:
         - refs/tags/tesihlapay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: mhdpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-mhdpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3790,19 +3035,11 @@ steps:
     when:
       ref:
         - refs/tags/mhdpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: htpay3
 
-clone:
-  disable: true
 
-steps:
   - name: docker-htpay3
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3832,19 +3069,11 @@ steps:
     when:
       ref:
         - refs/tags/htpay3_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: luckypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-luckypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3874,20 +3103,12 @@ steps:
     when:
       ref:
         - refs/tags/luckypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: sypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3917,20 +3138,12 @@ steps:
     when:
       ref:
         - refs/tags/sypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: sypaygcash
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sypaygcash
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -3960,19 +3173,11 @@ steps:
     when:
       ref:
         - refs/tags/sypaygcash_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: capitalpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-capitalpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4002,19 +3207,11 @@ steps:
     when:
       ref:
         - refs/tags/capitalpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: jinpinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jinpinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4044,19 +3241,11 @@ steps:
     when:
       ref:
         - refs/tags/jinpinpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: jinpinpay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-jinpinpay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4086,19 +3275,11 @@ steps:
     when:
       ref:
         - refs/tags/jinpinpay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: lelifupay2
 
-clone:
-  disable: true
 
-steps:
   - name: docker-lelifupay2
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4128,19 +3309,11 @@ steps:
     when:
       ref:
         - refs/tags/lelifupay2_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: leimapay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-leimapay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4170,19 +3343,11 @@ steps:
     when:
       ref:
         - refs/tags/leimapay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: changchengpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-changchengpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4212,18 +3377,10 @@ steps:
     when:
       ref:
         - refs/tags/changchengpay_stage_*
-      event:
-        - push
-        - tag
-        - published
----
-kind: pipeline
-name: kypay
+      status:
+        - success
 
-clone:
-  disable: true
 
-steps:
   - name: docker-kypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4253,20 +3410,12 @@ steps:
     when:
       ref:
         - refs/tags/kypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: senlinpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-senlinpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4296,19 +3445,11 @@ steps:
     when:
       ref:
         - refs/tags/senlinpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: z17pay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-z17pay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4338,19 +3479,11 @@ steps:
     when:
       ref:
         - refs/tags/z17pay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: phptestpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-phptestpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4380,20 +3513,12 @@ steps:
     when:
       ref:
         - refs/tags/phptestpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: goalpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-goalpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4423,20 +3548,12 @@ steps:
     when:
       ref:
         - refs/tags/goalpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: ftpay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-ftpay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4466,19 +3583,11 @@ steps:
     when:
       ref:
         - refs/tags/ftpay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
----
-kind: pipeline
-name: sunnypay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-sunnypay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4508,20 +3617,12 @@ steps:
     when:
       ref:
         - refs/tags/sunnypay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
 
 
----
-kind: pipeline
-name: wanjioupay
 
-clone:
-  disable: true
 
-steps:
   - name: docker-wanjioupay
     image: appleboy/drone-ssh:1.6.5-linux-amd64
     settings:
@@ -4551,7 +3652,1882 @@ steps:
     when:
       ref:
         - refs/tags/wanjioupay_stage_*
-      event:
-        - push
-        - tag
-        - published
+      status:
+        - success
+
+
+
+  - name: docker-sunnypay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f sunnypay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypay2 sunnypay2/pay.go
+        - docker build -t sunnypay2 -f sunnypay2/Dockerfile .
+        - docker-compose -f sunnypay2/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/sunnypay2_stage_*
+      status:
+        - success
+
+
+
+  - name: docker-sunnypaymaya
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f sunnypaymaya/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypaymaya" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypaymaya sunnypaymaya/pay.go
+        - docker build -t sunnypaymaya -f sunnypaymaya/Dockerfile .
+        - docker-compose -f sunnypaymaya/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/sunnypaymaya_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-phptestpaymaya
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f phptestpaymaya/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=phptestpaymaya" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/phptestpaymaya phptestpaymaya/pay.go
+        - docker build -t phptestpaymaya -f phptestpaymaya/Dockerfile .
+        - docker-compose -f phptestpaymaya/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/phptestpaymaya_stage_*
+      status:
+        - success
+
+
+
+  - name: docker-kumoproxypay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f kumoproxypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=kumoproxypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumoproxypay kumoproxypay/pay.go
+        - docker build -t kumoproxypay -f kumoproxypay/Dockerfile .
+        - docker-compose -f kumoproxypay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/kumoproxypay_stage_*
+      status:
+        - success
+
+
+
+  - name: docker-globalproxypay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f globalproxypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=globalproxypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/globalproxypay globalproxypay/pay.go
+        - docker build -t globalproxypay -f globalproxypay/Dockerfile .
+        - docker-compose -f globalproxypay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/globalproxypay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-youchengpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f youchengpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=youchengpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/youchengpay youchengpay/pay.go
+        - docker build -t youchengpay -f youchengpay/Dockerfile .
+        - docker-compose -f youchengpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/youchengpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-jyuhueipay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jyuhueipay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jyuhueipay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jyuhueipay jyuhueipay/pay.go
+        - docker build -t jyuhueipay -f jyuhueipay/Dockerfile .
+        - docker-compose -f jyuhueipay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jyuhueipay_stage_*
+      status:
+        - success
+
+
+
+  - name: docker-shuangsipay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f shuangsipay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=shuangsipay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/shuangsipay shuangsipay/pay.go
+        - docker build -t shuangsipay -f shuangsipay/Dockerfile .
+        - docker-compose -f shuangsipay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/shuangsipay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-mpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f mpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=mpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mpay mpay/pay.go
+        - docker build -t mpay -f mpay/Dockerfile .
+        - docker-compose -f mpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/mpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-globalpaymaya
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f globalpaymaya/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=globalpaymaya" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/globalpaymaya globalpaymaya/pay.go
+        - docker build -t globalpaymaya -f globalpaymaya/Dockerfile .
+        - docker-compose -f globalpaymaya/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/globalpaymaya_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-cocopay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f cocopay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=cocopay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/cocopay cocopay/pay.go
+        - docker build -t cocopay -f cocopay/Dockerfile .
+        - docker-compose -f cocopay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/cocopay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-z365pay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f z365pay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=z365pay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/z365pay z365pay/pay.go
+        - docker build -t z365pay -f z365pay/Dockerfile .
+        - docker-compose -f z365pay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/z365pay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-drwaterpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f drwaterpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=drwaterpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/drwaterpay drwaterpay/pay.go
+        - docker build -t drwaterpay -f drwaterpay/Dockerfile .
+        - docker-compose -f drwaterpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/drwaterpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-chiangshengpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f chiangshengpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=chiangshengpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/chiangshengpay chiangshengpay/pay.go
+        - docker build -t chiangshengpay -f chiangshengpay/Dockerfile .
+        - docker-compose -f chiangshengpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/chiangshengpay_stage_*
+      status:
+        - success
+
+
+
+
+
+  - name: docker-senlinpay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f senlinpay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=senlinpay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/senlinpay2 senlinpay2/pay.go
+        - docker build -t senlinpay2 -f senlinpay2/Dockerfile .
+        - docker-compose -f senlinpay2/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/senlinpay2_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-haojiehpayjpy
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f haojiehpayjpy/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=haojiehpayjpy" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/haojiehpayjpy haojiehpayjpy/pay.go
+        - docker build -t haojiehpayjpy -f haojiehpayjpy/Dockerfile .
+        - docker-compose -f haojiehpayjpy/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/haojiehpayjpy_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-jisuproxypay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jisuproxypay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jisuproxypay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jisuproxypay jisuproxypay/pay.go
+        - docker build -t jisuproxypay -f jisuproxypay/Dockerfile .
+        - docker-compose -f jisuproxypay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jisuproxypay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-jxwpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jxwpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jxwpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jxwpay jxwpay/pay.go
+        - docker build -t jxwpay -f jxwpay/Dockerfile .
+        - docker-compose -f jxwpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jxwpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-sanyangpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f sanyangpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sanyangpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sanyangpay sanyangpay/pay.go
+        - docker build -t sanyangpay -f sanyangpay/Dockerfile .
+        - docker-compose -f sanyangpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/sanyangpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-htpay3alipayy
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f htpay3alipayy/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=htpay3alipayy" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/htpay3alipayy htpay3alipayy/pay.go
+        - docker build -t htpay3alipayy -f htpay3alipayy/Dockerfile .
+        - docker-compose -f htpay3alipayy/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/htpay3alipayy_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-sinpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f sinpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sinpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sinpay sinpay/pay.go
+        - docker build -t sinpay -f sinpay/Dockerfile .
+        - docker-compose -f sinpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/sinpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-ezpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f ezpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ezpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ezpay ezpay/pay.go
+        - docker build -t ezpay -f ezpay/Dockerfile .
+        - docker-compose -f ezpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/ezpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-ezpay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f ezpay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ezpay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ezpay2 ezpay2/pay.go
+        - docker build -t ezpay2 -f ezpay2/Dockerfile .
+        - docker-compose -f ezpay2/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/ezpay2_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-leimapay2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f leimapay2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=leimapay2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/leimapay2 leimapay2/pay.go
+        - docker build -t leimapay2 -f leimapay2/Dockerfile .
+        - docker-compose -f leimapay2/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/leimapay2_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-ddpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f ddpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ddpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ddpay ddpay/pay.go
+        - docker build -t ddpay -f ddpay/Dockerfile .
+        - docker-compose -f ddpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/ddpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-jintaipay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jintaipay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jintaipay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jintaipay jintaipay/pay.go
+        - docker build -t jintaipay -f jintaipay/Dockerfile .
+        - docker-compose -f jintaipay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jintaipay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-bcpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f bcpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=bcpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/bcpay bcpay/pay.go
+        - docker build -t bcpay -f bcpay/Dockerfile .
+        - docker-compose -f bcpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/bcpay_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-jstpay3
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jstpay3/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jstpay3" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jstpay3 jstpay3/pay.go
+        - docker build -t jstpay3 -f jstpay3/Dockerfile .
+        - docker-compose -f jstpay3/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jstpay3_stage_*
+      status:
+        - success
+
+
+
+
+  - name: docker-indiapay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f indiapay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=indiapay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/indiapay indiapay/pay.go
+        - docker build -t indiapay -f indiapay/Dockerfile .
+        - docker-compose -f indiapay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/indiapay_stage_*
+      status:
+        - success
+
+  - name: docker-sindingpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f sindingpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sindingpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sindingpay sindingpay/pay.go
+        - docker build -t sindingpay -f sindingpay/Dockerfile .
+        - docker-compose -f sindingpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/sindingpay_stage_*
+      status:
+        - success
+
+  - name: docker-bcpayu
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f bcpayu/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=bcpayu" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/bcpayu bcpayu/pay.go
+        - docker build -t bcpayu -f bcpayu/Dockerfile .
+        - docker-compose -f bcpayu/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/bcpayu_stage_*
+      status:
+        - success
+
+  - name: docker-direpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f direpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=direpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/direpay direpay/pay.go
+        - docker build -t direpay -f direpay/Dockerfile .
+        - docker-compose -f direpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/direpay_stage_*
+      status:
+        - success
+
+  - name: docker-haoshengpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f haoshengpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=haoshengpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/haoshengpay haoshengpay/pay.go
+        - docker build -t haoshengpay -f haoshengpay/Dockerfile .
+        - docker-compose -f haoshengpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/haoshengpay_stage_*
+      status:
+        - success
+
+
+  - name: docker-onepay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f onepay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=onepay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/onepay onepay/pay.go
+        - docker build -t onepay -f onepay/Dockerfile .
+        - docker-compose -f onepay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/onepay_stage_*
+      status:
+        - success
+
+
+  - name: docker-glpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f glpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=glpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/glpay glpay/pay.go
+        - docker build -t glpay -f glpay/Dockerfile .
+        - docker-compose -f glpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/glpay_stage_*
+      status:
+        - success
+
+
+  - name: docker-bcpayue
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f bcpayue/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=bcpayue" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/bcpayue bcpayue/pay.go
+        - docker build -t bcpayue -f bcpayue/Dockerfile .
+        - docker-compose -f bcpayue/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/bcpayue_stage_*
+      status:
+        - success
+
+
+  - name: docker-my888pay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f my888pay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=my888pay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/my888pay my888pay/pay.go
+        - docker build -t my888pay -f my888pay/Dockerfile .
+        - docker-compose -f my888pay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/my888pay_stage_*
+      status:
+        - success
+
+  - name: docker-papayapay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f papayapay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=papayapay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/papayapay papayapay/pay.go
+        - docker build -t papayapay -f papayapay/Dockerfile .
+        - docker-compose -f papayapay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/papayapay_stage_*
+      status:
+        - success
+
+  - name: docker-tarspay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f tarspay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=tarspay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/tarspay tarspay/pay.go
+        - docker build -t tarspay -f tarspay/Dockerfile .
+        - docker-compose -f tarspay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/tarspay_stage_*
+      status:
+        - success
+
+  - name: docker-fpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f fpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=fpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/fpay fpay/pay.go
+        - docker build -t fpay -f fpay/Dockerfile .
+        - docker-compose -f fpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/fpay_stage_*
+      status:
+        - success
+
+
+  - name: docker-ezpay3
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f ezpay3/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=ezpay3" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ezpay3 ezpay3/pay.go
+        - docker build -t ezpay3 -f ezpay3/Dockerfile .
+        - docker-compose -f ezpay3/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/ezpay3_stage_*
+      status:
+        - success
+
+
+  - name: docker-tsunpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f tsunpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=tsunpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/tsunpay tsunpay/pay.go
+        - docker build -t tsunpay -f tsunpay/Dockerfile .
+        - docker-compose -f tsunpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/tsunpay_stage_*
+      status:
+        - success
+
+
+  - name: docker-jspay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jspay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jspay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jspay jspay/pay.go
+        - docker build -t jspay -f jspay/Dockerfile .
+        - docker-compose -f jspay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jspay_stage_*
+      status:
+        - success
+
+  - name: docker-jstpay4
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jstpay4/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jstpay4" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jstpay4 jstpay4/pay.go
+        - docker build -t jstpay4 -f jstpay4/Dockerfile .
+        - docker-compose -f jstpay4/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jstpay4_stage_*
+      status:
+        - success
+
+  - name: docker-sunnypayys
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f sunnypayys/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=sunnypayys" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/sunnypayys sunnypayys/pay.go
+        - docker build -t sunnypayys -f sunnypayys/Dockerfile .
+        - docker-compose -f sunnypayys/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/sunnypayys_stage_*
+      status:
+        - success
+
+  - name: docker-infapay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f infapay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=infapay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/infapay infapay/pay.go
+        - docker build -t infapay -f infapay/Dockerfile .
+        - docker-compose -f infapay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/infapay_stage_*
+      status:
+        - success
+
+
+  - name: docker-haihangpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f haihangpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=haihangpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/haihangpay haihangpay/pay.go
+        - docker build -t haihangpay -f haihangpay/Dockerfile .
+        - docker-compose -f haihangpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/haihangpay_stage_*
+      status:
+        - success
+
+  - name: docker-jinwangpay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f jinwangpay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=jinwangpay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jinwangpay jinwangpay/pay.go
+        - docker build -t jinwangpay -f jinwangpay/Dockerfile .
+        - docker-compose -f jinwangpay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/jinwangpay_stage_*
+      status:
+        - success
+
+
+  - name: docker-leileipay
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout stage
+        - git checkout -- .
+        - git pull origin stage
+        - go mod tidy
+        - docker-compose -f leileipay/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=leileipay" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/leileipay leileipay/pay.go
+        - docker build -t leileipay -f leileipay/Dockerfile .
+        - docker-compose -f leileipay/docker-compose.yml up -d
+    when:
+      ref:
+        - refs/tags/leileipay_stage_*
+      status:
+        - success
+
+  - name: docker-ui2pay
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f ui2pay/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=ui2pay" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/ui2pay ui2pay/pay.go
+          - docker build -t ui2pay -f ui2pay/Dockerfile .
+          - docker-compose -f ui2pay/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/ui2pay_stage_*
+        status:
+          - success
+
+  - name: docker-mayipay
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f mayipay/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=mayipay" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/mayipay mayipay/pay.go
+          - docker build -t mayipay -f mayipay/Dockerfile .
+          - docker-compose -f mayipay/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/mayipay_stage_*
+        status:
+          - success
+
+  - name: docker-jianduanpay
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f jianduanpay/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=jianduanpay" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/jianduanpay jianduanpay/pay.go
+          - docker build -t jianduanpay -f jianduanpay/Dockerfile .
+          - docker-compose -f jianduanpay/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/jianduanpay_stage_*
+        status:
+          - success
+    
+  - name: docker-bitpayz
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f bitpayz/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=bitpayz" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/bitpayz bitpayz/pay.go
+          - docker build -t bitpayz -f bitpayz/Dockerfile .
+          - docker-compose -f bitpayz/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/bitpayz_stage_*
+        status:
+          - success
+
+  - name: docker-komopay
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f komopay/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=komopay" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/komopay komopay/pay.go
+          - docker build -t komopay -f komopay/Dockerfile .
+          - docker-compose -f komopay/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/komopay_stage_*
+        status:
+          - success
+
+  - name: docker-kumopay1881_2
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f kumopay1881_2/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=kumopay1881_2" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/kumopay1881_2 kumopay1881_2/pay.go
+          - docker build -t kumopay1881_2 -f kumopay1881_2/Dockerfile .
+          - docker-compose -f kumopay1881_2/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/kumopay1881_2_stage_*
+        status:
+          - success
+
+  - name: docker-htpayu
+      image: appleboy/drone-ssh:1.6.5-linux-amd64
+      settings:
+        host:
+          from_secret: host
+        username:
+          from_secret: user
+        password:
+          from_secret: pwd
+        port:
+          from_secret: port
+        script:
+          - cd /root/channel_app
+          - git checkout -- .
+          - git fetch
+          - git checkout stage
+          - git checkout -- .
+          - git pull origin stage
+          - go mod tidy
+          - docker-compose -f htpayu/docker-compose.yml down
+          - docker rmi -f $(docker images --filter="reference=htpayu" --quiet)
+          - docker rmi -f $(docker images -qf "dangling=true")
+          - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/htpayu htpayu/pay.go
+          - docker build -t htpayu -f htpayu/Dockerfile .
+          - docker-compose -f htpayu/docker-compose.yml up -d
+      when:
+        ref:
+          - refs/tags/htpayu_stage_*
+        status:
+          - success

@@ -59,7 +59,7 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
-	notifyUrl := l.svcCtx.Config.Server+"/api/proxy-pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
 	//notifyUrl = "https://f632-211-75-36-190.ngrok-free.app/api/proxy-pay-call-back"
 
 	//data := url.Values{}
@@ -77,32 +77,32 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	//data.Set("bankCardholder", req.ReceiptAccountName)
 
 	data := struct {
-		MerchantCode string `json:"merchantCode"`
-		MerchantOrderId string `json:"merchantOrderId"`
-		CurrencyCode string `json:"currencyCode"`
-		BankCode string `json:"bankCode"`
-		BankAccountName string `json:"bankAccountName"`
+		MerchantCode      string `json:"merchantCode"`
+		MerchantOrderId   string `json:"merchantOrderId"`
+		CurrencyCode      string `json:"currencyCode"`
+		BankCode          string `json:"bankCode"`
+		BankAccountName   string `json:"bankAccountName"`
 		BankAccountNumber string `json:"bankAccountNumber"`
-		Branch string `json:"branch"`
-		Province string `json:"province"`
-		City string `json:"city"`
-		Amount string `json:"amount"`
-		SuccessUrl string `json:"successUrl"`
-		Mp string `json:"mp"`
-		Sign string `json:"sign"`
+		Branch            string `json:"branch"`
+		Province          string `json:"province"`
+		City              string `json:"city"`
+		Amount            string `json:"amount"`
+		SuccessUrl        string `json:"successUrl"`
+		Mp                string `json:"mp"`
+		Sign              string `json:"sign"`
 	}{
-		MerchantCode: channel.MerId,
-		MerchantOrderId: req.OrderNo,
-		Amount: transactionAmount,
-		SuccessUrl: notifyUrl,
-		BankCode: channelBankMap.MapCode,
-		Branch: req.ReceiptCardBankName,
-		Province: req.ReceiptCardProvince,
-		City: req.ReceiptCardCity,
+		MerchantCode:      channel.MerId,
+		MerchantOrderId:   req.OrderNo,
+		Amount:            transactionAmount,
+		SuccessUrl:        notifyUrl,
+		BankCode:          channelBankMap.MapCode,
+		Branch:            req.ReceiptCardBankName,
+		Province:          req.ReceiptCardProvince,
+		City:              req.ReceiptCardCity,
 		BankAccountNumber: req.ReceiptAccountNumber,
-		BankAccountName: req.ReceiptAccountName,
-		Mp: "payout",
-		CurrencyCode: "CNY",
+		BankAccountName:   req.ReceiptAccountName,
+		Mp:                "payout",
+		CurrencyCode:      "CNY",
 	}
 
 	// 加簽
@@ -113,13 +113,14 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.DATA_REQUEST_CHANNEL,
-		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", data),
-		TraceId:   l.traceID,
+		MerchantNo:      req.MerchantId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.DATA_REQUEST_CHANNEL,
+		LogSource:       constants.API_DF,
+		Content:         fmt.Sprintf("%+v", data),
+		TraceId:         l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
@@ -132,27 +133,63 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
-		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:       req.MerchantId,
+			ChannelCode:      channel.Code,
+			MerchantOrderNo:  req.MerchantOrderNo,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          ChnErr.Error(),
+			TraceId:          l.traceID,
+			ChannelErrorCode: ChnErr.Error(),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
+		//不管渠道网路错误或者其他错误，一律不反失败单，持续处于待处理，直到等渠道回调成功或失败，或者手动回调
+		resp := &types.ProxyPayOrderResponse{
+			ChannelOrderNo: "CHN_" + req.OrderNo,
+			OrderStatus:    "",
+		}
+		return resp, nil
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
+			OrderNo:          req.OrderNo,
+			ChannelCode:      channel.Code,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          string(ChannelResp.Body()),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.Itoa(ChannelResp.Status()),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Result bool `json:"result"`
-		ErrorMsg struct{
-			Code int `json:"code"`
+		Result   bool `json:"result"`
+		ErrorMsg struct {
+			Code     int    `json:"code"`
 			ErrorMsg string `json:"errorMsg"`
 			Descript string `json:"descript"`
 		} `json:"ErrorMsg, optional"`
-		Data struct{
-			GamerOrderId string `json:"gamerOrderId"`
+		Data struct {
+			GamerOrderId    string `json:"gamerOrderId"`
 			MerchantOrderId string `json:"merchantOrderId"`
-			Sign string `json:"sign"`
+			Sign            string `json:"sign"`
 		} `json:"data, optional"`
 	}{}
 
@@ -162,13 +199,14 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
-		//MerchantNo: channel.MerId,
-		//MerchantOrderNo: req.OrderNo,
-		OrderNo:   req.OrderNo,
-		LogType:   constants.RESPONSE_FROM_CHANNEL,
-		LogSource: constants.API_DF,
-		Content:   fmt.Sprintf("%+v", channelResp),
-		TraceId:   l.traceID,
+		MerchantNo:      channel.MerId,
+		MerchantOrderNo: req.MerchantOrderNo,
+		OrderNo:         req.OrderNo,
+		ChannelCode:     channel.Code,
+		LogType:         constants.RESPONSE_FROM_CHANNEL,
+		LogSource:       constants.API_DF,
+		Content:         fmt.Sprintf("%+v", channelResp),
+		TraceId:         l.traceID,
 	}); err != nil {
 		logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 	}
@@ -177,8 +215,24 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 		logx.WithContext(l.ctx).Errorf("代付渠提单道返回错误: %s: %s", channelResp.Result, channelResp.ErrorMsg.Descript)
 		return nil, errorx.New(responsex.INSUFFICIENT_IN_AMOUNT, channelResp.ErrorMsg.Descript)
 	} else if channelResp.Result != true {
-		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Result, channelResp.ErrorMsg.ErrorMsg)
-		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg.ErrorMsg)
+		logx.WithContext(l.ctx).Errorf("代付渠道返回错误: %s: %s", channelResp.Result, channelResp.ErrorMsg.ErrorMsg+":"+channelResp.ErrorMsg.Descript)
+
+		//寫入交易日志
+		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
+			MerchantNo:       req.MerchantId,
+			MerchantOrderNo:  req.MerchantOrderNo,
+			ChannelCode:      channel.Code,
+			OrderNo:          req.OrderNo,
+			LogType:          constants.ERROR_REPLIED_FROM_CHANNEL,
+			LogSource:        constants.API_DF,
+			Content:          fmt.Sprintf("%+v", channelResp.ErrorMsg.ErrorMsg+":"+channelResp.ErrorMsg.Descript),
+			TraceId:          l.traceID,
+			ChannelErrorCode: strconv.Itoa(channelResp.ErrorMsg.Code),
+		}); err != nil {
+			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
+		}
+
+		return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.ErrorMsg.ErrorMsg+":"+channelResp.ErrorMsg.Descript)
 	}
 
 	//組返回給backOffice 的代付返回物件

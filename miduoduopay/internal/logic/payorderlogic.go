@@ -87,8 +87,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 
 	if req.JumpType == "json" {
 		data.Set("RETURN_TYPE", "1")
-	}else {
-		data.Set("RETURN_TYPE","2")
+	} else {
+		data.Set("RETURN_TYPE", "2")
 	}
 
 	// 組請求參數 FOR JSON
@@ -119,7 +119,6 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	//	PayType:   req.ChannelPayType,
 	//	Version: "1",
 	//}
-
 
 	//if strings.EqualFold(req.JumpType, "json") {
 	//	data.Set("reType", "INFO")
@@ -159,34 +158,33 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", res.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		Code    string `json:"code"`
-		Msg     string `json:"message, optional"`
-		Data    string `json:"data, optional"`
+		Code string `json:"code"`
+		Msg  string `json:"message, optional"`
+		Data string `json:"data, optional"`
 	}{}
 
 	channelResp2 := struct {
-		Code    string `json:"code"`
-		Msg     string `json:"message, optional"`
-		Data    struct{
-			BankCode string `json:"bankCode"`
-			BranchName string `json:"branchName"`
-			BankName string `json:"bankName"`
+		Code string `json:"code"`
+		Msg  string `json:"message, optional"`
+		Data struct {
+			BankCode      string `json:"bankCode"`
+			BranchName    string `json:"branchName"`
+			BankName      string `json:"bankName"`
 			AccountNumber string `json:"accountNumber"`
-			AccountName string `json:"accountName"`
+			AccountName   string `json:"accountName"`
 		}
-
 	}{}
 
 	if req.JumpType == "json" {
@@ -210,30 +208,30 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		if channelResp2.Code != "G_00001" {
 			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, channelResp.Msg)
 		}
-			amount, err2 := strconv.ParseFloat(req.TransactionAmount, 64)
-			if err2 != nil {
-				return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
-			}
-			// 返回json
-			receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
-				CardName:   channelResp2.Data.AccountName,
-				CardNumber: channelResp2.Data.AccountNumber,
-				BankName:   channelResp2.Data.BankName,
-				BankBranch: channelResp2.Data.BranchName,
-				Amount:     amount,
-				Link:       "",
-				Remark:     "",
-			})
-			if err3 != nil {
-				return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
-			}
-			return &types.PayOrderResponse{
-				PayPageType:    "json",
-				PayPageInfo:    string(receiverInfoJson),
-				ChannelOrderNo: "",
-				IsCheckOutMer:  false, // 自組收銀台回傳 true
-			}, nil
-	}else {
+		amount, err2 := strconv.ParseFloat(req.TransactionAmount, 64)
+		if err2 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err2.Error())
+		}
+		// 返回json
+		receiverInfoJson, err3 := json.Marshal(types.ReceiverInfoVO{
+			CardName:   channelResp2.Data.AccountName,
+			CardNumber: channelResp2.Data.AccountNumber,
+			BankName:   channelResp2.Data.BankName,
+			BankBranch: channelResp2.Data.BranchName,
+			Amount:     amount,
+			Link:       "",
+			Remark:     "",
+		})
+		if err3 != nil {
+			return nil, errorx.New(responsex.CHANNEL_REPLY_ERROR, err3.Error())
+		}
+		return &types.PayOrderResponse{
+			PayPageType:    "json",
+			PayPageInfo:    string(receiverInfoJson),
+			ChannelOrderNo: "",
+			IsCheckOutMer:  false, // 自組收銀台回傳 true
+		}, nil
+	} else {
 		// 返回body 轉 struct
 		if err = res.DecodeJSON(&channelResp); err != nil {
 			return nil, errorx.New(responsex.GENERAL_EXCEPTION, err.Error())

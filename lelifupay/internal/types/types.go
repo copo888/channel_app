@@ -104,45 +104,45 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
-	RespCode string `form:"respCode"`
-	RespMsg  string `form:"respMsg"`
-	SecpVer  string `form:"secpVer"`
-	SecpMode string `form:"secpMode"`
-	MacKeyId string `form:"macKeyId"`
-	OrderDate string `form:"orderDate"`
-	OrderTime string `form:"orderTime"`
-	MerId string `form:"merId"`
-	ExtInfo string `form:"extInfo, optional"`
-	OrderId string `form:"orderId"`
-	TxnId string `form:"txnId"`
-	TxnAmt string `form:"txnAmt"`
-	CurrencyCode string `form:"currencyCode"`
-	TxnStatus string `form:"txnStatus"`
+	Ip            string `form:"ip, optional"`
+	RespCode      string `form:"respCode"`
+	RespMsg       string `form:"respMsg"`
+	SecpVer       string `form:"secpVer"`
+	SecpMode      string `form:"secpMode"`
+	MacKeyId      string `form:"macKeyId"`
+	OrderDate     string `form:"orderDate"`
+	OrderTime     string `form:"orderTime"`
+	MerId         string `form:"merId"`
+	ExtInfo       string `form:"extInfo, optional"`
+	OrderId       string `form:"orderId"`
+	TxnId         string `form:"txnId"`
+	TxnAmt        string `form:"txnAmt"`
+	CurrencyCode  string `form:"currencyCode"`
+	TxnStatus     string `form:"txnStatus"`
 	TxnStatusDesc string `form:"txnStatusDesc"`
-	TimeStamp string `form:"timeStamp"`
-	Mac string `form:"mac"`
+	TimeStamp     string `form:"timeStamp"`
+	Mac           string `form:"mac"`
 }
 
 type PayCallBackRequest struct {
-	MyIp     string `form:"myIp, optional"`
-	RespCode string `form:"respCode"`
-	RespMsg  string `form:"respMsg"`
-	SecpVer  string `form:"secpVer"`
-	SecpMode string `form:"secpMode"`
-	MacKeyId string `form:"macKeyId"`
-	OrderDate string `form:"orderDate"`
-	OrderTime string `form:"orderTime"`
-	MerId string `form:"merId"`
-	ExtInfo string `form:"extInfo, optional"`
-	OrderId string `form:"orderId"`
-	TxnId string `form:"txnId"`
-	TxnAmt string `form:"txnAmt"`
-	CurrencyCode string `form:"currencyCode"`
-	TxnStatus string `form:"txnStatus"`
+	MyIp          string `form:"myIp, optional"`
+	RespCode      string `form:"respCode"`
+	RespMsg       string `form:"respMsg"`
+	SecpVer       string `form:"secpVer"`
+	SecpMode      string `form:"secpMode"`
+	MacKeyId      string `form:"macKeyId"`
+	OrderDate     string `form:"orderDate"`
+	OrderTime     string `form:"orderTime"`
+	MerId         string `form:"merId"`
+	ExtInfo       string `form:"extInfo, optional"`
+	OrderId       string `form:"orderId"`
+	TxnId         string `form:"txnId"`
+	TxnAmt        string `form:"txnAmt"`
+	CurrencyCode  string `form:"currencyCode"`
+	TxnStatus     string `form:"txnStatus"`
 	TxnStatusDesc string `form:"txnStatusDesc"`
-	TimeStamp string `form:"timeStamp"`
-	Mac string `form:"mac"`
+	TimeStamp     string `form:"timeStamp"`
+	Mac           string `form:"mac"`
 }
 
 // form 格式
@@ -166,4 +166,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }
