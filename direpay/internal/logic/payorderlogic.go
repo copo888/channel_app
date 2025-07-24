@@ -58,6 +58,16 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		return nil, errorx.New(responsex.INVALID_USER_ID)
 	}
 
+	if len(req.BankCode) == 0 {
+		logx.WithContext(l.ctx).Errorf("BankCode不可为空 BankCode:%s", req.BankCode)
+		return nil, errorx.New(responsex.BANK_CODE_EMPTY)
+	}
+
+	if len(req.BankAccount) == 0 {
+		logx.WithContext(l.ctx).Errorf("BankAccount不可为空 BankAccount:%s", req.BankAccount)
+		return nil, errorx.New(responsex.BANK_ACCOUNT_EMPTY)
+	}
+
 	// 取值
 	notifyUrl := l.svcCtx.Config.Server + "/api/pay-call-back"
 	//timestamp := time.Now().Format("20060102150405")
@@ -166,12 +176,12 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			logx.WithContext(l.ctx).Errorf("写入交易日志错误:%s", err)
 		}
 
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if (res.Status() < 400 && res.Status() >= 300) || res.Status() < 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{

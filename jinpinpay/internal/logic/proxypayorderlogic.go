@@ -33,15 +33,15 @@ type ProxyPayOrderLogic struct {
 }
 
 type Content struct {
-	OrderNo string `json:"orderno"`
-	Date string `json:"date"`
-	Amount string `json:"amount"`
-	Account string `json:"account"`
-	Name string `json:"name"`
-	Bank string `json:"bank"`
+	OrderNo   string `json:"orderno"`
+	Date      string `json:"date"`
+	Amount    string `json:"amount"`
+	Account   string `json:"account"`
+	Name      string `json:"name"`
+	Bank      string `json:"bank"`
 	SubBranch string `json:"subbranch"`
-	Province string `json:"province"`
-	City string `json:"city"`
+	Province  string `json:"province"`
+	City      string `json:"city"`
 }
 
 func NewProxyPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) ProxyPayOrderLogic {
@@ -75,26 +75,26 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	// 組請求參數
 	amountFloat, _ := strconv.ParseFloat(req.TransactionAmount, 64)
 	transactionAmount := strconv.FormatFloat(amountFloat, 'f', 2, 64)
-	notifyUrl := l.svcCtx.Config.Server+"/api/proxy-pay-call-back"
+	notifyUrl := l.svcCtx.Config.Server + "/api/proxy-pay-call-back"
 	//notifyUrl = "https://d8b1-211-75-36-190.ngrok-free.app/api/proxy-pay-call-back"
 	timestamp := time.Now().Format("20060102150405")
 
 	var contents []Content
 	content := Content{
-		OrderNo: req.OrderNo,
-		Date: timestamp,
-		Amount: req.TransactionAmount,
-		Account: req.ReceiptAccountNumber,
-		Name: req.ReceiptAccountName,
-		Bank: req.ReceiptCardBankName,
+		OrderNo:   req.OrderNo,
+		Date:      timestamp,
+		Amount:    req.TransactionAmount,
+		Account:   req.ReceiptAccountNumber,
+		Name:      req.ReceiptAccountName,
+		Bank:      req.ReceiptCardBankName,
 		SubBranch: req.ReceiptCardBranch,
-		Province: req.ReceiptCardProvince,
-		City: req.ReceiptCardCity,
+		Province:  req.ReceiptCardProvince,
+		City:      req.ReceiptCardCity,
 	}
 	contents = append(contents, content)
 	contentsJs, err := json.Marshal(contents)
 	if err != nil {
-		return nil,err
+		return nil, err
 	}
 	data := url.Values{}
 	data.Set("userid", channel.MerId)
@@ -166,22 +166,22 @@ func (l *ProxyPayOrderLogic) ProxyPayOrder(req *types.ProxyPayOrderRequest) (*ty
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.SERVICE_RESPONSE_ERROR, ChnErr.Error())
 	} else if ChannelResp.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 		msg := fmt.Sprintf("代付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, ChannelResp.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 		return nil, errorx.New(responsex.INVALID_STATUS_CODE, fmt.Sprintf("Error HTTP Status: %d", ChannelResp.Status()))
 	}
 	logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", ChannelResp.Status(), string(ChannelResp.Body()))
 	// 渠道回覆處理 [請依照渠道返回格式 自定義]
 	channelResp := struct {
-		UserId string `json:"userid"`
-		Status int `json:"status"`
+		UserId  string `json:"userid"`
+		Status  int    `json:"status"`
 		OrderNo string `json:"orderno"`
-		Amount string `json:"amount"`
-		Msg string `json:"msg"`
+		Amount  string `json:"amount"`
+		Msg     string `json:"msg"`
 	}{}
 
 	if err := ChannelResp.DecodeJSON(&channelResp); err != nil {

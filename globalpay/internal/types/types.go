@@ -117,14 +117,14 @@ type ProxyPayCallBackRequest struct {
 }
 
 type PayCallBackRequest struct {
-	MyIp          string `json:"myIp, optional"`
-	TradeNo       string `json:"trade_no, optional"`
+	MyIp          string  `json:"myIp, optional"`
+	TradeNo       string  `json:"trade_no, optional"`
 	RequestAmount float64 `json:"request_amount, optional"`
-	Amount        string `json:"amount, optional"`
-	OutTradeNo    string `json:"out_trade_no, optional"`
-	State         string `json:"state, optional"`
-	Sign          string `json:"sign, optional"`
-	CallbackUrl   string `json:"callback_url, optional"`
+	Amount        string  `json:"amount, optional"`
+	OutTradeNo    string  `json:"out_trade_no, optional"`
+	State         string  `json:"state, optional"`
+	Sign          string  `json:"sign, optional"`
+	CallbackUrl   string  `json:"callback_url, optional"`
 }
 
 type ReceiverInfoVO struct {
@@ -135,4 +135,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

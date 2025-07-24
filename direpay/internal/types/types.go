@@ -8,6 +8,7 @@ type PayOrderRequest struct {
 	ChannelPayType    string `json:"channelPayType, optional"`
 	TransactionAmount string `json:"transactionAmount"`
 	BankCode          string `json:"bankCode, optional"`
+	BankAccount       string `json:"bank_account, optional"`
 	PageUrl           string `json:"pageUrl, optional"`
 	OrderName         string `json:"orderName, optional"`
 	MerchantId        string `json:"merchantId, optional"`
@@ -149,6 +150,11 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }
 
 type ReceiverInfoBTCVO struct {

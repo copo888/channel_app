@@ -104,7 +104,7 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	MyIp      string           `form:"ip, optional"`
+	MyIp    string           `form:"ip, optional"`
 	Code    int64            `json:"code, optional"`
 	Message string           `json:"message, optional"`
 	Data    ProxyPayCallData `json:"data, optional"`
@@ -158,4 +158,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

@@ -104,28 +104,28 @@ type ProxyPayQueryInternalBalanceResponse struct {
 }
 
 type ProxyPayCallBackRequest struct {
-	Ip         string `form:"ip, optional"`
-	AfterBalance int `form:"afterbalance"`
-	Amount int `form:"amount, optional"`
-	Currency string `form:"currency, optional"`
-	Mhtorderno string `form:"mhtorderno, optional"`
-	Note string `form:"note, optional"`
-	Payouttime string `form:"payouttime, optional"`
-	Pforderno string `form:"pforderno, optional"`
-	Random string `form:"random, optional"`
-	ResultCode int `form:"resultcode, optional"`
-	Sign string `form:"sign"`
+	Ip           string `form:"ip, optional"`
+	AfterBalance int    `form:"afterbalance"`
+	Amount       int    `form:"amount, optional"`
+	Currency     string `form:"currency, optional"`
+	Mhtorderno   string `form:"mhtorderno, optional"`
+	Note         string `form:"note, optional"`
+	Payouttime   string `form:"payouttime, optional"`
+	Pforderno    string `form:"pforderno, optional"`
+	Random       string `form:"random, optional"`
+	ResultCode   int    `form:"resultcode, optional"`
+	Sign         string `form:"sign"`
 }
 
 type PayCallBackRequest struct {
 	MyIp       string `form:"myIp, optional"`
-	Attach string `form:"attach, optional"`
-	Currency string `form:"currency"`
+	Attach     string `form:"attach, optional"`
+	Currency   string `form:"currency"`
 	Mhtorderno string `form:"mhtorderno"`
 	Paidamount string `form:"paidamount"`
-	Pforderno string `form:"pforderno"`
-	Random string `form:"random"`
-	Sign string `form:"sign"`
+	Pforderno  string `form:"pforderno"`
+	Random     string `form:"random"`
+	Sign       string `form:"sign"`
 }
 
 // form 格式
@@ -149,4 +149,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

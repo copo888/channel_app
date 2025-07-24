@@ -100,6 +100,8 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	data.Set("currencyCode", currencyCode)
 	data.Set("timeStamp", timestamp)
 	data.Set("accName", req.UserId)
+	data.Set("sthtml", "1")
+	data.Set("bankNum", "01050000")
 	if req.ChannelPayType == "48" {
 		data.Set("clientIp", req.SourceIp)
 		data.Set("sceneBizType", "IOS_APP")
@@ -157,7 +159,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回錯誤: '%s'，订单号： '%s'", channel.Name, ChnErr.Error(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -178,7 +180,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	} else if res.Status() != 200 {
 		logx.WithContext(l.ctx).Infof("Status: %d  Body: %s", res.Status(), string(res.Body()))
 		msg := fmt.Sprintf("支付提单，呼叫'%s'渠道返回Http状态码錯誤: '%d'，订单号： '%s'", channel.Name, res.Status(), req.OrderNo)
-		service.CallLineSendURL(l.ctx, l.svcCtx, msg)
+		service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: msg})
 
 		//寫入交易日志
 		if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
@@ -292,7 +294,13 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			PayPageInfo:    channelResp.CodePageUrl,
 			ChannelOrderNo: "",
 		}
-	}else{
+	} else if req.ChannelPayType == "21" {
+		resp = &types.PayOrderResponse{
+			PayPageType:    "url",
+			PayPageInfo:    channelResp.ExtInfo,
+			ChannelOrderNo: "",
+		}
+	} else {
 		resp = &types.PayOrderResponse{
 			PayPageType:    "url",
 			PayPageInfo:    channelResp.CodeImgUrl,

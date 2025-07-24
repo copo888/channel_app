@@ -9,6 +9,7 @@ import (
 	"github.com/copo888/channel_app/common/responsex"
 	"github.com/copo888/channel_app/common/typesX"
 	"github.com/copo888/channel_app/common/utils"
+	"github.com/copo888/channel_app/testpay/internal/service"
 	"github.com/copo888/channel_app/testpay/internal/svc"
 	"github.com/copo888/channel_app/testpay/internal/types"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -36,7 +37,7 @@ func NewPayOrderLogic(ctx context.Context, svcCtx *svc.ServiceContext) PayOrderL
 func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrderResponse, err error) {
 
 	logx.WithContext(l.ctx).Infof("Enter PayOrder. channelName: %s, PayOrderRequest: %#v", l.svcCtx.Config.ProjectName, req)
-
+	service.CallTGSendURL(l.ctx, l.svcCtx, &types.TelegramNotifyRequest{ChatID: l.svcCtx.Config.TelegramSend.ChatId, Message: "測試"})
 	// 取得取道資訊
 	channelModel := model.NewChannel(l.svcCtx.MyDB)
 	channel, err1 := channelModel.GetChannelByProjectName(l.svcCtx.Config.ProjectName)
@@ -99,6 +100,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 			IsCheckOutMer:  true, // 自組收銀台回傳 true
 		}, nil
 	}
+
 	resp = &types.PayOrderResponse{
 		PayPageType:    "url",
 		PayPageInfo:    "https://docs.goldenf.vip/",

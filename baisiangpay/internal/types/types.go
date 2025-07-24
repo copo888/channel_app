@@ -74,14 +74,6 @@ type ProxyPayOrderRequest struct {
 	ReceiptCardBankName  string `json:"receiptCardBankName"`
 }
 
-
-
-
-
-
-
-
-
 type ProxyPayOrderResponse struct {
 	ChannelOrderNo string `json:"channelOrderNo"`
 	OrderStatus    string `json:"orderStatus"`
@@ -157,4 +149,9 @@ type ReceiverInfoVO struct {
 	Amount     float64 `json:"amount"`
 	Link       string  `json:"link"`
 	Remark     string  `json:"remark"`
+}
+
+type TelegramNotifyRequest struct {
+	ChatID  int    `json:"chatId, optional"`
+	Message string `json:"message"`
 }

@@ -71,6 +71,7 @@ var (
 	INVALID_CHANNEL_ORDER_NO        = "212" // "渠道未回传渠道订单号"
 	TRANSACTION_PROCESSING          = "213" // "訂單處理中，請稍後"
 	TIMEOUT_CHANNEL                 = "214" // "渠道请求超时"
+	BANK_ACCOUNT_EMPTY              = "215" // "銀行帳號不得為空值"
 
 	// 内部错误
 	INTERNAL_SIGN_ERROR = "301" // "系统验签错误"
