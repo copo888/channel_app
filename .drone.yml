@@ -7493,3 +7493,47 @@ steps:
 trigger:
   branch:
     - htpayu
+
+
+---
+kind: pipeline
+name: bitpayz2
+
+clone:
+  disable: true
+
+steps:
+  - name: docker-bitpayz2
+    image: appleboy/drone-ssh:1.6.5-linux-amd64
+    settings:
+      host:
+        from_secret: host
+      username:
+        from_secret: user
+      password:
+        from_secret: pwd
+      port:
+        from_secret: port
+      script:
+        - export PATH=$PATH:/usr/local/go/bin
+        - cd /root/channel_app
+        - git checkout -- .
+        - git fetch
+        - git checkout bitpayz2
+        - git checkout -- .
+        - git pull origin bitpayz2
+        - go mod tidy
+        - docker-compose -f bitpayz2/docker-compose.yml down
+        - docker rmi -f $(docker images --filter="reference=bitpayz2" --quiet)
+        - docker rmi -f $(docker images -qf "dangling=true")
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/bitpayz2 bitpayz2/pay.go
+        - docker build -t bitpayz2 -f bitpayz2/Dockerfile .
+        - docker-compose -f bitpayz2/docker-compose.yml up -d
+    when:
+      branch:
+        - bitpayz2
+      event:
+        - push
+trigger:
+  branch:
+    - bitpayz2
