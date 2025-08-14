@@ -151,8 +151,3 @@ type TelegramNotifyRequest struct {
 	ChatID  int    `json:"chatId, optional"`
 	Message string `json:"message"`
 }
-
-type TelegramNotifyRequest struct {
-	ChatID  int    `json:"chatId, optional"`
-	Message string `json:"message"`
-}
