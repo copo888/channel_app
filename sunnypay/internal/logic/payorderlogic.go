@@ -60,10 +60,10 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	// 組請求參數
 	data := url.Values{}
 	data.Set("merchant", channel.MerId)
-	data.Set("payment_type", "3")
+	data.Set("payment_type", "7")
 	data.Set("amount", req.TransactionAmount)
 	data.Set("order_id", req.OrderNo)
-	data.Set("bank_code", req.ChannelPayType)
+	data.Set("bank_code", "mya")
 	data.Set("callback_url", notifyUrl)
 	data.Set("return_url", req.PageUrl)
 

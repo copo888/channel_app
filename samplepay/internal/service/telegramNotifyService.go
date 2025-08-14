@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/copo888/channel_app/samplepay/internal/config"
 	"github.com/copo888/channel_app/samplepay/internal/svc"
+	"github.com/copo888/channel_app/samplepay/internal/types"
 	"github.com/gioco-play/gozzle"
 	"github.com/go-redis/redis/v8"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -18,10 +19,15 @@ type ServiceContext struct {
 	MyDB        *gorm.DB
 }
 
-func DoCallTGSendURL(ctx context.Context, svcCtx *svc.ServiceContext, message string) error {
+func CallTGSendURL(ctx context.Context, svcCtx *svc.ServiceContext, message *types.TelegramNotifyRequest) {
+	go func() {
+		DoCallTGSendURL(ctx, svcCtx, message)
+	}()
+}
+
+func DoCallTGSendURL(ctx context.Context, svcCtx *svc.ServiceContext, message *types.TelegramNotifyRequest) error {
 	span := trace.SpanFromContext(ctx)
 	notifyUrl := fmt.Sprintf("%s:%d/telegram/notify", svcCtx.Config.TelegramSend.Host, svcCtx.Config.TelegramSend.Port)
-	//notifyUrl := fmt.Sprintf("%s:%d/line/send", svcCtx.Config.LineSend.Host, svcCtx.Config.LineSend.Port)
 
 	if _, err := gozzle.Post(notifyUrl).Timeout(25).Trace(span).JSON(message); err != nil {
 		logx.WithContext(ctx).Errorf("报警通知失敗:%s", err.Error())

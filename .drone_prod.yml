@@ -9764,6 +9764,747 @@ steps:
       - success
 
 
+- name: docker-haihangpay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f haihangpay/docker-compose.yml down
+      - docker rmi haihangpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/haihangpay haihangpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t haihangpay -f haihangpay/Dockerfile .
+      - docker-compose -f haihangpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-apphaihangpay-*
+      - refs/tags/api01-testhaihangpay-*
+    status:
+      - success
+
+
+- name: docker-haihangpay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f haihangpay/docker-compose.yml down
+      - docker rmi haihangpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/haihangpay haihangpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t haihangpay -f haihangpay/Dockerfile .
+      - docker-compose -f haihangpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-apphaihangpay-*
+      - refs/tags/api02-testhaihangpay-*
+    status:
+      - success
+
+
+- name: docker-jinwangpay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f jinwangpay/docker-compose.yml down
+      - docker rmi jinwangpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jinwangpay jinwangpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t jinwangpay -f jinwangpay/Dockerfile .
+      - docker-compose -f jinwangpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appjinwangpay-*
+      - refs/tags/api01-testjinwangpay-*
+    status:
+      - success
+
+
+- name: docker-jinwangpay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f jinwangpay/docker-compose.yml down
+      - docker rmi jinwangpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jinwangpay jinwangpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t jinwangpay -f jinwangpay/Dockerfile .
+      - docker-compose -f jinwangpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appjinwangpay-*
+      - refs/tags/api02-testjinwangpay-*
+    status:
+      - success
+
+
+- name: docker-leileipay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f leileipay/docker-compose.yml down
+      - docker rmi leileipay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/leileipay leileipay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t leileipay -f leileipay/Dockerfile .
+      - docker-compose -f leileipay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appleileipay-*
+      - refs/tags/api01-testleileipay-*
+    status:
+      - success
+
+
+- name: docker-leileipay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f leileipay/docker-compose.yml down
+      - docker rmi leileipay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/leileipay leileipay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t leileipay -f leileipay/Dockerfile .
+      - docker-compose -f leileipay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appleileipay-*
+      - refs/tags/api02-testleileipay-*
+    status:
+      - success
+
+- name: docker-ui2pay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f ui2pay/docker-compose.yml down
+      - docker rmi ui2pay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/ui2pay ui2pay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t ui2pay -f ui2pay/Dockerfile .
+      - docker-compose -f ui2pay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appui2pay-*
+      - refs/tags/api01-testui2pay-*
+    status:
+      - success
+
+
+- name: docker-ui2pay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f ui2pay/docker-compose.yml down
+      - docker rmi ui2pay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/ui2pay ui2pay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t ui2pay -f ui2pay/Dockerfile .
+      - docker-compose -f ui2pay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appui2pay-*
+      - refs/tags/api02-testui2pay-*
+    status:
+      - success
+
+
+- name: docker-mayipay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f mayipay/docker-compose.yml down
+      - docker rmi mayipay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/mayipay mayipay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t mayipay -f mayipay/Dockerfile .
+      - docker-compose -f mayipay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appmayipay-*
+      - refs/tags/api01-testmayipay-*
+    status:
+      - success
+
+
+- name: docker-mayipay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f mayipay/docker-compose.yml down
+      - docker rmi mayipay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/mayipay mayipay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t mayipay -f mayipay/Dockerfile .
+      - docker-compose -f mayipay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appmayipay-*
+      - refs/tags/api02-testmayipay-*
+    status:
+      - success
+
+- name: docker-jianduanpay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f jianduanpay/docker-compose.yml down
+      - docker rmi jianduanpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jianduanpay jianduanpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t jianduanpay -f jianduanpay/Dockerfile .
+      - docker-compose -f jianduanpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appjianduanpay-*
+      - refs/tags/api01-testjianduanpay-*
+    status:
+      - success
+
+
+- name: docker-jianduanpay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f jianduanpay/docker-compose.yml down
+      - docker rmi jianduanpay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/jianduanpay jianduanpay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t jianduanpay -f jianduanpay/Dockerfile .
+      - docker-compose -f jianduanpay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appjianduanpay-*
+      - refs/tags/api02-testjianduanpay-*
+    status:
+      - success
+
+
+
+- name: docker-bitpayz-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f bitpayz/docker-compose.yml down
+      - docker rmi bitpayz:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/bitpayz bitpayz/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t bitpayz -f bitpayz/Dockerfile .
+      - docker-compose -f bitpayz/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appbitpayz-*
+      - refs/tags/api01-testbitpayz-*
+    status:
+      - success
+
+
+- name: docker-bitpayz-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f bitpayz/docker-compose.yml down
+      - docker rmi bitpayz:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/bitpayz bitpayz/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t bitpayz -f bitpayz/Dockerfile .
+      - docker-compose -f bitpayz/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appbitpayz-*
+      - refs/tags/api02-testbitpayz-*
+    status:
+      - success
+
+- name: docker-komopay-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f komopay/docker-compose.yml down
+      - docker rmi komopay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/komopay komopay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t komopay -f komopay/Dockerfile .
+      - docker-compose -f komopay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appkomopay-*
+      - refs/tags/api01-testkomopay-*
+    status:
+      - success
+
+
+- name: docker-komopay-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f komopay/docker-compose.yml down
+      - docker rmi komopay:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/komopay komopay/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t komopay -f komopay/Dockerfile .
+      - docker-compose -f komopay/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appkomopay-*
+      - refs/tags/api02-testkomopay-*
+    status:
+      - success
+
+
+- name: docker-kumopay1881_2-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f kumopay1881_2/docker-compose.yml down
+      - docker rmi kumopay1881_2:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/kumopay1881_2 kumopay1881_2/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t kumopay1881_2 -f kumopay1881_2/Dockerfile .
+      - docker-compose -f kumopay1881_2/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appkumopay1881_2-*
+      - refs/tags/api01-testkumopay1881_2-*
+    status:
+      - success
+
+
+- name: docker-kumopay1881_2-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f kumopay1881_2/docker-compose.yml down
+      - docker rmi kumopay1881_2:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/kumopay1881_2 kumopay1881_2/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t kumopay1881_2 -f kumopay1881_2/Dockerfile .
+      - docker-compose -f kumopay1881_2/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appkumopay1881_2-*
+      - refs/tags/api02-testkumopay1881_2-*
+    status:
+      - success
+
+
+- name: docker-global882-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f global882/docker-compose.yml down
+      - docker rmi global882:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/global882 global882/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t global882 -f global882/Dockerfile .
+      - docker-compose -f global882/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appglobal882-*
+      - refs/tags/api01-testglobal882-*
+    status:
+      - success
+
+
+- name: docker-global882-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f global882/docker-compose.yml down
+      - docker rmi global882:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/global882 global882/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t global882 -f global882/Dockerfile .
+      - docker-compose -f global882/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appglobal882-*
+      - refs/tags/api02-testglobal882-*
+    status:
+      - success
+
+- name: docker-htpayu-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f htpayu/docker-compose.yml down
+      - docker rmi htpayu:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpayu htpayu/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t htpayu -f htpayu/Dockerfile .
+      - docker-compose -f htpayu/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-apphtpayu-*
+      - refs/tags/api01-testhtpayu-*
+    status:
+      - success
+
+
+- name: docker-htpayu-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f htpayu/docker-compose.yml down
+      - docker rmi htpayu:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/htpayu htpayu/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t htpayu -f htpayu/Dockerfile .
+      - docker-compose -f htpayu/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-apphtpayu-*
+      - refs/tags/api02-testhtpayu-*
+    status:
+      - success
+
+
+- name: docker-bitpayz2-api01
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api01-host
+    username:
+      from_secret: api01-user
+    password:
+      from_secret: api01-pwd
+    port:
+      from_secret: api01-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f bitpayz2/docker-compose.yml down
+      - docker rmi bitpayz2:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/bitpayz2 bitpayz2/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t bitpayz2 -f bitpayz2/Dockerfile .
+      - docker-compose -f bitpayz2/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api01-appbitpayz2-*
+      - refs/tags/api01-testbitpayz2-*
+    status:
+      - success
+
+
+- name: docker-bitpayz2-api02
+  image: appleboy/drone-ssh
+  settings:
+    host:
+      from_secret: api02-host
+    username:
+      from_secret: api02-user
+    password:
+      from_secret: api02-pwd
+    port:
+      from_secret: api02-port
+    command_timeout: 180m
+    script:
+      - cd /root/channel_app
+      - git checkout -- .
+      - git pull origin master
+      - go mod tidy
+      - docker-compose -f bitpayz2/docker-compose.yml down
+      - docker rmi bitpayz2:latest
+      - docker image prune -f
+      - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o bin/bitpayz2 bitpayz2/pay.go
+      - DOCKER_BUILDKIT=1 docker build -t bitpayz2 -f bitpayz2/Dockerfile .
+      - docker-compose -f bitpayz2/docker-compose.yml up -d
+  when:
+    ref:
+      - refs/tags/api02-appbitpayz2-*
+      - refs/tags/api02-testbitpayz2-*
+    status:
+      - success
+
+
 
 - name: slb-after
   image: appleboy/drone-ssh

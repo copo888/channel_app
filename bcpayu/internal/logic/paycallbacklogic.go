@@ -45,7 +45,7 @@ func (l *PayCallBackLogic) PayCallBack(req *types.PayCallBackRequest) (resp stri
 	//寫入交易日志
 	if err := utils.CreateTransactionLog(l.svcCtx.MyDB, &typesX.TransactionLogData{
 		//MerchantNo: req.MerchId,
-		//MerchantOrderNo: req.OrderNo,
+		//MerchantOrderNo: req.OrderNo ,
 		OrderNo:   req.Txid, //輸入COPO訂單號
 		LogType:   constants.CALLBACK_FROM_CHANNEL,
 		LogSource: constants.API_ZF,
