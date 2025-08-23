@@ -89,7 +89,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Signature         string  `json:"signature"`
 		Timestamp         int64   `json:"timestamp"`
 	}{
-		ClientId:          "7uGX2fbFqF",
+		ClientId:          "QEwNMYb6Kf",
 		MerchantId:        channel.MerId,
 		TransactionId:     req.OrderNo,
 		BankAccountNumber: "1234567890",
@@ -102,7 +102,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 		Timestamp:   timestamp,
 	}
 	// 加簽
-	sign, err := payutils.GetSign_HMAC_SHA256(channel.MerId, "7uGX2fbFqF", channel.MerKey, timestamp)
+	sign, err := payutils.GetSign_HMAC_SHA256(channel.MerId, "QEwNMYb6Kf", channel.MerKey, timestamp)
 	if err != nil {
 		logx.WithContext(l.ctx).Errorf("签名错误: %s", err.Error())
 	}
@@ -126,7 +126,7 @@ func (l *PayOrderLogic) PayOrder(req *types.PayOrderRequest) (resp *types.PayOrd
 	logx.WithContext(l.ctx).Infof("支付下单请求地址:%s,支付請求參數:%+v", channel.PayUrl, data)
 	span := trace.SpanFromContext(l.ctx)
 
-	res, ChnErr := gozzle.Post(channel.PayUrl).Header("x-api-key", "ecda46d4-1261-490b-80d2-88a8b80a0748").Timeout(20).Trace(span).JSON(data)
+	res, ChnErr := gozzle.Post(channel.PayUrl).Header("x-api-key", "85813a72-fe8d-4376-8a7a-16088c9a0970").Timeout(20).Trace(span).JSON(data)
 
 	if ChnErr != nil {
 		logx.WithContext(l.ctx).Error("呼叫渠道返回錯誤: ", ChnErr.Error())
